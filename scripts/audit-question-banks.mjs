@@ -3,6 +3,7 @@
  * מתמטיקה (דגימת גנרטור), מדעים (`SCIENCE_QUESTIONS`), גיאוגרפיה סטטית.
  *
  * פלט: reports/question-audit/items.json, items.csv, findings.json, stage2.json
+ * Phase 21: Hebrew C1 spiral overlaps → stage2.hebrewIntentionalSpiralOverlaps (allowlist JSON); withinBandClassPairOverlaps = unresolved only.
  *
  * הרצה: npm run audit:questions
  *    (דורש tsx לייבוא מודולי הפרויקט ללא סיומת .js בנתיבים פנימיים)
@@ -890,6 +891,42 @@ function omitFromWithinBandOverlapHeuristics(r) {
   return r.rowKind === "science_bank_item" || r.subject === "science";
 }
 
+/** Phase 21 — composite key must match rows emitted by withinBandClassPairOverlaps (includes bandPair). */
+function overlapRowAllowlistKey(row) {
+  return `${row.bandPair}|${row.subject}|${row.patternFamily}|${row.stemHash}|${row.subtopic || ""}`;
+}
+
+function loadHebrewSpiralAllowlistKeys() {
+  const p = join(__dirname, "question-audit-hebrew-spiral-allowlist.json");
+  try {
+    const j = JSON.parse(readFileSync(p, "utf8"));
+    const keys = j.keys;
+    return Array.isArray(keys) ? new Set(keys.map(String)) : new Set();
+  } catch {
+    return new Set();
+  }
+}
+
+function partitionWithinBandOverlaps(rawOverlaps, allowSet) {
+  const unresolved = [];
+  const intentionalHebrewSpiral = [];
+  for (const row of rawOverlaps) {
+    const key = overlapRowAllowlistKey(row);
+    if (row.subject === "hebrew" && allowSet.has(key)) {
+      intentionalHebrewSpiral.push({
+        ...row,
+        intentionalSpiral: true,
+        phase20Classification: "C1",
+        note:
+          "Intentional grade-band spiral (Phase 20 C1) — listed here; excluded from unresolved overlap count only.",
+      });
+    } else {
+      unresolved.push(row);
+    }
+  }
+  return { unresolved, intentionalHebrewSpiral };
+}
+
 function withinBandClassPairOverlaps(rows) {
   const isSample = (r) =>
     typeof r.rowKind === "string" && r.rowKind.endsWith("_sample");
@@ -1049,6 +1086,13 @@ function buildStage2Report(rows, declaredMathKinds, declaredGeoKinds) {
     (k) => k !== "no_question" && !geoObs.has(k)
   );
 
+  const rawWithinBandOverlaps = withinBandClassPairOverlaps(rows);
+  const hebrewSpiralAllowlist = loadHebrewSpiralAllowlistKeys();
+  const { unresolved, intentionalHebrewSpiral } = partitionWithinBandOverlaps(
+    rawWithinBandOverlaps,
+    hebrewSpiralAllowlist
+  );
+
   return {
     generatedAt: new Date().toISOString(),
     harnessMerged: {
@@ -1080,7 +1124,10 @@ function buildStage2Report(rows, declaredMathKinds, declaredGeoKinds) {
           "דגימת אודיט דטרמיניסטית + harness נוסחתי וקונספטואלי + כפיית צורה (prism / parallelogram) בקובץ harness.",
       },
     },
-    withinBandClassPairOverlaps: withinBandClassPairOverlaps(rows),
+    withinBandClassPairOverlaps: unresolved,
+    hebrewIntentionalSpiralOverlaps: intentionalHebrewSpiral,
+    withinBandOverlapPartitionNote:
+      "withinBandClassPairOverlaps = adjacent-band overlaps still flagged for review. Hebrew C1 spirals from scripts/question-audit-hebrew-spiral-allowlist.json appear under hebrewIntentionalSpiralOverlaps only (Phase 21).",
     weakLevelSeparationCombos: weakLevelSeparationFromSamples(rows),
     topicMetadataCoverage: topicMetadataCoverage(rows),
     englishClassSplitPools: {
@@ -1438,6 +1485,8 @@ async function main() {
   const stage2 = buildStage2Report(rows, declaredMathKinds, declaredGeoKinds);
   findings.stage2Summary = {
     withinBandOverlapCount: stage2.withinBandClassPairOverlaps.length,
+    hebrewIntentionalSpiralOverlapCount:
+      stage2.hebrewIntentionalSpiralOverlaps?.length ?? 0,
     weakLevelSeparationCount: stage2.weakLevelSeparationCombos.length,
     mathKindsNotHitSample: stage2.generatorBranchCoverage.math.kindsNotHitInRun.length,
     geoKindsNotHitSample: stage2.generatorBranchCoverage.geometry.kindsNotHitInRun.length,
@@ -1458,7 +1507,7 @@ async function main() {
     `Findings: exactCrossGrade(all)=${findings.exactDuplicateCrossGrade.length}, exactStatic=${findings.exactDuplicateCrossGradeStaticBanksOnly.length}, nearDup=${findings.nearDuplicateCrossGrade.length}, familyWide=${findings.patternFamilyWideGradeSpan.length}`
   );
   console.log(
-    `Stage2: withinBandPairs=${stage2.withinBandClassPairOverlaps.length}, weakLevels=${stage2.weakLevelSeparationCombos.length}, mathKindsMissed=${stage2.generatorBranchCoverage.math.kindsNotHitInRun.length}, geoKindsMissed=${stage2.generatorBranchCoverage.geometry.kindsNotHitInRun.length}`
+    `Stage2: withinBandPairs(unresolved)=${stage2.withinBandClassPairOverlaps.length}, hebrewSpiralAllowed=${stage2.hebrewIntentionalSpiralOverlaps?.length ?? 0}, weakLevels=${stage2.weakLevelSeparationCombos.length}, mathKindsMissed=${stage2.generatorBranchCoverage.math.kindsNotHitInRun.length}, geoKindsMissed=${stage2.generatorBranchCoverage.geometry.kindsNotHitInRun.length}`
   );
 }
 

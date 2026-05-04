@@ -1,11 +1,23 @@
 # Product Quality Phase 1 — Question Banks + Learning Flow + Parent Report
 
-**Last updated:** 2026-05-05 (Phase 17 — Geometry generator audit rows: **`subtype`** filled from **`kind`** when absent; audit re-run **12158** rows)  
+**Last updated:** 2026-05-05 (Phase 21 — Hebrew overlap split in `stage2.json`: **9** unresolved + **28** intentional spiral; Phase 22 — **12157** rows after one redundant Hebrew duplicate removed — [`docs/product-quality-phase-22-hebrew-unresolved-structural-fixes.md`](product-quality-phase-22-hebrew-unresolved-structural-fixes.md); Phase 23 — Homeland/Geography factual review doc — [`docs/product-quality-phase-23-homeland-geography-factual-review.md`](product-quality-phase-23-homeland-geography-factual-review.md))  
 **Scope:** Learning product quality only (not security, not production hardening, not report/AI code changes).
 
 ### Phase 3 — Hebrew owner review
 
-[`docs/product-quality-phase-3-hebrew-owner-review.md`](product-quality-phase-3-hebrew-owner-review.md) maps owner decisions for Hebrew overlap findings from §3 below (**legacy triple stems + 37 adjacent-band rows**). **No Hebrew question content was edited** in Phase 3. **Next step:** owner approval on that map **before** any Hebrew wording or bank merges.
+[`docs/product-quality-phase-3-hebrew-owner-review.md`](product-quality-phase-3-hebrew-owner-review.md) maps owner decisions for Hebrew overlap findings from section 3 below (**legacy triple stems + adjacent-band overlap rows**). **No Hebrew question content was edited** in Phase 3. **Next step:** owner approval on that map **before** any Hebrew wording or bank merges.
+
+### Phase 21 — Hebrew intentional spiral allowlist (audit only)
+
+[`docs/product-quality-phase-21-hebrew-spiral-allowlist.md`](product-quality-phase-21-hebrew-spiral-allowlist.md) — **28** Phase 20 **C1** overlaps are recorded under `stage2.hebrewIntentionalSpiralOverlaps`; **`withinBandClassPairOverlaps`** lists **9** unresolved Hebrew rows (**no** question bank edits).
+
+### Phase 22 — Hebrew unresolved structural inspection + safe dedupe
+
+[`docs/product-quality-phase-22-hebrew-unresolved-structural-fixes.md`](product-quality-phase-22-hebrew-unresolved-structural-fixes.md) — full inspection of **H-O01**, **H-O15–H-O20**, **H-O34/H-O35**, **H-L1/H-L2**; **one** byte-identical **G5** vocabulary duplicate removed (**no** Hebrew wording edits).
+
+### Phase 23 — Homeland / Geography factual freshness + ambiguity review
+
+[`docs/product-quality-phase-23-homeland-geography-factual-review.md`](product-quality-phase-23-homeland-geography-factual-review.md) — **3506** audit rows catalogued; **24** stratified samples + duplicate-stem scan; **no** question bank edits.
 
 ### Phase 4 — Parent report product review
 
@@ -136,7 +148,16 @@ No English sentence text, Hebrew text, answers, pool keys, or grade gates were m
 | `grammar::איזה משפט לא תקין?` | easy, medium, hard | True duplicate stem across difficulty buckets | Owner review — differentiate prompts or collapse levels |
 | `grammar::בחרו משפט תקין:` | easy, medium, hard | True duplicate stem across difficulty buckets | Owner review — same |
 
-### 3.2 Adjacent band overlap (`withinBandClassPairOverlaps`) — 37 entries
+### 3.2 Adjacent band overlap — unresolved vs intentional spiral (Phase 21)
+
+**Audit output (current):** `reports/question-audit/stage2.json` splits Hebrew overlaps:
+
+- **`withinBandClassPairOverlaps`** — **9** unresolved rows (owner review: **H-O01**, **H-O15–H-O20**, **H-O34**, **H-O35**).
+- **`hebrewIntentionalSpiralOverlaps`** — **28** intentional spiral rows (Phase 20 **C1**; [`scripts/question-audit-hebrew-spiral-allowlist.json`](../scripts/question-audit-hebrew-spiral-allowlist.json)).
+
+Details: [`docs/product-quality-phase-21-hebrew-spiral-allowlist.md`](product-quality-phase-21-hebrew-spiral-allowlist.md).
+
+The **numbered table below** remains the **full human-readable catalog** of **37** Hebrew overlap identities (**H-O01–H-O37**) from Phase 3 mapping — classification columns unchanged; the audit JSON applies the split above for warning counts only.
 
 Full table (generated from `reports/question-audit/items.json` + `stage2.json`). Hebrew stem text for each `stemHash` is available in `items.csv` / `items.json`.
 
@@ -180,12 +201,13 @@ Full table (generated from `reports/question-audit/items.json` + `stage2.json`).
 | 36 | g5_vs_g6_late_band | collocation | `ad4b531737604021084585a5` | g5–g5 / hard / hebrew_rich / rich#51_g5 · g6–g6 / hard / hebrew_rich / rich#51_g6 | אותו stem לאחר נירמול באודיט | acceptable spiral repetition | keep |
 | 37 | g5_vs_g6_late_band | structural | `0755dab1d0b6bbdaa7561382` | g5–g5 / medium\|hard / hebrew_rich / rich#53_g5 · g6–g6 / medium\|hard / hebrew_rich / rich#53_g6 | אותו stem לאחר נירמול באודיט | acceptable spiral repetition | keep |
 
-**Classification summary (approximate):**
+**Classification summary:**
 
 | Bucket | Count | Notes |
 |--------|-------|-------|
-| Acceptable spiral repetition (rich parallel grades) | ~26 | Intentional `rich#N_g3` / `rich#N_g4` style pairing |
-| Needs owner decision | ~11 | Legacy academic duplicates, comprehension G1/G2 bucket mismatch, stem shared across skill tags (rows 34–35) |
+| Intentional spiral (audit: `hebrewIntentionalSpiralOverlaps`) | **28** | Phase 21 allowlist — excluded from unresolved overlap **count** only |
+| Unresolved overlap (audit: `withinBandClassPairOverlaps`, Hebrew) | **9** | **H-O01**, **H-O15–H-O20**, **H-O34–H-O35** |
+| Legacy triple stem (`hebrewLegacySameStemThreeLevels`) | **2** | **H-L1**, **H-L2** — unchanged by Phase 21 |
 
 ---
 

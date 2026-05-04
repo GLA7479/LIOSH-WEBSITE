@@ -4020,7 +4020,6 @@ const G5_HARD_QUESTIONS = {
     },
   ],
   vocabulary: [
-    { question: "מה אוצר מילים אקדמי?", answers: ["אוצר מילים מקצועי ומתקדם", "רק מילים פשוטות", "רק אותיות", "ללא מילים"], correct: 0, subtopicId: "g5.academic_starter_words" },
     { question: "מה שפה טכנית?", answers: ["שפה מקצועית וטכנית", "רק שפה פשוטה", "רק אותיות", "ללא שפה"], correct: 0 },
     {
       question: "איזו מילה שייכת לשדה סמנטי של 'משפט וחוק (בקצרה)'?",

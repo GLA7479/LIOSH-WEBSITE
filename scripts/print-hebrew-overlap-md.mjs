@@ -8,7 +8,26 @@ const rows = JSON.parse(readFileSync(join(ROOT, "reports/question-audit/items.js
 const stage2 = JSON.parse(
   readFileSync(join(ROOT, "reports/question-audit/stage2.json"), "utf8")
 );
-const overlaps = stage2.withinBandClassPairOverlaps || [];
+/** Phase 21: unresolved + intentional spiral = full Hebrew overlap catalog (37 rows). */
+function stripSpiralAuditFields(row) {
+  const { intentionalSpiral, phase20Classification, note, ...rest } = row;
+  return rest;
+}
+const unresolved = stage2.withinBandClassPairOverlaps || [];
+const spiral = (stage2.hebrewIntentionalSpiralOverlaps || []).map(stripSpiralAuditFields);
+const bandOrder = {
+  g1_vs_g2_early_band: 1,
+  g3_vs_g4_mid_band: 2,
+  g5_vs_g6_late_band: 3,
+};
+const overlaps = [...unresolved, ...spiral].sort((a, b) => {
+  const da = bandOrder[a.bandPair] ?? 99;
+  const db = bandOrder[b.bandPair] ?? 99;
+  if (da !== db) return da - db;
+  const pf = String(a.patternFamily).localeCompare(String(b.patternFamily));
+  if (pf !== 0) return pf;
+  return String(a.stemHash).localeCompare(String(b.stemHash));
+});
 const byHash = new Map();
 for (const r of rows) {
   if (r.subject !== "hebrew") continue;

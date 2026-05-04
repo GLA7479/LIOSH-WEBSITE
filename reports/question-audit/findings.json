@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-05-04T23:10:28.116Z",
-  "totalRows": 12158,
+  "generatedAt": "2026-05-04T23:36:49.448Z",
+  "totalRows": 12157,
   "exactDuplicateCrossGrade": [],
   "exactDuplicateCrossGradeStaticBanksOnly": [],
   "nearDuplicateCrossGrade": [],
@@ -11,7 +11,7 @@
         1,
         6
       ],
-      "rowCount": 95
+      "rowCount": 94
     },
     {
       "key": "science::sci_earth_space_cycles",
@@ -153,9 +153,9 @@
     {
       "key": "hebrew::vocabulary",
       "distinctGrades": 6,
-      "totalRows": 154,
+      "totalRows": 153,
       "dominantPatternFamily": "vocabulary_typed",
-      "dominantShare": 0.6168831168831169
+      "dominantShare": 0.6143790849673203
     },
     {
       "key": "hebrew::writing",
@@ -265,7 +265,8 @@
     "note": "שורות math/geometry עם rowKind *_sample נוצרות עם RNG דטרמיניסטי באודיט; מיפוי kind מלא משתמש גם בקובצי harness."
   },
   "stage2Summary": {
-    "withinBandOverlapCount": 37,
+    "withinBandOverlapCount": 9,
+    "hebrewIntentionalSpiralOverlapCount": 28,
     "weakLevelSeparationCount": 0,
     "mathKindsNotHitSample": 5,
     "geoKindsNotHitSample": 0

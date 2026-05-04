@@ -1,8 +1,10 @@
 # Product Quality Phase 3 — Hebrew Owner Review (Decision Map Only)
 
-**Last updated:** 2026-05-04  
+**Last updated:** 2026-05-05  
 **Status:** Documentation / decisions — **no Hebrew question content was edited** in this phase.  
-**Sources:** [`reports/question-audit/items.json`](../reports/question-audit/items.json), [`reports/question-audit/stage2.json`](../reports/question-audit/stage2.json) (`withinBandClassPairOverlaps`), [`reports/question-audit/findings.json`](../reports/question-audit/findings.json) (`hebrewLegacySameStemThreeLevels`), [`docs/product-quality-phase-1-audit.md`](product-quality-phase-1-audit.md) §3.
+**Sources:** [`reports/question-audit/items.json`](../reports/question-audit/items.json), [`reports/question-audit/stage2.json`](../reports/question-audit/stage2.json) (`withinBandClassPairOverlaps` = unresolved; `hebrewIntentionalSpiralOverlaps` = Phase 21 C1 allowlist), [`reports/question-audit/findings.json`](../reports/question-audit/findings.json) (`hebrewLegacySameStemThreeLevels`), [`docs/product-quality-phase-1-audit.md`](product-quality-phase-1-audit.md) (section 3).
+
+**Structural cleanup plan (Phase 20, planning only — no bank edits):** [`docs/product-quality-phase-20-hebrew-structural-cleanup-plan.md`](product-quality-phase-20-hebrew-structural-cleanup-plan.md) — maps overlap rows **H-O01–H-O37** and legacy groups **H-L1**, **H-L2** to structural vs wording-required actions.
 
 **Scope:** Hebrew only — overlap / duplicate signals for **owner approval** before any bank edits.
 
