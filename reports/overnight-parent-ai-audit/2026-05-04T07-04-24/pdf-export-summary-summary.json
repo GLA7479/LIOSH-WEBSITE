@@ -1,0 +1,31 @@
+{
+  "title": "PDF export (F)",
+  "rows": [
+    {
+      "id": "f-pdf-export",
+      "npmScript": "qa:parent-pdf-export",
+      "phase": "F",
+      "status": "fail",
+      "exitCode": 1,
+      "timedOut": false,
+      "durationMs": 97696,
+      "logPath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\overnight-parent-ai-audit\\2026-05-04T07-04-24\\logs\\f-pdf-export.log",
+      "failureCategory": "TEST_RUNNER_FAILURE",
+      "failureExcerpt": "\n> leo-k-kids-site@1.0.0 qa:parent-pdf-export\n> tsx scripts/qa-parent-pdf-export.mjs\n\npage.waitForSelector: Timeout 90000ms exceeded.\nCall log:\n  - waiting for locator('.parent-report-parent-ai-insight')\n\n    at assertDetailedInsightAndCopilotPrintBehavior (C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\scripts\\qa-parent-pdf-export.mjs:120:14)\n    at main (C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\scripts\\qa-parent-pdf-export.mjs:184:9) {\n  name: 'TimeoutError'\n}\n",
+      "blocksRelease": false
+    },
+    {
+      "id": "f-sample-pdfs",
+      "command": "C:\\Program Files\\nodejs\\node.exe C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\scripts\\overnight-parent-ai-sample-pdfs.mjs --outDir C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\overnight-parent-ai-audit\\2026-05-04T07-04-24\\sample-pdfs",
+      "phase": "F",
+      "status": "pass",
+      "exitCode": 0,
+      "timedOut": false,
+      "durationMs": 3823,
+      "logPath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\overnight-parent-ai-audit\\2026-05-04T07-04-24\\logs\\f-sample-pdfs.log",
+      "failureCategory": null,
+      "failureExcerpt": null,
+      "blocksRelease": false
+    }
+  ]
+}

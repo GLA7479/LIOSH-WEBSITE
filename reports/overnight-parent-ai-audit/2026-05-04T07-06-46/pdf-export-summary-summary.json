@@ -1,0 +1,27 @@
+{
+  "title": "PDF export (F)",
+  "rows": [
+    {
+      "id": "f-pdf-export",
+      "phase": "F",
+      "status": "skipped_smoke",
+      "npmScript": "qa:parent-pdf-export",
+      "durationMs": 0,
+      "failureCategory": "ADVISORY_WARNING",
+      "note": "Full qa:parent-pdf-export skipped in --smoke (orchestrator proves dev server + sample PDFs only)"
+    },
+    {
+      "id": "f-sample-pdfs",
+      "command": "C:\\Program Files\\nodejs\\node.exe C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\scripts\\overnight-parent-ai-sample-pdfs.mjs --outDir C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\overnight-parent-ai-audit\\2026-05-04T07-06-46\\sample-pdfs",
+      "phase": "F",
+      "status": "pass",
+      "exitCode": 0,
+      "timedOut": false,
+      "durationMs": 3559,
+      "logPath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\overnight-parent-ai-audit\\2026-05-04T07-06-46\\logs\\f-sample-pdfs.log",
+      "failureCategory": null,
+      "failureExcerpt": null,
+      "blocksRelease": false
+    }
+  ]
+}

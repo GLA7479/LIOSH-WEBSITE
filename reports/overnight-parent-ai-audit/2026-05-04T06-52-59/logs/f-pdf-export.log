@@ -1,0 +1,7 @@
+
+> leo-k-kids-site@1.0.0 qa:parent-pdf-export
+> tsx scripts/qa-parent-pdf-export.mjs
+
+Error: QA PDF gate cannot reach http://127.0.0.1:3017/learning/parent-report-detailed (timeout). Start Next dev (e.g. npm run dev), then set QA_BASE_URL if not using default port.
+    at assertDevServerReachable (file:///C:/Users/ERAN%20YOSEF/Desktop/final%20projects/FINAL-WEB/LIOSH-WEB-TRY/scripts/qa-parent-pdf-export.mjs:55:9)
+    at async main (file:///C:/Users/ERAN%20YOSEF/Desktop/final%20projects/FINAL-WEB/LIOSH-WEB-TRY/scripts/qa-parent-pdf-export.mjs:153:3)

@@ -1,0 +1,18 @@
+{
+  "title": "Parent AI core (B)",
+  "rows": [
+    {
+      "id": "b1",
+      "npmScript": "test:parent-ai-context:consistency",
+      "phase": "B",
+      "status": "pass",
+      "exitCode": 0,
+      "timedOut": false,
+      "durationMs": 591,
+      "logPath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\overnight-parent-ai-audit\\2026-05-04T07-04-24\\logs\\b1.log",
+      "failureCategory": null,
+      "failureExcerpt": null,
+      "blocksRelease": false
+    }
+  ]
+}

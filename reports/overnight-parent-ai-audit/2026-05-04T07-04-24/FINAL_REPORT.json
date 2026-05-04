@@ -1,0 +1,134 @@
+{
+  "timestamp": "2026-05-04T07-04-24",
+  "outputDir": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\overnight-parent-ai-audit\\2026-05-04T07-04-24",
+  "smokeMode": true,
+  "overallStatus": "FAIL",
+  "productStatus": "PASS_WITH_INFRA_ISSUES",
+  "infrastructureStatus": "FAIL",
+  "counts": {
+    "commands": 7,
+    "passed": 4,
+    "failed": 1,
+    "timedOut": 0,
+    "skipped": 2,
+    "productFailures": 0,
+    "infrastructureOrRunnerFailures": 1
+  },
+  "parentAiCorePassed": true,
+  "pdfFailuresLikelyInfra": false,
+  "commands": [
+    {
+      "id": "build",
+      "phase": "A",
+      "status": "skipped_smoke",
+      "npmScript": "build",
+      "durationMs": 0,
+      "failureCategory": "ADVISORY_WARNING",
+      "note": "OVERNIGHT_SMOKE_SKIP_BUILD=1"
+    },
+    {
+      "id": "b1",
+      "npmScript": "test:parent-ai-context:consistency",
+      "phase": "B",
+      "status": "pass",
+      "exitCode": 0,
+      "timedOut": false,
+      "durationMs": 591,
+      "logPath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\overnight-parent-ai-audit\\2026-05-04T07-04-24\\logs\\b1.log",
+      "failureCategory": null,
+      "failureExcerpt": null,
+      "blocksRelease": false
+    },
+    {
+      "id": "c-0",
+      "npmScript": "test:parent-copilot-phase6",
+      "phase": "C",
+      "status": "pass",
+      "exitCode": 0,
+      "timedOut": false,
+      "durationMs": 770,
+      "logPath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\overnight-parent-ai-audit\\2026-05-04T07-04-24\\logs\\c-0.log",
+      "failureCategory": null,
+      "failureExcerpt": null,
+      "blocksRelease": false
+    },
+    {
+      "id": "e-ssr",
+      "command": "tsx C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\scripts\\parent-report-pages-ssr.mjs",
+      "phase": "E",
+      "status": "pass",
+      "exitCode": 0,
+      "timedOut": false,
+      "durationMs": 1155,
+      "logPath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\overnight-parent-ai-audit\\2026-05-04T07-04-24\\logs\\e-ssr.log",
+      "failureCategory": null,
+      "failureExcerpt": null,
+      "blocksRelease": false
+    },
+    {
+      "id": "f-pdf-export",
+      "npmScript": "qa:parent-pdf-export",
+      "phase": "F",
+      "status": "fail",
+      "exitCode": 1,
+      "timedOut": false,
+      "durationMs": 97696,
+      "logPath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\overnight-parent-ai-audit\\2026-05-04T07-04-24\\logs\\f-pdf-export.log",
+      "failureCategory": "TEST_RUNNER_FAILURE",
+      "failureExcerpt": "\n> leo-k-kids-site@1.0.0 qa:parent-pdf-export\n> tsx scripts/qa-parent-pdf-export.mjs\n\npage.waitForSelector: Timeout 90000ms exceeded.\nCall log:\n  - waiting for locator('.parent-report-parent-ai-insight')\n\n    at assertDetailedInsightAndCopilotPrintBehavior (C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\scripts\\qa-parent-pdf-export.mjs:120:14)\n    at main (C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\scripts\\qa-parent-pdf-export.mjs:184:9) {\n  name: 'TimeoutError'\n}\n",
+      "blocksRelease": false
+    },
+    {
+      "id": "f-sample-pdfs",
+      "command": "C:\\Program Files\\nodejs\\node.exe C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\scripts\\overnight-parent-ai-sample-pdfs.mjs --outDir C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\overnight-parent-ai-audit\\2026-05-04T07-04-24\\sample-pdfs",
+      "phase": "F",
+      "status": "pass",
+      "exitCode": 0,
+      "timedOut": false,
+      "durationMs": 3823,
+      "logPath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\overnight-parent-ai-audit\\2026-05-04T07-04-24\\logs\\f-sample-pdfs.log",
+      "failureCategory": null,
+      "failureExcerpt": null,
+      "blocksRelease": false
+    },
+    {
+      "id": "h-smoke-skip",
+      "phase": "H",
+      "status": "skipped_smoke",
+      "durationMs": 0,
+      "failureCategory": "ADVISORY_WARNING",
+      "note": "Learning simulator skipped in --smoke mode"
+    }
+  ],
+  "failureAnalysis": [
+    {
+      "id": "f-pdf-export",
+      "command": "qa:parent-pdf-export",
+      "status": "fail",
+      "category": "TEST_RUNNER_FAILURE",
+      "blocksRelease": false,
+      "likelyCause": "See log excerpt",
+      "excerpt": "\n> leo-k-kids-site@1.0.0 qa:parent-pdf-export\n> tsx scripts/qa-parent-pdf-export.mjs\n\npage.waitForSelector: Timeout 90000ms exceeded.\nCall log:\n  - waiting for locator('.parent-report-parent-ai-insight')\n\n    at assertDetailedInsightAndCopilotPrintBehavior (C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\scripts\\qa-parent-pdf-export.mjs:120:14)\n    at main (C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\scripts\\qa-parent-pdf-export.mjs:184:9) {\n  name: 'TimeoutError'\n}\n",
+      "logPath": "logs\\f-pdf-export.log",
+      "priority": "medium"
+    }
+  ],
+  "topIssues": [
+    {
+      "id": "f-pdf-export",
+      "command": "qa:parent-pdf-export",
+      "status": "fail",
+      "category": "TEST_RUNNER_FAILURE",
+      "blocksRelease": false,
+      "likelyCause": "See log excerpt",
+      "excerpt": "\n> leo-k-kids-site@1.0.0 qa:parent-pdf-export\n> tsx scripts/qa-parent-pdf-export.mjs\n\npage.waitForSelector: Timeout 90000ms exceeded.\nCall log:\n  - waiting for locator('.parent-report-parent-ai-insight')\n\n    at assertDetailedInsightAndCopilotPrintBehavior (C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\scripts\\qa-parent-pdf-export.mjs:120:14)\n    at main (C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\scripts\\qa-parent-pdf-export.mjs:184:9) {\n  name: 'TimeoutError'\n}\n",
+      "logPath": "logs\\f-pdf-export.log",
+      "priority": "medium"
+    }
+  ],
+  "notes": {
+    "secrets": "Logs redacted for tokens/API keys; no .env contents written.",
+    "telemetry": "Synthetic Hebrew utterances only in manual matrix / synthetic E2E.",
+    "orchestratorV2": "spawn argv arrays (no shell); dev server health = HTTP 200; PDF_* env aligned."
+  }
+}

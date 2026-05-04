@@ -1,0 +1,18 @@
+{
+  "title": "Parent report render (E)",
+  "rows": [
+    {
+      "id": "e-ssr",
+      "command": "tsx C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\scripts\\parent-report-pages-ssr.mjs",
+      "phase": "E",
+      "status": "pass",
+      "exitCode": 0,
+      "timedOut": false,
+      "durationMs": 1155,
+      "logPath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\overnight-parent-ai-audit\\2026-05-04T07-04-24\\logs\\e-ssr.log",
+      "failureCategory": null,
+      "failureExcerpt": null,
+      "blocksRelease": false
+    }
+  ]
+}

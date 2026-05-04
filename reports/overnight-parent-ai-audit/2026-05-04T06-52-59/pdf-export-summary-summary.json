@@ -1,0 +1,31 @@
+{
+  "title": "PDF export (F)",
+  "rows": [
+    {
+      "id": "f-pdf-export",
+      "npmScript": "qa:parent-pdf-export",
+      "phase": "F",
+      "status": "fail",
+      "exitCode": 1,
+      "timedOut": false,
+      "durationMs": 19087,
+      "logPath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\overnight-parent-ai-audit\\2026-05-04T06-52-59\\logs\\f-pdf-export.log",
+      "failureCategory": "TEST_RUNNER_FAILURE",
+      "failureExcerpt": "\n> leo-k-kids-site@1.0.0 qa:parent-pdf-export\n> tsx scripts/qa-parent-pdf-export.mjs\n\nError: QA PDF gate cannot reach http://127.0.0.1:3017/learning/parent-report-detailed (timeout). Start Next dev (e.g. npm run dev), then set QA_BASE_URL if not using default port.\n    at assertDevServerReachable (file:///C:/Users/ERAN%20YOSEF/Desktop/final%20projects/FINAL-WEB/LIOSH-WEB-TRY/scripts/qa-parent-pdf-export.mjs:55:9)\n    at async main (file:///C:/Users/ERAN%20YOSEF/Desktop/final%20projects/FINAL-WEB/LIOSH-WEB-TRY/scripts/qa-parent-pdf-export.mjs:153:3)\n",
+      "blocksRelease": false
+    },
+    {
+      "id": "f-sample-pdfs",
+      "command": "c:\\Users\\ERAN YOSEF\\AppData\\Local\\Programs\\cursor\\resources\\app\\resources\\helpers\\node.exe C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\scripts\\overnight-parent-ai-sample-pdfs.mjs --outDir C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\overnight-parent-ai-audit\\2026-05-04T06-52-59\\sample-pdfs",
+      "phase": "F",
+      "status": "pass",
+      "exitCode": 0,
+      "timedOut": false,
+      "durationMs": 601483,
+      "logPath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\overnight-parent-ai-audit\\2026-05-04T06-52-59\\logs\\f-sample-pdfs.log",
+      "failureCategory": null,
+      "failureExcerpt": null,
+      "blocksRelease": false
+    }
+  ]
+}
