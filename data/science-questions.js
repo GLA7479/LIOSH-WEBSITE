@@ -151,6 +151,7 @@ export const SCIENCE_QUESTIONS = [
       "ללא שרירים לא היינו יכולים להזיז את העצמות והגוף."
     ],
     "params": {
+      "patternFamily": "sci_body_systems",
       "subtype": "sci_body_general",
       "cognitiveLevel": "understanding",
       "expectedErrorTypes": [
@@ -185,6 +186,7 @@ export const SCIENCE_QUESTIONS = [
       "הלב משמש משאבה שמניעה את הדם בכל הגוף."
     ],
     "params": {
+      "patternFamily": "sci_body_systems",
       "subtype": "sci_body_general",
       "cognitiveLevel": "analysis",
       "expectedErrorTypes": [
@@ -218,6 +220,7 @@ export const SCIENCE_QUESTIONS = [
       "עצבים מעבירים אותות חשמליים במהירות רבה."
     ],
     "params": {
+      "patternFamily": "sci_body_systems",
       "subtype": "sci_body_general",
       "cognitiveLevel": "analysis",
       "expectedErrorTypes": [
@@ -252,6 +255,7 @@ export const SCIENCE_QUESTIONS = [
       "עופות מכוסים נוצות ומטילים ביצים."
     ],
     "params": {
+      "patternFamily": "sci_animals_classification",
       "subtype": "sci_animals_general",
       "cognitiveLevel": "recall",
       "expectedErrorTypes": [
@@ -286,6 +290,7 @@ export const SCIENCE_QUESTIONS = [
       "צורת הגוף משפיעה על יכולת התנועה במים, באוויר או ביבשה."
     ],
     "params": {
+      "patternFamily": "sci_animals_classification",
       "subtype": "sci_animals_general",
       "cognitiveLevel": "understanding",
       "expectedErrorTypes": [
@@ -320,6 +325,7 @@ export const SCIENCE_QUESTIONS = [
       "הם בעלי דם קר, כלומר טמפרטורת גופם מושפעת מהסביבה."
     ],
     "params": {
+      "patternFamily": "sci_animals_classification",
       "subtype": "sci_animals_general",
       "cognitiveLevel": "understanding",
       "expectedErrorTypes": [
@@ -354,6 +360,7 @@ export const SCIENCE_QUESTIONS = [
       "טורפים ואוכלי עשב הם חלק משרשראות ומארגי מזון."
     ],
     "params": {
+      "patternFamily": "sci_environment_ecosystems",
       "subtype": "sci_animals_general",
       "cognitiveLevel": "analysis",
       "expectedErrorTypes": [
@@ -387,6 +394,7 @@ export const SCIENCE_QUESTIONS = [
       "התאמות נוצרות לאורך דורות בתהליך של אבולוציה."
     ],
     "params": {
+      "patternFamily": "sci_animals_classification",
       "subtype": "sci_animals_general",
       "cognitiveLevel": "analysis",
       "expectedErrorTypes": [
@@ -490,6 +498,7 @@ export const SCIENCE_QUESTIONS = [
       "ללא אור או מים הצמח נחלש ועלול למות."
     ],
     "params": {
+      "patternFamily": "sci_plants_growth",
       "subtype": "sci_plants_general",
       "cognitiveLevel": "recall",
       "expectedErrorTypes": [
@@ -523,6 +532,7 @@ export const SCIENCE_QUESTIONS = [
       "השורשים מעגנים את הצמח בקרקע."
     ],
     "params": {
+      "patternFamily": "sci_plants_growth",
       "subtype": "sci_plants_general",
       "cognitiveLevel": "recall",
       "expectedErrorTypes": [
@@ -556,6 +566,7 @@ export const SCIENCE_QUESTIONS = [
       "פוטוסינתזה היא בסיס שרשרת המזון ברוב המערכות האקולוגיות."
     ],
     "params": {
+      "patternFamily": "sci_plants_growth",
       "subtype": "sci_plants_general",
       "cognitiveLevel": "understanding",
       "expectedErrorTypes": [
@@ -589,6 +600,7 @@ export const SCIENCE_QUESTIONS = [
       "פוטוסינתזה מייצרת סוכר; נשימה צורכת אותו כדי להפיק אנרגיה."
     ],
     "params": {
+      "patternFamily": "sci_plants_growth",
       "subtype": "sci_plants_general",
       "cognitiveLevel": "understanding",
       "expectedErrorTypes": [
@@ -622,6 +634,7 @@ export const SCIENCE_QUESTIONS = [
       "דרך פיוניות אובדים גם מים באידוי (דיות)."
     ],
     "params": {
+      "patternFamily": "sci_plants_growth",
       "subtype": "sci_plants_general",
       "cognitiveLevel": "analysis",
       "expectedErrorTypes": [
@@ -656,6 +669,7 @@ export const SCIENCE_QUESTIONS = [
       "שינוי טמפרטורה יכול לגרום לשינוי מצב הצבירה."
     ],
     "params": {
+      "patternFamily": "sci_materials_properties",
       "subtype": "sci_materials_general",
       "cognitiveLevel": "recall",
       "expectedErrorTypes": [
@@ -692,6 +706,7 @@ export const SCIENCE_QUESTIONS = [
       "לא כל חומר מתכתי חזק, אבל רבים מהם חזקים ועמידים."
     ],
     "params": {
+      "patternFamily": "sci_materials_properties",
       "subtype": "sci_materials_general",
       "cognitiveLevel": "understanding",
       "expectedErrorTypes": [
@@ -724,6 +739,7 @@ export const SCIENCE_QUESTIONS = [
       "חומרים סינתטיים מיוצרים בתהליכים תעשייתיים."
     ],
     "params": {
+      "patternFamily": "sci_materials_properties",
       "subtype": "sci_materials_general",
       "cognitiveLevel": "understanding",
       "expectedErrorTypes": [
@@ -758,6 +774,7 @@ export const SCIENCE_QUESTIONS = [
       "תמיסה היא סוג של תערובת שבה חומר אחד מומס באחר."
     ],
     "params": {
+      "patternFamily": "sci_materials_properties",
       "subtype": "sci_materials_general",
       "cognitiveLevel": "analysis",
       "expectedErrorTypes": [
@@ -791,6 +808,7 @@ export const SCIENCE_QUESTIONS = [
       "שרפת נייר היא שינוי כימי – נוצר חומר חדש (אפר וגזים)."
     ],
     "params": {
+      "patternFamily": "sci_materials_properties",
       "subtype": "sci_materials_general",
       "cognitiveLevel": "analysis",
       "expectedErrorTypes": [
@@ -825,6 +843,7 @@ export const SCIENCE_QUESTIONS = [
       "בכל רגע חצי מכדור הארץ מואר וחצי אחר חשוך."
     ],
     "params": {
+      "patternFamily": "sci_earth_space_cycles",
       "subtype": "sci_earth_space_general",
       "cognitiveLevel": "recall",
       "expectedErrorTypes": [
@@ -861,6 +880,7 @@ export const SCIENCE_QUESTIONS = [
       "ההקפה סביב השמש קשורה לעונות השנה."
     ],
     "params": {
+      "patternFamily": "sci_earth_space_cycles",
       "subtype": "sci_earth_space_general",
       "cognitiveLevel": "understanding",
       "expectedErrorTypes": [
@@ -893,6 +913,7 @@ export const SCIENCE_QUESTIONS = [
       "ירח הוא לוויין טבעי הסובב סביב כוכב לכת."
     ],
     "params": {
+      "patternFamily": "sci_earth_space_cycles",
       "subtype": "sci_earth_space_general",
       "cognitiveLevel": "understanding",
       "expectedErrorTypes": [
@@ -926,6 +947,7 @@ export const SCIENCE_QUESTIONS = [
       "הליבה הפנימית צפופה וחמה מאוד."
     ],
     "params": {
+      "patternFamily": "sci_earth_space_cycles",
       "subtype": "sci_earth_space_general",
       "cognitiveLevel": "analysis",
       "expectedErrorTypes": [
@@ -960,6 +982,7 @@ export const SCIENCE_QUESTIONS = [
       "מיחזור מאפשר שימוש מחדש בחומרים קיימים."
     ],
     "params": {
+      "patternFamily": "sci_environment_ecosystems",
       "subtype": "sci_environment_general",
       "cognitiveLevel": "recall",
       "expectedErrorTypes": [
@@ -996,6 +1019,7 @@ export const SCIENCE_QUESTIONS = [
       "שינויים בסביבה משפיעים על כל המרכיבים במערכת."
     ],
     "params": {
+      "patternFamily": "sci_environment_ecosystems",
       "subtype": "sci_environment_general",
       "cognitiveLevel": "understanding",
       "expectedErrorTypes": [
@@ -1028,6 +1052,7 @@ export const SCIENCE_QUESTIONS = [
       "צמצום זיהום אוויר חשוב לבריאות האדם והטבע."
     ],
     "params": {
+      "patternFamily": "sci_environment_ecosystems",
       "subtype": "sci_environment_general",
       "cognitiveLevel": "understanding",
       "expectedErrorTypes": [
@@ -1062,6 +1087,7 @@ export const SCIENCE_QUESTIONS = [
       "פעילות אנושית הוסיפה כמות גדולה של גזי חממה לאטמוספרה."
     ],
     "params": {
+      "patternFamily": "sci_environment_ecosystems",
       "subtype": "sci_environment_general",
       "cognitiveLevel": "analysis",
       "expectedErrorTypes": [
@@ -1096,6 +1122,7 @@ export const SCIENCE_QUESTIONS = [
       "קל לראות ניסויים פשוטים של חימום וקירור בעזרת השמש."
     ],
     "params": {
+      "patternFamily": "sci_experiments_scientific_method",
       "subtype": "sci_experiments_general",
       "cognitiveLevel": "recall",
       "expectedErrorTypes": [
@@ -1132,6 +1159,7 @@ export const SCIENCE_QUESTIONS = [
       "רישום מסודר עוזר להשוות בין תוצאות."
     ],
     "params": {
+      "patternFamily": "sci_experiments_scientific_method",
       "subtype": "sci_experiments_general",
       "cognitiveLevel": "understanding",
       "expectedErrorTypes": [
@@ -1164,6 +1192,7 @@ export const SCIENCE_QUESTIONS = [
       "משתנה תלוי – מה שאנחנו מודדים כתוצאה."
     ],
     "params": {
+      "patternFamily": "sci_experiments_scientific_method",
       "subtype": "sci_experiments_general",
       "cognitiveLevel": "understanding",
       "expectedErrorTypes": [
@@ -1198,6 +1227,7 @@ export const SCIENCE_QUESTIONS = [
       "הוא מושפע מהשמש, מהרוח ומהטופוגרפיה של פני השטח."
     ],
     "params": {
+      "patternFamily": "sci_earth_space_cycles",
       "subtype": "sci_experiments_general",
       "cognitiveLevel": "analysis",
       "expectedErrorTypes": [
@@ -1232,6 +1262,7 @@ export const SCIENCE_QUESTIONS = [
       "גלי קול גורמים לרטט של עור התוף."
     ],
     "params": {
+      "patternFamily": "sci_body_systems",
       "subtype": "sci_body_general",
       "cognitiveLevel": "recall",
       "expectedErrorTypes": [
@@ -1266,6 +1297,7 @@ export const SCIENCE_QUESTIONS = [
       "הלשון עוזרת לטעום מזון ולדבר."
     ],
     "params": {
+      "patternFamily": "sci_body_systems",
       "subtype": "sci_body_general",
       "cognitiveLevel": "recall",
       "expectedErrorTypes": [

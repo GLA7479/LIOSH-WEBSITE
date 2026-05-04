@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-04T20:13:10.416Z",
+  "generatedAt": "2026-05-04T22:20:32.055Z",
   "harnessMerged": {
     "mathKindsFromHarnessFiles": 107,
     "geoKindsFromHarnessFiles": 70,
@@ -393,49 +393,49 @@
         "staticRows": 50,
         "sampleRows": 0,
         "withSubtype": 47,
-        "withPatternFamily": 3
+        "withPatternFamily": 8
       },
       "animals": {
         "rows": 51,
         "staticRows": 51,
         "sampleRows": 0,
         "withSubtype": 51,
-        "withPatternFamily": 0
+        "withPatternFamily": 5
       },
       "plants": {
         "rows": 46,
         "staticRows": 46,
         "sampleRows": 0,
         "withSubtype": 46,
-        "withPatternFamily": 0
+        "withPatternFamily": 5
       },
       "materials": {
         "rows": 46,
         "staticRows": 46,
         "sampleRows": 0,
         "withSubtype": 46,
-        "withPatternFamily": 0
+        "withPatternFamily": 5
       },
       "earth_space": {
         "rows": 66,
         "staticRows": 66,
         "sampleRows": 0,
         "withSubtype": 66,
-        "withPatternFamily": 0
+        "withPatternFamily": 4
       },
       "environment": {
         "rows": 65,
         "staticRows": 65,
         "sampleRows": 0,
         "withSubtype": 65,
-        "withPatternFamily": 0
+        "withPatternFamily": 4
       },
       "experiments": {
         "rows": 59,
         "staticRows": 59,
         "sampleRows": 0,
         "withSubtype": 59,
-        "withPatternFamily": 0
+        "withPatternFamily": 4
       }
     },
     "hebrew": {

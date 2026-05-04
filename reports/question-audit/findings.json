@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-04T20:13:10.414Z",
+  "generatedAt": "2026-05-04T22:20:32.052Z",
   "totalRows": 12158,
   "exactDuplicateCrossGrade": [],
   "exactDuplicateCrossGradeStaticBanksOnly": [],
@@ -12,6 +12,22 @@
         6
       ],
       "rowCount": 95
+    },
+    {
+      "key": "science::sci_body_systems",
+      "gradeSpan": [
+        1,
+        6
+      ],
+      "rowCount": 5
+    },
+    {
+      "key": "science::sci_animals_classification",
+      "gradeSpan": [
+        1,
+        6
+      ],
+      "rowCount": 4
     }
   ],
   "topicsSpanManyGrades": [
@@ -104,42 +120,42 @@
       "distinctGrades": 6,
       "totalRows": 66,
       "dominantPatternFamily": "none",
-      "dominantShare": 1
+      "dominantShare": 0.9393939393939394
     },
     {
       "key": "science::environment",
       "distinctGrades": 6,
       "totalRows": 65,
       "dominantPatternFamily": "none",
-      "dominantShare": 1
+      "dominantShare": 0.9384615384615385
     },
     {
       "key": "science::experiments",
       "distinctGrades": 5,
       "totalRows": 59,
       "dominantPatternFamily": "none",
-      "dominantShare": 1
+      "dominantShare": 0.9322033898305084
     },
     {
       "key": "science::animals",
       "distinctGrades": 6,
       "totalRows": 51,
       "dominantPatternFamily": "none",
-      "dominantShare": 1
+      "dominantShare": 0.9019607843137255
     },
     {
       "key": "science::body",
       "distinctGrades": 6,
       "totalRows": 50,
       "dominantPatternFamily": "none",
-      "dominantShare": 0.94
+      "dominantShare": 0.84
     },
     {
       "key": "science::materials",
       "distinctGrades": 6,
       "totalRows": 46,
       "dominantPatternFamily": "none",
-      "dominantShare": 1
+      "dominantShare": 0.8913043478260869
     },
     {
       "key": "geometry::area",
