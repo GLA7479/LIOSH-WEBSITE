@@ -3,6 +3,10 @@
 **Last updated:** 2026-05-04 (Phase 1c — **English translation `difficulty` metadata applied** in `translation-pools.js`; audit re-run)  
 **Scope:** Learning product quality only (not security, not production hardening, not report/AI code changes).
 
+### Phase 3 — Hebrew owner review
+
+[`docs/product-quality-phase-3-hebrew-owner-review.md`](product-quality-phase-3-hebrew-owner-review.md) maps owner decisions for Hebrew overlap findings from §3 below (**legacy triple stems + 37 adjacent-band rows**). **No Hebrew question content was edited** in Phase 3. **Next step:** owner approval on that map **before** any Hebrew wording or bank merges.
+
 ---
 
 ## Executive summary (pipeline)
