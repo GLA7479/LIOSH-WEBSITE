@@ -1,7 +1,7 @@
 # Product Quality Phase 8 — Subject Coverage & Content Improvement Plan
 
 **Last updated:** 2026-05-05  
-**Status:** Planning doc; **Phase 10** metadata complete; **Phase 11–12** Science review reports published ([**Phase 11** spot sample](product-quality-phase-11-science-factual-distractor-review.md), [**Phase 12** full-bank mechanical sweep](product-quality-phase-12-science-full-content-review.md)) — **documentation only; no bank edits**. **Phase 14** English translation **model** review: [`product-quality-phase-14-english-translation-model-review.md`](product-quality-phase-14-english-translation-model-review.md). **Phase 15** English translation **audit representation** fix (script + regenerated `question-audit/*` only): [`product-quality-phase-15-english-audit-representation-fix.md`](product-quality-phase-15-english-audit-representation-fix.md). **Phase 16** Geometry **metadata + formula/diagram risk** review (documentation only): [`product-quality-phase-16-geometry-metadata-formula-risk-review.md`](product-quality-phase-16-geometry-metadata-formula-risk-review.md).  
+**Status:** Planning doc; **Phase 10** metadata complete; **Phase 11–12** Science review reports published ([**Phase 11** spot sample](product-quality-phase-11-science-factual-distractor-review.md), [**Phase 12** full-bank mechanical sweep](product-quality-phase-12-science-full-content-review.md)) — **documentation only; no bank edits**. **Phase 14** English translation **model** review: [`product-quality-phase-14-english-translation-model-review.md`](product-quality-phase-14-english-translation-model-review.md). **Phase 15** English translation **audit representation** fix (script + regenerated `question-audit/*` only): [`product-quality-phase-15-english-audit-representation-fix.md`](product-quality-phase-15-english-audit-representation-fix.md). **Phase 16** Geometry **metadata + formula/diagram risk** review (documentation only): [`product-quality-phase-16-geometry-metadata-formula-risk-review.md`](product-quality-phase-16-geometry-metadata-formula-risk-review.md). **Phase 17** Geometry **audit subtype fill** (script + `question-audit/*` only): [`product-quality-phase-17-geometry-audit-representation-fix.md`](product-quality-phase-17-geometry-audit-representation-fix.md). **Phase 18** Math **probe harness planning**: [`product-quality-phase-18-math-probe-harness-plan.md`](product-quality-phase-18-math-probe-harness-plan.md). **Phase 19** Math **probe harness implementation** ([`scripts/audit-math-probes.mjs`](../scripts/audit-math-probes.mjs), [`reports/math-probe-audit/`](../reports/math-probe-audit/)): [`product-quality-phase-19-math-probe-harness.md`](product-quality-phase-19-math-probe-harness.md).  
 **Strict boundary (Phase 8 original):** Phase 8 was documentation-only. **Phases 9–10** changed **only** neutral metadata in [`data/science-questions.js`](../data/science-questions.js) and [`data/science-questions-phase3.js`](../data/science-questions-phase3.js); no stems, answers, or grade gates.
 
 ### Phase 9 — Science `patternFamily` first batch (historical counts)
@@ -66,12 +66,39 @@ Details: [`docs/product-quality-phase-15-english-audit-representation-fix.md`](p
 | Scope | Result |
 |-------|--------|
 | Geometry rows in audit | **2548** |
-| Missing **`subtype`** | **1313** — **all** `geometry_generator_sample`; conceptual **`geometry_conceptual`** (**100**) has **`subtype`** throughout |
-| Interpretation | Empty **`subtype`** usually pairs with populated **`subtopic`** (= generator **`kind`**) — **taxonomy convention**, not unidentified row type |
+| Missing **`subtype`** (before **Phase 17**) | **1313** `geometry_generator_sample` — **resolved in Phase 17** audit export |
+| Interpretation | Phase 16: empty **`subtype`** paired with **`subtopic`** = **`kind`** — reporting gap, not unidentified type |
 | Formula/diagram risks | No **critical/high** themes flagged; medium risks for grid/story/index-mapping stems — see Phase 16 doc |
-| Code / bank edits | **None** |
+| Code / bank edits | **None** in Phase 16 |
 
 Details: [`docs/product-quality-phase-16-geometry-metadata-formula-risk-review.md`](product-quality-phase-16-geometry-metadata-formula-risk-review.md).
+
+### Phase 17 — Geometry audit subtype (generator samples)
+
+| Scope | Result |
+|-------|--------|
+| Code touched | [`scripts/audit-question-banks.mjs`](../scripts/audit-question-banks.mjs) — `sampleGeometryGenerator`: **`subtype`** ← **`params.subtype`** or **`kind`** |
+| Geometry rows | **2548** (stable); **`subtype`** missing **0** |
+| Generator / conceptual bank / stems | **Unchanged** |
+
+Details: [`docs/product-quality-phase-17-geometry-audit-representation-fix.md`](product-quality-phase-17-geometry-audit-representation-fix.md).
+
+### Phase 18 — Math probe harness (plan)
+
+| Scope | Result |
+|-------|--------|
+| Deliverable | [`docs/product-quality-phase-18-math-probe-harness-plan.md`](product-quality-phase-18-math-probe-harness-plan.md) |
+| Focus | Five probe **`params.kind`** values gated by **`pendingProbe`** — unreachable in plain audit by **design** |
+
+### Phase 19 — Math probe harness (implementation)
+
+| Scope | Result |
+|-------|--------|
+| Script | [`scripts/audit-math-probes.mjs`](../scripts/audit-math-probes.mjs), **`npm run audit:math-probes`** |
+| Reports | [`reports/math-probe-audit/summary.json`](../reports/math-probe-audit/summary.json), [`summary.md`](../reports/math-probe-audit/summary.md) |
+| Math generator / banks | **Unchanged** |
+
+Details: [`docs/product-quality-phase-19-math-probe-harness.md`](product-quality-phase-19-math-probe-harness.md).
 
 ## Sources
 
@@ -90,8 +117,8 @@ The latest audit contains **12158** rows.
 
 | Subject | Rows | Active grades | Readiness status | Strongest evidence | Weakest evidence | Blockers before launch | What can wait |
 |---------|------|---------------|------------------|-------------------|------------------|------------------------|---------------|
-| **Math** | 3942 | G1-G6 | **Ready enough** with focused diagnostic follow-up | Balanced easy/medium/hard (**1314** each); broad topic generator coverage; no missing difficulty / subtype / patternFamily in audit output | 5 probe-gated diagnostic kinds not hit by plain audit sample | If diagnostic precision matters for launch: probe-aware harness, not more random sampling | Story diversity, context variety |
-| **Geometry** | 2548 | G1-G6 | **Ready enough** with metadata polish | Broad topic set; no missing difficulty or patternFamily; conceptual + generator coverage; **Phase 16** explains **`subtype`** gap vs **`subtopic`** (`kind`) on samples | **1313** generator rows missing **`subtype`** — **expected convention**; fine tag in **`subtopic`** | Optional metadata taxonomy (`subtype` vs `kind`); formula/diagram spot-check per Phase 16 | Broaden real-world contexts |
+| **Math** | 3942 | G1-G6 | **Ready enough** with focused diagnostic follow-up | Balanced easy/medium/hard (**1314** each); broad topic generator coverage; no missing difficulty / subtype / patternFamily in audit output | Plain **`items.json`** still excludes probe kinds — **Phase 19** harness validates probes separately | Optional CI for **`audit:math-probes`**; optional merge probe rows into main audit | Story diversity, context variety |
+| **Geometry** | 2548 | G1-G6 | **Ready enough** with metadata polish | Broad topic set; no missing difficulty or patternFamily; **`subtype`** populated for all audit rows (**Phase 17**) | Formula/diagram spot-check per **Phase 16** themes | Optional generator **`params.subtype`** parity; content QA | Broaden real-world contexts |
 | **Hebrew** | 927 | G1-G6 | **Needs owner review** | No missing difficulty / patternFamily / subtype; full grade span | Phase 3 unresolved duplicate/overlap owner decisions | Owner approval for legacy triple stems + high-risk overlap rows. **Owner exact wording required** for any wording change | Spiral-repetition keep list can wait after spot-check |
 | **English** | 852 | G1-G6 | **Needs focused fixes** | English translation difficulty metadata fixed; no missing difficulty; **Phase 15** audit labels translation phrase rows (`runtime_translation` / `optionCount: runtime`) — not “broken MCQ” | **621** rows missing `subtype` | Subtype metadata policy | Wider topical variety |
 | **Science** | 383 | G1-G6 via broad grade spans | **Metadata complete**; **Phase 11 spot-review documented** | Full `patternFamily` + `subtype` (**Phase 10**); spot sample flagged **`animals_4`** for owner wording/factual alignment (see Phase 11 doc) | Full-bank human read still optional | Owner decision on Phase 11 flagged items; broader factual pass by family | Add questions only after owner-approved fixes |
@@ -126,7 +153,7 @@ The latest audit contains **12158** rows.
 
 **Launch readiness:** **ready enough**, unless diagnostic precision is part of launch promise.
 
-**Blocker before launch:** none for baseline practice. If diagnostics are launch-critical, create a **probe harness** for the five missed probe kinds.
+**Blocker before launch:** none for baseline practice. Diagnostic probe verification: **`npm run audit:math-probes`** ([`docs/product-quality-phase-19-math-probe-harness.md`](product-quality-phase-19-math-probe-harness.md)).
 
 ---
 
@@ -139,7 +166,7 @@ The latest audit contains **12158** rows.
 | Count by difficulty | easy **816**, medium **816**, hard **828**, easy/medium **44**, medium/hard **24**, easy/medium/hard **20** |
 | Count by topic | area 366; perimeter 288; angles 226; volume 222; parallel_perpendicular 152; quadrilaterals 152; solids 152; shapes_basic 152; transformations 148; diagonal 148; triangles 76; symmetry 76; pythagoras 74; tiling 74; heights 74; rotation 74; circles 73; plus small conceptual combined topics |
 | Top subtopics | concept_measure_interpret 254; triangle_angles 116; transformations 111; solids 106; parallel_perpendicular 102; concept_angle_reason 95 |
-| Missing metadata | difficulty **0**, patternFamily **0**, subtype **1313** (generator samples only — **`subtopic`** carries `kind`; see **Phase 16**) |
+| Missing metadata | difficulty **0**, patternFamily **0**, subtype **0** (**Phase 17** audit fill from `kind`) |
 | Answer mode / options | mcq_text **1038**, numeric_mcq **1455**, binary **55**; option counts 2/4 only |
 | Suspected duplicate clusters | No exact / near duplicates listed; conceptual rows are small static bank + broad generated sample |
 | Answer-key risk | Higher for diagram/formula topics: area/perimeter, volume, circles, pythagoras — **Phase 16** thematic review |
@@ -269,10 +296,9 @@ The latest audit contains **12158** rows.
 
 1. **English translation audit clarity** — **Phase 15** implemented explicit **`runtime_translation`** / **`optionCount: runtime`** for phrase rows. **Optional next:** curated translation distractors (content project) or subtype backfill for grammar-heavy English rows.
 
-2. **Math probe harness** if diagnostic behavior is part of launch claims.  
-   - Action type: **create probe harness**.
+2. **Math probe harness** — **Phase 19** implemented (`audit:math-probes`). **Optional:** CI gate; merge probe samples into main audit (Phase 18 Option **A**).
 
-3. **Geometry** — **Phase 16** documented **`subtype`** vs **`subtopic`** and thematic formula/diagram risks (no code edits). **Next:** choose metadata strategy (**§A.3** in Phase 16 doc); optional answer-key / UI diagram spot-check before content changes.
+3. **Geometry** — **Phase 17** filled audit **`subtype`** for generator samples; **Phase 16** risk themes remain for QA. **Next:** optional spot-check (diagram/story); optional generator **`params.subtype`** parity.
 
 ### Medium improvements
 
@@ -317,8 +343,8 @@ The latest audit contains **12158** rows.
 |------|---------|---------|-------|-------------|------|-------------------------|-------------------------------|
 | 2 | Hebrew | `utils/hebrew-question-generator.js`, `utils/hebrew-rich-question-bank.js` | Phase 3 unresolved duplicate/overlap owner decisions | owner wording decision; remove/merge duplicate later | High | **Yes** | **Yes** |
 | 3 | English | `data/english-questions/translation-pools.js` | **Phase 15:** audit labels applied; **Phase 14** model doc. Optional: curated distractors | content distractor pass if desired | Low–Medium | Yes if changing distractor text | No unless Hebrew prompts are changed |
-| 4 | Math | `utils/math-question-generator.js`; future harness script | Five probe-gated kinds not hit by plain audit | create probe harness | Medium | No | No |
-| 5 | Geometry | `utils/geometry-question-generator.js`, `utils/geometry-conceptual-bank.js` | **Phase 16:** `subtype` gap explained; optional **`subtype`=`kind`** or audit denorm — separate from correctness | metadata strategy then optional spot-check | Medium → Low for metadata clarity | No for taxonomy-only | No unless Hebrew prompt changes |
+| 4 | Math | `scripts/audit-math-probes.mjs`; [`docs/product-quality-phase-19-math-probe-harness.md`](product-quality-phase-19-math-probe-harness.md) | Phase 19 harness **done**; optional CI / merge into `audit:questions` | optional CI | Low | No | No |
+| 5 | Geometry | `utils/geometry-question-generator.js`, `utils/geometry-conceptual-bank.js` | **Phase 17:** audit **`subtype`** aligned with **`kind`**. Optional: **`params.subtype`** in generator | optional generator parity; QA spot-check | Low | No for audit-only | No unless Hebrew prompt changes |
 | 6 | Geography | `data/geography-questions/g*.js` | Factual freshness / map-civic ambiguity spot-check | review answer key; review distractors | Low-Medium | Yes for factual wording changes | Yes if Hebrew wording changes |
 
 ---

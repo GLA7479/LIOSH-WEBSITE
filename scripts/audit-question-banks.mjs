@@ -734,7 +734,8 @@ function sampleGeometryGenerator(rows, samplesPerCombo = 12) {
             topic,
             subtopic: kind,
             patternFamily: q.params?.patternFamily || kind,
-            subtype: q.params?.subtype || "",
+            // Phase 17: mirror generator `kind` into subtype when bank omits params.subtype (audit clarity only).
+            subtype: q.params?.subtype || kind || "",
             difficulty: lk,
             gradeBand: gradeBandForKey(gk) || "",
             minGrade: gNum,

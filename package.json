@@ -82,6 +82,7 @@
     "audit:skill-coverage": "tsx scripts/audit-skill-coverage.mjs",
     "audit:weak-coverage-plan": "tsx scripts/audit-weak-coverage-action-plan.mjs",
     "audit:harness": "tsx scripts/generator-deterministic-harness.mjs",
+    "audit:math-probes": "tsx scripts/audit-math-probes.mjs",
     "audit:hebrew-g1-g2": "tsx scripts/audit-hebrew-g1-g2-hard.mjs",
     "audit:hebrew-official-provenance": "tsx scripts/hebrew-official-provenance-validate.mjs",
     "audit:hebrew-g12-closure-report": "tsx scripts/hebrew-g12-closure-report.mjs",

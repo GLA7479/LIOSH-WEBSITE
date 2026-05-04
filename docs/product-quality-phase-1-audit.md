@@ -1,6 +1,6 @@
 # Product Quality Phase 1 — Question Banks + Learning Flow + Parent Report
 
-**Last updated:** 2026-05-05 (Phase 15 — English translation phrase rows: audit **`runtime_translation`** / **`optionCount: runtime`**; audit re-run **12158** rows)  
+**Last updated:** 2026-05-05 (Phase 17 — Geometry generator audit rows: **`subtype`** filled from **`kind`** when absent; audit re-run **12158** rows)  
 **Scope:** Learning product quality only (not security, not production hardening, not report/AI code changes).
 
 ### Phase 3 — Hebrew owner review
@@ -51,11 +51,15 @@
 
 [`docs/product-quality-phase-15-english-audit-representation-fix.md`](product-quality-phase-15-english-audit-representation-fix.md): [`scripts/audit-question-banks.mjs`](../scripts/audit-question-banks.mjs) emits **`answerMode: runtime_translation`** and **`optionCount: runtime`** for **36** English translation phrase rows so audit readers do not interpret them as broken zero-option MCQ. **`simulator_translation_mcq`** rows remain standard MCQ (**5** rows, `optionCount` **4**). Regenerated [`reports/question-audit/`](../reports/question-audit/) only; **no** question text, answers, or runtime learning code changed.
 
+### Phase 17 — Geometry audit subtype fill
+
+[`docs/product-quality-phase-17-geometry-audit-representation-fix.md`](product-quality-phase-17-geometry-audit-representation-fix.md): for **`geometry_generator_sample`** rows, audit **`subtype`** is **`params.subtype`** when set, otherwise **`kind`** (same as **`subtopic`**). **2548** geometry rows; **0** missing **`subtype`** in export. **No** edits to [`utils/geometry-question-generator.js`](../utils/geometry-question-generator.js) or stems.
+
 ---
 
 ## Executive summary (pipeline)
 
-- **Central audit script:** [`scripts/audit-question-banks.mjs`](../scripts/audit-question-banks.mjs) ingests **`SCIENCE_QUESTIONS`** from [`data/science-questions.js`](../data/science-questions.js) into the same `reports/question-audit/*` outputs as other subjects. **Phase 15:** English **translation** phrase rows (no static options in the bank) use **`answerMode: runtime_translation`** and **`optionCount: runtime`** instead of empty option counts and default `mcq`.
+- **Central audit script:** [`scripts/audit-question-banks.mjs`](../scripts/audit-question-banks.mjs) ingests **`SCIENCE_QUESTIONS`** from [`data/science-questions.js`](../data/science-questions.js) into the same `reports/question-audit/*` outputs as other subjects. **Phase 15:** English **translation** phrase rows (no static options in the bank) use **`answerMode: runtime_translation`** and **`optionCount: runtime`** instead of empty option counts and default `mcq`. **Phase 17:** **`geometry_generator_sample`** rows inherit **`subtype`** from **`kind`** when **`params.subtype`** is absent.
 - **Row lineage:** each CSV/JSON row includes **`bankProvenance`**:
   - `static_bank` — geography, Hebrew legacy/rich, English pools, geometry conceptual items.
   - `generator_sample` — math + geometry deterministic audit samples (`*_generator_sample` / `math_generator_sample`).

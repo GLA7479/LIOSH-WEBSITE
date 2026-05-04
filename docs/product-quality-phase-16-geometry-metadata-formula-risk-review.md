@@ -1,7 +1,7 @@
 # Product Quality Phase 16 — Geometry Metadata + Formula/Diagram Risk Review
 
 **Last updated:** 2026-05-05  
-**Status:** Review complete — **documentation only**. No edits to question text, Hebrew wording, answers, `correctIndex`, grade ranges, topic keys, UI, parent-facing reports, Parent AI, Copilot, APIs, learning logic, or bank/generator source files.
+**Status:** Review complete — **documentation only** for Phase 16. **Phase 17** later filled audit **`subtype`** from generator **`kind`** for `geometry_generator_sample` rows (audit/report only); see [`product-quality-phase-17-geometry-audit-representation-fix.md`](product-quality-phase-17-geometry-audit-representation-fix.md).
 
 ## Sources
 
@@ -18,20 +18,24 @@
 
 ## Part A — Geometry metadata (`subtype`)
 
-### A.1 Inventory (from latest audit JSON)
+### A.1 Inventory
+
+**Current audit (after Phase 17):** all **2548** geometry rows have non-empty **`subtype`** (generator samples: **`subtype`** = **`params.subtype`** or fallback **`kind`** = **`subtopic`**).
+
+**Historical snapshot (Phase 16 only, before Phase 17):**
 
 | Segment | Rows | Missing `subtype` |
 |---------|------|---------------------|
 | **All geometry** | **2548** | **1313** |
-| `rowKind: geometry_conceptual` (static bank via [`collectGeometryConceptual`](../scripts/audit-question-banks.mjs)) | **100** | **0** |
+| `rowKind: geometry_conceptual` | **100** | **0** |
 | `rowKind: geometry_generator_sample` | **2448** | **1313** |
 
-Among **generator** samples only:
+Among **generator** samples only (Phase 16):
 
 | Segment | Rows |
 |---------|------|
-| Has **`subtype`** (non-empty) | **1135** |
-| Missing **`subtype`** | **1313** |
+| Had **`subtype`** from `params` | **1135** |
+| Missing **`subtype`** (had **`kind`** in **`subtopic`** only) | **1313** |
 
 ### A.2 Interpretation: expected gap vs. bug
 
@@ -47,15 +51,15 @@ Among **generator** samples only:
 
 **Conclusion:** **Missing `subtype` on ~1313 generator rows is primarily an audit taxonomy / generator-metadata convention**, not missing identification of the question type: **`subtopic` duplicates `kind`** for those rows. Treating empty **`subtype`** as “broken metadata” would **over-read** the signal.
 
-### A.3 Recommended metadata strategy (do not implement yet)
+### A.3 Recommended metadata strategy
 
-| Option | Description | Pros | Cons |
-|--------|-------------|------|------|
-| **A — Audit consumer rule** | For `geometry_generator_sample`, treat **`subtopic`** as the canonical fine tag when **`subtype`** is empty. | Zero code churn; matches current data | Two columns for one concept |
-| **B — Generator parity** | Set `params.subtype = params.kind` (or a mapped taxonomy id) for all formula branches. | Uniform columns in CSV/JSON | Touches generator params contract; needs regression discipline |
-| **C — Audit-only denormalize** | In [`audit-question-banks.mjs`](scripts/audit-question-banks.mjs), emit derived **`subtypeDisplay`** or fill empty **`subtype`** from **`kind`** for samples only. | Keeps runtime unchanged | Audit-only duplication |
+| Option | Description | Status |
+|--------|-------------|--------|
+| **A — Audit consumer rule** | Treat **`subtopic`** as canonical when **`subtype`** was empty. | Superseded for CSV/JSON export by **Phase 17** ( **`subtype`** now filled). |
+| **B — Generator parity** | Set `params.subtype = params.kind` in the generator. | **Not** implemented; optional if params contract should match audit without denorm. |
+| **C — Audit-only denormalize** | Fill **`subtype`** from **`kind`** in [`audit-question-banks.mjs`](../scripts/audit-question-banks.mjs). | **Implemented** as **Phase 17** (`subtype: q.params?.subtype \|\| kind \|\| ""` in `sampleGeometryGenerator`). |
 
-**Recommendation:** Prefer **A** short-term for dashboards/reviews; plan **B** or **C** when implementing a formal geometry taxonomy (aligned with [`stage2.json`](../reports/question-audit/stage2.json) harness kind lists).
+**Recommendation:** **Phase 17** satisfies audit clarity; option **B** remains optional for runtime **`params`** symmetry.
 
 ---
 
@@ -92,7 +96,7 @@ Each row is a **review theme** (not every audit row). **Hebrew text changes** wo
 
 | # | Example identifier (audit) | Source | Topic | Subtype / kind | Grade band (example) | Difficulty (example) | Issue type | Severity | Recommended action | Hebrew text change? |
 |---|----------------------------|--------|-------|----------------|------------------------|------------------------|------------|----------|----------------------|---------------------|
-| 1 | Example `stemHash` **`84b69f8e47e24c1ecd99e3d1`** (`subtopic=rectangle_area`, `patternFamily=area_rectangle_early_easy`) | `geometry_generator_sample` | area | *(empty subtype)* `subtopic=rectangle_area` | G3–G6 samples | easy–hard | **Metadata** — empty `subtype` while `subtopic` populated | Low | **add subtype metadata** (optional) or document rule **A** | No |
+| 1 | Example `stemHash` **`84b69f8e47e24c1ecd99e3d1`** (`subtopic=rectangle_area`, `patternFamily=area_rectangle_early_easy`) | `geometry_generator_sample` | area | `rectangle_area` (**Phase 17:** `subtype` = `kind`) | G3–G6 samples | easy–hard | **Metadata** — resolved in audit export (**Phase 17**) | Low | **keep** / optional generator parity (**B**) | No |
 | 2 | Grid-based stems (“על רשת”, “משבצות”) vs pure formula stems (“בלי רמז חזותי”) | `geometry-question-generator.js` area branch | area | `square_area` / `rectangle_area` | varies | varies | **Diagram/visual dependency** — learner may expect a figure when stem says “רשת” | Medium | **diagram assumption review** in product QA on actual UI | Maybe (only if UI never shows grid) |
 | 3 | Story problems (`story_*` kinds, `late` band) | same file | area / perimeter / volume / circles | `story_rectangle_area`, etc. | G5–G6 | varies | **Wording precision** — narrative + numeric consistency | Medium | **answer key review** on sampled stories | Owner review if copy tightened |
 | 4 | Conceptual rows (`concept_*` kinds) with filled `subtype` | conceptual bank + generator path | multiple | e.g. `concept_measure_interpret` | varies | varies | **OK** for taxonomy | Low | **keep** | No |
@@ -115,13 +119,13 @@ Each row is a **review theme** (not every audit row). **Hebrew text changes** wo
 
 ## Part D — Recommended first Geometry patch (future implementation phase)
 
-**Do not implement as part of Phase 16.**
-
-1. **Metadata-only (safest):** Choose strategy **A**, **B**, or **C** from §A.3; if **B**, add `subtype` parallel to `kind` for formula branches only after test harness passes.
+1. ~~**Audit denormalize (C)** — **Done in Phase 17.**~~
 
 2. **Quality pass:** Spot-check **story** (`story_*`) and **grid** stems in the live UI for **diagram/visual** alignment.
 
 3. **Answer-key spot-check:** Sample one **numeric** and one **index-mapping** question per major topic for grades **ה׳–ו׳**.
+
+4. **Optional:** Generator **`params.subtype`** parity (**B**) if product telemetry should see `subtype` without audit-only fill.
 
 ---
 

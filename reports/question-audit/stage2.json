@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-04T22:57:03.289Z",
+  "generatedAt": "2026-05-04T23:10:28.119Z",
   "harnessMerged": {
     "mathKindsFromHarnessFiles": 107,
     "geoKindsFromHarnessFiles": 70,
@@ -517,14 +517,14 @@
         "rows": 366,
         "staticRows": 6,
         "sampleRows": 360,
-        "withSubtype": 198,
+        "withSubtype": 366,
         "withPatternFamily": 366
       },
       "angles": {
         "rows": 226,
         "staticRows": 10,
         "sampleRows": 216,
-        "withSubtype": 110,
+        "withSubtype": 226,
         "withPatternFamily": 226
       },
       "triangles": {
@@ -538,14 +538,14 @@
         "rows": 152,
         "staticRows": 8,
         "sampleRows": 144,
-        "withSubtype": 71,
+        "withSubtype": 152,
         "withPatternFamily": 152
       },
       "symmetry": {
         "rows": 76,
         "staticRows": 4,
         "sampleRows": 72,
-        "withSubtype": 36,
+        "withSubtype": 76,
         "withPatternFamily": 76
       },
       "symmetry|transformations": {
@@ -566,14 +566,14 @@
         "rows": 222,
         "staticRows": 6,
         "sampleRows": 216,
-        "withSubtype": 92,
+        "withSubtype": 222,
         "withPatternFamily": 222
       },
       "circles": {
         "rows": 73,
         "staticRows": 1,
         "sampleRows": 72,
-        "withSubtype": 34,
+        "withSubtype": 73,
         "withPatternFamily": 73
       },
       "circles|area|perimeter": {
@@ -587,49 +587,49 @@
         "rows": 74,
         "staticRows": 2,
         "sampleRows": 72,
-        "withSubtype": 31,
+        "withSubtype": 74,
         "withPatternFamily": 74
       },
       "solids": {
         "rows": 152,
         "staticRows": 8,
         "sampleRows": 144,
-        "withSubtype": 46,
+        "withSubtype": 152,
         "withPatternFamily": 152
       },
       "tiling": {
         "rows": 74,
         "staticRows": 2,
         "sampleRows": 72,
-        "withSubtype": 38,
+        "withSubtype": 74,
         "withPatternFamily": 74
       },
       "heights": {
         "rows": 74,
         "staticRows": 2,
         "sampleRows": 72,
-        "withSubtype": 24,
+        "withSubtype": 74,
         "withPatternFamily": 74
       },
       "diagonal": {
         "rows": 148,
         "staticRows": 4,
         "sampleRows": 144,
-        "withSubtype": 46,
+        "withSubtype": 148,
         "withPatternFamily": 148
       },
       "rotation": {
         "rows": 74,
         "staticRows": 2,
         "sampleRows": 72,
-        "withSubtype": 19,
+        "withSubtype": 74,
         "withPatternFamily": 74
       },
       "shapes_basic": {
         "rows": 152,
         "staticRows": 8,
         "sampleRows": 144,
-        "withSubtype": 47,
+        "withSubtype": 152,
         "withPatternFamily": 152
       },
       "quadrilaterals|triangles": {
@@ -650,14 +650,14 @@
         "rows": 148,
         "staticRows": 4,
         "sampleRows": 144,
-        "withSubtype": 37,
+        "withSubtype": 148,
         "withPatternFamily": 148
       },
       "perimeter": {
         "rows": 288,
         "staticRows": 0,
         "sampleRows": 288,
-        "withSubtype": 157,
+        "withSubtype": 288,
         "withPatternFamily": 288
       }
     },
