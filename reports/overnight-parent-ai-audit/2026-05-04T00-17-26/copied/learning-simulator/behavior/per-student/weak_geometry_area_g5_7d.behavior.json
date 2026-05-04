@@ -1,0 +1,143 @@
+{
+  "scenarioId": "weak_geometry_area_g5_7d",
+  "profileId": "p_weak_geometry_area",
+  "generator": "learning-simulator-behavior-phase5-v1",
+  "storagePath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\learning-simulator\\aggregate\\per-student\\weak_geometry_area_g5_7d.storage.json",
+  "metaPath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\learning-simulator\\aggregate\\per-student\\weak_geometry_area_g5_7d.meta.json",
+  "reportPath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\learning-simulator\\reports\\per-student\\weak_geometry_area_g5_7d.report.json",
+  "oracle": {
+    "evidence": {
+      "sessionCount": 14,
+      "questionTotal": 210,
+      "correctTotal": 84,
+      "mistakeEventCount": 70,
+      "subjectsTouched": [
+        "geometry"
+      ],
+      "overallAccuracyPct": 40,
+      "mistakeRateApprox": 0.333
+    },
+    "subjectMetrics": {
+      "geometry": {
+        "totalQ": 210,
+        "correctQ": 84,
+        "accuracyPct": 40
+      }
+    },
+    "topicMetrics": {
+      "geometry:area": {
+        "totalQ": 210,
+        "correctQ": 84,
+        "subject": "geometry",
+        "topic": "area",
+        "accuracyPct": 40
+      }
+    },
+    "trendOracle": {
+      "direction": "flat",
+      "earlyMean": 0.38442661913250153,
+      "lateMean": 0.3970779220779221,
+      "delta": 0.01265130294542055,
+      "sessionSamples": 14
+    },
+    "volatility": {
+      "stdev": 0.03204278004264333,
+      "n": 14,
+      "meanAccuracy": 0.399461730465711
+    },
+    "paceOracle": {
+      "meanSessionDurationSec": 1596.4,
+      "meanSecondsPerQuestion": 106.43,
+      "mistakeEventCount": 70,
+      "mistakeRateApprox": 0.333
+    },
+    "reportSignals": {
+      "totalQuestions": 194,
+      "overallAccuracy": 40,
+      "contractTopThinDowngraded": true,
+      "contractTopEvidenceQuestionCount": 194,
+      "contractPrimarySubjectId": "geometry",
+      "topicBucketKeys": [
+        "area"
+      ],
+      "diagnosedCount": 1,
+      "unitCount": 1,
+      "contradictoryConfidenceCount": 0,
+      "executiveWindowQuestions": 194,
+      "rowTrendsLength": 0
+    },
+    "behaviorHints": {
+      "suspiciousZeroDiagnosesWithVolume": false,
+      "thinContractVsHighMetaQuestions": false,
+      "diagnosisCoverageRatio": 1
+    },
+    "sessionRowCount": 14
+  },
+  "expectedBehaviorNotes": {
+    "topWeaknessExpected": [
+      "שטח",
+      "area"
+    ]
+  },
+  "assertions": [
+    {
+      "assertionId": "area_topic_has_volume",
+      "pass": true,
+      "expected": {
+        "minTopicQuestions": 10
+      },
+      "actual": {
+        "totalQ": 210,
+        "accuracyPct": 40
+      },
+      "likelyCause": "behavior_oracle_threshold",
+      "evidence": {}
+    },
+    {
+      "assertionId": "area_topic_weak_among_subject",
+      "pass": true,
+      "expected": {
+        "maxWeakRank": 1
+      },
+      "actual": {
+        "rank": 1,
+        "orderedTopicsByAccuracy": [
+          {
+            "t": "area",
+            "acc": 40,
+            "q": 210
+          }
+        ]
+      },
+      "likelyCause": "behavior_oracle_threshold",
+      "evidence": {}
+    },
+    {
+      "assertionId": "area_report_topic_bucket_alignment",
+      "pass": true,
+      "expected": {
+        "topicBucketKeysIncludesTarget": "area"
+      },
+      "actual": {
+        "topicBucketKeys": [
+          "area"
+        ]
+      },
+      "likelyCause": "behavior_oracle_threshold",
+      "evidence": {
+        "secondary": true
+      }
+    }
+  ],
+  "pass": true,
+  "failureCauseSummary": {
+    "failedCount": 0,
+    "counts": {
+      "simulator_data": 0,
+      "behavior_oracle_threshold": 0,
+      "engine_report": 0,
+      "unknown": 0
+    },
+    "dominantLikelyCause": "none"
+  }
+}

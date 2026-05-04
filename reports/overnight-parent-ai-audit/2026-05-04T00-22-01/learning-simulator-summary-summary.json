@@ -1,0 +1,25 @@
+{
+  "title": "Learning simulator (H)",
+  "rows": [
+    {
+      "id": "h-quick",
+      "npmScript": "qa:learning-simulator:quick",
+      "phase": "H",
+      "status": "pass",
+      "exitCode": 0,
+      "timedOut": false,
+      "durationMs": 12716,
+      "logPath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\overnight-parent-ai-audit\\2026-05-04T00-22-01\\logs\\h-quick.log"
+    },
+    {
+      "id": "h-full",
+      "npmScript": "qa:learning-simulator:full",
+      "phase": "H",
+      "status": "fail",
+      "exitCode": 1,
+      "timedOut": false,
+      "durationMs": 652424,
+      "logPath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\overnight-parent-ai-audit\\2026-05-04T00-22-01\\logs\\h-full.log"
+    }
+  ]
+}

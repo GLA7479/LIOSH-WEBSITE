@@ -5,8 +5,9 @@
  * - **Production (strict):** Never executes Copilot against a client-supplied full report snapshot. The client may send
  *   `payload` for backward compatibility, but it is **ignored** for engine input unless
  *   `PARENT_COPILOT_ALLOW_CLIENT_PAYLOAD_IN_PRODUCTION=true` (emergency operator escape — insecure).
- *   The API resolves input via {@link resolveCopilotTurnPayloadForApi} which prefers a server-rebuilt snapshot when
- *   implemented (see `lib/parent-copilot/copilot-turn-payload.server.js`).
+ *   {@link resolveCopilotTurnPayloadForApi} rebuilds the detailed report payload server-side from Supabase (same rollup as
+ *   GET `/api/parent/students/[studentId]/report-data`) plus existing report builders — see
+ *   `lib/parent-copilot/copilot-turn-payload.server.js` and `lib/parent-server/db-input-to-detailed-report.server.js`.
  * - **Development:** After authorization, may use `body.payload` from the client (same as before), or unauthenticated
  *   local QA when `PARENT_COPILOT_ALLOW_UNAUTH_LOCAL_PAYLOAD` is not `"false"` and `NODE_ENV !== 'production'`.
  *
@@ -123,6 +124,7 @@ export default async function handler(req, res) {
 
     const payloadResolution = await resolveCopilotTurnPayloadForApi({
       body,
+      req,
       auth,
     });
 

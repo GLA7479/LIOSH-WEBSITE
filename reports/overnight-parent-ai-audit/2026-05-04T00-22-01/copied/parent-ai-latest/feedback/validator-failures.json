@@ -1,0 +1,13 @@
+{
+  "reviewClass": "human_review_only",
+  "disclaimer": "This artifact is for human review only. It does not modify banks, taxonomies, diagnostics, planner output, or report text.",
+  "privacyNote": "No raw parent utterances are stored or repeated. Only utteranceLength and non-content metadata are used where present.",
+  "generatedAt": "2026-05-04T00:17:59.934Z",
+  "totalTurns": 8,
+  "uniqueSessionCount": 4,
+  "turnsWithValidatorFails": 1,
+  "rate": 0.125,
+  "byFailCode": {
+    "missing_required_hedge": 1
+  }
+}

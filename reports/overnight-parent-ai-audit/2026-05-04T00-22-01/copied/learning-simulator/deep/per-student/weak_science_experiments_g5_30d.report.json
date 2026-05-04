@@ -1,0 +1,112 @@
+{
+  "scenarioId": "weak_science_experiments_g5_30d",
+  "generator": "learning-simulator-deep-v1",
+  "storageInputPath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\learning-simulator\\deep\\per-student\\weak_science_experiments_g5_30d.storage.json",
+  "metaInputPath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\learning-simulator\\deep\\per-student\\weak_science_experiments_g5_30d.meta.json",
+  "playerName": "Sim:weak_science_experiments_g5_30d",
+  "period": {
+    "mode": "custom",
+    "ok": true,
+    "startDate": "2026-04-20",
+    "endDate": "2026-05-19",
+    "minMs": 1776672692513,
+    "maxMs": 1779223162268
+  },
+  "diagnosticPrimarySource": "diagnosticEngineV2",
+  "summary": {
+    "totalQuestions": 1134,
+    "overallAccuracy": 35,
+    "totalTimeMinutes": 2073
+  },
+  "facets": {
+    "version": "report-facets-v1",
+    "summary": {
+      "totalQuestions": 1134,
+      "overallAccuracy": 35,
+      "totalTimeMinutes": 2073
+    },
+    "diagnostic": {
+      "unitCount": 1,
+      "p4Count": 0,
+      "diagnosedCount": 1,
+      "contradictoryConfidenceCount": 0,
+      "unitSummaries": [
+        {
+          "subjectId": "science",
+          "displayName": "ניסויים ותהליכים",
+          "priorityLevel": "P2",
+          "diagnosisAllowed": true,
+          "patternHe": "לשנות הכול",
+          "diagnosisLineHe": "מצביע על דפוס: לשנות הכול (נקודת מיקוד: משתנה מבודד) בניסויים ותהליכים.",
+          "canonicalAction": "diagnose_only",
+          "positiveAuthorityLevel": "none",
+          "evidenceQuestions": 1134,
+          "trendDirection": null,
+          "trendEvidenceStatus": null,
+          "questionsFromTrace": 1134,
+          "conflictingConfidence": false,
+          "skillAlignmentConfidence": "inferred_safe",
+          "skillAlignmentSource": "topic_mapping",
+          "skillAlignmentWarnings": [],
+          "skillId": "experiments",
+          "subskillId": "sci_experiments_general"
+        }
+      ]
+    },
+    "analysisPreview": {
+      "needsPracticeLines": [
+        "מדעים: ניסויים ותהליכים"
+      ]
+    },
+    "executive": {
+      "windowTotalQuestions": 1134,
+      "topFocusAreasHe": [
+        "לשנות הכול (מדעים)"
+      ],
+      "topStrengthsAcrossHe": [],
+      "dominantCrossSubjectRiskLabelHe": "לשנות הכול",
+      "dominantCrossSubjectSuccessPatternLabelHe": "",
+      "cautionNoteHe": "",
+      "overallConfidenceHe": "מבט כולל: ב־1 מתוך 1 נושאים שנבדקו יש בסיס ראשוני לשיחה בבית על כיוון ממוקד.",
+      "reportReadinessHe": "התרגול בתקופה עדיין מצומצם — כדאי לקרוא את הסיכום בעיון ולהמשיך לאסוף תרגול.",
+      "majorTrendsHe": [
+        "בטווח התקופה נבדקו 1 נושאים.",
+        "נושאים שנשמרים טוב: 0 מתוך מה שנבדק. ב־1 נושאים יש בסיס לשיחה ממוקדת בבית. ב־0 נושאים עדיין אין תמונה ברורה."
+      ]
+    },
+    "crossSubject": {
+      "bulletsHe": [
+        "במבט על כל המקצועות יחד: 1 נושאים בטווח התקופה.",
+        "0 נושאים שכדאי לעקוב אחריהם השבוע מקרוב."
+      ],
+      "dataQualityNoteHe": "מספר הנושאים שנבדקו נמוך יחסית — ככל שיצטבר עוד תרגול התמונה תתבהר."
+    },
+    "rowTrends": [],
+    "topicLayer": {
+      "topWeaknessLabels": [
+        "לשנות הכול"
+      ],
+      "topicRecLabels": [
+        "ניסויים ותהליכים"
+      ],
+      "topicBucketKeys": [
+        "experiments"
+      ]
+    },
+    "contract": {
+      "primarySubjectId": "science",
+      "topEvidenceQuestionCount": 1134,
+      "topThinDowngraded": true,
+      "topConfidenceHe": "כמה אפשר לסמוך על זה: עדיין לא גבוה — צריך עוד תרגול לפני שסוגרים תמונה ברורה.",
+      "topMainStatusHe": "בנושא ניסויים ותהליכים: לשנות הכול"
+    },
+    "dataIntegrity": {
+      "version": 1,
+      "issueCount": 0,
+      "issues": []
+    }
+  },
+  "corpusStats": {
+    "charLength": 1205
+  }
+}

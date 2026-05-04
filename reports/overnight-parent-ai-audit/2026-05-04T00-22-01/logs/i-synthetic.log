@@ -1,0 +1,12 @@
+Error: EPERM: operation not permitted, mkdir 'C:\Users\ERAN'
+    at Object.mkdirSync (node:fs:1377:26)
+    at main (C:\Users\ERAN YOSEF\Desktop\final projects\FINAL-WEB\LIOSH-WEB-TRY\scripts\overnight-synthetic-e2e-scenarios.mjs:193:6)
+    at <anonymous> (C:\Users\ERAN YOSEF\Desktop\final projects\FINAL-WEB\LIOSH-WEB-TRY\scripts\overnight-synthetic-e2e-scenarios.mjs:280:1)
+    at ModuleJob.run (node:internal/modules/esm/module_job:343:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:665:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:117:5) {
+  errno: -4048,
+  code: 'EPERM',
+  syscall: 'mkdir',
+  path: 'C:\\Users\\ERAN'
+}

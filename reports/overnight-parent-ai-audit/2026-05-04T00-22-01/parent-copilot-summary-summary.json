@@ -1,0 +1,125 @@
+{
+  "title": "Parent Copilot (C)",
+  "rows": [
+    {
+      "id": "c-0",
+      "npmScript": "test:parent-copilot-phase6",
+      "phase": "C",
+      "status": "pass",
+      "exitCode": 0,
+      "timedOut": false,
+      "durationMs": 891,
+      "logPath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\overnight-parent-ai-audit\\2026-05-04T00-22-01\\logs\\c-0.log"
+    },
+    {
+      "id": "c-1",
+      "npmScript": "test:parent-copilot-observability-contract",
+      "phase": "C",
+      "status": "pass",
+      "exitCode": 0,
+      "timedOut": false,
+      "durationMs": 1047,
+      "logPath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\overnight-parent-ai-audit\\2026-05-04T00-22-01\\logs\\c-1.log"
+    },
+    {
+      "id": "c-2",
+      "npmScript": "test:parent-copilot-parent-render",
+      "phase": "C",
+      "status": "pass",
+      "exitCode": 0,
+      "timedOut": false,
+      "durationMs": 912,
+      "logPath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\overnight-parent-ai-audit\\2026-05-04T00-22-01\\logs\\c-2.log"
+    },
+    {
+      "id": "c-3",
+      "npmScript": "test:parent-copilot-product-behavior",
+      "phase": "C",
+      "status": "fail",
+      "exitCode": 1,
+      "timedOut": false,
+      "durationMs": 467,
+      "logPath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\overnight-parent-ai-audit\\2026-05-04T00-22-01\\logs\\c-3.log"
+    },
+    {
+      "id": "c-4",
+      "npmScript": "test:parent-copilot-classifier-edge-matrix",
+      "phase": "C",
+      "status": "pass",
+      "exitCode": 0,
+      "timedOut": false,
+      "durationMs": 416,
+      "logPath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\overnight-parent-ai-audit\\2026-05-04T00-22-01\\logs\\c-4.log"
+    },
+    {
+      "id": "c-5",
+      "npmScript": "test:parent-copilot-scope-collision",
+      "phase": "C",
+      "status": "pass",
+      "exitCode": 0,
+      "timedOut": false,
+      "durationMs": 509,
+      "logPath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\overnight-parent-ai-audit\\2026-05-04T00-22-01\\logs\\c-5.log"
+    },
+    {
+      "id": "c-6",
+      "npmScript": "test:parent-copilot-semantic-nearmiss",
+      "phase": "C",
+      "status": "pass",
+      "exitCode": 0,
+      "timedOut": false,
+      "durationMs": 434,
+      "logPath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\overnight-parent-ai-audit\\2026-05-04T00-22-01\\logs\\c-6.log"
+    },
+    {
+      "id": "c-7",
+      "npmScript": "test:parent-copilot-broad-report-routing",
+      "phase": "C",
+      "status": "fail",
+      "exitCode": 1,
+      "timedOut": false,
+      "durationMs": 512,
+      "logPath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\overnight-parent-ai-audit\\2026-05-04T00-22-01\\logs\\c-7.log"
+    },
+    {
+      "id": "c-8",
+      "npmScript": "test:parent-copilot-recommendation-semantic",
+      "phase": "C",
+      "status": "fail",
+      "exitCode": 1,
+      "timedOut": false,
+      "durationMs": 430,
+      "logPath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\overnight-parent-ai-audit\\2026-05-04T00-22-01\\logs\\c-8.log"
+    },
+    {
+      "id": "c-9",
+      "npmScript": "test:parent-copilot-question-class-behavior",
+      "phase": "C",
+      "status": "fail",
+      "exitCode": 1,
+      "timedOut": false,
+      "durationMs": 504,
+      "logPath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\overnight-parent-ai-audit\\2026-05-04T00-22-01\\logs\\c-9.log"
+    },
+    {
+      "id": "c-10",
+      "npmScript": "test:parent-copilot-async-llm-gate",
+      "phase": "C",
+      "status": "fail",
+      "exitCode": 1,
+      "timedOut": false,
+      "durationMs": 475,
+      "logPath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\overnight-parent-ai-audit\\2026-05-04T00-22-01\\logs\\c-10.log"
+    },
+    {
+      "id": "c-11",
+      "npmScript": "test:parent-copilot-copilot-turn-api",
+      "phase": "C",
+      "status": "pass",
+      "exitCode": 0,
+      "timedOut": false,
+      "durationMs": 405,
+      "logPath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\overnight-parent-ai-audit\\2026-05-04T00-22-01\\logs\\c-11.log"
+    }
+  ]
+}

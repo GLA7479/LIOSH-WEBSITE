@@ -1,0 +1,36 @@
+{
+  "scenarioId": "weak_science_experiments_g5_30d",
+  "profileRef": "p_weak_science_experiments",
+  "mode": "deep",
+  "tier": "deep",
+  "seed": 93010,
+  "anchorDate": "2026-05-19T08:00:00.000Z",
+  "timeHorizonDays": 30,
+  "generator": "deep-runner-v1",
+  "stats": {
+    "scenarioId": "weak_science_experiments_g5_30d",
+    "sessionCount": 74,
+    "questionTotal": 1134,
+    "correctTotal": 398,
+    "mistakeEventCount": 408,
+    "subjectsTouched": [
+      "science"
+    ],
+    "topicsBySubject": {
+      "science": [
+        "experiments"
+      ]
+    }
+  },
+  "validation": {
+    "ok": true,
+    "errors": [],
+    "warnings": []
+  },
+  "warnings": [],
+  "errors": [],
+  "deepHorizonValidation": {
+    "ok": true,
+    "errors": []
+  }
+}

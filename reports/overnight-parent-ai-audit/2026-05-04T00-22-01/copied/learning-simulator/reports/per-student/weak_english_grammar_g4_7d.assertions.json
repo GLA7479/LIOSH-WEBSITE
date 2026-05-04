@@ -1,0 +1,39 @@
+{
+  "scenarioId": "weak_english_grammar_g4_7d",
+  "profileRef": "p_weak_english_grammar",
+  "expected": {
+    "topWeaknessExpected": [
+      "grammar",
+      "דקדוק"
+    ]
+  },
+  "counts": {
+    "assertionsRun": 1,
+    "passed": 1,
+    "failed": 0
+  },
+  "overallPass": true,
+  "results": [
+    {
+      "assertion": "topWeaknessExpected",
+      "pass": true,
+      "evidence": {
+        "phrases": [
+          {
+            "phrase": "grammar",
+            "hit": true
+          },
+          {
+            "phrase": "דקדוק",
+            "hit": false
+          }
+        ],
+        "semantics": "anyMatch"
+      },
+      "method": "structured"
+    }
+  ],
+  "interpretationNotes": [
+    "Failures may indicate simulator fidelity, assertion tuning, or report-engine behavior — triage before changing production logic."
+  ]
+}

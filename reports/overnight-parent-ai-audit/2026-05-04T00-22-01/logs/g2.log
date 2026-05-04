@@ -1,0 +1,6 @@
+
+> leo-k-kids-site@1.0.0 test:adaptive-planner:artifacts
+> tsx scripts/adaptive-planner-artifact-runner.mjs
+
+Adaptive planner: using metadata index snapshot (5419 entries)
+OK — 126 planner runs; wrote reports\adaptive-learning-planner\artifact-summary.json

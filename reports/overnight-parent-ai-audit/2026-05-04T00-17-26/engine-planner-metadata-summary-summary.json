@@ -1,0 +1,55 @@
+{
+  "title": "Engine / planner / metadata (G)",
+  "rows": [
+    {
+      "id": "g1",
+      "npmScript": "qa:question-metadata",
+      "phase": "G",
+      "status": "pass",
+      "exitCode": 0,
+      "timedOut": false,
+      "durationMs": 1095,
+      "logPath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\overnight-parent-ai-audit\\2026-05-04T00-17-26\\logs\\g1.log"
+    },
+    {
+      "id": "g2",
+      "npmScript": "test:adaptive-planner:artifacts",
+      "phase": "G",
+      "status": "pass",
+      "exitCode": 0,
+      "timedOut": false,
+      "durationMs": 876,
+      "logPath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\overnight-parent-ai-audit\\2026-05-04T00-17-26\\logs\\g2.log"
+    },
+    {
+      "id": "g3",
+      "npmScript": "test:adaptive-planner:runtime",
+      "phase": "G",
+      "status": "pass",
+      "exitCode": 0,
+      "timedOut": false,
+      "durationMs": 764,
+      "logPath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\overnight-parent-ai-audit\\2026-05-04T00-17-26\\logs\\g3.log"
+    },
+    {
+      "id": "g4",
+      "npmScript": "test:adaptive-planner:recommended-practice",
+      "phase": "G",
+      "status": "pass",
+      "exitCode": 0,
+      "timedOut": false,
+      "durationMs": 646,
+      "logPath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\overnight-parent-ai-audit\\2026-05-04T00-17-26\\logs\\g4.log"
+    },
+    {
+      "id": "g5",
+      "npmScript": "test:adaptive-planner:scenario-simulator",
+      "phase": "G",
+      "status": "pass",
+      "exitCode": 0,
+      "timedOut": false,
+      "durationMs": 756,
+      "logPath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\overnight-parent-ai-audit\\2026-05-04T00-17-26\\logs\\g5.log"
+    }
+  ]
+}

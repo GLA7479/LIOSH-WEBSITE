@@ -1,0 +1,32 @@
+{
+  "scenarioId": "weak_science_cause_effect_g5_7d",
+  "profileRef": "p_weak_science_experiments",
+  "mode": "aggregate",
+  "tier": "quick",
+  "seed": 91006,
+  "anchorDate": "2026-05-06T08:00:00.000Z",
+  "timeHorizonDays": 7,
+  "generator": "aggregate-runner-v1",
+  "stats": {
+    "scenarioId": "weak_science_cause_effect_g5_7d",
+    "sessionCount": 14,
+    "questionTotal": 235,
+    "correctTotal": 85,
+    "mistakeEventCount": 82,
+    "subjectsTouched": [
+      "science"
+    ],
+    "topicsBySubject": {
+      "science": [
+        "experiments"
+      ]
+    }
+  },
+  "validation": {
+    "ok": true,
+    "errors": [],
+    "warnings": []
+  },
+  "warnings": [],
+  "errors": []
+}

@@ -1,0 +1,4 @@
+
+> leo-k-kids-site@1.0.0 qa:learning-simulator:pdf-export
+> tsx scripts/learning-simulator/run-pdf-export-gate.mjs
+

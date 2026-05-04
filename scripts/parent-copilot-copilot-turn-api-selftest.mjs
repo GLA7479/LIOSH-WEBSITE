@@ -49,6 +49,7 @@ async function main() {
     });
     assert.equal(r.ok, true);
     assert.equal(r.payload, fakePayload);
+    assert.equal(r.grounding, "client_payload_emergency_production");
 
     // --- Development: uses client payload
     process.env.NODE_ENV = "development";

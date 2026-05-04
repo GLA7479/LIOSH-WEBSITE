@@ -1,0 +1,143 @@
+{
+  "scenarioId": "weak_moledet_geography_maps_g4_7d",
+  "profileId": "p_weak_moledet_maps",
+  "generator": "learning-simulator-behavior-phase5-v1",
+  "storagePath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\learning-simulator\\aggregate\\per-student\\weak_moledet_geography_maps_g4_7d.storage.json",
+  "metaPath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\learning-simulator\\aggregate\\per-student\\weak_moledet_geography_maps_g4_7d.meta.json",
+  "reportPath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\learning-simulator\\reports\\per-student\\weak_moledet_geography_maps_g4_7d.report.json",
+  "oracle": {
+    "evidence": {
+      "sessionCount": 12,
+      "questionTotal": 182,
+      "correctTotal": 67,
+      "mistakeEventCount": 63,
+      "subjectsTouched": [
+        "moledet_geography"
+      ],
+      "overallAccuracyPct": 36.8,
+      "mistakeRateApprox": 0.346
+    },
+    "subjectMetrics": {
+      "moledet_geography": {
+        "totalQ": 182,
+        "correctQ": 67,
+        "accuracyPct": 36.8
+      }
+    },
+    "topicMetrics": {
+      "moledet_geography:maps": {
+        "totalQ": 182,
+        "correctQ": 67,
+        "subject": "moledet_geography",
+        "topic": "maps",
+        "accuracyPct": 36.8
+      }
+    },
+    "trendOracle": {
+      "direction": "down",
+      "earlyMean": 0.3975427350427351,
+      "lateMean": 0.3521241830065359,
+      "delta": -0.045418552036199156,
+      "sessionSamples": 12
+    },
+    "volatility": {
+      "stdev": 0.029050989490970618,
+      "n": 12,
+      "meanAccuracy": 0.3676138404079581
+    },
+    "paceOracle": {
+      "meanSessionDurationSec": 1578.2,
+      "meanSecondsPerQuestion": 104.05,
+      "mistakeEventCount": 63,
+      "mistakeRateApprox": 0.346
+    },
+    "reportSignals": {
+      "totalQuestions": 182,
+      "overallAccuracy": 37,
+      "contractTopThinDowngraded": true,
+      "contractTopEvidenceQuestionCount": 182,
+      "contractPrimarySubjectId": "moledet-geography",
+      "topicBucketKeys": [
+        "maps"
+      ],
+      "diagnosedCount": 1,
+      "unitCount": 1,
+      "contradictoryConfidenceCount": 0,
+      "executiveWindowQuestions": 182,
+      "rowTrendsLength": 0
+    },
+    "behaviorHints": {
+      "suspiciousZeroDiagnosesWithVolume": false,
+      "thinContractVsHighMetaQuestions": false,
+      "diagnosisCoverageRatio": 1
+    },
+    "sessionRowCount": 12
+  },
+  "expectedBehaviorNotes": {
+    "topWeaknessExpected": [
+      "מפות",
+      "maps"
+    ]
+  },
+  "assertions": [
+    {
+      "assertionId": "maps_topic_has_volume",
+      "pass": true,
+      "expected": {
+        "minTopicQuestions": 10
+      },
+      "actual": {
+        "totalQ": 182,
+        "accuracyPct": 36.8
+      },
+      "likelyCause": "behavior_oracle_threshold",
+      "evidence": {}
+    },
+    {
+      "assertionId": "maps_topic_weak_among_subject",
+      "pass": true,
+      "expected": {
+        "maxWeakRank": 1
+      },
+      "actual": {
+        "rank": 1,
+        "orderedTopicsByAccuracy": [
+          {
+            "t": "maps",
+            "acc": 36.8,
+            "q": 182
+          }
+        ]
+      },
+      "likelyCause": "behavior_oracle_threshold",
+      "evidence": {}
+    },
+    {
+      "assertionId": "maps_report_topic_bucket_alignment",
+      "pass": true,
+      "expected": {
+        "topicBucketKeysIncludesTarget": "maps"
+      },
+      "actual": {
+        "topicBucketKeys": [
+          "maps"
+        ]
+      },
+      "likelyCause": "behavior_oracle_threshold",
+      "evidence": {
+        "secondary": true
+      }
+    }
+  ],
+  "pass": true,
+  "failureCauseSummary": {
+    "failedCount": 0,
+    "counts": {
+      "simulator_data": 0,
+      "behavior_oracle_threshold": 0,
+      "engine_report": 0,
+      "unknown": 0
+    },
+    "dominantLikelyCause": "none"
+  }
+}

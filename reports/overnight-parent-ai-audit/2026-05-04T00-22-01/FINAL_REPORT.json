@@ -1,0 +1,430 @@
+{
+  "timestamp": "2026-05-04T00-22-01",
+  "outputDir": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\overnight-parent-ai-audit\\2026-05-04T00-22-01",
+  "overallStatus": "FAIL",
+  "counts": {
+    "commands": 36,
+    "passed": 24,
+    "failed": 12,
+    "timedOut": 0,
+    "skipped": 0
+  },
+  "commands": [
+    {
+      "id": "build",
+      "npmScript": "build",
+      "phase": "A",
+      "status": "pass",
+      "exitCode": 0,
+      "timedOut": false,
+      "durationMs": 20128,
+      "logPath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\overnight-parent-ai-audit\\2026-05-04T00-22-01\\logs\\build.log"
+    },
+    {
+      "id": "b1",
+      "npmScript": "test:parent-ai-context:consistency",
+      "phase": "B",
+      "status": "pass",
+      "exitCode": 0,
+      "timedOut": false,
+      "durationMs": 754,
+      "logPath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\overnight-parent-ai-audit\\2026-05-04T00-22-01\\logs\\b1.log"
+    },
+    {
+      "id": "b2",
+      "npmScript": "test:parent-report-ai:integration",
+      "phase": "B",
+      "status": "pass",
+      "exitCode": 0,
+      "timedOut": false,
+      "durationMs": 1001,
+      "logPath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\overnight-parent-ai-audit\\2026-05-04T00-22-01\\logs\\b2.log"
+    },
+    {
+      "id": "b3",
+      "npmScript": "test:parent-report-ai:scenario-simulator",
+      "phase": "B",
+      "status": "pass",
+      "exitCode": 0,
+      "timedOut": false,
+      "durationMs": 843,
+      "logPath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\overnight-parent-ai-audit\\2026-05-04T00-22-01\\logs\\b3.log"
+    },
+    {
+      "id": "c-0",
+      "npmScript": "test:parent-copilot-phase6",
+      "phase": "C",
+      "status": "pass",
+      "exitCode": 0,
+      "timedOut": false,
+      "durationMs": 891,
+      "logPath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\overnight-parent-ai-audit\\2026-05-04T00-22-01\\logs\\c-0.log"
+    },
+    {
+      "id": "c-1",
+      "npmScript": "test:parent-copilot-observability-contract",
+      "phase": "C",
+      "status": "pass",
+      "exitCode": 0,
+      "timedOut": false,
+      "durationMs": 1047,
+      "logPath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\overnight-parent-ai-audit\\2026-05-04T00-22-01\\logs\\c-1.log"
+    },
+    {
+      "id": "c-2",
+      "npmScript": "test:parent-copilot-parent-render",
+      "phase": "C",
+      "status": "pass",
+      "exitCode": 0,
+      "timedOut": false,
+      "durationMs": 912,
+      "logPath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\overnight-parent-ai-audit\\2026-05-04T00-22-01\\logs\\c-2.log"
+    },
+    {
+      "id": "c-3",
+      "npmScript": "test:parent-copilot-product-behavior",
+      "phase": "C",
+      "status": "fail",
+      "exitCode": 1,
+      "timedOut": false,
+      "durationMs": 467,
+      "logPath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\overnight-parent-ai-audit\\2026-05-04T00-22-01\\logs\\c-3.log"
+    },
+    {
+      "id": "c-4",
+      "npmScript": "test:parent-copilot-classifier-edge-matrix",
+      "phase": "C",
+      "status": "pass",
+      "exitCode": 0,
+      "timedOut": false,
+      "durationMs": 416,
+      "logPath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\overnight-parent-ai-audit\\2026-05-04T00-22-01\\logs\\c-4.log"
+    },
+    {
+      "id": "c-5",
+      "npmScript": "test:parent-copilot-scope-collision",
+      "phase": "C",
+      "status": "pass",
+      "exitCode": 0,
+      "timedOut": false,
+      "durationMs": 509,
+      "logPath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\overnight-parent-ai-audit\\2026-05-04T00-22-01\\logs\\c-5.log"
+    },
+    {
+      "id": "c-6",
+      "npmScript": "test:parent-copilot-semantic-nearmiss",
+      "phase": "C",
+      "status": "pass",
+      "exitCode": 0,
+      "timedOut": false,
+      "durationMs": 434,
+      "logPath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\overnight-parent-ai-audit\\2026-05-04T00-22-01\\logs\\c-6.log"
+    },
+    {
+      "id": "c-7",
+      "npmScript": "test:parent-copilot-broad-report-routing",
+      "phase": "C",
+      "status": "fail",
+      "exitCode": 1,
+      "timedOut": false,
+      "durationMs": 512,
+      "logPath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\overnight-parent-ai-audit\\2026-05-04T00-22-01\\logs\\c-7.log"
+    },
+    {
+      "id": "c-8",
+      "npmScript": "test:parent-copilot-recommendation-semantic",
+      "phase": "C",
+      "status": "fail",
+      "exitCode": 1,
+      "timedOut": false,
+      "durationMs": 430,
+      "logPath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\overnight-parent-ai-audit\\2026-05-04T00-22-01\\logs\\c-8.log"
+    },
+    {
+      "id": "c-9",
+      "npmScript": "test:parent-copilot-question-class-behavior",
+      "phase": "C",
+      "status": "fail",
+      "exitCode": 1,
+      "timedOut": false,
+      "durationMs": 504,
+      "logPath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\overnight-parent-ai-audit\\2026-05-04T00-22-01\\logs\\c-9.log"
+    },
+    {
+      "id": "c-10",
+      "npmScript": "test:parent-copilot-async-llm-gate",
+      "phase": "C",
+      "status": "fail",
+      "exitCode": 1,
+      "timedOut": false,
+      "durationMs": 475,
+      "logPath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\overnight-parent-ai-audit\\2026-05-04T00-22-01\\logs\\c-10.log"
+    },
+    {
+      "id": "c-11",
+      "npmScript": "test:parent-copilot-copilot-turn-api",
+      "phase": "C",
+      "status": "pass",
+      "exitCode": 0,
+      "timedOut": false,
+      "durationMs": 405,
+      "logPath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\overnight-parent-ai-audit\\2026-05-04T00-22-01\\logs\\c-11.log"
+    },
+    {
+      "id": "d1",
+      "npmScript": "test:parent-ai-phase-e:external",
+      "phase": "D",
+      "status": "pass",
+      "exitCode": 0,
+      "timedOut": false,
+      "durationMs": 751,
+      "logPath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\overnight-parent-ai-audit\\2026-05-04T00-22-01\\logs\\d1.log"
+    },
+    {
+      "id": "d2",
+      "npmScript": "test:parent-ai:simulations",
+      "phase": "D",
+      "status": "pass",
+      "exitCode": 0,
+      "timedOut": false,
+      "durationMs": 1025,
+      "logPath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\overnight-parent-ai-audit\\2026-05-04T00-22-01\\logs\\d2.log"
+    },
+    {
+      "id": "d3",
+      "npmScript": "test:parent-ai:feedback-aggregate",
+      "phase": "D",
+      "status": "pass",
+      "exitCode": 0,
+      "timedOut": false,
+      "durationMs": 743,
+      "logPath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\overnight-parent-ai-audit\\2026-05-04T00-22-01\\logs\\d3.log"
+    },
+    {
+      "id": "d4",
+      "npmScript": "test:parent-ai:assistant-qa",
+      "phase": "D",
+      "status": "pass",
+      "exitCode": 0,
+      "timedOut": false,
+      "durationMs": 946,
+      "logPath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\overnight-parent-ai-audit\\2026-05-04T00-22-01\\logs\\d4.log"
+    },
+    {
+      "id": "d5",
+      "npmScript": "test:parent-ai:external-question",
+      "phase": "D",
+      "status": "pass",
+      "exitCode": 0,
+      "timedOut": false,
+      "durationMs": 724,
+      "logPath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\overnight-parent-ai-audit\\2026-05-04T00-22-01\\logs\\d5.log"
+    },
+    {
+      "id": "d6",
+      "npmScript": "test:parent-ai:bad-prompt",
+      "phase": "D",
+      "status": "pass",
+      "exitCode": 0,
+      "timedOut": false,
+      "durationMs": 733,
+      "logPath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\overnight-parent-ai-audit\\2026-05-04T00-22-01\\logs\\d6.log"
+    },
+    {
+      "id": "d-manual",
+      "command": "tsx C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\scripts\\parent-ai-manual-qa-matrix.mjs --outDir C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\overnight-parent-ai-audit\\2026-05-04T00-22-01\\manual-qa-matrix-output",
+      "phase": "D",
+      "status": "fail",
+      "exitCode": 1,
+      "timedOut": false,
+      "durationMs": 1172,
+      "logPath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\overnight-parent-ai-audit\\2026-05-04T00-22-01\\logs\\d-manual.log"
+    },
+    {
+      "id": "e-ssr",
+      "command": "tsx C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\scripts\\parent-report-pages-ssr.mjs",
+      "phase": "E",
+      "status": "fail",
+      "exitCode": 1,
+      "timedOut": false,
+      "durationMs": 885,
+      "logPath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\overnight-parent-ai-audit\\2026-05-04T00-22-01\\logs\\e-ssr.log"
+    },
+    {
+      "id": "e-phase1",
+      "npmScript": "test:parent-report-phase1",
+      "phase": "E",
+      "status": "pass",
+      "exitCode": 0,
+      "timedOut": false,
+      "durationMs": 998,
+      "logPath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\overnight-parent-ai-audit\\2026-05-04T00-22-01\\logs\\e-phase1.log"
+    },
+    {
+      "id": "f-pdf-export",
+      "npmScript": "qa:parent-pdf-export",
+      "phase": "F",
+      "status": "fail",
+      "exitCode": 1,
+      "timedOut": false,
+      "durationMs": 3565,
+      "logPath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\overnight-parent-ai-audit\\2026-05-04T00-22-01\\logs\\f-pdf-export.log"
+    },
+    {
+      "id": "f-sample-pdfs",
+      "command": "node C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\scripts\\overnight-parent-ai-sample-pdfs.mjs --outDir C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\overnight-parent-ai-audit\\2026-05-04T00-22-01\\sample-pdfs",
+      "phase": "F",
+      "status": "fail",
+      "exitCode": 1,
+      "timedOut": false,
+      "durationMs": 2541,
+      "logPath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\overnight-parent-ai-audit\\2026-05-04T00-22-01\\logs\\f-sample-pdfs.log"
+    },
+    {
+      "id": "f-ls-pdf-export",
+      "npmScript": "qa:learning-simulator:pdf-export",
+      "phase": "F",
+      "status": "fail",
+      "exitCode": 1,
+      "timedOut": false,
+      "durationMs": 305137,
+      "logPath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\overnight-parent-ai-audit\\2026-05-04T00-22-01\\logs\\f-ls-pdf-export.log"
+    },
+    {
+      "id": "g1",
+      "npmScript": "qa:question-metadata",
+      "phase": "G",
+      "status": "pass",
+      "exitCode": 0,
+      "timedOut": false,
+      "durationMs": 1078,
+      "logPath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\overnight-parent-ai-audit\\2026-05-04T00-22-01\\logs\\g1.log"
+    },
+    {
+      "id": "g2",
+      "npmScript": "test:adaptive-planner:artifacts",
+      "phase": "G",
+      "status": "pass",
+      "exitCode": 0,
+      "timedOut": false,
+      "durationMs": 1018,
+      "logPath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\overnight-parent-ai-audit\\2026-05-04T00-22-01\\logs\\g2.log"
+    },
+    {
+      "id": "g3",
+      "npmScript": "test:adaptive-planner:runtime",
+      "phase": "G",
+      "status": "pass",
+      "exitCode": 0,
+      "timedOut": false,
+      "durationMs": 901,
+      "logPath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\overnight-parent-ai-audit\\2026-05-04T00-22-01\\logs\\g3.log"
+    },
+    {
+      "id": "g4",
+      "npmScript": "test:adaptive-planner:recommended-practice",
+      "phase": "G",
+      "status": "pass",
+      "exitCode": 0,
+      "timedOut": false,
+      "durationMs": 762,
+      "logPath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\overnight-parent-ai-audit\\2026-05-04T00-22-01\\logs\\g4.log"
+    },
+    {
+      "id": "g5",
+      "npmScript": "test:adaptive-planner:scenario-simulator",
+      "phase": "G",
+      "status": "pass",
+      "exitCode": 0,
+      "timedOut": false,
+      "durationMs": 977,
+      "logPath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\overnight-parent-ai-audit\\2026-05-04T00-22-01\\logs\\g5.log"
+    },
+    {
+      "id": "h-quick",
+      "npmScript": "qa:learning-simulator:quick",
+      "phase": "H",
+      "status": "pass",
+      "exitCode": 0,
+      "timedOut": false,
+      "durationMs": 12716,
+      "logPath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\overnight-parent-ai-audit\\2026-05-04T00-22-01\\logs\\h-quick.log"
+    },
+    {
+      "id": "h-full",
+      "npmScript": "qa:learning-simulator:full",
+      "phase": "H",
+      "status": "fail",
+      "exitCode": 1,
+      "timedOut": false,
+      "durationMs": 652424,
+      "logPath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\overnight-parent-ai-audit\\2026-05-04T00-22-01\\logs\\h-full.log"
+    },
+    {
+      "id": "i-synthetic",
+      "command": "tsx scripts/overnight-synthetic-e2e-scenarios.mjs --outDir C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\overnight-parent-ai-audit\\2026-05-04T00-22-01\\synthetic-e2e",
+      "phase": "I",
+      "status": "fail",
+      "exitCode": 1,
+      "timedOut": false,
+      "durationMs": 1695,
+      "logPath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\overnight-parent-ai-audit\\2026-05-04T00-22-01\\logs\\i-synthetic.log"
+    }
+  ],
+  "topIssues": [
+    {
+      "id": "c-3",
+      "cmd": "test:parent-copilot-product-behavior",
+      "status": "fail"
+    },
+    {
+      "id": "c-7",
+      "cmd": "test:parent-copilot-broad-report-routing",
+      "status": "fail"
+    },
+    {
+      "id": "c-8",
+      "cmd": "test:parent-copilot-recommendation-semantic",
+      "status": "fail"
+    },
+    {
+      "id": "c-9",
+      "cmd": "test:parent-copilot-question-class-behavior",
+      "status": "fail"
+    },
+    {
+      "id": "c-10",
+      "cmd": "test:parent-copilot-async-llm-gate",
+      "status": "fail"
+    },
+    {
+      "id": "d-manual",
+      "cmd": "tsx C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\scripts\\parent-ai-manual-qa-matrix.mjs --outDir C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\overnight-parent-ai-audit\\2026-05-04T00-22-01\\manual-qa-matrix-output",
+      "status": "fail"
+    },
+    {
+      "id": "e-ssr",
+      "cmd": "tsx C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\scripts\\parent-report-pages-ssr.mjs",
+      "status": "fail"
+    },
+    {
+      "id": "f-pdf-export",
+      "cmd": "qa:parent-pdf-export",
+      "status": "fail"
+    },
+    {
+      "id": "f-sample-pdfs",
+      "cmd": "node C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\scripts\\overnight-parent-ai-sample-pdfs.mjs --outDir C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\overnight-parent-ai-audit\\2026-05-04T00-22-01\\sample-pdfs",
+      "status": "fail"
+    },
+    {
+      "id": "f-ls-pdf-export",
+      "cmd": "qa:learning-simulator:pdf-export",
+      "status": "fail"
+    }
+  ],
+  "notes": {
+    "secrets": "Logs redacted for tokens/API keys; no .env contents written.",
+    "telemetry": "Synthetic Hebrew utterances only in manual matrix / synthetic E2E."
+  }
+}

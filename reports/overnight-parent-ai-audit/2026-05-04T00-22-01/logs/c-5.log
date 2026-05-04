@@ -1,0 +1,9 @@
+
+> leo-k-kids-site@1.0.0 test:parent-copilot-scope-collision
+> node scripts/parent-copilot-scope-collision-suite.mjs
+
+parent-copilot-scope-collision-suite: OK
+(node:3096) [MODULE_TYPELESS_PACKAGE_JSON] Warning: Module type of file:///C:/Users/ERAN%20YOSEF/Desktop/final%20projects/FINAL-WEB/LIOSH-WEB-TRY/utils/parent-copilot/scope-resolver.js is not specified and it doesn't parse as CommonJS.
+Reparsing as ES module because module syntax was detected. This incurs a performance overhead.
+To eliminate this warning, add "type": "module" to C:\Users\ERAN YOSEF\Desktop\final projects\FINAL-WEB\LIOSH-WEB-TRY\package.json.
+(Use `node --trace-warnings ...` to show where the warning was created)
