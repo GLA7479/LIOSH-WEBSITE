@@ -1,0 +1,5 @@
+
+> leo-k-kids-site@1.0.0 test:parent-ai:bad-prompt
+> tsx scripts/parent-ai-bad-prompt-simulator.mjs
+
+parent-ai-bad-prompt-simulator: 4/4 passed

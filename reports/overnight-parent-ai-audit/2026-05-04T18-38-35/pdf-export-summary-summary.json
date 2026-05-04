@@ -1,0 +1,44 @@
+{
+  "title": "PDF export (F)",
+  "rows": [
+    {
+      "id": "f-pdf-export",
+      "npmScript": "qa:parent-pdf-export",
+      "phase": "F",
+      "status": "pass",
+      "exitCode": 0,
+      "timedOut": false,
+      "durationMs": 30342,
+      "logPath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\overnight-parent-ai-audit\\2026-05-04T18-38-35\\logs\\f-pdf-export.log",
+      "failureCategory": null,
+      "failureExcerpt": null,
+      "blocksRelease": false
+    },
+    {
+      "id": "f-sample-pdfs",
+      "command": "C:\\Program Files\\nodejs\\node.exe C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\scripts\\overnight-parent-ai-sample-pdfs.mjs --outDir C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\overnight-parent-ai-audit\\2026-05-04T18-38-35\\sample-pdfs",
+      "phase": "F",
+      "status": "fail",
+      "exitCode": 1,
+      "timedOut": false,
+      "durationMs": 154727,
+      "logPath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\overnight-parent-ai-audit\\2026-05-04T18-38-35\\logs\\f-sample-pdfs.log",
+      "failureCategory": "PRODUCT_FAILURE",
+      "failureExcerpt": "[overnight-sample-pdfs] skip insight assertions for strong-stable-detailed (timeout)\novernight-parent-ai-sample-pdfs: FAIL C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\overnight-parent-ai-audit\\2026-05-04T18-38-35\\sample-pdfs\n[validation] PDF too small (787 bytes): C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\overnight-parent-ai-audit\\2026-05-04T18-38-35\\sample-pdfs\\strong-stable__parent-report-detailed-full.pdf\nPDF missing expected Hebrew insight text (תובנה להורה): strong-stable__parent-report-detailed-full.pdf\n",
+      "blocksRelease": true
+    },
+    {
+      "id": "f-ls-pdf-export",
+      "npmScript": "qa:learning-simulator:pdf-export",
+      "phase": "F",
+      "status": "pass",
+      "exitCode": 0,
+      "timedOut": false,
+      "durationMs": 13567,
+      "logPath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\overnight-parent-ai-audit\\2026-05-04T18-38-35\\logs\\f-ls-pdf-export.log",
+      "failureCategory": null,
+      "failureExcerpt": null,
+      "blocksRelease": false
+    }
+  ]
+}

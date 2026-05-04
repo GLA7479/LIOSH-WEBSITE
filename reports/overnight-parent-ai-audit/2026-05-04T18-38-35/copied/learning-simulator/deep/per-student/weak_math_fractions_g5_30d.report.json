@@ -1,0 +1,112 @@
+{
+  "scenarioId": "weak_math_fractions_g5_30d",
+  "generator": "learning-simulator-deep-v1",
+  "storageInputPath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\learning-simulator\\deep\\per-student\\weak_math_fractions_g5_30d.storage.json",
+  "metaInputPath": "C:\\Users\\ERAN YOSEF\\Desktop\\final projects\\FINAL-WEB\\LIOSH-WEB-TRY\\reports\\learning-simulator\\deep\\per-student\\weak_math_fractions_g5_30d.meta.json",
+  "playerName": "Sim:weak_math_fractions_g5_30d",
+  "period": {
+    "mode": "custom",
+    "ok": true,
+    "startDate": "2026-04-17",
+    "endDate": "2026-05-16",
+    "minMs": 1776426245149,
+    "maxMs": 1778934413253
+  },
+  "diagnosticPrimarySource": "diagnosticEngineV2",
+  "summary": {
+    "totalQuestions": 1295,
+    "overallAccuracy": 34,
+    "totalTimeMinutes": 3975
+  },
+  "facets": {
+    "version": "report-facets-v1",
+    "summary": {
+      "totalQuestions": 1295,
+      "overallAccuracy": 34,
+      "totalTimeMinutes": 3975
+    },
+    "diagnostic": {
+      "unitCount": 1,
+      "p4Count": 0,
+      "diagnosedCount": 1,
+      "contradictoryConfidenceCount": 0,
+      "unitSummaries": [
+        {
+          "subjectId": "math",
+          "displayName": "שברים",
+          "priorityLevel": "P2",
+          "diagnosisAllowed": true,
+          "patternHe": "השוואה לפי מונה בלבד",
+          "diagnosisLineHe": "מצביע על דפוס: השוואה לפי מונה בלבד (נקודת מיקוד: חלק־כלל) בשברים.",
+          "canonicalAction": "diagnose_only",
+          "positiveAuthorityLevel": "none",
+          "evidenceQuestions": 1295,
+          "trendDirection": null,
+          "trendEvidenceStatus": null,
+          "questionsFromTrace": 1295,
+          "conflictingConfidence": false,
+          "skillAlignmentConfidence": "inferred_safe",
+          "skillAlignmentSource": "topic_mapping",
+          "skillAlignmentWarnings": [],
+          "skillId": "math_frac_add_sub",
+          "subskillId": "frac_add_sub"
+        }
+      ]
+    },
+    "analysisPreview": {
+      "needsPracticeLines": [
+        "חשבון: שברים"
+      ]
+    },
+    "executive": {
+      "windowTotalQuestions": 1295,
+      "topFocusAreasHe": [
+        "השוואה לפי מונה בלבד (חשבון)"
+      ],
+      "topStrengthsAcrossHe": [],
+      "dominantCrossSubjectRiskLabelHe": "השוואה לפי מונה בלבד",
+      "dominantCrossSubjectSuccessPatternLabelHe": "",
+      "cautionNoteHe": "",
+      "overallConfidenceHe": "מבט כולל: ב־1 מתוך 1 נושאים שנבדקו יש בסיס ראשוני לשיחה בבית על כיוון ממוקד.",
+      "reportReadinessHe": "התרגול בתקופה עדיין מצומצם — כדאי לקרוא את הסיכום בעיון ולהמשיך לאסוף תרגול.",
+      "majorTrendsHe": [
+        "בטווח התקופה נבדקו 1 נושאים.",
+        "נושאים שנשמרים טוב: 0 מתוך מה שנבדק. ב־1 נושאים יש בסיס לשיחה ממוקדת בבית. ב־0 נושאים עדיין אין תמונה ברורה."
+      ]
+    },
+    "crossSubject": {
+      "bulletsHe": [
+        "במבט על כל המקצועות יחד: 1 נושאים בטווח התקופה.",
+        "0 נושאים שכדאי לעקוב אחריהם השבוע מקרוב."
+      ],
+      "dataQualityNoteHe": "מספר הנושאים שנבדקו נמוך יחסית — ככל שיצטבר עוד תרגול התמונה תתבהר."
+    },
+    "rowTrends": [],
+    "topicLayer": {
+      "topWeaknessLabels": [
+        "השוואה לפי מונה בלבד"
+      ],
+      "topicRecLabels": [
+        "שברים"
+      ],
+      "topicBucketKeys": [
+        "fractions"
+      ]
+    },
+    "contract": {
+      "primarySubjectId": "math",
+      "topEvidenceQuestionCount": 1295,
+      "topThinDowngraded": true,
+      "topConfidenceHe": "כמה אפשר לסמוך על זה: עדיין לא גבוה — צריך עוד תרגול לפני שסוגרים תמונה ברורה.",
+      "topMainStatusHe": "בנושא שברים: השוואה לפי מונה בלבד"
+    },
+    "dataIntegrity": {
+      "version": 1,
+      "issueCount": 0,
+      "issues": []
+    }
+  },
+  "corpusStats": {
+    "charLength": 1175
+  }
+}

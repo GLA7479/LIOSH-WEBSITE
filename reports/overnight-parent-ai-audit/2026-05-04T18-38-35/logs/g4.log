@@ -1,0 +1,19 @@
+
+> leo-k-kids-site@1.0.0 test:adaptive-planner:recommended-practice
+> tsx scripts/adaptive-planner-recommended-practice.mjs
+
+OK  adapter maps targetDifficulty / questionCount / nextAction
+OK  tri-level map: standard → medium
+OK  tri-level map: unknown → null (safe degrade)
+OK  adapter ok=false when view model null
+OK  adapter ok=false when missing nextAction
+OK  mergePlannerSessionClientMeta adds markers only
+OK  button hidden when no callback
+OK  button visible when callback + safe vm
+OK  button hidden for null recommendation
+OK  button hidden when ok=false payload (no vm)
+OK  button hidden when safetyViolationCount>0
+OK  view model never exposes reasonCodes/mustNotSay on forPractice
+OK  Hebrew button label constant
+OK  schedule flag off unchanged (undefined)
+adaptive-planner-recommended-practice.mjs: all checks passed

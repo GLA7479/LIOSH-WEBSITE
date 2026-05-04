@@ -1,0 +1,15 @@
+{
+  "generatedAt": "2026-05-02T00:00:00.000Z",
+  "auditVersion": "1.0.0",
+  "originalRuleSummary": "noGenericOnlyReport passed only when diagnostic.unitCount >= 1 AND (topicLayer.topicRecLabels.length >= 1 OR diagnostic.diagnosedCount >= 1). Evidence logged unitCount and topicRecCount only.",
+  "newRuleSummary": "noGenericOnlyReport uses reportHasNonGenericSignals(): requires unitCount >= 1, then accepts any of: diagnosed topic units; topic recommendation labels; analysisPreview.needsPracticeLines; executive.topFocusAreasHe; topicLayer.topWeaknessLabels; or substantive diagnostic.unitSummaries (diagnosisLineHe length ≥12 or patternHe ≥8). Evidence records which branch matched (matched field).",
+  "whyOriginalFailed": "Critical matrix deep scenarios often produced facets where unitCount was positive and diagnosed units existed in unitSummaries, but topicRecLabels stayed empty and diagnosedCount stayed 0 in diagnostic aggregates. The narrow OR gate flagged healthy reports as generic-only.",
+  "affectedScenarios": [],
+  "affectedScenariosNote": "Prior failing runs were not persisted with per-scenario facet snapshots in-repo; remediation was validated by making the structured gate align with other facet paths already used elsewhere (e.g. structuredWeaknessHaystack). Re-run critical-deep with noGenericOnlyReport enabled exercises the new rule across all critical_deep_* scenarios.",
+  "sampleEvidence": {
+    "failureModeUnderOldRule": "topicRecCount 0, diagnosedCount 0, but unitSummaries contained non-trivial diagnosisLineHe text",
+    "passUnderNewRule": "matched: unitSummariesSubstantive or topFocusAreasHe / needsPracticeLines when topic layer empty"
+  },
+  "riskAssessment": "The new rule is stricter on true empties (still fails when unitCount is 0 or no structural signals exist). It is more accurate than topicRecLabels-only because it matches how the report already surfaces specificity in executive and analysis preview layers. Does not depend on Hebrew copy equality.",
+  "recommendedFinalRule": "Keep noGenericOnlyReport: true on critical scenarios; implement assertion via reportHasNonGenericSignals (exported from report-assertion-engine.mjs) so future harnesses can reuse the same contract."
+}

@@ -1,0 +1,36 @@
+{
+  "scenarioId": "weak_math_fractions_g5_30d",
+  "profileRef": "p_weak_math_fractions",
+  "mode": "deep",
+  "tier": "deep",
+  "seed": 93007,
+  "anchorDate": "2026-05-16T08:00:00.000Z",
+  "timeHorizonDays": 30,
+  "generator": "deep-runner-v1",
+  "stats": {
+    "scenarioId": "weak_math_fractions_g5_30d",
+    "sessionCount": 78,
+    "questionTotal": 1295,
+    "correctTotal": 441,
+    "mistakeEventCount": 556,
+    "subjectsTouched": [
+      "math"
+    ],
+    "topicsBySubject": {
+      "math": [
+        "fractions"
+      ]
+    }
+  },
+  "validation": {
+    "ok": true,
+    "errors": [],
+    "warnings": []
+  },
+  "warnings": [],
+  "errors": [],
+  "deepHorizonValidation": {
+    "ok": true,
+    "errors": []
+  }
+}

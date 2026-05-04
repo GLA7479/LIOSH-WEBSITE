@@ -6,7 +6,9 @@
  * All browser seeding runs inside a single serialized function so Playwright does not strip
  * closures (`now` and helpers must live in browser context only).
  *
- * Reporting-only; does not change product behavior.
+ * Playwright harness: mocks `/api/student/me` (same family as qa-parent-pdf-export) and waits for
+ * `#parent-report-detailed-print` + attached `.parent-report-parent-ai-insight` (same visibility contract
+ * as qa-parent-pdf-export.mjs) so print/PDF is never captured on a half-hydrated route.
  */
 import fs from "fs";
 import path from "path";
@@ -36,6 +38,10 @@ const PROFILE_IDS = [
 const EXPECTED_PDF_COUNT = PROFILE_IDS.length * 2;
 const MIN_PDF_BYTES = 2500;
 const REQUIRED_HEBREW_SNIPPET = "תובנה להורה";
+
+/** Cold first-hit on dev can exceed `domcontentloaded`+insight without the print root (Phase C.1 parity). */
+const DETAILED_PRINT_ROOT_MS = 240_000;
+const INSIGHT_WAIT_MS = 240_000;
 
 /**
  * Entire body runs in Chromium; must not reference Node or outer scope.
@@ -221,13 +227,53 @@ async function extractPdfText(buf) {
   }
 }
 
-async function assertInsightOrSkip(page, label, timeoutMs) {
-  try {
-    await page.waitForSelector(".parent-report-parent-ai-insight", { timeout: timeoutMs, state: "attached" });
-    return true;
-  } catch {
-    console.warn(`[overnight-sample-pdfs] skip insight assertions for ${label} (timeout)`);
-    return false;
+async function mockStudentMe(page) {
+  await page.route("**/api/student/me", async (route) => {
+    await route.fulfill({
+      status: 200,
+      contentType: "application/json",
+      body: JSON.stringify({
+        ok: true,
+        student: {
+          id: "00000000-0000-0000-0000-0000000000b1",
+          full_name: "OvernightSamplePdf",
+          grade_level: 4,
+          is_active: true,
+          coin_balance: 0,
+        },
+      }),
+    });
+  });
+}
+
+/**
+ * @param {import("playwright").Page} page
+ * @param {string} label
+ */
+async function waitForDetailedReportReadyForPrint(page, label) {
+  await page.waitForSelector("#parent-report-detailed-print", { timeout: DETAILED_PRINT_ROOT_MS });
+  await page.waitForSelector(".parent-report-parent-ai-insight", {
+    timeout: INSIGHT_WAIT_MS,
+    state: "attached",
+  });
+  const t = await page.locator(".parent-report-parent-ai-insight").first().innerText();
+  if (!t.includes("תובנה")) {
+    throw new Error(`[${label}] Parent AI insight card missing heading text (expected תובנה in card)`);
+  }
+}
+
+/**
+ * @param {import("playwright").Page} page
+ * @param {string} label
+ */
+async function waitForShortReportInsightForPrint(page, label) {
+  await page.waitForSelector(".parent-report-parent-ai-insight", {
+    timeout: INSIGHT_WAIT_MS,
+    state: "attached",
+  });
+  const t = await page.locator(".parent-report-parent-ai-insight").first().innerText();
+  if (!t.includes("תובנה")) {
+    throw new Error(`[${label}] short report insight missing heading text`);
   }
 }
 
@@ -252,18 +298,19 @@ async function main() {
     const page = await context.newPage();
     const label = profileId;
     try {
+      await mockStudentMe(page);
       await page.goto(`${base}/`, { waitUntil: "domcontentloaded", timeout: 120000 });
       await page.evaluate(browserSeed, payload);
 
       await page.goto(`${base}/learning/parent-report-detailed`, { waitUntil: "domcontentloaded", timeout: 120000 });
-      await assertInsightOrSkip(page, `${label}-detailed`, 120000);
+      await waitForDetailedReportReadyForPrint(page, `${label}-detailed`);
       await page.emulateMedia({ media: "print" });
       let buf = await page.pdf({ ...pdfOpts });
       const detailedPath = path.join(outDir, `${label}__parent-report-detailed-full.pdf`);
       fs.writeFileSync(detailedPath, buf);
 
       await page.goto(`${base}/learning/parent-report`, { waitUntil: "domcontentloaded", timeout: 120000 });
-      await assertInsightOrSkip(page, `${label}-short`, 120000);
+      await waitForShortReportInsightForPrint(page, `${label}-short`);
       await page.emulateMedia({ media: "print" });
       buf = await page.pdf({ ...pdfOpts });
       const shortPath = path.join(outDir, `${label}__parent-report-short.pdf`);

@@ -1,0 +1,5 @@
+
+> leo-k-kids-site@1.0.0 test:parent-ai:simulations
+> tsx scripts/parent-ai-simulations-all.mjs
+
+parent-ai-simulations-all: 16/16 scenarios passed (OK)

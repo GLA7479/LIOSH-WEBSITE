@@ -1,0 +1,5 @@
+
+> leo-k-kids-site@1.0.0 test:parent-copilot-async-llm-gate
+> tsx scripts/parent-copilot-async-llm-gate-suite.mjs
+
+parent-copilot-async-llm-gate-suite: OK

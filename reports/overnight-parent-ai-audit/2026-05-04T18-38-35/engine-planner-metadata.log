@@ -1,0 +1,74 @@
+
+> leo-k-kids-site@1.0.0 qa:question-metadata
+> tsx scripts/question-metadata-qa.mjs
+
+
+═══════════════════════════════════════════════════════════════
+  Question metadata QA — gateDecision: pass_with_advisory
+  scanOutcome: ok | advisoryStatus: WARN
+  Blocking (policy): 0 | Advisory: 15876 | Exempt: 878
+  High risk: 439 | Medium risk: 0
+  Top blocking: —
+  Top advisory: missing_prerequisite_skill_ids=5750, implicit_id_only=5373, missing_explanation=4753
+  Reports: C:\Users\ERAN YOSEF\Desktop\final projects\FINAL-WEB\LIOSH-WEB-TRY\reports\question-metadata-qa\summary.json
+═══════════════════════════════════════════════════════════════
+
+
+
+---
+
+
+> leo-k-kids-site@1.0.0 test:adaptive-planner:artifacts
+> tsx scripts/adaptive-planner-artifact-runner.mjs
+
+Adaptive planner: using metadata index snapshot (5419 entries)
+OK — 126 planner runs; wrote reports\adaptive-learning-planner\artifact-summary.json
+
+
+---
+
+
+> leo-k-kids-site@1.0.0 test:adaptive-planner:runtime
+> tsx scripts/adaptive-planner-runtime-bridge.mjs
+
+OK  Hebrew reading practice → ok + diagnostics
+OK  Geometry perimeter (topic alignment path)
+OK  English grammar (safe metadata routing)
+OK  Math multiplication row
+OK  Missing metadata index → fail-safe (no throw)
+OK  Invalid payload (missing subject) → ok false
+adaptive-planner-runtime-bridge.mjs: all checks passed
+
+
+---
+
+
+> leo-k-kids-site@1.0.0 test:adaptive-planner:recommended-practice
+> tsx scripts/adaptive-planner-recommended-practice.mjs
+
+OK  adapter maps targetDifficulty / questionCount / nextAction
+OK  tri-level map: standard → medium
+OK  tri-level map: unknown → null (safe degrade)
+OK  adapter ok=false when view model null
+OK  adapter ok=false when missing nextAction
+OK  mergePlannerSessionClientMeta adds markers only
+OK  button hidden when no callback
+OK  button visible when callback + safe vm
+OK  button hidden for null recommendation
+OK  button hidden when ok=false payload (no vm)
+OK  button hidden when safetyViolationCount>0
+OK  view model never exposes reasonCodes/mustNotSay on forPractice
+OK  Hebrew button label constant
+OK  schedule flag off unchanged (undefined)
+adaptive-planner-recommended-practice.mjs: all checks passed
+
+
+---
+
+
+> leo-k-kids-site@1.0.0 test:adaptive-planner:scenario-simulator
+> tsx scripts/adaptive-planner-scenario-simulator.mjs
+
+Wrote C:\Users\ERAN YOSEF\Desktop\final projects\FINAL-WEB\LIOSH-WEB-TRY\reports\adaptive-learning-planner\scenario-simulator.json
+Wrote C:\Users\ERAN YOSEF\Desktop\final projects\FINAL-WEB\LIOSH-WEB-TRY\reports\adaptive-learning-planner\scenario-simulator.md
+All scenarios passed: true (live AI: false)

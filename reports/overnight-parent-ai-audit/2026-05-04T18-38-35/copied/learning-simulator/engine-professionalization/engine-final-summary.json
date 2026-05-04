@@ -1,0 +1,137 @@
+{
+  "engineFinalStatus": "PASS",
+  "engineTechnicallyComplete": true,
+  "requiresHumanExpertReview": true,
+  "professionalReadiness": "internal_engine_and_release_gates_passed",
+  "releaseIncludedInEngineFinal": true,
+  "releaseStatus": "PASS",
+  "releaseRequiredSeparately": false,
+  "buildStatus": "included_in_qa_learning_simulator_release",
+  "subjectsCovered": [
+    "math",
+    "hebrew",
+    "english",
+    "science",
+    "geometry",
+    "moledet-geography"
+  ],
+  "skillsCovered": "framework_skill_packs_v1",
+  "subskillsCovered": "framework_subskills_v1",
+  "scenarioCount": 15,
+  "failuresCount": 0,
+  "knownLimitations": [
+    "English difficulty tiers may not align perfectly with matrix level labels.",
+    "Cross-subject patterns are heuristic and require confirming probes.",
+    "Subskill and misconception precision is limited until question pools carry dense expectedErrorTypes and prerequisiteSkillIds."
+  ],
+  "safeToMoveToParentReports": false,
+  "parentReportOrUiChangesInThisPass": false,
+  "generatedAt": "2026-05-03T07:40:24.947Z",
+  "steps": [
+    {
+      "script": "qa:learning-simulator:question-skill-metadata",
+      "label": "Question skill metadata",
+      "pass": true,
+      "exitCode": 0,
+      "durationMs": 866
+    },
+    {
+      "script": "qa:learning-simulator:diagnostic-framework",
+      "label": "Professional diagnostic framework QA",
+      "pass": true,
+      "exitCode": 0,
+      "durationMs": 602
+    },
+    {
+      "script": "qa:learning-simulator:misconceptions",
+      "label": "Misconception engine",
+      "pass": true,
+      "exitCode": 0,
+      "durationMs": 590
+    },
+    {
+      "script": "qa:learning-simulator:mastery",
+      "label": "Mastery engine",
+      "pass": true,
+      "exitCode": 0,
+      "durationMs": 597
+    },
+    {
+      "script": "qa:learning-simulator:dependencies",
+      "label": "Dependency engine",
+      "pass": true,
+      "exitCode": 0,
+      "durationMs": 590
+    },
+    {
+      "script": "qa:learning-simulator:calibration",
+      "label": "Calibration engine",
+      "pass": true,
+      "exitCode": 0,
+      "durationMs": 590
+    },
+    {
+      "script": "qa:learning-simulator:reliability",
+      "label": "Reliability engine",
+      "pass": true,
+      "exitCode": 0,
+      "durationMs": 567
+    },
+    {
+      "script": "qa:learning-simulator:probes",
+      "label": "Probe engine",
+      "pass": true,
+      "exitCode": 0,
+      "durationMs": 596
+    },
+    {
+      "script": "qa:learning-simulator:cross-subject",
+      "label": "Cross-subject engine",
+      "pass": true,
+      "exitCode": 0,
+      "durationMs": 601
+    },
+    {
+      "script": "qa:learning-simulator:professional-engine-output",
+      "label": "Professional engine output",
+      "pass": true,
+      "exitCode": 0,
+      "durationMs": 626
+    },
+    {
+      "script": "qa:learning-simulator:professional-engine",
+      "label": "Professional engine validation",
+      "pass": true,
+      "exitCode": 0,
+      "durationMs": 654
+    },
+    {
+      "script": "qa:learning-simulator:engine",
+      "label": "Engine truth audit",
+      "pass": true,
+      "exitCode": 0,
+      "durationMs": 2877
+    },
+    {
+      "script": "qa:learning-simulator:framework-real-scenarios",
+      "label": "Framework real scenarios",
+      "pass": true,
+      "exitCode": 0,
+      "durationMs": 1366
+    },
+    {
+      "script": "qa:learning-simulator:engine-completion-summary",
+      "label": "Engine completion summary",
+      "pass": true,
+      "exitCode": 0,
+      "durationMs": 597
+    },
+    {
+      "script": "qa:learning-simulator:release",
+      "label": "Full learning-simulator release (orchestrator full → includes production build)",
+      "pass": true,
+      "exitCode": 0,
+      "durationMs": 320779
+    }
+  ]
+}
