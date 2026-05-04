@@ -1,6 +1,6 @@
 /**
  * סריקה כמותית של מאגרי שאלות: עברית, אנגלית, גיאומטריה (קונספטואלי + דגימת גנרטור),
- * מתמטיקה (דגימת גנרטור).
+ * מתמטיקה (דגימת גנרטור), מדעים (`SCIENCE_QUESTIONS`), גיאוגרפיה סטטית.
  *
  * פלט: reports/question-audit/items.json, items.csv, findings.json, stage2.json
  *
@@ -178,6 +178,8 @@ const GEO_Q = {
   6: await import(modUrl("data/geography-questions/g6.js")),
 };
 
+const { SCIENCE_QUESTIONS } = await import(modUrl("data/science-questions.js"));
+
 function normalizeStem(s) {
   return String(s || "")
     .trim()
@@ -260,6 +262,8 @@ function pushRow(rows, row) {
     spine_skill_id: "",
     geography_bank_topic: "",
     spine_grade_key: "",
+    /** static_bank | generator_sample | science_direct_bank */
+    bankProvenance: "",
     ...row,
   });
 }
@@ -310,11 +314,58 @@ function collectGeographyBankItems(rows) {
             itemHasExplicitGate: "1",
             geography_bank_topic: bankTopicKey,
             spine_grade_key: gk,
+            bankProvenance: "static_bank",
           });
         });
       }
     }
   }
+}
+
+/**
+ * מאגר מדעים סטטי (כולל phase3) — לא גנרטור.
+ * bankProvenance: science_direct_bank
+ */
+function collectScienceBankItems(rows) {
+  SCIENCE_QUESTIONS.forEach((item, idx) => {
+    const stem = String(item.stem || "").trim();
+    if (!stem) return;
+    const grades = (item.grades || [])
+      .map((g) => parseInt(String(g).replace(/\D/g, ""), 10))
+      .filter((n) => n >= 1 && n <= 6);
+    const gmin = grades.length ? Math.min(...grades) : 1;
+    const gmax = grades.length ? Math.max(...grades) : 6;
+    const ml = String(item.minLevel || "").toLowerCase();
+    const xl = String(item.maxLevel || "").toLowerCase();
+    let diffLabel = "";
+    if (ml && xl && ml !== xl) diffLabel = `${ml}|${xl}`;
+    else diffLabel = ml || xl || "";
+    const paramsDiff = item.params && typeof item.params.difficulty === "string" ? item.params.difficulty : "";
+    pushRow(rows, {
+      subject: "science",
+      topic: item.topic || "",
+      subtopic: item.params?.conceptTag || item.params?.subtype || "",
+      patternFamily: item.params?.patternFamily || "",
+      subtype: item.params?.subtype || "",
+      difficulty: diffLabel || paramsDiff,
+      gradeBand: "",
+      minGrade: gmin,
+      maxGrade: gmax,
+      allowedGrades: JSON.stringify(item.grades || []),
+      allowedLevels: JSON.stringify(
+        [item.minLevel, item.maxLevel].filter(Boolean)
+      ),
+      answerMode: item.type || "mcq",
+      optionCount: (item.options || []).length,
+      sourceFile: "data/science-questions.js",
+      stemText: stem.slice(0, 2000),
+      stemHash: stemHash(stem),
+      rowKind: "science_bank_item",
+      poolKey: item.id != null ? String(item.id) : `science#${idx}`,
+      itemHasExplicitGate: Array.isArray(item.grades) && item.grades.length ? "1" : "0",
+      bankProvenance: "science_direct_bank",
+    });
+  });
 }
 
 function collectHebrewLegacy(rows) {
@@ -387,6 +438,7 @@ function collectHebrewLegacy(rows) {
           rowKind: "hebrew_legacy",
           poolKey: exportName,
           spine_skill_id,
+          bankProvenance: "static_bank",
         });
       });
     }
@@ -429,6 +481,7 @@ function collectHebrewRich(rows) {
         rowKind: "hebrew_rich",
         poolKey: `rich#${idx}_g${g}`,
         spine_skill_id,
+        bankProvenance: "static_bank",
       });
     }
   });
@@ -511,6 +564,7 @@ function collectEnglishPool(rows, category, pools) {
             poolKey,
             itemHasExplicitGate: "0",
             grammar_line_id,
+            bankProvenance: "static_bank",
           });
         }
         return;
@@ -550,6 +604,7 @@ function collectEnglishPool(rows, category, pools) {
             poolKey,
             itemHasExplicitGate: "0",
             grammar_line_id,
+            bankProvenance: "static_bank",
           });
         }
         return;
@@ -585,6 +640,7 @@ function collectEnglishPool(rows, category, pools) {
         poolKey,
         itemHasExplicitGate: explicitGate ? "1" : "0",
         grammar_line_id,
+        bankProvenance: "static_bank",
       });
     });
   }
@@ -617,6 +673,7 @@ function collectGeometryConceptual(rows) {
         stemHash: stemHash(scoped),
         rowKind: "geometry_conceptual",
         poolKey: `concept#${idx}_g${g}`,
+        bankProvenance: "static_bank",
       });
     }
   });
@@ -665,6 +722,7 @@ function sampleGeometryGenerator(rows, samplesPerCombo = 12) {
             stemHash: stemHash(stem),
             rowKind: "geometry_generator_sample",
             poolKey: `geo-sample-${sampleIndex++}`,
+            bankProvenance: "generator_sample",
           });
         }
       }
@@ -712,6 +770,7 @@ function sampleMathGenerator(rows, samplesPerOp = 10) {
             stemHash: stemHash(stem),
             rowKind: "math_generator_sample",
             poolKey: `math-sample-${sampleIndex++}`,
+            bankProvenance: "generator_sample",
           });
         }
       }
@@ -773,6 +832,7 @@ function sampleMathGenerator(rows, samplesPerOp = 10) {
         stemHash: stemHash(stem),
         rowKind: "math_generator_sample",
         poolKey: `math-audit-force-${sampleIndex++}`,
+        bankProvenance: "generator_sample",
       });
     }
   }
@@ -798,12 +858,24 @@ function omitFromCrossGradeDupHeuristics(r) {
   return r.rowKind === "geography_bank_item";
 }
 
+/** Science items often span g1–g6 in one row — would falsely register as “adjacent band overlap”. */
+function omitFromWithinBandOverlapHeuristics(r) {
+  return r.rowKind === "science_bank_item" || r.subject === "science";
+}
+
 function withinBandClassPairOverlaps(rows) {
   const isSample = (r) =>
     typeof r.rowKind === "string" && r.rowKind.endsWith("_sample");
   const map = new Map();
   for (const r of rows) {
-    if (isSample(r) || !stemUsableRow(r) || omitFromCrossGradeDupHeuristics(r)) continue;
+    if (
+      isSample(r) ||
+      !stemUsableRow(r) ||
+      omitFromCrossGradeDupHeuristics(r) ||
+      omitFromWithinBandOverlapHeuristics(r)
+    ) {
+      continue;
+    }
     const k = `${r.subject}|${r.patternFamily}|${r.stemHash}|${r.subtopic || ""}`;
     if (!map.has(k)) map.set(k, new Set());
     const lo = Number(r.minGrade);
@@ -1023,6 +1095,7 @@ function rowsToCsv(rows) {
     "optionCount",
     "sourceFile",
     "rowKind",
+    "bankProvenance",
     "poolKey",
     "itemHasExplicitGate",
     "spine_skill_id",
@@ -1317,6 +1390,7 @@ function analyze(rows) {
 async function main() {
   const rows = [];
   collectGeographyBankItems(rows);
+  collectScienceBankItems(rows);
   collectHebrewLegacy(rows);
   collectHebrewRich(rows);
   collectEnglishPool(rows, "grammar", GRAMMAR_POOLS);

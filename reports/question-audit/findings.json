@@ -1,6 +1,6 @@
 {
-  "generatedAt": "2026-04-25T11:51:38.281Z",
-  "totalRows": 11770,
+  "generatedAt": "2026-05-04T20:13:10.414Z",
+  "totalRows": 12158,
   "exactDuplicateCrossGrade": [],
   "exactDuplicateCrossGradeStaticBanksOnly": [],
   "nearDuplicateCrossGrade": [],
@@ -100,6 +100,48 @@
       "dominantShare": 0.16216216216216217
     },
     {
+      "key": "science::earth_space",
+      "distinctGrades": 6,
+      "totalRows": 66,
+      "dominantPatternFamily": "none",
+      "dominantShare": 1
+    },
+    {
+      "key": "science::environment",
+      "distinctGrades": 6,
+      "totalRows": 65,
+      "dominantPatternFamily": "none",
+      "dominantShare": 1
+    },
+    {
+      "key": "science::experiments",
+      "distinctGrades": 5,
+      "totalRows": 59,
+      "dominantPatternFamily": "none",
+      "dominantShare": 1
+    },
+    {
+      "key": "science::animals",
+      "distinctGrades": 6,
+      "totalRows": 51,
+      "dominantPatternFamily": "none",
+      "dominantShare": 1
+    },
+    {
+      "key": "science::body",
+      "distinctGrades": 6,
+      "totalRows": 50,
+      "dominantPatternFamily": "none",
+      "dominantShare": 0.94
+    },
+    {
+      "key": "science::materials",
+      "distinctGrades": 6,
+      "totalRows": 46,
+      "dominantPatternFamily": "none",
+      "dominantShare": 1
+    },
+    {
       "key": "geometry::area",
       "distinctGrades": 6,
       "totalRows": 6,
@@ -153,7 +195,7 @@
   "stage2Summary": {
     "withinBandOverlapCount": 37,
     "weakLevelSeparationCount": 0,
-    "mathKindsNotHitSample": 0,
+    "mathKindsNotHitSample": 5,
     "geoKindsNotHitSample": 0
   }
 }

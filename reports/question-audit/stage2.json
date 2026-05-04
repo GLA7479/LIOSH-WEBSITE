@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-04-25T11:51:38.285Z",
+  "generatedAt": "2026-05-04T20:13:10.416Z",
   "harnessMerged": {
     "mathKindsFromHarnessFiles": 107,
     "geoKindsFromHarnessFiles": 70,
@@ -8,9 +8,15 @@
   "generatorBranchCoverage": {
     "math": {
       "sourceFile": "utils/math-question-generator.js",
-      "declaredKindCount": 91,
+      "declaredKindCount": 96,
       "observedDistinctKindsInSample": 107,
-      "kindsNotHitInRun": [],
+      "kindsNotHitInRun": [
+        "frac_probe_common_denominator_only",
+        "math_probe_fraction_operation_gate",
+        "math_probe_operation_word_choice",
+        "math_probe_place_value",
+        "math_probe_times_fact"
+      ],
       "kindsHitButNotInStaticRegex": [
         "wp_simple_sub",
         "wp_simple_add",
@@ -381,6 +387,57 @@
         "withPatternFamily": 583
       }
     },
+    "science": {
+      "body": {
+        "rows": 50,
+        "staticRows": 50,
+        "sampleRows": 0,
+        "withSubtype": 47,
+        "withPatternFamily": 3
+      },
+      "animals": {
+        "rows": 51,
+        "staticRows": 51,
+        "sampleRows": 0,
+        "withSubtype": 51,
+        "withPatternFamily": 0
+      },
+      "plants": {
+        "rows": 46,
+        "staticRows": 46,
+        "sampleRows": 0,
+        "withSubtype": 46,
+        "withPatternFamily": 0
+      },
+      "materials": {
+        "rows": 46,
+        "staticRows": 46,
+        "sampleRows": 0,
+        "withSubtype": 46,
+        "withPatternFamily": 0
+      },
+      "earth_space": {
+        "rows": 66,
+        "staticRows": 66,
+        "sampleRows": 0,
+        "withSubtype": 66,
+        "withPatternFamily": 0
+      },
+      "environment": {
+        "rows": 65,
+        "staticRows": 65,
+        "sampleRows": 0,
+        "withSubtype": 65,
+        "withPatternFamily": 0
+      },
+      "experiments": {
+        "rows": 59,
+        "staticRows": 59,
+        "sampleRows": 0,
+        "withSubtype": 59,
+        "withPatternFamily": 0
+      }
+    },
     "hebrew": {
       "reading": {
         "rows": 199,
@@ -430,21 +487,21 @@
         "rows": 683,
         "staticRows": 683,
         "sampleRows": 0,
-        "withSubtype": 0,
+        "withSubtype": 98,
         "withPatternFamily": 683
       },
       "translation": {
-        "rows": 36,
-        "staticRows": 36,
+        "rows": 41,
+        "staticRows": 41,
         "sampleRows": 0,
-        "withSubtype": 0,
-        "withPatternFamily": 36
+        "withSubtype": 5,
+        "withPatternFamily": 41
       },
       "sentence": {
         "rows": 128,
         "staticRows": 128,
         "sampleRows": 0,
-        "withSubtype": 0,
+        "withSubtype": 128,
         "withPatternFamily": 128
       }
     },
@@ -609,161 +666,161 @@
         "rows": 288,
         "staticRows": 0,
         "sampleRows": 288,
-        "withSubtype": 0,
+        "withSubtype": 288,
         "withPatternFamily": 288
       },
       "subtraction": {
         "rows": 288,
         "staticRows": 0,
         "sampleRows": 288,
-        "withSubtype": 0,
+        "withSubtype": 288,
         "withPatternFamily": 288
       },
       "multiplication": {
         "rows": 288,
         "staticRows": 0,
         "sampleRows": 288,
-        "withSubtype": 0,
+        "withSubtype": 288,
         "withPatternFamily": 288
       },
       "compare": {
         "rows": 288,
         "staticRows": 0,
         "sampleRows": 288,
-        "withSubtype": 0,
+        "withSubtype": 288,
         "withPatternFamily": 288
       },
       "number_sense": {
         "rows": 294,
         "staticRows": 0,
         "sampleRows": 294,
-        "withSubtype": 0,
+        "withSubtype": 294,
         "withPatternFamily": 294
       },
       "word_problems": {
         "rows": 252,
         "staticRows": 0,
         "sampleRows": 252,
-        "withSubtype": 0,
+        "withSubtype": 252,
         "withPatternFamily": 252
       },
       "equations": {
         "rows": 240,
         "staticRows": 0,
         "sampleRows": 240,
-        "withSubtype": 0,
+        "withSubtype": 240,
         "withPatternFamily": 240
       },
       "division": {
         "rows": 240,
         "staticRows": 0,
         "sampleRows": 240,
-        "withSubtype": 0,
+        "withSubtype": 240,
         "withPatternFamily": 240
       },
       "fractions": {
         "rows": 258,
         "staticRows": 0,
         "sampleRows": 258,
-        "withSubtype": 0,
+        "withSubtype": 258,
         "withPatternFamily": 258
       },
       "divisibility": {
         "rows": 144,
         "staticRows": 0,
         "sampleRows": 144,
-        "withSubtype": 0,
+        "withSubtype": 144,
         "withPatternFamily": 144
       },
       "division_with_remainder": {
         "rows": 192,
         "staticRows": 0,
         "sampleRows": 192,
-        "withSubtype": 0,
+        "withSubtype": 192,
         "withPatternFamily": 192
       },
       "sequences": {
         "rows": 192,
         "staticRows": 0,
         "sampleRows": 192,
-        "withSubtype": 0,
+        "withSubtype": 192,
         "withPatternFamily": 192
       },
       "decimals": {
         "rows": 210,
         "staticRows": 0,
         "sampleRows": 210,
-        "withSubtype": 0,
+        "withSubtype": 210,
         "withPatternFamily": 210
       },
       "order_of_operations": {
         "rows": 48,
         "staticRows": 0,
         "sampleRows": 48,
-        "withSubtype": 0,
+        "withSubtype": 48,
         "withPatternFamily": 48
       },
       "rounding": {
         "rows": 144,
         "staticRows": 0,
         "sampleRows": 144,
-        "withSubtype": 0,
+        "withSubtype": 144,
         "withPatternFamily": 144
       },
       "prime_composite": {
         "rows": 48,
         "staticRows": 0,
         "sampleRows": 48,
-        "withSubtype": 0,
+        "withSubtype": 48,
         "withPatternFamily": 48
       },
       "powers": {
         "rows": 48,
         "staticRows": 0,
         "sampleRows": 48,
-        "withSubtype": 0,
+        "withSubtype": 48,
         "withPatternFamily": 48
       },
       "zero_one_properties": {
         "rows": 48,
         "staticRows": 0,
         "sampleRows": 48,
-        "withSubtype": 0,
+        "withSubtype": 48,
         "withPatternFamily": 48
       },
       "factors_multiples": {
         "rows": 144,
         "staticRows": 0,
         "sampleRows": 144,
-        "withSubtype": 0,
+        "withSubtype": 144,
         "withPatternFamily": 144
       },
       "estimation": {
         "rows": 96,
         "staticRows": 0,
         "sampleRows": 96,
-        "withSubtype": 0,
+        "withSubtype": 96,
         "withPatternFamily": 96
       },
       "percentages": {
         "rows": 96,
         "staticRows": 0,
         "sampleRows": 96,
-        "withSubtype": 0,
+        "withSubtype": 96,
         "withPatternFamily": 96
       },
       "ratio": {
         "rows": 48,
         "staticRows": 0,
         "sampleRows": 48,
-        "withSubtype": 0,
+        "withSubtype": 48,
         "withPatternFamily": 48
       },
       "scale": {
         "rows": 48,
         "staticRows": 0,
         "sampleRows": 48,
-        "withSubtype": 0,
+        "withSubtype": 48,
         "withPatternFamily": 48
       }
     }

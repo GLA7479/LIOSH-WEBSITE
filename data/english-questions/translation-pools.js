@@ -6,42 +6,48 @@ export const TRANSLATION_POOLS = {
       "he": "בבקשה שבו",
       "minGrade": 1,
       "maxGrade": 1,
-      "patternFamily": "translation_classroom_g1"
+      "patternFamily": "translation_classroom_g1",
+      "difficulty": "basic"
     },
     {
       "en": "Open your notebook",
       "he": "פתחו את המחברת",
       "minGrade": 1,
       "maxGrade": 1,
-      "patternFamily": "translation_classroom_g1"
+      "patternFamily": "translation_classroom_g1",
+      "difficulty": "basic"
     },
     {
       "en": "Raise your hand",
       "he": "הרימו את היד",
       "minGrade": 2,
       "maxGrade": 2,
-      "patternFamily": "translation_classroom_g2"
+      "patternFamily": "translation_classroom_g2",
+      "difficulty": "basic"
     },
     {
       "en": "Listen carefully",
       "he": "הקשיבו היטב",
       "minGrade": 2,
       "maxGrade": 2,
-      "patternFamily": "translation_classroom_g2"
+      "patternFamily": "translation_classroom_g2",
+      "difficulty": "basic"
     },
     {
       "en": "Write the date",
       "he": "כתבו את התאריך",
       "minGrade": 3,
       "maxGrade": 3,
-      "patternFamily": "translation_classroom_g3"
+      "patternFamily": "translation_classroom_g3",
+      "difficulty": "standard"
     },
     {
       "en": "Close the door softly",
       "he": "סגרו את הדלת בעדינות",
       "minGrade": 3,
       "maxGrade": 3,
-      "patternFamily": "translation_classroom_g3"
+      "patternFamily": "translation_classroom_g3",
+      "difficulty": "standard"
     }
   ],
   "routines": [
@@ -50,42 +56,48 @@ export const TRANSLATION_POOLS = {
       "he": "אני מצחצח שיניים בלילה",
       "minGrade": 2,
       "maxGrade": 2,
-      "patternFamily": "translation_routines_g2"
+      "patternFamily": "translation_routines_g2",
+      "difficulty": "basic"
     },
     {
       "en": "She drinks milk every morning",
       "he": "היא שותה חלב בכל בוקר",
       "minGrade": 2,
       "maxGrade": 2,
-      "patternFamily": "translation_routines_g2"
+      "patternFamily": "translation_routines_g2",
+      "difficulty": "basic"
     },
     {
       "en": "We walk the dog after school",
       "he": "אנחנו מטיילים עם הכלב אחרי בית הספר",
       "minGrade": 3,
       "maxGrade": 3,
-      "patternFamily": "translation_routines_g3"
+      "patternFamily": "translation_routines_g3",
+      "difficulty": "standard"
     },
     {
       "en": "My brother cleans his room on Friday",
       "he": "אחי מנקה את החדר שלו ביום שישי",
       "minGrade": 3,
       "maxGrade": 3,
-      "patternFamily": "translation_routines_g3"
+      "patternFamily": "translation_routines_g3",
+      "difficulty": "standard"
     },
     {
       "en": "They read a story before bed",
       "he": "הם קוראים סיפור לפני השינה",
       "minGrade": 4,
       "maxGrade": 4,
-      "patternFamily": "translation_routines_g4"
+      "patternFamily": "translation_routines_g4",
+      "difficulty": "standard"
     },
     {
       "en": "Dad cooks dinner on Sundays",
       "he": "אבא מבשל ארוחת ערב בימי ראשון",
       "minGrade": 4,
       "maxGrade": 4,
-      "patternFamily": "translation_routines_g4"
+      "patternFamily": "translation_routines_g4",
+      "difficulty": "standard"
     }
   ],
   "hobbies": [
@@ -94,42 +106,48 @@ export const TRANSLATION_POOLS = {
       "he": "אנחנו משחקים כדורסל אחרי בית הספר",
       "minGrade": 3,
       "maxGrade": 3,
-      "patternFamily": "translation_hobbies_g3"
+      "patternFamily": "translation_hobbies_g3",
+      "difficulty": "standard"
     },
     {
       "en": "My sister paints colorful pictures",
       "he": "אחותי מציירת ציורים צבעוניים",
       "minGrade": 3,
       "maxGrade": 3,
-      "patternFamily": "translation_hobbies_g3"
+      "patternFamily": "translation_hobbies_g3",
+      "difficulty": "standard"
     },
     {
       "en": "It is windy, so we fly a kite",
       "he": "יש רוח, אז אנחנו מעיפים עפיפון",
       "minGrade": 4,
       "maxGrade": 4,
-      "patternFamily": "translation_hobbies_g4"
+      "patternFamily": "translation_hobbies_g4",
+      "difficulty": "standard"
     },
     {
       "en": "He collects stickers of animals",
       "he": "הוא אוסף מדבקות של חיות",
       "minGrade": 5,
       "maxGrade": 5,
-      "patternFamily": "translation_hobbies_g5"
+      "patternFamily": "translation_hobbies_g5",
+      "difficulty": "advanced"
     },
     {
       "en": "They practice piano every Tuesday",
       "he": "הם מתרגלים פסנתר בכל יום שלישי",
       "minGrade": 5,
       "maxGrade": 5,
-      "patternFamily": "translation_hobbies_g5"
+      "patternFamily": "translation_hobbies_g5",
+      "difficulty": "advanced"
     },
     {
       "en": "I like to build Lego cities",
       "he": "אני אוהב לבנות ערי לגו",
       "minGrade": 6,
       "maxGrade": 6,
-      "patternFamily": "translation_hobbies_g6"
+      "patternFamily": "translation_hobbies_g6",
+      "difficulty": "advanced"
     }
   ],
   "community": [
@@ -138,42 +156,48 @@ export const TRANSLATION_POOLS = {
       "he": "הספרייה נמצאת ליד הפארק",
       "minGrade": 3,
       "maxGrade": 3,
-      "patternFamily": "translation_community_g3"
+      "patternFamily": "translation_community_g3",
+      "difficulty": "standard"
     },
     {
       "en": "We visited the science museum",
       "he": "ביקרנו במוזיאון המדע",
       "minGrade": 3,
       "maxGrade": 3,
-      "patternFamily": "translation_community_g3"
+      "patternFamily": "translation_community_g3",
+      "difficulty": "standard"
     },
     {
       "en": "Please recycle the bottles in the bin",
       "he": "בבקשה ממחזרו את הבקבוקים בפח",
       "minGrade": 4,
       "maxGrade": 4,
-      "patternFamily": "translation_community_g4"
+      "patternFamily": "translation_community_g4",
+      "difficulty": "standard"
     },
     {
       "en": "The market is crowded on Fridays",
       "he": "השוק עמוס בימי שישי",
       "minGrade": 4,
       "maxGrade": 4,
-      "patternFamily": "translation_community_g4"
+      "patternFamily": "translation_community_g4",
+      "difficulty": "standard"
     },
     {
       "en": "Our town celebrates a music festival",
       "he": "העיר שלנו חוגגת פסטיבל מוזיקה",
       "minGrade": 5,
       "maxGrade": 5,
-      "patternFamily": "translation_community_g5"
+      "patternFamily": "translation_community_g5",
+      "difficulty": "advanced"
     },
     {
       "en": "The nurse helps people feel better",
       "he": "האחות עוזרת לאנשים להרגיש טוב יותר",
       "minGrade": 5,
       "maxGrade": 5,
-      "patternFamily": "translation_community_g5"
+      "patternFamily": "translation_community_g5",
+      "difficulty": "advanced"
     }
   ],
   "technology": [
@@ -182,42 +206,48 @@ export const TRANSLATION_POOLS = {
       "he": "היא כותבת קוד לרובוט ידידותי",
       "minGrade": 4,
       "maxGrade": 4,
-      "patternFamily": "translation_technology_g4"
+      "patternFamily": "translation_technology_g4",
+      "difficulty": "standard"
     },
     {
       "en": "We use tablets for digital art",
       "he": "אנחנו משתמשים בטאבלטים לאמנות דיגיטלית",
       "minGrade": 4,
       "maxGrade": 4,
-      "patternFamily": "translation_technology_g4"
+      "patternFamily": "translation_technology_g4",
+      "difficulty": "standard"
     },
     {
       "en": "The drone takes photos of the field",
       "he": "הרחפן מצלם את השדה",
       "minGrade": 5,
       "maxGrade": 5,
-      "patternFamily": "translation_technology_g5"
+      "patternFamily": "translation_technology_g5",
+      "difficulty": "advanced"
     },
     {
       "en": "He uploads a podcast every week",
       "he": "הוא מעלה פודקאסט בכל שבוע",
       "minGrade": 5,
       "maxGrade": 5,
-      "patternFamily": "translation_technology_g5"
+      "patternFamily": "translation_technology_g5",
+      "difficulty": "advanced"
     },
     {
       "en": "Our class designs a smart garden",
       "he": "הכיתה שלנו מתכננת גינה חכמה",
       "minGrade": 6,
       "maxGrade": 6,
-      "patternFamily": "translation_technology_g6"
+      "patternFamily": "translation_technology_g6",
+      "difficulty": "advanced"
     },
     {
       "en": "They research clean energy online",
       "he": "הם חוקרים אנרגיה נקייה באינטרנט",
       "minGrade": 6,
       "maxGrade": 6,
-      "patternFamily": "translation_technology_g6"
+      "patternFamily": "translation_technology_g6",
+      "difficulty": "advanced"
     }
   ],
   "global": [
@@ -226,42 +256,48 @@ export const TRANSLATION_POOLS = {
       "he": "אם אנחנו חוסכים במים, הנהרות נשארים נקיים",
       "minGrade": 5,
       "maxGrade": 5,
-      "patternFamily": "translation_global_g5"
+      "patternFamily": "translation_global_g5",
+      "difficulty": "advanced"
     },
     {
       "en": "Planting trees helps our planet breathe",
       "he": "נטיעת עצים עוזרת לכדור הארץ לנשום",
       "minGrade": 5,
       "maxGrade": 5,
-      "patternFamily": "translation_global_g5"
+      "patternFamily": "translation_global_g5",
+      "difficulty": "advanced"
     },
     {
       "en": "We write about cultures around the world",
       "he": "אנחנו כותבים על תרבויות ברחבי העולם",
       "minGrade": 6,
       "maxGrade": 6,
-      "patternFamily": "translation_global_g6"
+      "patternFamily": "translation_global_g6",
+      "difficulty": "advanced"
     },
     {
       "en": "She reads news about space missions",
       "he": "היא קוראת חדשות על משימות חלל",
       "minGrade": 6,
       "maxGrade": 6,
-      "patternFamily": "translation_global_g6"
+      "patternFamily": "translation_global_g6",
+      "difficulty": "advanced"
     },
     {
       "en": "They discuss how communities share water",
       "he": "הם דנים כיצד קהילות חולקות מים",
       "minGrade": 6,
       "maxGrade": 6,
-      "patternFamily": "translation_global_g6b"
+      "patternFamily": "translation_global_g6b",
+      "difficulty": "advanced"
     },
     {
       "en": "Working together keeps the ocean blue",
       "he": "עבודה משותפת שומרת על האוקיינוס כחול",
       "minGrade": 6,
       "maxGrade": 6,
-      "patternFamily": "translation_global_g6c"
+      "patternFamily": "translation_global_g6c",
+      "difficulty": "advanced"
     }
   ],
   "simulator_translation_mcq": [
