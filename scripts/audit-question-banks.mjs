@@ -487,6 +487,31 @@ function collectHebrewRich(rows) {
   });
 }
 
+/**
+ * Phrase-style translation items (`en`/`he` only) have no static `options` in the bank; English Master
+ * builds MCQ choices from vocabulary pools or typing at runtime. Simulator matrix rows include explicit
+ * options — represent those as normal MCQ counts (Phase 15 audit clarity).
+ */
+function englishPoolAuditAnswerFields(category, item, opts) {
+  const n = Array.isArray(opts) ? opts.length : 0;
+  if (category !== "translation") {
+    return {
+      answerMode: item.answerMode || "mcq",
+      optionCount: n || "",
+    };
+  }
+  if (n > 0) {
+    return {
+      answerMode: item.answerMode || "mcq",
+      optionCount: n,
+    };
+  }
+  return {
+    answerMode: "runtime_translation",
+    optionCount: "runtime",
+  };
+}
+
 function collectEnglishPool(rows, category, pools) {
   const fileMap = {
     grammar: "data/english-questions/grammar-pools.js",
@@ -519,6 +544,7 @@ function collectEnglishPool(rows, category, pools) {
           : "") ??
         "";
       const opts = item.options || item.answers || [];
+      const auditAnswer = englishPoolAuditAnswerFields(category, item, opts);
       const explicitGate =
         item.gradeBand != null ||
         item.minGrade != null ||
@@ -555,8 +581,8 @@ function collectEnglishPool(rows, category, pools) {
             maxGrade: g,
             allowedGrades: JSON.stringify(item.grades || []),
             allowedLevels: JSON.stringify(item.allowedLevels || []),
-            answerMode: item.answerMode || "mcq",
-            optionCount: opts.length || "",
+            answerMode: auditAnswer.answerMode,
+            optionCount: auditAnswer.optionCount,
             sourceFile,
             stemText: scoped,
             stemHash: stemHash(scoped),
@@ -595,8 +621,8 @@ function collectEnglishPool(rows, category, pools) {
             maxGrade: g,
             allowedGrades: JSON.stringify(item.grades || []),
             allowedLevels: JSON.stringify(item.allowedLevels || []),
-            answerMode: item.answerMode || "mcq",
-            optionCount: opts.length || "",
+            answerMode: auditAnswer.answerMode,
+            optionCount: auditAnswer.optionCount,
             sourceFile,
             stemText: scoped,
             stemHash: stemHash(scoped),
@@ -631,8 +657,8 @@ function collectEnglishPool(rows, category, pools) {
         maxGrade: hi,
         allowedGrades: JSON.stringify(item.grades || []),
         allowedLevels: JSON.stringify(item.allowedLevels || []),
-        answerMode: item.answerMode || "mcq",
-        optionCount: opts.length || "",
+        answerMode: auditAnswer.answerMode,
+        optionCount: auditAnswer.optionCount,
         sourceFile,
         stemText: stem,
         stemHash: stemHash(stem),

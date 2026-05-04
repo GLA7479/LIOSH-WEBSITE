@@ -1,7 +1,7 @@
 # Product Quality Phase 14 — English Translation Model Review
 
 **Last updated:** 2026-05-05  
-**Status:** Review complete — **documentation only**. No changes to question banks, English or Hebrew wording, answers, UI, reports, Parent AI, Copilot, APIs, or learning logic.
+**Status:** Review complete — **documentation only** for Phase 14 itself. **Phase 15** later updated **audit representation** only (`answerMode` / `optionCount` for translation phrase rows); see [`product-quality-phase-15-english-audit-representation-fix.md`](product-quality-phase-15-english-audit-representation-fix.md). No question-bank content changes in either phase.
 
 ## Purpose
 
@@ -19,30 +19,17 @@ Close the loop on English **translation** rows in [`reports/question-audit/items
 
 ## 1. Audit inventory (English · topic `translation`)
 
-| Metric | Value |
-|--------|------:|
-| Total audit rows | **41** |
-| Rows with **empty** `optionCount` (falsy after `opts.length \|\| ""`) | **36** |
-| Rows with **numeric** `optionCount` **4** | **5** |
+**After Phase 15** (current audit output): **41** rows total — **36** with `answerMode` **`runtime_translation`** and `optionCount` **`runtime`**; **5** static MCQ rows with `optionCount` **4** (`simulator_translation_mcq`).
+
+Historical note (Phase 14 only): the same **36** phrase rows were emitted with **empty** `optionCount` and default **`answerMode: mcq`** because `collectEnglishPool` used `opts.length || ""` when the bank had no `options` array.
 
 The **41** rows match the bank structure: **six** content pools × **six** phrases each (**36**) plus **`simulator_translation_mcq`** (**five** explicit MCQ rows).
 
-## 2. Why most rows show no static `optionCount`
+## 2. Why phrase rows had no static `optionCount` (Phase 14)
 
-In `collectEnglishPool`, each pool item contributes:
+Previously, each pool item used `opts = item.options || item.answers || []` and then `optionCount: opts.length || ""`. Phrase-style translation entries (`en` / `he` only) have **no** static options → **empty** `optionCount` in JSON.
 
-```521:521:scripts/audit-question-banks.mjs
-      const opts = item.options || item.answers || [];
-```
-
-```634:635:scripts/audit-question-banks.mjs
-        answerMode: item.answerMode || "mcq",
-        optionCount: opts.length || "",
-```
-
-Phrase-style translation entries (`en` / `he` only) have **no** `options` or `answers` array → `opts.length` is **0** → stored as **`""`** (empty string), not the literal number `0`.
-
-**Conclusion:** For the **phrase pools**, empty `optionCount` is **expected from the current audit definition**. It does **not** mean the live activity has “zero choices” at runtime.
+**Phase 15** replaced that with explicit **`optionCount: "runtime"`** and **`answerMode: "runtime_translation"`** for translation rows with no static options (see [`englishPoolAuditAnswerFields`](../scripts/audit-question-banks.mjs)). Phrase rows still do **not** mean “zero choices” at runtime — MCQ options are built in English Master from vocabulary pools, or the item may be served as typing per `resolveEnglishQType`.
 
 ## 3. Two content shapes in one bank
 
@@ -101,17 +88,16 @@ All phrase pools: **answer model** = target-language string; **options** for MCQ
 
 ## 6. Should the audit represent translation differently?
 
-**Yes, as a future tooling improvement (not implemented here):**
+**Phase 15 implemented** explicit **`optionCount: "runtime"`** and **`answerMode: "runtime_translation"`** for phrase rows (see Phase 15 doc). Remaining optional tooling:
 
-1. **`optionCount`:** For phrase translation rows, either omit the column, emit a sentinel like **`runtime`**, or derive an illustrative count from `GRADE_PROFILES[grade].choiceCount` plus `resolveEnglishQType` rules — **without** implying static bank options.
-2. **`answerMode`:** Align with runtime (`choice` / `typing`) or add `runtime_answer_mode` rather than default **`mcq`** for all phrase rows.
-3. **`stemText`:** Optionally audit **both** `en` and `he` for translation phrase rows for bilingual QA.
+1. **`stemText`:** Optionally audit **both** `en` and `he` for translation phrase rows for bilingual QA.
+2. **Finer runtime fidelity:** The audit could later distinguish **`choice`** vs **`typing`** the way `resolveEnglishQType` does (grade/level-dependent); not required to avoid “broken MCQ” misreads.
 
 ## 7. Risk summary
 
 | Risk | Level | Notes |
 |------|-------|------|
-| Misreading empty `optionCount` as “broken MCQ” | **Medium (process)** | Clarified: **expected** with current audit rules |
+| Misreading empty `optionCount` as “broken MCQ” | **Low (process)** after **Phase 15** | Audit now labels **`runtime`** / **`runtime_translation`** |
 | MCQ distractors sampled from **general vocab**, not phrase neighbors | **Medium (pedagogy)** | Known design; may produce unnatural distractors vs. curated sets |
 | **`simulator_translation_mcq`** not in main translation pools | **Low** | Intended separation; avoid confusing simulator-only rows with live translation prompts |
 | Metadata / difficulty gaps for translation | **Low** here | **No** missing difficulty in audit output for these **41** rows |
@@ -124,8 +110,8 @@ All phrase pools: **answer model** = target-language string; **options** for MCQ
 
 ## 9. Recommended next English patch (when implementation is allowed)
 
-1. **Audit-only:** Extend [`scripts/audit-question-banks.mjs`](../scripts/audit-question-banks.mjs) (or a small helper) so English translation phrase rows expose **meaningful** `optionCount` / **answer mode** metadata — **without** changing any learner-facing strings or answers.
-2. **Optional product follow-up:** If distractor quality matters for translation MCQ, consider **curated** wrong answers per phrase or pool — **separate** content project; out of scope for Phase 14.
+1. ~~**Audit-only:** Translation phrase rows — **done in Phase 15.**~~
+2. **Optional product follow-up:** If distractor quality matters for translation MCQ, consider **curated** wrong answers per phrase or pool — **separate** content project.
 
 ---
 

@@ -1,6 +1,6 @@
 # Product Quality Phase 1 — Question Banks + Learning Flow + Parent Report
 
-**Last updated:** 2026-05-05 (Phase 10 — Science **`patternFamily`** completion on `science-questions.js` + `science-questions-phase3.js`; audit re-run)  
+**Last updated:** 2026-05-05 (Phase 15 — English translation phrase rows: audit **`runtime_translation`** / **`optionCount: runtime`**; audit re-run **12158** rows)  
 **Scope:** Learning product quality only (not security, not production hardening, not report/AI code changes).
 
 ### Phase 3 — Hebrew owner review
@@ -43,11 +43,19 @@
 
 [`docs/product-quality-phase-13-science-content-fix.md`](product-quality-phase-13-science-content-fix.md): **`animals_4`** — one MCQ option string at index 1 replaced with owner-approved exact Hebrew; **`exp_1`** unchanged.
 
+### Phase 14 — English translation model review (report only)
+
+[`docs/product-quality-phase-14-english-translation-model-review.md`](product-quality-phase-14-english-translation-model-review.md): phrase translation rows have **no** static `options` in [`data/english-questions/translation-pools.js`](../data/english-questions/translation-pools.js); runtime MCQ/typing is built in English Master. **No bank edits.**
+
+### Phase 15 — English translation audit representation fix
+
+[`docs/product-quality-phase-15-english-audit-representation-fix.md`](product-quality-phase-15-english-audit-representation-fix.md): [`scripts/audit-question-banks.mjs`](../scripts/audit-question-banks.mjs) emits **`answerMode: runtime_translation`** and **`optionCount: runtime`** for **36** English translation phrase rows so audit readers do not interpret them as broken zero-option MCQ. **`simulator_translation_mcq`** rows remain standard MCQ (**5** rows, `optionCount` **4**). Regenerated [`reports/question-audit/`](../reports/question-audit/) only; **no** question text, answers, or runtime learning code changed.
+
 ---
 
 ## Executive summary (pipeline)
 
-- **Central audit script:** [`scripts/audit-question-banks.mjs`](../scripts/audit-question-banks.mjs) now ingests **`SCIENCE_QUESTIONS`** from [`data/science-questions.js`](../data/science-questions.js) into the same `reports/question-audit/*` outputs as other subjects.
+- **Central audit script:** [`scripts/audit-question-banks.mjs`](../scripts/audit-question-banks.mjs) ingests **`SCIENCE_QUESTIONS`** from [`data/science-questions.js`](../data/science-questions.js) into the same `reports/question-audit/*` outputs as other subjects. **Phase 15:** English **translation** phrase rows (no static options in the bank) use **`answerMode: runtime_translation`** and **`optionCount: runtime`** instead of empty option counts and default `mcq`.
 - **Row lineage:** each CSV/JSON row includes **`bankProvenance`**:
   - `static_bank` — geography, Hebrew legacy/rich, English pools, geometry conceptual items.
   - `generator_sample` — math + geometry deterministic audit samples (`*_generator_sample` / `math_generator_sample`).

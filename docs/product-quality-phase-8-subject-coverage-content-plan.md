@@ -1,7 +1,7 @@
 # Product Quality Phase 8 — Subject Coverage & Content Improvement Plan
 
 **Last updated:** 2026-05-05  
-**Status:** Planning doc; **Phase 10** metadata complete; **Phase 11–12** Science review reports published ([**Phase 11** spot sample](product-quality-phase-11-science-factual-distractor-review.md), [**Phase 12** full-bank mechanical sweep](product-quality-phase-12-science-full-content-review.md)) — **documentation only; no bank edits**. **Phase 14** English translation **model** review (audit vs runtime): [`product-quality-phase-14-english-translation-model-review.md`](product-quality-phase-14-english-translation-model-review.md).  
+**Status:** Planning doc; **Phase 10** metadata complete; **Phase 11–12** Science review reports published ([**Phase 11** spot sample](product-quality-phase-11-science-factual-distractor-review.md), [**Phase 12** full-bank mechanical sweep](product-quality-phase-12-science-full-content-review.md)) — **documentation only; no bank edits**. **Phase 14** English translation **model** review: [`product-quality-phase-14-english-translation-model-review.md`](product-quality-phase-14-english-translation-model-review.md). **Phase 15** English translation **audit representation** fix (script + regenerated `question-audit/*` only): [`product-quality-phase-15-english-audit-representation-fix.md`](product-quality-phase-15-english-audit-representation-fix.md). **Phase 16** Geometry **metadata + formula/diagram risk** review (documentation only): [`product-quality-phase-16-geometry-metadata-formula-risk-review.md`](product-quality-phase-16-geometry-metadata-formula-risk-review.md).  
 **Strict boundary (Phase 8 original):** Phase 8 was documentation-only. **Phases 9–10** changed **only** neutral metadata in [`data/science-questions.js`](../data/science-questions.js) and [`data/science-questions-phase3.js`](../data/science-questions-phase3.js); no stems, answers, or grade gates.
 
 ### Phase 9 — Science `patternFamily` first batch (historical counts)
@@ -50,6 +50,29 @@ Details: [`docs/product-quality-phase-12-science-full-content-review.md`](produc
 
 Details: [`docs/product-quality-phase-14-english-translation-model-review.md`](product-quality-phase-14-english-translation-model-review.md).
 
+### Phase 15 — English translation audit labels (script + audit artifacts only)
+
+| Scope | Result |
+|-------|--------|
+| Code touched | [`scripts/audit-question-banks.mjs`](../scripts/audit-question-banks.mjs) — `englishPoolAuditAnswerFields` for translation phrase rows |
+| Translation phrase rows in audit | **`answerMode: runtime_translation`**, **`optionCount: runtime`** (**36** rows) |
+| `simulator_translation_mcq` | Unchanged **MCQ** representation (`optionCount` **4**, **5** rows) |
+| Total audit rows | **12158** (stable) |
+
+Details: [`docs/product-quality-phase-15-english-audit-representation-fix.md`](product-quality-phase-15-english-audit-representation-fix.md).
+
+### Phase 16 — Geometry metadata + formula/diagram risk (report only)
+
+| Scope | Result |
+|-------|--------|
+| Geometry rows in audit | **2548** |
+| Missing **`subtype`** | **1313** — **all** `geometry_generator_sample`; conceptual **`geometry_conceptual`** (**100**) has **`subtype`** throughout |
+| Interpretation | Empty **`subtype`** usually pairs with populated **`subtopic`** (= generator **`kind`**) — **taxonomy convention**, not unidentified row type |
+| Formula/diagram risks | No **critical/high** themes flagged; medium risks for grid/story/index-mapping stems — see Phase 16 doc |
+| Code / bank edits | **None** |
+
+Details: [`docs/product-quality-phase-16-geometry-metadata-formula-risk-review.md`](product-quality-phase-16-geometry-metadata-formula-risk-review.md).
+
 ## Sources
 
 - [`reports/question-audit/items.json`](../reports/question-audit/items.json)
@@ -68,9 +91,9 @@ The latest audit contains **12158** rows.
 | Subject | Rows | Active grades | Readiness status | Strongest evidence | Weakest evidence | Blockers before launch | What can wait |
 |---------|------|---------------|------------------|-------------------|------------------|------------------------|---------------|
 | **Math** | 3942 | G1-G6 | **Ready enough** with focused diagnostic follow-up | Balanced easy/medium/hard (**1314** each); broad topic generator coverage; no missing difficulty / subtype / patternFamily in audit output | 5 probe-gated diagnostic kinds not hit by plain audit sample | If diagnostic precision matters for launch: probe-aware harness, not more random sampling | Story diversity, context variety |
-| **Geometry** | 2548 | G1-G6 | **Ready enough** with metadata polish | Broad topic set; no missing difficulty or patternFamily; conceptual + generator coverage | **1313** rows missing `subtype` in audit output, mostly generated rows | Review key visual/formula topics for answer-key and diagram assumption risk | Broaden real-world contexts |
+| **Geometry** | 2548 | G1-G6 | **Ready enough** with metadata polish | Broad topic set; no missing difficulty or patternFamily; conceptual + generator coverage; **Phase 16** explains **`subtype`** gap vs **`subtopic`** (`kind`) on samples | **1313** generator rows missing **`subtype`** — **expected convention**; fine tag in **`subtopic`** | Optional metadata taxonomy (`subtype` vs `kind`); formula/diagram spot-check per Phase 16 | Broaden real-world contexts |
 | **Hebrew** | 927 | G1-G6 | **Needs owner review** | No missing difficulty / patternFamily / subtype; full grade span | Phase 3 unresolved duplicate/overlap owner decisions | Owner approval for legacy triple stems + high-risk overlap rows. **Owner exact wording required** for any wording change | Spiral-repetition keep list can wait after spot-check |
-| **English** | 852 | G1-G6 | **Needs focused fixes** | English translation difficulty metadata fixed; no missing difficulty | **621** rows missing `subtype`; **36** translation phrase rows have **empty** static `optionCount` in audit (see **Phase 14** — **expected** with current audit rules; runtime builds MCQ/typing) | Subtype metadata policy; optional **audit** enhancement for translation `optionCount` / `answerMode` | Wider topical variety |
+| **English** | 852 | G1-G6 | **Needs focused fixes** | English translation difficulty metadata fixed; no missing difficulty; **Phase 15** audit labels translation phrase rows (`runtime_translation` / `optionCount: runtime`) — not “broken MCQ” | **621** rows missing `subtype` | Subtype metadata policy | Wider topical variety |
 | **Science** | 383 | G1-G6 via broad grade spans | **Metadata complete**; **Phase 11 spot-review documented** | Full `patternFamily` + `subtype` (**Phase 10**); spot sample flagged **`animals_4`** for owner wording/factual alignment (see Phase 11 doc) | Full-bank human read still optional | Owner decision on Phase 11 flagged items; broader factual pass by family | Add questions only after owner-approved fixes |
 | **Homeland / Geography** | 3506 | G1-G6 | **Ready enough** | Largest static bank; full metadata; balanced difficulty; all option counts 4 | Broad topics span many grades and may hide repeated templates | Spot-check factual freshness and map/civic ambiguity | Contemporary examples and terminology polish |
 
@@ -116,10 +139,10 @@ The latest audit contains **12158** rows.
 | Count by difficulty | easy **816**, medium **816**, hard **828**, easy/medium **44**, medium/hard **24**, easy/medium/hard **20** |
 | Count by topic | area 366; perimeter 288; angles 226; volume 222; parallel_perpendicular 152; quadrilaterals 152; solids 152; shapes_basic 152; transformations 148; diagonal 148; triangles 76; symmetry 76; pythagoras 74; tiling 74; heights 74; rotation 74; circles 73; plus small conceptual combined topics |
 | Top subtopics | concept_measure_interpret 254; triangle_angles 116; transformations 111; solids 106; parallel_perpendicular 102; concept_angle_reason 95 |
-| Missing metadata | difficulty **0**, patternFamily **0**, subtype **1313** |
+| Missing metadata | difficulty **0**, patternFamily **0**, subtype **1313** (generator samples only — **`subtopic`** carries `kind`; see **Phase 16**) |
 | Answer mode / options | mcq_text **1038**, numeric_mcq **1455**, binary **55**; option counts 2/4 only |
 | Suspected duplicate clusters | No exact / near duplicates listed; conceptual rows are small static bank + broad generated sample |
-| Answer-key risk | Higher for diagram/formula topics: area/perimeter, volume, circles, pythagoras |
+| Answer-key risk | Higher for diagram/formula topics: area/perimeter, volume, circles, pythagoras — **Phase 16** thematic review |
 | Distractor risk | Area/perimeter confusion and diagram assumption distractors need review |
 
 **Weak / underrepresented topics:** `circles|area|perimeter` (1), `symmetry|transformations` (2), `angles|triangles` (2), `quadrilaterals|triangles` (4) are small combined conceptual slices.
@@ -165,9 +188,9 @@ The latest audit contains **12158** rows.
 | Count by topic | grammar **683**, sentence **128**, translation **41** |
 | Top subtopics | question_frames 98; modals 98; comparatives 96; be_basic 50; progressive 49; past_simple 49; future_forms 49; complex_tenses 49; conditionals 49 |
 | Missing metadata | difficulty **0**, patternFamily **0**, subtype **621** |
-| Answer mode / options | mcq **852** (audit default); option counts 3 (**811**), 4 (**5**), **empty / falsy** (**36** translation phrase rows — **Phase 14**) |
+| Answer mode / options | **runtime_translation** **36** (translation phrase rows); mcq **816**; option counts 3 (**811**), 4 (**5**), **runtime** (**36** translation phrase — **Phase 15**) |
 | Suspected duplicate clusters | No exact / near duplicates listed |
-| Answer-key risk | Translation phrase rows: runtime builds MCQ/typing (**Phase 14**); audit empty `optionCount` is **not** a missing key signal |
+| Answer-key risk | Translation phrase rows: runtime builds MCQ/typing; audit now marks **`runtime_translation`** (**Phase 15**) |
 | Distractor risk | Grammar distractors should reflect learner mistakes; translation distractors need naturalness review |
 
 **Weak / underrepresented topics:** translation is small (**41**) relative to grammar (**683**). This may be fine if translation is a light activity, but it is underrepresented as a content area.
@@ -244,13 +267,12 @@ The latest audit contains **12158** rows.
 
 ### High priority fixes
 
-1. **English translation answer/option model** — **Phase 14** documented: empty static `optionCount` on **36** phrase rows matches audit rules; runtime uses generated MCQ/typing. **Next (optional):** improve **audit** projection only (`optionCount` / `answerMode`), or a **curated** distractor pass — not required to interpret current audit.
+1. **English translation audit clarity** — **Phase 15** implemented explicit **`runtime_translation`** / **`optionCount: runtime`** for phrase rows. **Optional next:** curated translation distractors (content project) or subtype backfill for grammar-heavy English rows.
 
 2. **Math probe harness** if diagnostic behavior is part of launch claims.  
    - Action type: **create probe harness**.
 
-3. **Geometry subtype metadata and formula/diagram answer-key spot-check**.  
-   - Action type: **add metadata**, **review answer key**.
+3. **Geometry** — **Phase 16** documented **`subtype`** vs **`subtopic`** and thematic formula/diagram risks (no code edits). **Next:** choose metadata strategy (**§A.3** in Phase 16 doc); optional answer-key / UI diagram spot-check before content changes.
 
 ### Medium improvements
 
@@ -294,9 +316,9 @@ The latest audit contains **12158** rows.
 | Rank | Subject | File(s) | Issue | Action type | Risk | Owner approval required | Hebrew exact wording required |
 |------|---------|---------|-------|-------------|------|-------------------------|-------------------------------|
 | 2 | Hebrew | `utils/hebrew-question-generator.js`, `utils/hebrew-rich-question-bank.js` | Phase 3 unresolved duplicate/overlap owner decisions | owner wording decision; remove/merge duplicate later | High | **Yes** | **Yes** |
-| 3 | English | `data/english-questions/translation-pools.js` | **Phase 14:** model confirmed; **36** rows = empty static `optionCount` (expected). Optional: audit fields or curated distractors | optional **audit** metadata; optional content distractor pass | Low–Medium | No for audit-only; yes for content changes | No unless Hebrew prompts are changed |
+| 3 | English | `data/english-questions/translation-pools.js` | **Phase 15:** audit labels applied; **Phase 14** model doc. Optional: curated distractors | content distractor pass if desired | Low–Medium | Yes if changing distractor text | No unless Hebrew prompts are changed |
 | 4 | Math | `utils/math-question-generator.js`; future harness script | Five probe-gated kinds not hit by plain audit | create probe harness | Medium | No | No |
-| 5 | Geometry | `utils/geometry-question-generator.js`, `utils/geometry-conceptual-bank.js` | Missing subtype on generated rows; formula/diagram answer assumptions | add metadata; review answer key | Medium | No for metadata; yes for content changes | No unless Hebrew prompt text changes |
+| 5 | Geometry | `utils/geometry-question-generator.js`, `utils/geometry-conceptual-bank.js` | **Phase 16:** `subtype` gap explained; optional **`subtype`=`kind`** or audit denorm — separate from correctness | metadata strategy then optional spot-check | Medium → Low for metadata clarity | No for taxonomy-only | No unless Hebrew prompt changes |
 | 6 | Geography | `data/geography-questions/g*.js` | Factual freshness / map-civic ambiguity spot-check | review answer key; review distractors | Low-Medium | Yes for factual wording changes | Yes if Hebrew wording changes |
 
 ---
