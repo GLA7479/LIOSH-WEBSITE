@@ -1,7 +1,7 @@
 # Product Quality Phase 8 — Subject Coverage & Content Improvement Plan
 
 **Last updated:** 2026-05-05  
-**Status:** Planning doc; **Phase 10 completed** full Science `patternFamily` rollout + subtype gap closure — see [`docs/product-quality-phase-10-science-metadata-completion.md`](product-quality-phase-10-science-metadata-completion.md).  
+**Status:** Planning doc; **Phase 10** metadata complete; **Phase 11–12** Science review reports published ([**Phase 11** spot sample](product-quality-phase-11-science-factual-distractor-review.md), [**Phase 12** full-bank mechanical sweep](product-quality-phase-12-science-full-content-review.md)) — **documentation only; no bank edits**. **Phase 14** English translation **model** review (audit vs runtime): [`product-quality-phase-14-english-translation-model-review.md`](product-quality-phase-14-english-translation-model-review.md).  
 **Strict boundary (Phase 8 original):** Phase 8 was documentation-only. **Phases 9–10** changed **only** neutral metadata in [`data/science-questions.js`](../data/science-questions.js) and [`data/science-questions-phase3.js`](../data/science-questions-phase3.js); no stems, answers, or grade gates.
 
 ### Phase 9 — Science `patternFamily` first batch (historical counts)
@@ -23,6 +23,33 @@ Details: [`docs/product-quality-phase-9-science-metadata-patch.md`](product-qual
 
 Details: [`docs/product-quality-phase-10-science-metadata-completion.md`](product-quality-phase-10-science-metadata-completion.md).
 
+### Phase 11 — Science factual + distractor review (report only)
+
+| Scope | Result |
+|-------|--------|
+| Spot-check sample | **18** rows (17 = one per `patternFamily` + `env_9` for environment/ecosystems balance) |
+| Bank edits | **None** |
+
+Details: [`docs/product-quality-phase-11-science-factual-distractor-review.md`](product-quality-phase-11-science-factual-distractor-review.md).
+
+### Phase 12 — Full science bank sweep (report only)
+
+| Scope | Result |
+|-------|--------|
+| Rows mechanically reviewed | **383** / **383** |
+| Additional backlog ids vs Phase 11 | **None** (semantic backlog remains **`animals_4`**, **`exp_1`**) |
+
+Details: [`docs/product-quality-phase-12-science-full-content-review.md`](product-quality-phase-12-science-full-content-review.md).
+
+### Phase 14 — English translation model (audit vs runtime, report only)
+
+| Scope | Result |
+|-------|--------|
+| Translation audit rows reviewed | **41** (36 phrase-pool rows with empty static `optionCount` + **5** `simulator_translation_mcq` rows with `optionCount` **4**) |
+| Bank / wording edits | **None** |
+
+Details: [`docs/product-quality-phase-14-english-translation-model-review.md`](product-quality-phase-14-english-translation-model-review.md).
+
 ## Sources
 
 - [`reports/question-audit/items.json`](../reports/question-audit/items.json)
@@ -43,8 +70,8 @@ The latest audit contains **12158** rows.
 | **Math** | 3942 | G1-G6 | **Ready enough** with focused diagnostic follow-up | Balanced easy/medium/hard (**1314** each); broad topic generator coverage; no missing difficulty / subtype / patternFamily in audit output | 5 probe-gated diagnostic kinds not hit by plain audit sample | If diagnostic precision matters for launch: probe-aware harness, not more random sampling | Story diversity, context variety |
 | **Geometry** | 2548 | G1-G6 | **Ready enough** with metadata polish | Broad topic set; no missing difficulty or patternFamily; conceptual + generator coverage | **1313** rows missing `subtype` in audit output, mostly generated rows | Review key visual/formula topics for answer-key and diagram assumption risk | Broaden real-world contexts |
 | **Hebrew** | 927 | G1-G6 | **Needs owner review** | No missing difficulty / patternFamily / subtype; full grade span | Phase 3 unresolved duplicate/overlap owner decisions | Owner approval for legacy triple stems + high-risk overlap rows. **Owner exact wording required** for any wording change | Spiral-repetition keep list can wait after spot-check |
-| **English** | 852 | G1-G6 | **Needs focused fixes** | English translation difficulty metadata fixed; no missing difficulty | **621** rows missing `subtype`; **36** translation rows show `optionCount=0` in audit output | Confirm translation answer/option model and subtype metadata policy | Wider topical variety |
-| **Science** | 383 | G1-G6 via broad grade spans | **Metadata taxonomy complete** for audit | Full `patternFamily` + `subtype` coverage on static science bank (**Phase 10**); no missing difficulty | Factual/distractor review not yet documented | Content QA / factual spot-check by `patternFamily` | Add more experiment-context prompts after factual review |
+| **English** | 852 | G1-G6 | **Needs focused fixes** | English translation difficulty metadata fixed; no missing difficulty | **621** rows missing `subtype`; **36** translation phrase rows have **empty** static `optionCount` in audit (see **Phase 14** — **expected** with current audit rules; runtime builds MCQ/typing) | Subtype metadata policy; optional **audit** enhancement for translation `optionCount` / `answerMode` | Wider topical variety |
+| **Science** | 383 | G1-G6 via broad grade spans | **Metadata complete**; **Phase 11 spot-review documented** | Full `patternFamily` + `subtype` (**Phase 10**); spot sample flagged **`animals_4`** for owner wording/factual alignment (see Phase 11 doc) | Full-bank human read still optional | Owner decision on Phase 11 flagged items; broader factual pass by family | Add questions only after owner-approved fixes |
 | **Homeland / Geography** | 3506 | G1-G6 | **Ready enough** | Largest static bank; full metadata; balanced difficulty; all option counts 4 | Broad topics span many grades and may hide repeated templates | Spot-check factual freshness and map/civic ambiguity | Contemporary examples and terminology polish |
 
 **Weakest subject right now (content QA):** **Science** — metadata taxonomy is **complete** in the audit (**Phase 10**), but factual accuracy and distractor quality still need a documented human review pass (not an audit artifact gap).
@@ -138,9 +165,9 @@ The latest audit contains **12158** rows.
 | Count by topic | grammar **683**, sentence **128**, translation **41** |
 | Top subtopics | question_frames 98; modals 98; comparatives 96; be_basic 50; progressive 49; past_simple 49; future_forms 49; complex_tenses 49; conditionals 49 |
 | Missing metadata | difficulty **0**, patternFamily **0**, subtype **621** |
-| Answer mode / options | mcq **852**; option counts 3 (**811**), 4 (**5**), 0 (**36**) |
+| Answer mode / options | mcq **852** (audit default); option counts 3 (**811**), 4 (**5**), **empty / falsy** (**36** translation phrase rows — **Phase 14**) |
 | Suspected duplicate clusters | No exact / near duplicates listed |
-| Answer-key risk | Translation rows with `optionCount=0` in audit output need confirmation of runtime answer model |
+| Answer-key risk | Translation phrase rows: runtime builds MCQ/typing (**Phase 14**); audit empty `optionCount` is **not** a missing key signal |
 | Distractor risk | Grammar distractors should reflect learner mistakes; translation distractors need naturalness review |
 
 **Weak / underrepresented topics:** translation is small (**41**) relative to grammar (**683**). This may be fine if translation is a light activity, but it is underrepresented as a content area.
@@ -163,16 +190,17 @@ The latest audit contains **12158** rows.
 | Missing metadata | difficulty **0**, patternFamily **0**, subtype **0** (**Phase 10**) |
 | Answer mode / options | mcq **360**, true_false **23**; option counts 4 (**360**), 2 (**23**) |
 | Suspected duplicate clusters | No exact / near duplicates listed |
-| Answer-key risk | Factual correctness and simplification level require content review |
-| Distractor risk | Science distractors should represent misconceptions; not yet audited at quality level |
+| Content QA | **Phase 11** spot sample (**18** rows): see [`docs/product-quality-phase-11-science-factual-distractor-review.md`](product-quality-phase-11-science-factual-distractor-review.md) — **1** high-priority wording/factual alignment flag (`animals_4`); full bank not read end-to-end |
+| Answer-key risk | Spot sample did not invalidate keyed indices; flagged item needs **owner-approved** Hebrew alignment if text changes |
+| Distractor risk | No distractor issues identified in the Phase 11 sample; full bank not exhaustively reviewed |
 
 **Weak / underrepresented topics:** plants/materials are lowest at **46** each; body has three specific subtopics plus mostly general tagging.
 
 **Overrepresented topics:** earth_space/environment are highest but close to experiments/body.
 
-**Launch readiness:** **needs focused fixes**.
+**Launch readiness:** **improved** vs metadata-only; still **owner-dependent** for any approved Hebrew edits from Phase 11.
 
-**Blocker before launch:** factual/distractor review (metadata taxonomy is complete as of **Phase 10**).
+**Blocker before launch:** none for “metadata + initial spot review”; **owner approval** if acting on Phase 11 wording flags.
 
 ---
 
@@ -216,8 +244,7 @@ The latest audit contains **12158** rows.
 
 ### High priority fixes
 
-1. **English translation answer/option model check** for translation rows with `optionCount=0` in audit output.  
-   - Action type: **review answer key**, **review distractors**, possibly **add metadata**.
+1. **English translation answer/option model** — **Phase 14** documented: empty static `optionCount` on **36** phrase rows matches audit rules; runtime uses generated MCQ/typing. **Next (optional):** improve **audit** projection only (`optionCount` / `answerMode`), or a **curated** distractor pass — not required to interpret current audit.
 
 2. **Math probe harness** if diagnostic behavior is part of launch claims.  
    - Action type: **create probe harness**.
@@ -267,7 +294,7 @@ The latest audit contains **12158** rows.
 | Rank | Subject | File(s) | Issue | Action type | Risk | Owner approval required | Hebrew exact wording required |
 |------|---------|---------|-------|-------------|------|-------------------------|-------------------------------|
 | 2 | Hebrew | `utils/hebrew-question-generator.js`, `utils/hebrew-rich-question-bank.js` | Phase 3 unresolved duplicate/overlap owner decisions | owner wording decision; remove/merge duplicate later | High | **Yes** | **Yes** |
-| 3 | English | `data/english-questions/translation-pools.js` | Translation rows have `optionCount=0` in audit output; confirm answer model/distractors | review answer key; review distractors; add metadata if needed | Medium | No for audit-only; yes for content changes | No unless Hebrew prompts are changed |
+| 3 | English | `data/english-questions/translation-pools.js` | **Phase 14:** model confirmed; **36** rows = empty static `optionCount` (expected). Optional: audit fields or curated distractors | optional **audit** metadata; optional content distractor pass | Low–Medium | No for audit-only; yes for content changes | No unless Hebrew prompts are changed |
 | 4 | Math | `utils/math-question-generator.js`; future harness script | Five probe-gated kinds not hit by plain audit | create probe harness | Medium | No | No |
 | 5 | Geometry | `utils/geometry-question-generator.js`, `utils/geometry-conceptual-bank.js` | Missing subtype on generated rows; formula/diagram answer assumptions | add metadata; review answer key | Medium | No for metadata; yes for content changes | No unless Hebrew prompt text changes |
 | 6 | Geography | `data/geography-questions/g*.js` | Factual freshness / map-civic ambiguity spot-check | review answer key; review distractors | Low-Medium | Yes for factual wording changes | Yes if Hebrew wording changes |

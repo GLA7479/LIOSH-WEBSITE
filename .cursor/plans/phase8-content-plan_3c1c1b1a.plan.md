@@ -4,13 +4,13 @@ overview: Create a documentation-only Phase 8 subject coverage and content impro
 todos:
   - id: draft-phase8-doc
     content: Create `docs/product-quality-phase-8-subject-coverage-content-plan.md` with subject matrix, readiness statuses, priorities, and first patch recommendation.
-    status: pending
+    status: cancelled
   - id: update-phase1-ref
     content: Add a concise Phase 8 reference to `docs/product-quality-phase-1-audit.md`.
-    status: pending
+    status: cancelled
   - id: verify-doc-only
     content: "Review final docs for compliance: no Hebrew rewrites, no question-bank edits, no implementation changes."
-    status: pending
+    status: completed
 isProject: false
 ---
 

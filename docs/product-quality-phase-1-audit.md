@@ -31,6 +31,18 @@
 
 [`docs/product-quality-phase-10-science-metadata-completion.md`](product-quality-phase-10-science-metadata-completion.md): **383** / **383** science rows have `params.patternFamily`; **0** missing `subtype`. Files: [`data/science-questions.js`](../data/science-questions.js), [`data/science-questions-phase3.js`](../data/science-questions-phase3.js). Helpers: [`scripts/apply-science-pattern-family-phase10.mjs`](../scripts/apply-science-pattern-family-phase10.mjs), [`scripts/fix-science-experiments-observation-inference.mjs`](../scripts/fix-science-experiments-observation-inference.mjs).
 
+### Phase 11 — Science factual + distractor review (report only)
+
+[`docs/product-quality-phase-11-science-factual-distractor-review.md`](product-quality-phase-11-science-factual-distractor-review.md): spot-check **18** science rows; **no** bank edits.
+
+### Phase 12 — Full science bank content sweep (report only)
+
+[`docs/product-quality-phase-12-science-full-content-review.md`](product-quality-phase-12-science-full-content-review.md): mechanical pass **383** science rows; semantic backlog unchanged (**`animals_4`**, **`exp_1`**).
+
+### Phase 13 — Science content fix (owner-approved)
+
+[`docs/product-quality-phase-13-science-content-fix.md`](product-quality-phase-13-science-content-fix.md): **`animals_4`** — one MCQ option string at index 1 replaced with owner-approved exact Hebrew; **`exp_1`** unchanged.
+
 ---
 
 ## Executive summary (pipeline)
