@@ -1,7 +1,7 @@
 # Product Quality Phase 8 — Subject Coverage & Content Improvement Plan
 
 **Last updated:** 2026-05-05  
-**Status:** Planning doc; **Phase 10** metadata complete; **Phase 11–12** Science review reports published ([**Phase 11** spot sample](product-quality-phase-11-science-factual-distractor-review.md), [**Phase 12** full-bank mechanical sweep](product-quality-phase-12-science-full-content-review.md)) — **documentation only; no bank edits**. **Phase 14** English translation **model** review: [`product-quality-phase-14-english-translation-model-review.md`](product-quality-phase-14-english-translation-model-review.md). **Phase 15** English translation **audit representation** fix (script + regenerated `question-audit/*` only): [`product-quality-phase-15-english-audit-representation-fix.md`](product-quality-phase-15-english-audit-representation-fix.md). **Phase 16** Geometry **metadata + formula/diagram risk** review (documentation only): [`product-quality-phase-16-geometry-metadata-formula-risk-review.md`](product-quality-phase-16-geometry-metadata-formula-risk-review.md). **Phase 17** Geometry **audit subtype fill** (script + `question-audit/*` only): [`product-quality-phase-17-geometry-audit-representation-fix.md`](product-quality-phase-17-geometry-audit-representation-fix.md). **Phase 18** Math **probe harness planning**: [`product-quality-phase-18-math-probe-harness-plan.md`](product-quality-phase-18-math-probe-harness-plan.md). **Phase 19** Math **probe harness implementation** ([`scripts/audit-math-probes.mjs`](../scripts/audit-math-probes.mjs), [`reports/math-probe-audit/`](../reports/math-probe-audit/)): [`product-quality-phase-19-math-probe-harness.md`](product-quality-phase-19-math-probe-harness.md). **Phase 20** Hebrew **structural cleanup plan** (overlap / legacy duplicate signals → structural vs owner wording; **planning only**): [`product-quality-phase-20-hebrew-structural-cleanup-plan.md`](product-quality-phase-20-hebrew-structural-cleanup-plan.md). **Phase 21** Hebrew **intentional spiral allowlist** (audit split: **28** C1 overlaps → `hebrewIntentionalSpiralOverlaps`; **no** bank edits): [`product-quality-phase-21-hebrew-spiral-allowlist.md`](product-quality-phase-21-hebrew-spiral-allowlist.md). **Phase 22** Hebrew **unresolved structural inspection** + one **safe duplicate removal** (G5 vocabulary; **no** wording edits): [`product-quality-phase-22-hebrew-unresolved-structural-fixes.md`](product-quality-phase-22-hebrew-unresolved-structural-fixes.md). **Phase 23** Homeland / Geography **factual freshness + map/civic ambiguity review** (documentation only — **no** bank edits): [`product-quality-phase-23-homeland-geography-factual-review.md`](product-quality-phase-23-homeland-geography-factual-review.md).  
+**Status:** Planning doc; **Phase 10** metadata complete; **Phase 11–12** Science review reports published ([**Phase 11** spot sample](product-quality-phase-11-science-factual-distractor-review.md), [**Phase 12** full-bank mechanical sweep](product-quality-phase-12-science-full-content-review.md)) — **documentation only; no bank edits**. **Phase 14** English translation **model** review: [`product-quality-phase-14-english-translation-model-review.md`](product-quality-phase-14-english-translation-model-review.md). **Phase 15** English translation **audit representation** fix (script + regenerated `question-audit/*` only): [`product-quality-phase-15-english-audit-representation-fix.md`](product-quality-phase-15-english-audit-representation-fix.md). **Phase 16** Geometry **metadata + formula/diagram risk** review (documentation only): [`product-quality-phase-16-geometry-metadata-formula-risk-review.md`](product-quality-phase-16-geometry-metadata-formula-risk-review.md). **Phase 17** Geometry **audit subtype fill** (script + `question-audit/*` only): [`product-quality-phase-17-geometry-audit-representation-fix.md`](product-quality-phase-17-geometry-audit-representation-fix.md). **Phase 18** Math **probe harness planning**: [`product-quality-phase-18-math-probe-harness-plan.md`](product-quality-phase-18-math-probe-harness-plan.md). **Phase 19** Math **probe harness implementation** ([`scripts/audit-math-probes.mjs`](../scripts/audit-math-probes.mjs), [`reports/math-probe-audit/`](../reports/math-probe-audit/)): [`product-quality-phase-19-math-probe-harness.md`](product-quality-phase-19-math-probe-harness.md). **Phase 20** Hebrew **structural cleanup plan** (overlap / legacy duplicate signals → structural vs owner wording; **planning only**): [`product-quality-phase-20-hebrew-structural-cleanup-plan.md`](product-quality-phase-20-hebrew-structural-cleanup-plan.md). **Phase 21** Hebrew **intentional spiral allowlist** (audit split: **28** C1 overlaps → `hebrewIntentionalSpiralOverlaps`; **no** bank edits): [`product-quality-phase-21-hebrew-spiral-allowlist.md`](product-quality-phase-21-hebrew-spiral-allowlist.md). **Phase 22** Hebrew **unresolved structural inspection** + one **safe duplicate removal** (G5 vocabulary; **no** wording edits): [`product-quality-phase-22-hebrew-unresolved-structural-fixes.md`](product-quality-phase-22-hebrew-unresolved-structural-fixes.md). **Phase 23** Homeland / Geography **factual freshness + map/civic ambiguity review** (documentation only — **no** bank edits): [`product-quality-phase-23-homeland-geography-factual-review.md`](product-quality-phase-23-homeland-geography-factual-review.md). **Phase 24** English **`subtype` gap review** (audit vs bank metadata — **no** content edits): [`product-quality-phase-24-english-subtype-metadata-review.md`](product-quality-phase-24-english-subtype-metadata-review.md). **Phase 25** English **`subtype` audit fill** (script + [`reports/question-audit/`](../reports/question-audit/) only — **`subtype`** ← **`poolKey`** when bank omits): [`product-quality-phase-25-english-subtype-audit-representation-fix.md`](product-quality-phase-25-english-subtype-audit-representation-fix.md).  
 **Strict boundary (Phase 8 original):** Phase 8 was documentation-only. **Phases 9–10** changed **only** neutral metadata in [`data/science-questions.js`](../data/science-questions.js) and [`data/science-questions-phase3.js`](../data/science-questions-phase3.js); no stems, answers, or grade gates.
 
 ### Phase 9 — Science `patternFamily` first batch (historical counts)
@@ -100,6 +100,17 @@ Details: [`docs/product-quality-phase-17-geometry-audit-representation-fix.md`](
 
 Details: [`docs/product-quality-phase-19-math-probe-harness.md`](product-quality-phase-19-math-probe-harness.md).
 
+### Phase 25 — English subtype audit fill (script + audit artifacts only)
+
+| Scope | Result |
+|-------|--------|
+| Code | [`scripts/audit-question-banks.mjs`](../scripts/audit-question-banks.mjs) — **`englishAuditSubtype(item, poolKey)`** for **`english_pool_item`** rows |
+| English rows | **852**; audit **`subtype`** empty **0** (was **621** per **Phase 24** export rule) |
+| Translation phrase rows | **`runtime_translation`** / **`optionCount: runtime`** unchanged (**Phase 15**) |
+| Banks under `data/english-questions/` | **Unchanged** |
+
+Details: [`docs/product-quality-phase-25-english-subtype-audit-representation-fix.md`](product-quality-phase-25-english-subtype-audit-representation-fix.md).
+
 ## Sources
 
 - [`reports/question-audit/items.json`](../reports/question-audit/items.json)
@@ -120,7 +131,7 @@ The latest audit contains **12157** rows (**Phase 22** removed one redundant Heb
 | **Math** | 3942 | G1-G6 | **Ready enough** with focused diagnostic follow-up | Balanced easy/medium/hard (**1314** each); broad topic generator coverage; no missing difficulty / subtype / patternFamily in audit output | Plain **`items.json`** still excludes probe kinds — **Phase 19** harness validates probes separately | Optional CI for **`audit:math-probes`**; optional merge probe rows into main audit | Story diversity, context variety |
 | **Geometry** | 2548 | G1-G6 | **Ready enough** with metadata polish | Broad topic set; no missing difficulty or patternFamily; **`subtype`** populated for all audit rows (**Phase 17**) | Formula/diagram spot-check per **Phase 16** themes | Optional generator **`params.subtype`** parity; content QA | Broaden real-world contexts |
 | **Hebrew** | 926 | G1-G6 | **Needs owner review** | No missing difficulty / patternFamily / subtype; full grade span | Phase 3 unresolved duplicate/overlap owner decisions | Owner approval for legacy triple stems + high-risk overlap rows. **Owner exact wording required** for any wording change | Spiral-repetition keep list can wait after spot-check |
-| **English** | 852 | G1-G6 | **Needs focused fixes** | English translation difficulty metadata fixed; no missing difficulty; **Phase 15** audit labels translation phrase rows (`runtime_translation` / `optionCount: runtime`) — not “broken MCQ” | **621** rows missing `subtype` | Subtype metadata policy | Wider topical variety |
+| **English** | 852 | G1-G6 | **Needs focused fixes** | English translation difficulty metadata fixed; no missing difficulty; **Phase 15** audit labels translation phrase rows (`runtime_translation` / `optionCount: runtime`) — not “broken MCQ”; **Phase 25** fills audit **`subtype`** from **`poolKey`** when bank omits (**0** missing in export) | Product/content priorities (breadth, distractors) — **not** audit **`subtype`** sparsity (**Phase 24–25**) | Owner/content choices for expansion | Wider topical variety |
 | **Science** | 383 | G1-G6 via broad grade spans | **Metadata complete**; **Phase 11 spot-review documented** | Full `patternFamily` + `subtype` (**Phase 10**); spot sample flagged **`animals_4`** for owner wording/factual alignment (see Phase 11 doc) | Full-bank human read still optional | Owner decision on Phase 11 flagged items; broader factual pass by family | Add questions only after owner-approved fixes |
 | **Homeland / Geography** | 3506 | G1-G6 | **Ready enough** | Largest static bank; full metadata; balanced difficulty; all option counts 4 | Phase 23 documented template/vagueness + duplicate-stem clusters for owner triage | Spot-check factual freshness and map/civic ambiguity (**Phase 23** report) | Contemporary examples and terminology polish |
 
@@ -207,6 +218,8 @@ The latest audit contains **12157** rows (**Phase 22** removed one redundant Heb
 
 ### 2.4 English
 
+**Phase 24 subtype gap analysis:** [`docs/product-quality-phase-24-english-subtype-metadata-review.md`](product-quality-phase-24-english-subtype-metadata-review.md) — historically **621** rows had empty **`subtype`** in export; all had **`subtopic`** + **`patternFamily`**. **Phase 25** [`docs/product-quality-phase-25-english-subtype-audit-representation-fix.md`](product-quality-phase-25-english-subtype-audit-representation-fix.md) sets audit **`subtype`** from **`poolKey`** when blank — **no** critical/high blocker for this pass.
+
 | Metric | Evidence |
 |--------|----------|
 | Active grades | G1-G6 |
@@ -214,7 +227,7 @@ The latest audit contains **12157** rows (**Phase 22** removed one redundant Heb
 | Count by difficulty | basic **659**, standard **111**, advanced **82** |
 | Count by topic | grammar **683**, sentence **128**, translation **41** |
 | Top subtopics | question_frames 98; modals 98; comparatives 96; be_basic 50; progressive 49; past_simple 49; future_forms 49; complex_tenses 49; conditionals 49 |
-| Missing metadata | difficulty **0**, patternFamily **0**, subtype **621** |
+| Missing metadata | difficulty **0**, patternFamily **0**, subtype **0** (**Phase 25** audit default from **`poolKey`** when bank omits field) |
 | Answer mode / options | **runtime_translation** **36** (translation phrase rows); mcq **816**; option counts 3 (**811**), 4 (**5**), **runtime** (**36** translation phrase — **Phase 15**) |
 | Suspected duplicate clusters | No exact / near duplicates listed |
 | Answer-key risk | Translation phrase rows: runtime builds MCQ/typing; audit now marks **`runtime_translation`** (**Phase 15**) |
@@ -224,7 +237,7 @@ The latest audit contains **12157** rows (**Phase 22** removed one redundant Heb
 
 **Overrepresented topics:** grammar is dominant.
 
-**Launch readiness:** **needs focused fixes**. Difficulty gap is closed; next risk is translation answer/metadata modeling and subtype sparsity.
+**Launch readiness:** **needs focused fixes** for **product priorities** (breadth, distractor quality) — **Phase 25** closed the audit **`subtype`** column gap in export; remaining English backlog is **content/strategy**, not missing **`subtype`** in [`reports/question-audit/items.json`](../reports/question-audit/items.json).
 
 ---
 
@@ -296,7 +309,7 @@ The latest audit contains **12157** rows (**Phase 22** removed one redundant Heb
 
 ### High priority fixes
 
-1. **English translation audit clarity** — **Phase 15** implemented explicit **`runtime_translation`** / **`optionCount: runtime`** for phrase rows. **Optional next:** curated translation distractors (content project) or subtype backfill for grammar-heavy English rows.
+1. **English translation audit clarity** — **Phase 15** implemented explicit **`runtime_translation`** / **`optionCount: runtime`** for phrase rows. **Phase 24–25:** **`subtype`** empties were **audit/schema**; **Phase 25** applied audit-only **`subtype`** default ([`product-quality-phase-25-english-subtype-audit-representation-fix.md`](product-quality-phase-25-english-subtype-audit-representation-fix.md)). **Optional next:** curated translation distractors (content project).
 
 2. **Math probe harness** — **Phase 19** implemented (`audit:math-probes`). **Optional:** CI gate; merge probe samples into main audit (Phase 18 Option **A**).
 
@@ -304,7 +317,7 @@ The latest audit contains **12157** rows (**Phase 22** removed one redundant Heb
 
 ### Medium improvements
 
-- English subtype coverage for grammar-heavy rows.
+- English optional bank **`subtype`** literals (**Phase 25** closed audit export gap).
 - Science topic/subtopic granularity beyond general `sci_*_general`.
 - Geography factual freshness and map/civic ambiguity spot-check.
 - Hebrew accepted-variants policy for typing rows.

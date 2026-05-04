@@ -1,6 +1,6 @@
 # Product Quality Phase 1 — Question Banks + Learning Flow + Parent Report
 
-**Last updated:** 2026-05-05 (Phase 21 — Hebrew overlap split in `stage2.json`: **9** unresolved + **28** intentional spiral; Phase 22 — **12157** rows after one redundant Hebrew duplicate removed — [`docs/product-quality-phase-22-hebrew-unresolved-structural-fixes.md`](product-quality-phase-22-hebrew-unresolved-structural-fixes.md); Phase 23 — Homeland/Geography factual review doc — [`docs/product-quality-phase-23-homeland-geography-factual-review.md`](product-quality-phase-23-homeland-geography-factual-review.md))  
+**Last updated:** 2026-05-05 (Phase 21 — Hebrew overlap split in `stage2.json`: **9** unresolved + **28** intentional spiral; Phase 22 — **12157** rows after one redundant Hebrew duplicate removed — [`docs/product-quality-phase-22-hebrew-unresolved-structural-fixes.md`](product-quality-phase-22-hebrew-unresolved-structural-fixes.md); Phase 23 — Homeland/Geography factual review — [`docs/product-quality-phase-23-homeland-geography-factual-review.md`](product-quality-phase-23-homeland-geography-factual-review.md); Phase 24 — English **`subtype` gap** review — [`docs/product-quality-phase-24-english-subtype-metadata-review.md`](product-quality-phase-24-english-subtype-metadata-review.md); Phase 25 — English audit **`subtype`** fill — [`docs/product-quality-phase-25-english-subtype-audit-representation-fix.md`](product-quality-phase-25-english-subtype-audit-representation-fix.md))  
 **Scope:** Learning product quality only (not security, not production hardening, not report/AI code changes).
 
 ### Phase 3 — Hebrew owner review
@@ -18,6 +18,14 @@
 ### Phase 23 — Homeland / Geography factual freshness + ambiguity review
 
 [`docs/product-quality-phase-23-homeland-geography-factual-review.md`](product-quality-phase-23-homeland-geography-factual-review.md) — **3506** audit rows catalogued; **24** stratified samples + duplicate-stem scan; **no** question bank edits.
+
+### Phase 24 — English subtype metadata gap review
+
+[`docs/product-quality-phase-24-english-subtype-metadata-review.md`](product-quality-phase-24-english-subtype-metadata-review.md) — **621** English rows lack **`subtype`**; taxonomy present via **`subtopic`** / **`patternFamily`**; **no** content or runtime changes.
+
+### Phase 25 — English subtype audit representation fix
+
+[`docs/product-quality-phase-25-english-subtype-audit-representation-fix.md`](product-quality-phase-25-english-subtype-audit-representation-fix.md) — [`scripts/audit-question-banks.mjs`](../scripts/audit-question-banks.mjs) sets audit **`subtype`** from **`poolKey`** when the bank omits it; regenerated [`reports/question-audit/`](../reports/question-audit/) — English **`subtype`** missing **0**; **no** bank or runtime changes.
 
 ### Phase 4 — Parent report product review
 
@@ -71,7 +79,7 @@
 
 ## Executive summary (pipeline)
 
-- **Central audit script:** [`scripts/audit-question-banks.mjs`](../scripts/audit-question-banks.mjs) ingests **`SCIENCE_QUESTIONS`** from [`data/science-questions.js`](../data/science-questions.js) into the same `reports/question-audit/*` outputs as other subjects. **Phase 15:** English **translation** phrase rows (no static options in the bank) use **`answerMode: runtime_translation`** and **`optionCount: runtime`** instead of empty option counts and default `mcq`. **Phase 17:** **`geometry_generator_sample`** rows inherit **`subtype`** from **`kind`** when **`params.subtype`** is absent.
+- **Central audit script:** [`scripts/audit-question-banks.mjs`](../scripts/audit-question-banks.mjs) ingests **`SCIENCE_QUESTIONS`** from [`data/science-questions.js`](../data/science-questions.js) into the same `reports/question-audit/*` outputs as other subjects. **Phase 15:** English **translation** phrase rows (no static options in the bank) use **`answerMode: runtime_translation`** and **`optionCount: runtime`** instead of empty option counts and default `mcq`. **Phase 17:** **`geometry_generator_sample`** rows inherit **`subtype`** from **`kind`** when **`params.subtype`** is absent. **Phase 25:** English **`english_pool_item`** rows use **`englishAuditSubtype(item, poolKey)`** so audit **`subtype`** matches **`poolKey`** when the bank omits the field.
 - **Row lineage:** each CSV/JSON row includes **`bankProvenance`**:
   - `static_bank` — geography, Hebrew legacy/rich, English pools, geometry conceptual items.
   - `generator_sample` — math + geometry deterministic audit samples (`*_generator_sample` / `math_generator_sample`).

@@ -4,6 +4,7 @@
  *
  * פלט: reports/question-audit/items.json, items.csv, findings.json, stage2.json
  * Phase 21: Hebrew C1 spiral overlaps → stage2.hebrewIntentionalSpiralOverlaps (allowlist JSON); withinBandClassPairOverlaps = unresolved only.
+ * Phase 25: English audit `subtype` defaults from `poolKey` when bank omits it (audit CSV/JSON only).
  *
  * הרצה: npm run audit:questions
  *    (דורש tsx לייבוא מודולי הפרויקט ללא סיומת .js בנתיבים פנימיים)
@@ -513,6 +514,13 @@ function englishPoolAuditAnswerFields(category, item, opts) {
   };
 }
 
+/** Phase 25: audit representation only — when the bank omits subtype, use pool key (same as subtopic). */
+function englishAuditSubtype(item, poolKey) {
+  const s = item.subtype;
+  if (s != null && String(s).trim() !== "") return String(s).trim();
+  return poolKey;
+}
+
 function collectEnglishPool(rows, category, pools) {
   const fileMap = {
     grammar: "data/english-questions/grammar-pools.js",
@@ -575,7 +583,7 @@ function collectEnglishPool(rows, category, pools) {
             topic: category,
             subtopic: poolKey,
             patternFamily: `${basePf}_g${g}`,
-            subtype: item.subtype || "",
+            subtype: englishAuditSubtype(item, poolKey),
             difficulty: (item.difficulty || "").toString(),
             gradeBand: item.gradeBand || "",
             minGrade: g,
@@ -615,7 +623,7 @@ function collectEnglishPool(rows, category, pools) {
             topic: category,
             subtopic: poolKey,
             patternFamily: `${basePf}_g${g}`,
-            subtype: item.subtype || "",
+            subtype: englishAuditSubtype(item, poolKey),
             difficulty: (item.difficulty || "").toString(),
             gradeBand: item.gradeBand || "",
             minGrade: g,
@@ -651,7 +659,7 @@ function collectEnglishPool(rows, category, pools) {
         topic: category,
         subtopic: poolKey,
         patternFamily: item.patternFamily || poolKey,
-        subtype: item.subtype || "",
+        subtype: englishAuditSubtype(item, poolKey),
         difficulty: (item.difficulty || "").toString(),
         gradeBand: item.gradeBand || "",
         minGrade: lo,
