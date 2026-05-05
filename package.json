@@ -126,6 +126,8 @@
     "qa:parent-pdf-export": "tsx scripts/qa-parent-pdf-export.mjs",
     "qa:parent-ai-final": "node scripts/parent-ai-final-qa.mjs",
     "qa:overnight-parent-ai": "node scripts/overnight-parent-ai-audit.mjs",
+    "qa:overnight-parent-ai:full": "node scripts/overnight-parent-ai-audit.mjs",
+    "qa:overnight-parent-ai:soak": "node scripts/overnight-parent-ai-soak.mjs",
     "qa:overnight-parent-ai:smoke": "node scripts/overnight-parent-ai-audit.mjs --smoke",
     "test:parent-ai:manual-qa-matrix": "tsx scripts/parent-ai-manual-qa-matrix.mjs",
     "test:parent-report-hebrew-language": "tsx scripts/parent-report-hebrew-language-selftest.mjs",

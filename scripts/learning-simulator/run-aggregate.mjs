@@ -9,6 +9,7 @@ import { fileURLToPath } from "node:url";
 import { pathToFileURL } from "node:url";
 
 import { buildStorageForScenario } from "./lib/aggregate-runner.mjs";
+import { expandScenarios, defaultScenarioClone } from "../lib/overnight-soak-expand.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, "..", "..");
@@ -88,6 +89,7 @@ async function main() {
   const matrixRows = matrixRaw.rows || [];
 
   const { BASE_PROFILES, QUICK_SCENARIOS } = await loadFixtures();
+  const scenarios = expandScenarios(QUICK_SCENARIOS, defaultScenarioClone);
 
   await mkdir(PER_STUDENT, { recursive: true });
 
@@ -99,7 +101,7 @@ async function main() {
   let okScenarios = 0;
   const validationWarnings = [];
 
-  for (const scenario of QUICK_SCENARIOS) {
+  for (const scenario of scenarios) {
     const profile = BASE_PROFILES[scenario.profileRef];
     if (!profile) {
       perScenario.push({
@@ -162,14 +164,15 @@ async function main() {
     generator: "run-aggregate-v1",
     matrixRowCount: matrixRows.length,
     counts: {
-      scenarios: QUICK_SCENARIOS.length,
+      scenarios: scenarios.length,
       okScenarios,
+      baseQuickScenarios: QUICK_SCENARIOS.length,
     },
     totals: {
       sessions: totalSessions,
       questions: totalQuestions,
       mistakes: totalMistakes,
-      storageArtifacts: QUICK_SCENARIOS.length * 2,
+      storageArtifacts: scenarios.length * 2,
     },
     perScenario,
     validationWarnings,
@@ -178,12 +181,14 @@ async function main() {
   await writeFile(OUT_JSON, JSON.stringify(payload, null, 2), "utf8");
   await writeFile(OUT_MD, buildMarkdown(payload), "utf8");
 
-  const failed = okScenarios !== QUICK_SCENARIOS.length;
+  const failed = okScenarios !== scenarios.length;
   if (failed) {
-    console.error(`Aggregate run finished with validation failures: ${QUICK_SCENARIOS.length - okScenarios} scenario(s).`);
+    console.error(`Aggregate run finished with validation failures: ${scenarios.length - okScenarios} scenario(s).`);
     process.exitCode = 1;
   } else {
-    console.log(`Aggregate OK: ${QUICK_SCENARIOS.length} scenarios, ${totalSessions} sessions, ${totalQuestions} questions, ${totalMistakes} mistake rows.`);
+    console.log(
+      `Aggregate OK: ${scenarios.length} scenarios (${QUICK_SCENARIOS.length} base), ${totalSessions} sessions, ${totalQuestions} questions, ${totalMistakes} mistake rows.`
+    );
   }
 }
 

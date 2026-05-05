@@ -208,9 +208,13 @@ async function main() {
     "six-subject-mixed",
   ];
 
+  let rounds = Math.max(1, parseInt(String(process.env.OVERNIGHT_SYNTHETIC_ROUNDS || process.env.OVERNIGHT_REPEATS || "1"), 10) || 1);
+  if (process.env.OVERNIGHT_SOAK === "1") rounds = Math.max(rounds, 2);
+
   const rows = [];
   const externalRows = [];
 
+  for (let round = 0; round < rounds; round++) {
   for (const pid of profiles) {
     installBrowserGlobals();
     applyProfileSeed(pid);
@@ -230,7 +234,9 @@ async function main() {
         blocksPreview: (res.answerBlocks || []).map((b) => String(b.textHe || "").slice(0, 400)),
       });
     }
-    rows.push({ profile: pid, hadDetailedPayload: Boolean(detailed), turns });
+    const displayId = round === 0 ? pid : `${pid}__soak${round}`;
+    rows.push({ profile: displayId, hadDetailedPayload: Boolean(detailed), turns, round });
+  }
   }
 
   installBrowserGlobals();

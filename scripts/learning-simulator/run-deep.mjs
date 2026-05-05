@@ -14,6 +14,7 @@ import { buildReportsFromAggregateStorage } from "./lib/report-runner.mjs";
 import { evaluateAssertions } from "./lib/report-assertion-engine.mjs";
 import { computeBehaviorOracle } from "./lib/behavior-oracle.mjs";
 import { evaluateScenarioBehavior, summarizeFailureCauses } from "./lib/behavior-assertion-engine.mjs";
+import { expandScenarios, defaultScenarioClone } from "../lib/overnight-soak-expand.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, "..", "..");
@@ -119,6 +120,7 @@ async function main() {
   }
 
   const { BASE_PROFILES, DEEP_SCENARIOS } = await loadDeepSuite();
+  const scenarios = expandScenarios(DEEP_SCENARIOS, defaultScenarioClone);
 
   /** @type {object[]} */
   const perScenario = [];
@@ -129,7 +131,7 @@ async function main() {
   let totalReportAssertions = 0;
   let totalBehaviorAssertions = 0;
 
-  for (const scenario of DEEP_SCENARIOS) {
+  for (const scenario of scenarios) {
     const sid = scenario.scenarioId;
     const profile = BASE_PROFILES[scenario.profileRef];
     if (!profile) {
@@ -281,8 +283,9 @@ async function main() {
     runtimeMs,
     generator: "learning-simulator-deep-v1",
     counts: {
-      scenarios: DEEP_SCENARIOS.length,
+      scenarios: scenarios.length,
       scenariosPassed,
+      baseDeepScenarios: DEEP_SCENARIOS.length,
       totalReportAssertions,
       totalBehaviorAssertions,
     },
@@ -295,12 +298,13 @@ async function main() {
   await writeFile(OUT_MD, buildMarkdown(payload), "utf8");
   await writeFile(FAILURES_JSON, JSON.stringify({ failures, generatedAt: payload.generatedAt, runtimeMs }, null, 2), "utf8");
 
-  const ok = scenariosPassed === DEEP_SCENARIOS.length;
+  const ok = scenariosPassed === scenarios.length;
   console.log(
     JSON.stringify(
       {
         ok,
-        scenarios: DEEP_SCENARIOS.length,
+        scenarios: scenarios.length,
+        baseDeepScenarios: DEEP_SCENARIOS.length,
         scenariosPassed,
         totals,
         runtimeMs,

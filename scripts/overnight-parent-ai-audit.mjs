@@ -14,8 +14,15 @@
  *     spawning local Next (otherwise .env QA_BASE_URL is ignored for PDF phase to avoid stale ports).
  *   OVERNIGHT_SAMPLE_PDFS_TIMEOUT_MS=<ms>  — optional; timeout for f-sample-pdfs only (default 60 min).
  *     Parent PDF export / ls pdf-export still use T_PDF (20 min).
+ *   OVERNIGHT_SOAK=1 + OVERNIGHT_STUDENT_MULTIPLIER / OVERNIGHT_TARGET_SCENARIOS — expand aggregate/deep scenarios (no sleeps).
+ *   OVERNIGHT_COVERAGE_ENFORCE=0 — do not fail on COVERAGE_MANIFEST thresholds (default: enforce when not --smoke).
+ *   COVERAGE thresholds: OVERNIGHT_MIN_GRADES, OVERNIGHT_MIN_SCENARIOS, OVERNIGHT_MIN_QUESTIONS, OVERNIGHT_MIN_SESSIONS, …
+ *
+ * Usage flags:
+ *   --smoke   short gate
+ *   --soak    sets OVERNIGHT_SOAK=1 for heavier learning-simulator repetition (env-driven)
  */
-import { spawn } from "node:child_process";
+import { spawn, spawnSync } from "node:child_process";
 import fs from "fs";
 import path from "path";
 import { fileURLToPath } from "node:url";
@@ -59,6 +66,44 @@ const NPX_CLI = npxCliPath();
 const NPX = process.platform === "win32" ? "npx.cmd" : "npx";
 
 const SMOKE = process.argv.includes("--smoke");
+if (process.argv.includes("--soak") && !process.env.OVERNIGHT_SOAK) process.env.OVERNIGHT_SOAK = "1";
+
+/**
+ * @param {{ OUT: string; ts: string; reportedOverall: string; commandRollup: string; smoke: boolean; cov: any; coverageManifestFailed: boolean }} args
+ */
+function buildLatestAuditMd(args) {
+  const { OUT, ts, reportedOverall, commandRollup, smoke, cov, coverageManifestFailed } = args;
+  const o = cov?.overall;
+  const g = (cov?.grades?.covered || []).join(", ") || "—";
+  const subs = (cov?.subjects?.unionFromAggregateAndCatalog || []).join(", ") || "—";
+  const thr = cov?.thresholdsPass;
+  return [
+    `# Latest overnight run`,
+    ``,
+    `- **Folder:** \`${OUT}\``,
+    `- **Timestamp:** ${ts}`,
+    `- **Declared status (commands + coverage):** ${reportedOverall}`,
+    `- **Command-only rollup:** ${commandRollup}`,
+    `- **Smoke:** ${smoke}`,
+    `- **Coverage thresholds:** ${thr === true ? "PASS" : thr === false ? "FAIL" : "n/a"}${coverageManifestFailed ? " (manifest error)" : ""}`,
+    `- **Manifest:** \`${path.join(OUT, "COVERAGE_MANIFEST.md")}\``,
+    ``,
+    `## מה נבדק — תמונת מצב`,
+    `- **תרחישים משוקללים (aggregate+deep+critical+synthetic):** ${o?.combinedScenarios ?? "—"}`,
+    `- **שאלות מדומות (aggregate+deep):** ${o?.combinedQuestions ?? "—"}`,
+    `- **סשנים מדומים:** ${o?.combinedSessions ?? "—"}`,
+    `- **PDFים (דוגמת overnight PDF):** ${o?.pdfsGeneratedCount ?? "—"}`,
+    `- **כיתות מיוצגות:** ${g}`,
+    `- **מקצועות (איחוד):** ${subs}`,
+    `- **פקודות שעברו (pass):** ${o?.aiTestsCommands ?? "—"} / ${cov?.overall?.totalCommands ?? "—"}`,
+    ``,
+    `## פערים (קצר)`,
+    ...(cov?.gapsHebrew?.length ? cov.gapsHebrew.slice(0, 12).map((x) => `- ${x}`) : ["- (none recorded)"]),
+    ``,
+    `לטבלאות מלאות (A–H) ראו \`COVERAGE_MANIFEST.md\` בתיקיית הריצה.`,
+    ``,
+  ].join("\n");
+}
 
 function stamp() {
   return new Date().toISOString().replace(/[:.]/g, "-").slice(0, 19);
@@ -781,16 +826,55 @@ async function main() {
   ].join("\n");
   fs.writeFileSync(path.join(OUT, "MORNING_SUMMARY.md"), morning, "utf8");
 
+  const manifestScript = path.join(ROOT, "scripts", "overnight-coverage-manifest.mjs");
+  const manifestProc = spawnSync(process.execPath, [manifestScript, "--outDir", OUT], {
+    cwd: ROOT,
+    env: process.env,
+    encoding: "utf8",
+    stdio: "inherit",
+  });
+  const coverageManifestFailed = manifestProc.status !== 0 && manifestProc.status != null;
+
+  let cov = null;
+  try {
+    cov = JSON.parse(fs.readFileSync(path.join(OUT, "COVERAGE_MANIFEST.json"), "utf8"));
+  } catch {
+    cov = null;
+  }
+
+  let reportedOverall = overall;
+  if (coverageManifestFailed) reportedOverall = "FAIL";
+  else if (cov?.thresholdsPass === false && cov?.enforcementEnabled) reportedOverall = "FAIL";
+
   const latestRoot = path.join(ROOT, "reports/overnight-parent-ai-audit");
-  writeJson(path.join(latestRoot, "latest.json"), { path: OUT, timestamp: ts, overallStatus: overall, smoke: SMOKE });
+  writeJson(path.join(latestRoot, "latest.json"), {
+    path: OUT,
+    timestamp: ts,
+    overallStatus: reportedOverall,
+    commandRollupStatus: overall,
+    smoke: SMOKE,
+    coverageManifestPath: path.join(OUT, "COVERAGE_MANIFEST.json"),
+    coverageThresholdsPass: cov?.thresholdsPass ?? null,
+    coverageEnforcementEnabled: cov?.enforcementEnabled ?? null,
+    coverageSummary: cov?.overall ?? null,
+    gapsHebrew: cov?.gapsHebrew ?? [],
+  });
   fs.writeFileSync(
     path.join(latestRoot, "latest.md"),
-    `# Latest overnight run\n\nFolder: ${OUT}\nStatus: ${overall}\nSmoke: ${SMOKE}\n`,
+    buildLatestAuditMd({
+      OUT,
+      ts,
+      reportedOverall,
+      commandRollup: overall,
+      smoke: SMOKE,
+      cov,
+      coverageManifestFailed,
+    }),
     "utf8"
   );
 
-  console.log("overnight-parent-ai-audit complete:", OUT, overall, SMOKE ? "(smoke)" : "");
-  if (failed > 0 || timeouts > 0 || overall === "FAIL") process.exitCode = 1;
+  console.log("overnight-parent-ai-audit complete:", OUT, reportedOverall, SMOKE ? "(smoke)" : "");
+  if (failed > 0 || timeouts > 0 || overall === "FAIL" || reportedOverall === "FAIL" || coverageManifestFailed) process.exitCode = 1;
 }
 
 main().catch((e) => {
