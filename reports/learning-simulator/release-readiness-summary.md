@@ -1,7 +1,7 @@
 # Learning Simulator — Release readiness summary
 
-- **runId:** release-summary-mot0tw5f
-- **generatedAt:** 2026-05-05T19:28:19.971Z
+- **runId:** release-summary-mot6jdz7
+- **generatedAt:** 2026-05-05T22:08:07.555Z
 
 ## Overall
 
@@ -48,19 +48,19 @@
 
 | Field | Value |
 | --- | --- |
-| planner runs | 126 |
+| planner runs | 204 |
 | safetyViolationCount | 0 |
-| inputsWithAvailableMetadata | 126 |
-| availableQuestionMetadata_missing (after index) | 0 |
+| inputsWithAvailableMetadata | 203 |
+| availableQuestionMetadata_missing (after index) | 1 |
 | metadataSubjectFallbackCount | 0 |
-| englishSkillTaggingIncompleteCount | 0 |
-| needs_human_review outputs | 0 |
+| englishSkillTaggingIncompleteCount | 1 |
+| needs_human_review outputs | 1 |
 | metadata index source | snapshot_file |
 | human report | `reports/adaptive-learning-planner/artifact-summary.md` |
 
-**plannerStatus:** {"caution":122,"ready":4}
+**plannerStatus:** {"caution":199,"needs_human_review":1,"ready":4}
 
-**nextAction:** {"pause_collect_more_data":98,"probe_skill":24,"practice_current":2,"advance_skill":2}
+**nextAction:** {"pause_collect_more_data":153,"probe_skill":47,"practice_current":2,"advance_skill":2}
 
 *Release fails if `safetyViolationCount > 0` or the orchestrator adaptive-planner step failed. Other rows are advisory until diagnostic units carry bank-aligned skill ids.*
 
@@ -70,7 +70,7 @@
 | Gate | Status |
 | --- | --- |
 | question metadata | warn |
-| adaptive planner artifacts | pass |
+| adaptive planner artifacts | warn |
 | matrix smoke | pass |
 | critical deep | pass |
 | profile stress | pass |
@@ -111,7 +111,7 @@ Top warning codes: ambiguous_evidence:124
 | status | pass |
 | checkedRoute | /learning/parent-report?qa_pdf=file&period=month |
 | downloadSucceeded | true |
-| fileSizeBytes | 4204469 |
+| fileSizeBytes | 4198699 |
 | pdfHeaderOk | true |
 | deferredReason | — |
 
@@ -127,5 +127,8 @@ Top warning codes: ambiguous_evidence:124
 - (none)
 
 - **warning:** Question metadata: pass_with_advisory — advisoryIssueCount=15960, highRiskCount=439
+- **warning:** Adaptive planner: availableQuestionMetadata_missing (after index)=1
+- **warning:** Adaptive planner: englishSkillTaggingIncompleteCount=1
+- **warning:** Adaptive planner: needs_human_review outputs=1
 
 Full JSON: `C:/Users/ERAN YOSEF/Desktop/final projects/FINAL-WEB/LIOSH-WEB-TRY/reports/learning-simulator/release-readiness-summary.json`

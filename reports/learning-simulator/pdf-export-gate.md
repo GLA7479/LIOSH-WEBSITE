@@ -1,6 +1,6 @@
 # PDF export gate
 
-- runId: pdf-gate-mot0r5bk
+- runId: pdf-gate-mot6gvjp
 - status: pass
 - browserMode: true
 - checkedRoute: /learning/parent-report?qa_pdf=file&period=month
@@ -11,7 +11,7 @@
 | --- | --- |
 | downloadAttempted | true |
 | downloadSucceeded | true |
-| fileSizeBytes | 4204469 |
+| fileSizeBytes | 4198699 |
 | pdfHeaderOk | true |
 | consoleErrorsTotal | 0 |
 | fatalErrorsTotal | 0 |

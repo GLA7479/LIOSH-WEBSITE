@@ -1,0 +1,100 @@
+{
+  "scenarioId": "weak_geometry_area_g5_30d__soak1",
+  "profileRef": "p_weak_geometry_area",
+  "generator": "learning-simulator-deep-behavior-v1",
+  "oracle": {
+    "evidence": {
+      "sessionCount": 74,
+      "questionTotal": 1164,
+      "correctTotal": 453,
+      "mistakeEventCount": 396,
+      "subjectsTouched": [
+        "geometry"
+      ],
+      "overallAccuracyPct": 38.9,
+      "mistakeRateApprox": 0.34
+    },
+    "subjectMetrics": {
+      "geometry": {
+        "totalQ": 1164,
+        "correctQ": 453,
+        "accuracyPct": 38.9
+      }
+    },
+    "topicMetrics": {
+      "geometry:area": {
+        "totalQ": 1164,
+        "correctQ": 453,
+        "subject": "geometry",
+        "topic": "area",
+        "accuracyPct": 38.9
+      }
+    },
+    "trendOracle": {
+      "direction": "flat",
+      "earlyMean": 0.39020429312689386,
+      "lateMean": 0.3871281628588131,
+      "delta": -0.00307613026808079,
+      "sessionSamples": 74
+    },
+    "volatility": {
+      "stdev": 0.024775711085587453,
+      "n": 74,
+      "meanAccuracy": 0.38910383074469745
+    },
+    "paceOracle": {
+      "meanSessionDurationSec": 1628.1,
+      "meanSecondsPerQuestion": 103.5,
+      "mistakeEventCount": 396,
+      "mistakeRateApprox": 0.34
+    },
+    "reportSignals": {
+      "totalQuestions": 1164,
+      "overallAccuracy": 39,
+      "contractTopThinDowngraded": true,
+      "contractTopEvidenceQuestionCount": 1164,
+      "contractPrimarySubjectId": "geometry",
+      "topicBucketKeys": [
+        "area"
+      ],
+      "diagnosedCount": 1,
+      "unitCount": 1,
+      "contradictoryConfidenceCount": 0,
+      "executiveWindowQuestions": 1164,
+      "rowTrendsLength": 0
+    },
+    "behaviorHints": {
+      "suspiciousZeroDiagnosesWithVolume": false,
+      "thinContractVsHighMetaQuestions": true,
+      "diagnosisCoverageRatio": 1
+    },
+    "sessionRowCount": 74
+  },
+  "assertions": [
+    {
+      "assertionId": "no_diagnostic_contradictory_confidence_spike",
+      "pass": true,
+      "expected": {
+        "maxContradictions": 8
+      },
+      "actual": {
+        "contradictoryConfidenceCount": 0
+      },
+      "likelyCause": "behavior_oracle_threshold",
+      "evidence": {
+        "scope": "global_sanity"
+      }
+    }
+  ],
+  "pass": true,
+  "failureCauseSummary": {
+    "failedCount": 0,
+    "counts": {
+      "simulator_data": 0,
+      "behavior_oracle_threshold": 0,
+      "engine_report": 0,
+      "unknown": 0
+    },
+    "dominantLikelyCause": "none"
+  }
+}

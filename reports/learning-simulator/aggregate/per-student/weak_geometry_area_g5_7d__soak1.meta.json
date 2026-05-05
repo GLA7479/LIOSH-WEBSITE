@@ -1,0 +1,32 @@
+{
+  "scenarioId": "weak_geometry_area_g5_7d__soak1",
+  "profileRef": "p_weak_geometry_area",
+  "mode": "aggregate",
+  "tier": "quick",
+  "seed": 101014,
+  "anchorDate": "2026-05-07T08:00:00.000Z",
+  "timeHorizonDays": 7,
+  "generator": "aggregate-runner-v1",
+  "stats": {
+    "scenarioId": "weak_geometry_area_g5_7d__soak1",
+    "sessionCount": 14,
+    "questionTotal": 216,
+    "correctTotal": 85,
+    "mistakeEventCount": 74,
+    "subjectsTouched": [
+      "geometry"
+    ],
+    "topicsBySubject": {
+      "geometry": [
+        "area"
+      ]
+    }
+  },
+  "validation": {
+    "ok": true,
+    "errors": [],
+    "warnings": []
+  },
+  "warnings": [],
+  "errors": []
+}

@@ -1,0 +1,36 @@
+{
+  "scenarioId": "weak_geometry_area_g5_30d__soak1",
+  "profileRef": "p_weak_geometry_area",
+  "expected": {
+    "topWeaknessExpected": [
+      "שטח",
+      "area"
+    ]
+  },
+  "counts": {
+    "assertionsRun": 1,
+    "passed": 1,
+    "failed": 0
+  },
+  "overallPass": true,
+  "results": [
+    {
+      "assertion": "topWeaknessExpected",
+      "pass": true,
+      "evidence": {
+        "phrases": [
+          {
+            "phrase": "שטח",
+            "hit": true
+          },
+          {
+            "phrase": "area",
+            "hit": true
+          }
+        ],
+        "semantics": "anyMatch"
+      },
+      "method": "structured"
+    }
+  ]
+}

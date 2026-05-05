@@ -1,6 +1,6 @@
 {
-  "runId": "release-summary-mot0tw5f",
-  "generatedAt": "2026-05-05T19:28:19.971Z",
+  "runId": "release-summary-mot6jdz7",
+  "generatedAt": "2026-05-05T22:08:07.555Z",
   "overallStatus": "pass",
   "gateStatus": {
     "questionMetadata": "warn",
@@ -12,7 +12,7 @@
     "scenarioCoverage": "pass",
     "renderGate": "pass",
     "pdfExportGate": "pass",
-    "adaptivePlanner": "pass"
+    "adaptivePlanner": "warn"
   },
   "buildStatus": "pass",
   "coverageSummary": {
@@ -74,7 +74,7 @@
     "status": "pass",
     "pace_accuracy_separation_ok": true,
     "cohortMedianSpqGap": 198.04,
-    "sourceRunId": "profile-stress-mot0jl9g"
+    "sourceRunId": "profile-stress-mot6ehpi"
   },
   "renderGateSummary": {
     "status": "pass",
@@ -92,7 +92,7 @@
     "browserMode": true,
     "downloadSucceeded": true,
     "downloadPath": "C:/Users/ERAN YOSEF/Desktop/final projects/FINAL-WEB/LIOSH-WEB-TRY/reports/learning-simulator/pdf-export/דוח-Sim_strong_all_subjects_g3_7d-2026-05-05.pdf",
-    "fileSizeBytes": 4204469,
+    "fileSizeBytes": 4198699,
     "pdfHeaderOk": true,
     "consoleErrorsTotal": 0,
     "fatalErrorsTotal": 0,
@@ -103,11 +103,11 @@
     "pdfLibraryDetected": "^0.10.1",
     "exportIsClientSide": true,
     "hasDedicatedPdfRoute": false,
-    "generatedAt": "2026-05-05T19:26:11.885Z"
+    "generatedAt": "2026-05-05T22:06:10.349Z"
   },
   "scenarioCoverageSummary": {
     "scenarios": 278,
-    "generatedAt": "2026-05-05T19:20:23.450Z"
+    "generatedAt": "2026-05-05T22:04:22.809Z"
   },
   "parentNarrativeSafetySummary": {
     "status": "warnings_only",
@@ -127,21 +127,22 @@
     "summaryMdPath": "reports/parent-report-narrative-safety-artifacts/summary.md"
   },
   "adaptivePlannerSummary": {
-    "plannerRuns": 126,
+    "plannerRuns": 204,
     "safetyViolationCount": 0,
-    "inputsWithAvailableMetadata": 126,
-    "availableQuestionMetadataMissing": 0,
+    "inputsWithAvailableMetadata": 203,
+    "availableQuestionMetadataMissing": 1,
     "metadataSubjectFallbackCount": 0,
     "metadataIndexSource": "snapshot_file",
-    "englishSkillTaggingIncompleteCount": 0,
-    "needsHumanReviewCount": 0,
+    "englishSkillTaggingIncompleteCount": 1,
+    "needsHumanReviewCount": 1,
     "byPlannerStatus": {
-      "caution": 122,
+      "caution": 199,
+      "needs_human_review": 1,
       "ready": 4
     },
     "byNextAction": {
-      "pause_collect_more_data": 98,
-      "probe_skill": 24,
+      "pause_collect_more_data": 153,
+      "probe_skill": 47,
       "practice_current": 2,
       "advance_skill": 2
     },
@@ -191,6 +192,9 @@
   "releaseDecision": "ready_for_next_dev_phase",
   "failures": [],
   "warnings": [
-    "Question metadata: pass_with_advisory — advisoryIssueCount=15960, highRiskCount=439"
+    "Question metadata: pass_with_advisory — advisoryIssueCount=15960, highRiskCount=439",
+    "Adaptive planner: availableQuestionMetadata_missing (after index)=1",
+    "Adaptive planner: englishSkillTaggingIncompleteCount=1",
+    "Adaptive planner: needs_human_review outputs=1"
   ]
 }

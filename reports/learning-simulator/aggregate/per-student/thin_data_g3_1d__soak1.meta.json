@@ -1,0 +1,32 @@
+{
+  "scenarioId": "thin_data_g3_1d__soak1",
+  "profileRef": "p_thin_data",
+  "mode": "aggregate",
+  "tier": "quick",
+  "seed": 101009,
+  "anchorDate": "2026-05-02T08:00:00.000Z",
+  "timeHorizonDays": 1,
+  "generator": "aggregate-runner-v1",
+  "stats": {
+    "scenarioId": "thin_data_g3_1d__soak1",
+    "sessionCount": 2,
+    "questionTotal": 16,
+    "correctTotal": 11,
+    "mistakeEventCount": 3,
+    "subjectsTouched": [
+      "math"
+    ],
+    "topicsBySubject": {
+      "math": [
+        "addition"
+      ]
+    }
+  },
+  "validation": {
+    "ok": true,
+    "errors": [],
+    "warnings": []
+  },
+  "warnings": [],
+  "errors": []
+}

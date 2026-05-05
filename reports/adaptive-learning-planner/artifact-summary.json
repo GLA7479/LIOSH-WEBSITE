@@ -1,65 +1,70 @@
 {
-  "generatedAt": "2026-05-05T19:19:59.713Z",
+  "generatedAt": "2026-05-05T22:03:47.299Z",
   "metadataIndexSource": "snapshot_file",
   "metadataSnapshotPath": "reports/adaptive-learning-planner/metadata-index-snapshot.json",
-  "artifactsScanned": 22,
+  "artifactsScanned": 34,
   "artifactPathSample": [
     "reports\\learning-simulator\\deep\\per-student\\declining_student_g4_90d.report.json",
+    "reports\\learning-simulator\\deep\\per-student\\declining_student_g4_90d__soak1.report.json",
     "reports\\learning-simulator\\deep\\per-student\\improving_student_g4_90d.report.json",
+    "reports\\learning-simulator\\deep\\per-student\\improving_student_g4_90d__soak1.report.json",
     "reports\\learning-simulator\\deep\\per-student\\inconsistent_student_g5_30d.report.json",
+    "reports\\learning-simulator\\deep\\per-student\\inconsistent_student_g5_30d__soak1.report.json",
     "reports\\learning-simulator\\deep\\per-student\\random_guessing_student_g3_30d.report.json",
+    "reports\\learning-simulator\\deep\\per-student\\random_guessing_student_g3_30d__soak1.report.json",
     "reports\\learning-simulator\\deep\\per-student\\strong_all_subjects_g3_30d.report.json",
+    "reports\\learning-simulator\\deep\\per-student\\strong_all_subjects_g3_30d__soak1.report.json",
     "reports\\learning-simulator\\deep\\per-student\\weak_all_subjects_g3_30d.report.json",
+    "reports\\learning-simulator\\deep\\per-student\\weak_all_subjects_g3_30d__soak1.report.json",
     "reports\\learning-simulator\\deep\\per-student\\weak_english_grammar_g4_30d.report.json",
+    "reports\\learning-simulator\\deep\\per-student\\weak_english_grammar_g4_30d__soak1.report.json",
     "reports\\learning-simulator\\deep\\per-student\\weak_geometry_area_g5_30d.report.json",
+    "reports\\learning-simulator\\deep\\per-student\\weak_geometry_area_g5_30d__soak1.report.json",
     "reports\\learning-simulator\\deep\\per-student\\weak_hebrew_comprehension_g3_30d.report.json",
+    "reports\\learning-simulator\\deep\\per-student\\weak_hebrew_comprehension_g3_30d__soak1.report.json",
     "reports\\learning-simulator\\deep\\per-student\\weak_math_fractions_g5_30d.report.json",
+    "reports\\learning-simulator\\deep\\per-student\\weak_math_fractions_g5_30d__soak1.report.json",
     "reports\\learning-simulator\\deep\\per-student\\weak_moledet_geography_maps_g4_30d.report.json",
+    "reports\\learning-simulator\\deep\\per-student\\weak_moledet_geography_maps_g4_30d__soak1.report.json",
     "reports\\learning-simulator\\deep\\per-student\\weak_science_experiments_g5_30d.report.json",
-    "reports\\learning-simulator\\reports\\per-student\\declining_student_g4_30d.report.json",
-    "reports\\learning-simulator\\reports\\per-student\\improving_student_g4_30d.report.json",
-    "reports\\learning-simulator\\reports\\per-student\\strong_all_subjects_g3_7d.report.json",
-    "reports\\learning-simulator\\reports\\per-student\\thin_data_g3_1d.report.json",
-    "reports\\learning-simulator\\reports\\per-student\\weak_english_grammar_g4_7d.report.json",
-    "reports\\learning-simulator\\reports\\per-student\\weak_geometry_area_g5_7d.report.json",
-    "reports\\learning-simulator\\reports\\per-student\\weak_hebrew_comprehension_g3_7d.report.json",
-    "reports\\learning-simulator\\reports\\per-student\\weak_math_fractions_g5_7d.report.json",
-    "reports\\learning-simulator\\reports\\per-student\\weak_moledet_geography_maps_g4_7d.report.json",
-    "reports\\learning-simulator\\reports\\per-student\\weak_science_cause_effect_g5_7d.report.json"
+    "reports\\learning-simulator\\deep\\per-student\\weak_science_experiments_g5_30d__soak1.report.json"
   ],
-  "candidatePayloads": 126,
-  "plannerInputsBuilt": 126,
+  "candidatePayloads": 204,
+  "plannerInputsBuilt": 204,
   "byNextAction": {
-    "pause_collect_more_data": 98,
-    "probe_skill": 24,
+    "pause_collect_more_data": 153,
+    "probe_skill": 47,
     "practice_current": 2,
     "advance_skill": 2
   },
   "byPlannerStatus": {
-    "caution": 122,
+    "caution": 199,
+    "needs_human_review": 1,
     "ready": 4
   },
-  "adapterWarningsTotal": 0,
-  "adapterWarningsByCode": {},
+  "adapterWarningsTotal": 1,
+  "adapterWarningsByCode": {
+    "availableQuestionMetadata_missing": 1
+  },
   "missingFieldCounts": {},
   "missingFieldRows": 0,
-  "needsHumanReviewCount": 0,
+  "needsHumanReviewCount": 1,
   "insufficientDataCount": 0,
-  "englishSkillTaggingIncompleteCount": 0,
-  "baselineAvailableQuestionMetadataMissingCount": 126,
-  "afterAvailableQuestionMetadataMissingCount": 0,
-  "inputsWithAvailableMetadata": 126,
-  "averageCandidatesWhenPresent": 1.5,
+  "englishSkillTaggingIncompleteCount": 1,
+  "baselineAvailableQuestionMetadataMissingCount": 204,
+  "afterAvailableQuestionMetadataMissingCount": 1,
+  "inputsWithAvailableMetadata": 203,
+  "averageCandidatesWhenPresent": 1.458,
   "metadataSubjectFallbackCount": 0,
-  "metadataSubjectFallbackBaselineCount": 117,
+  "metadataSubjectFallbackBaselineCount": 190,
   "metadataSkillOnlyFallbackCount": 0,
-  "metadataExactMatchCount": 126,
-  "metadataSkillSubskillMatchCount": 126,
-  "alignmentEnrichedUnitCount": 126,
-  "skillAlignmentCoverage": 1,
+  "metadataExactMatchCount": 203,
+  "metadataSkillSubskillMatchCount": 203,
+  "alignmentEnrichedUnitCount": 203,
+  "skillAlignmentCoverage": 0.995,
   "skillAlignmentBySource": {
-    "topic_mapping": 115,
-    "taxonomy_bridge": 7,
+    "topic_mapping": 186,
+    "taxonomy_bridge": 13,
     "unit_field": 4
   },
   "skillAlignmentWarningsTotal": 0,
@@ -82,12 +87,12 @@
     "snapshotPath": "reports/adaptive-learning-planner/metadata-index-snapshot.json"
   },
   "subjectCoverage": {
-    "math": 103,
-    "geometry": 10,
-    "english": 6,
-    "hebrew": 3,
-    "moledet-geography": 2,
-    "science": 2
+    "math": 169,
+    "english": 9,
+    "geometry": 16,
+    "hebrew": 4,
+    "moledet-geography": 3,
+    "science": 3
   },
   "safetyViolationCount": 0,
   "safetyExamples": [],
@@ -737,6 +742,618 @@
       }
     },
     {
+      "label": "reports\\learning-simulator\\deep\\per-student\\declining_student_g4_90d__soak1.report.json#unit0",
+      "relativePath": "reports\\learning-simulator\\deep\\per-student\\declining_student_g4_90d__soak1.report.json",
+      "focusUnitIndex": 0,
+      "sourceInfo": {
+        "scenarioId": "declining_student_g4_90d__soak1",
+        "focusUnitIndex": 0,
+        "generator": "learning-simulator-deep-v1",
+        "diagnosticPrimarySource": "diagnosticEngineV2",
+        "unitDisplayName": "עשרוניים",
+        "canonicalAction": "intervene",
+        "skillAlignmentConfidence": "inferred_safe",
+        "skillAlignmentSource": "topic_mapping",
+        "skillAlignmentWarnings": [],
+        "metadataResolution": {
+          "source": "metadataIndex",
+          "candidateCount": 1,
+          "subjectFallback": false,
+          "skillOnlyFallback": false,
+          "warnings": []
+        }
+      },
+      "warnings": [],
+      "missingFields": [],
+      "inputSnapshot": {
+        "subject": "math",
+        "engineDecision": "remediate",
+        "dataQuality": "thin",
+        "skillTaggingIncomplete": false,
+        "doNotConcludeLen": 1,
+        "metaLen": 1,
+        "metadataCandidateCount": 1,
+        "metadataSubjectFallback": false,
+        "metadataSkillOnlyFallback": false,
+        "currentSkillId": "math_dec_add",
+        "currentSubskillId": "dec_add"
+      },
+      "output": {
+        "plannerStatus": "caution",
+        "nextAction": "pause_collect_more_data",
+        "reasonCodes": [
+          "THIN_DATA",
+          "DO_NOT_CONCLUDE"
+        ],
+        "targetDifficulty": "basic",
+        "questionCount": 3,
+        "targetSkillId": "math_dec_add",
+        "targetSubskillId": "dec_add",
+        "requiresHumanReview": false
+      }
+    },
+    {
+      "label": "reports\\learning-simulator\\deep\\per-student\\declining_student_g4_90d__soak1.report.json#unit1",
+      "relativePath": "reports\\learning-simulator\\deep\\per-student\\declining_student_g4_90d__soak1.report.json",
+      "focusUnitIndex": 1,
+      "sourceInfo": {
+        "scenarioId": "declining_student_g4_90d__soak1",
+        "focusUnitIndex": 1,
+        "generator": "learning-simulator-deep-v1",
+        "diagnosticPrimarySource": "diagnosticEngineV2",
+        "unitDisplayName": "כפל",
+        "canonicalAction": "intervene",
+        "skillAlignmentConfidence": "inferred_safe",
+        "skillAlignmentSource": "topic_mapping",
+        "skillAlignmentWarnings": [],
+        "metadataResolution": {
+          "source": "metadataIndex",
+          "candidateCount": 1,
+          "subjectFallback": false,
+          "skillOnlyFallback": false,
+          "warnings": []
+        }
+      },
+      "warnings": [],
+      "missingFields": [],
+      "inputSnapshot": {
+        "subject": "math",
+        "engineDecision": "remediate",
+        "dataQuality": "thin",
+        "skillTaggingIncomplete": false,
+        "doNotConcludeLen": 1,
+        "metaLen": 1,
+        "metadataCandidateCount": 1,
+        "metadataSubjectFallback": false,
+        "metadataSkillOnlyFallback": false,
+        "currentSkillId": "math_mul",
+        "currentSubskillId": "mul"
+      },
+      "output": {
+        "plannerStatus": "caution",
+        "nextAction": "pause_collect_more_data",
+        "reasonCodes": [
+          "THIN_DATA",
+          "DO_NOT_CONCLUDE"
+        ],
+        "targetDifficulty": "basic",
+        "questionCount": 3,
+        "targetSkillId": "math_mul",
+        "targetSubskillId": "mul",
+        "requiresHumanReview": false
+      }
+    },
+    {
+      "label": "reports\\learning-simulator\\deep\\per-student\\declining_student_g4_90d__soak1.report.json#unit2",
+      "relativePath": "reports\\learning-simulator\\deep\\per-student\\declining_student_g4_90d__soak1.report.json",
+      "focusUnitIndex": 2,
+      "sourceInfo": {
+        "scenarioId": "declining_student_g4_90d__soak1",
+        "focusUnitIndex": 2,
+        "generator": "learning-simulator-deep-v1",
+        "diagnosticPrimarySource": "diagnosticEngineV2",
+        "unitDisplayName": "משוואות",
+        "canonicalAction": "intervene",
+        "skillAlignmentConfidence": "inferred_safe",
+        "skillAlignmentSource": "topic_mapping",
+        "skillAlignmentWarnings": [],
+        "metadataResolution": {
+          "source": "metadataIndex",
+          "candidateCount": 1,
+          "subjectFallback": false,
+          "skillOnlyFallback": false,
+          "warnings": []
+        }
+      },
+      "warnings": [],
+      "missingFields": [],
+      "inputSnapshot": {
+        "subject": "math",
+        "engineDecision": "remediate",
+        "dataQuality": "thin",
+        "skillTaggingIncomplete": false,
+        "doNotConcludeLen": 1,
+        "metaLen": 1,
+        "metadataCandidateCount": 1,
+        "metadataSubjectFallback": false,
+        "metadataSkillOnlyFallback": false,
+        "currentSkillId": "math_eq_add_simple",
+        "currentSubskillId": "eq_add_simple"
+      },
+      "output": {
+        "plannerStatus": "caution",
+        "nextAction": "pause_collect_more_data",
+        "reasonCodes": [
+          "THIN_DATA",
+          "DO_NOT_CONCLUDE"
+        ],
+        "targetDifficulty": "basic",
+        "questionCount": 3,
+        "targetSkillId": "math_eq_add_simple",
+        "targetSubskillId": "eq_add_simple",
+        "requiresHumanReview": false
+      }
+    },
+    {
+      "label": "reports\\learning-simulator\\deep\\per-student\\declining_student_g4_90d__soak1.report.json#unit3",
+      "relativePath": "reports\\learning-simulator\\deep\\per-student\\declining_student_g4_90d__soak1.report.json",
+      "focusUnitIndex": 3,
+      "sourceInfo": {
+        "scenarioId": "declining_student_g4_90d__soak1",
+        "focusUnitIndex": 3,
+        "generator": "learning-simulator-deep-v1",
+        "diagnosticPrimarySource": "diagnosticEngineV2",
+        "unitDisplayName": "חילוק",
+        "canonicalAction": "intervene",
+        "skillAlignmentConfidence": "inferred_safe",
+        "skillAlignmentSource": "topic_mapping",
+        "skillAlignmentWarnings": [],
+        "metadataResolution": {
+          "source": "metadataIndex",
+          "candidateCount": 1,
+          "subjectFallback": false,
+          "skillOnlyFallback": false,
+          "warnings": []
+        }
+      },
+      "warnings": [],
+      "missingFields": [],
+      "inputSnapshot": {
+        "subject": "math",
+        "engineDecision": "remediate",
+        "dataQuality": "thin",
+        "skillTaggingIncomplete": false,
+        "doNotConcludeLen": 1,
+        "metaLen": 1,
+        "metadataCandidateCount": 1,
+        "metadataSubjectFallback": false,
+        "metadataSkillOnlyFallback": false,
+        "currentSkillId": "math_div",
+        "currentSubskillId": "div"
+      },
+      "output": {
+        "plannerStatus": "caution",
+        "nextAction": "pause_collect_more_data",
+        "reasonCodes": [
+          "THIN_DATA",
+          "DO_NOT_CONCLUDE"
+        ],
+        "targetDifficulty": "basic",
+        "questionCount": 3,
+        "targetSkillId": "math_div",
+        "targetSubskillId": "div",
+        "requiresHumanReview": false
+      }
+    },
+    {
+      "label": "reports\\learning-simulator\\deep\\per-student\\declining_student_g4_90d__soak1.report.json#unit4",
+      "relativePath": "reports\\learning-simulator\\deep\\per-student\\declining_student_g4_90d__soak1.report.json",
+      "focusUnitIndex": 4,
+      "sourceInfo": {
+        "scenarioId": "declining_student_g4_90d__soak1",
+        "focusUnitIndex": 4,
+        "generator": "learning-simulator-deep-v1",
+        "diagnosticPrimarySource": "diagnosticEngineV2",
+        "unitDisplayName": "חזקות",
+        "canonicalAction": "probe_only",
+        "skillAlignmentConfidence": "inferred_safe",
+        "skillAlignmentSource": "topic_mapping",
+        "skillAlignmentWarnings": [],
+        "metadataResolution": {
+          "source": "metadataIndex",
+          "candidateCount": 1,
+          "subjectFallback": false,
+          "skillOnlyFallback": false,
+          "warnings": []
+        }
+      },
+      "warnings": [],
+      "missingFields": [],
+      "inputSnapshot": {
+        "subject": "math",
+        "engineDecision": "review",
+        "dataQuality": "thin",
+        "skillTaggingIncomplete": false,
+        "doNotConcludeLen": 1,
+        "metaLen": 1,
+        "metadataCandidateCount": 1,
+        "metadataSubjectFallback": false,
+        "metadataSkillOnlyFallback": false,
+        "currentSkillId": "math_power_calc",
+        "currentSubskillId": "power_calc"
+      },
+      "output": {
+        "plannerStatus": "caution",
+        "nextAction": "pause_collect_more_data",
+        "reasonCodes": [
+          "THIN_DATA",
+          "DO_NOT_CONCLUDE"
+        ],
+        "targetDifficulty": "basic",
+        "questionCount": 3,
+        "targetSkillId": "math_power_calc",
+        "targetSubskillId": "power_calc",
+        "requiresHumanReview": false
+      }
+    },
+    {
+      "label": "reports\\learning-simulator\\deep\\per-student\\declining_student_g4_90d__soak1.report.json#unit5",
+      "relativePath": "reports\\learning-simulator\\deep\\per-student\\declining_student_g4_90d__soak1.report.json",
+      "focusUnitIndex": 5,
+      "sourceInfo": {
+        "scenarioId": "declining_student_g4_90d__soak1",
+        "focusUnitIndex": 5,
+        "generator": "learning-simulator-deep-v1",
+        "diagnosticPrimarySource": "diagnosticEngineV2",
+        "unitDisplayName": "חיבור",
+        "canonicalAction": "intervene",
+        "skillAlignmentConfidence": "inferred_safe",
+        "skillAlignmentSource": "topic_mapping",
+        "skillAlignmentWarnings": [],
+        "metadataResolution": {
+          "source": "metadataIndex",
+          "candidateCount": 1,
+          "subjectFallback": false,
+          "skillOnlyFallback": false,
+          "warnings": []
+        }
+      },
+      "warnings": [],
+      "missingFields": [],
+      "inputSnapshot": {
+        "subject": "math",
+        "engineDecision": "remediate",
+        "dataQuality": "thin",
+        "skillTaggingIncomplete": false,
+        "doNotConcludeLen": 1,
+        "metaLen": 1,
+        "metadataCandidateCount": 1,
+        "metadataSubjectFallback": false,
+        "metadataSkillOnlyFallback": false,
+        "currentSkillId": "math_add_two",
+        "currentSubskillId": "add_two"
+      },
+      "output": {
+        "plannerStatus": "caution",
+        "nextAction": "pause_collect_more_data",
+        "reasonCodes": [
+          "THIN_DATA",
+          "DO_NOT_CONCLUDE"
+        ],
+        "targetDifficulty": "basic",
+        "questionCount": 3,
+        "targetSkillId": "math_add_two",
+        "targetSubskillId": "add_two",
+        "requiresHumanReview": false
+      }
+    },
+    {
+      "label": "reports\\learning-simulator\\deep\\per-student\\declining_student_g4_90d__soak1.report.json#unit6",
+      "relativePath": "reports\\learning-simulator\\deep\\per-student\\declining_student_g4_90d__soak1.report.json",
+      "focusUnitIndex": 6,
+      "sourceInfo": {
+        "scenarioId": "declining_student_g4_90d__soak1",
+        "focusUnitIndex": 6,
+        "generator": "learning-simulator-deep-v1",
+        "diagnosticPrimarySource": "diagnosticEngineV2",
+        "unitDisplayName": "אומדן",
+        "canonicalAction": "probe_only",
+        "skillAlignmentConfidence": "inferred_safe",
+        "skillAlignmentSource": "topic_mapping",
+        "skillAlignmentWarnings": [],
+        "metadataResolution": {
+          "source": "metadataIndex",
+          "candidateCount": 1,
+          "subjectFallback": false,
+          "skillOnlyFallback": false,
+          "warnings": []
+        }
+      },
+      "warnings": [],
+      "missingFields": [],
+      "inputSnapshot": {
+        "subject": "math",
+        "engineDecision": "review",
+        "dataQuality": "thin",
+        "skillTaggingIncomplete": false,
+        "doNotConcludeLen": 1,
+        "metaLen": 1,
+        "metadataCandidateCount": 1,
+        "metadataSubjectFallback": false,
+        "metadataSkillOnlyFallback": false,
+        "currentSkillId": "math_est_add",
+        "currentSubskillId": "est_add"
+      },
+      "output": {
+        "plannerStatus": "caution",
+        "nextAction": "pause_collect_more_data",
+        "reasonCodes": [
+          "THIN_DATA",
+          "DO_NOT_CONCLUDE"
+        ],
+        "targetDifficulty": "basic",
+        "questionCount": 3,
+        "targetSkillId": "math_est_add",
+        "targetSubskillId": "est_add",
+        "requiresHumanReview": false
+      }
+    },
+    {
+      "label": "reports\\learning-simulator\\deep\\per-student\\declining_student_g4_90d__soak1.report.json#unit7",
+      "relativePath": "reports\\learning-simulator\\deep\\per-student\\declining_student_g4_90d__soak1.report.json",
+      "focusUnitIndex": 7,
+      "sourceInfo": {
+        "scenarioId": "declining_student_g4_90d__soak1",
+        "focusUnitIndex": 7,
+        "generator": "learning-simulator-deep-v1",
+        "diagnosticPrimarySource": "diagnosticEngineV2",
+        "unitDisplayName": "שברים",
+        "canonicalAction": "intervene",
+        "skillAlignmentConfidence": "inferred_safe",
+        "skillAlignmentSource": "topic_mapping",
+        "skillAlignmentWarnings": [],
+        "metadataResolution": {
+          "source": "metadataIndex",
+          "candidateCount": 1,
+          "subjectFallback": false,
+          "skillOnlyFallback": false,
+          "warnings": []
+        }
+      },
+      "warnings": [],
+      "missingFields": [],
+      "inputSnapshot": {
+        "subject": "math",
+        "engineDecision": "remediate",
+        "dataQuality": "thin",
+        "skillTaggingIncomplete": false,
+        "doNotConcludeLen": 1,
+        "metaLen": 1,
+        "metadataCandidateCount": 1,
+        "metadataSubjectFallback": false,
+        "metadataSkillOnlyFallback": false,
+        "currentSkillId": "math_frac_add_sub",
+        "currentSubskillId": "frac_add_sub"
+      },
+      "output": {
+        "plannerStatus": "caution",
+        "nextAction": "pause_collect_more_data",
+        "reasonCodes": [
+          "THIN_DATA",
+          "DO_NOT_CONCLUDE"
+        ],
+        "targetDifficulty": "basic",
+        "questionCount": 3,
+        "targetSkillId": "math_frac_add_sub",
+        "targetSubskillId": "frac_add_sub",
+        "requiresHumanReview": false
+      }
+    },
+    {
+      "label": "reports\\learning-simulator\\deep\\per-student\\declining_student_g4_90d__soak1.report.json#unit8",
+      "relativePath": "reports\\learning-simulator\\deep\\per-student\\declining_student_g4_90d__soak1.report.json",
+      "focusUnitIndex": 8,
+      "sourceInfo": {
+        "scenarioId": "declining_student_g4_90d__soak1",
+        "focusUnitIndex": 8,
+        "generator": "learning-simulator-deep-v1",
+        "diagnosticPrimarySource": "diagnosticEngineV2",
+        "unitDisplayName": "מספרים ראשוניים ופריקים",
+        "canonicalAction": "probe_only",
+        "skillAlignmentConfidence": "inferred_safe",
+        "skillAlignmentSource": "topic_mapping",
+        "skillAlignmentWarnings": [],
+        "metadataResolution": {
+          "source": "metadataIndex",
+          "candidateCount": 1,
+          "subjectFallback": false,
+          "skillOnlyFallback": false,
+          "warnings": []
+        }
+      },
+      "warnings": [],
+      "missingFields": [],
+      "inputSnapshot": {
+        "subject": "math",
+        "engineDecision": "review",
+        "dataQuality": "thin",
+        "skillTaggingIncomplete": false,
+        "doNotConcludeLen": 1,
+        "metaLen": 1,
+        "metadataCandidateCount": 1,
+        "metadataSubjectFallback": false,
+        "metadataSkillOnlyFallback": false,
+        "currentSkillId": "math_prime_composite",
+        "currentSubskillId": "prime_composite"
+      },
+      "output": {
+        "plannerStatus": "caution",
+        "nextAction": "pause_collect_more_data",
+        "reasonCodes": [
+          "THIN_DATA",
+          "DO_NOT_CONCLUDE"
+        ],
+        "targetDifficulty": "basic",
+        "questionCount": 3,
+        "targetSkillId": "math_prime_composite",
+        "targetSubskillId": "prime_composite",
+        "requiresHumanReview": false
+      }
+    },
+    {
+      "label": "reports\\learning-simulator\\deep\\per-student\\declining_student_g4_90d__soak1.report.json#unit9",
+      "relativePath": "reports\\learning-simulator\\deep\\per-student\\declining_student_g4_90d__soak1.report.json",
+      "focusUnitIndex": 9,
+      "sourceInfo": {
+        "scenarioId": "declining_student_g4_90d__soak1",
+        "focusUnitIndex": 9,
+        "generator": "learning-simulator-deep-v1",
+        "diagnosticPrimarySource": "diagnosticEngineV2",
+        "unitDisplayName": "תכונות ה-0 וה-1",
+        "canonicalAction": "probe_only",
+        "skillAlignmentConfidence": "inferred_safe",
+        "skillAlignmentSource": "topic_mapping",
+        "skillAlignmentWarnings": [],
+        "metadataResolution": {
+          "source": "metadataIndex",
+          "candidateCount": 1,
+          "subjectFallback": false,
+          "skillOnlyFallback": false,
+          "warnings": []
+        }
+      },
+      "warnings": [],
+      "missingFields": [],
+      "inputSnapshot": {
+        "subject": "math",
+        "engineDecision": "review",
+        "dataQuality": "thin",
+        "skillTaggingIncomplete": false,
+        "doNotConcludeLen": 1,
+        "metaLen": 1,
+        "metadataCandidateCount": 1,
+        "metadataSubjectFallback": false,
+        "metadataSkillOnlyFallback": false,
+        "currentSkillId": "math_ns_complement10",
+        "currentSubskillId": "ns_complement10"
+      },
+      "output": {
+        "plannerStatus": "caution",
+        "nextAction": "pause_collect_more_data",
+        "reasonCodes": [
+          "THIN_DATA",
+          "DO_NOT_CONCLUDE"
+        ],
+        "targetDifficulty": "basic",
+        "questionCount": 3,
+        "targetSkillId": "math_ns_complement10",
+        "targetSubskillId": "ns_complement10",
+        "requiresHumanReview": false
+      }
+    },
+    {
+      "label": "reports\\learning-simulator\\deep\\per-student\\declining_student_g4_90d__soak1.report.json#unit10",
+      "relativePath": "reports\\learning-simulator\\deep\\per-student\\declining_student_g4_90d__soak1.report.json",
+      "focusUnitIndex": 10,
+      "sourceInfo": {
+        "scenarioId": "declining_student_g4_90d__soak1",
+        "focusUnitIndex": 10,
+        "generator": "learning-simulator-deep-v1",
+        "diagnosticPrimarySource": "diagnosticEngineV2",
+        "unitDisplayName": "חיסור",
+        "canonicalAction": "intervene",
+        "skillAlignmentConfidence": "inferred_safe",
+        "skillAlignmentSource": "topic_mapping",
+        "skillAlignmentWarnings": [],
+        "metadataResolution": {
+          "source": "metadataIndex",
+          "candidateCount": 1,
+          "subjectFallback": false,
+          "skillOnlyFallback": false,
+          "warnings": []
+        }
+      },
+      "warnings": [],
+      "missingFields": [],
+      "inputSnapshot": {
+        "subject": "math",
+        "engineDecision": "remediate",
+        "dataQuality": "thin",
+        "skillTaggingIncomplete": false,
+        "doNotConcludeLen": 1,
+        "metaLen": 1,
+        "metadataCandidateCount": 1,
+        "metadataSubjectFallback": false,
+        "metadataSkillOnlyFallback": false,
+        "currentSkillId": "math_sub_two",
+        "currentSubskillId": "sub_two"
+      },
+      "output": {
+        "plannerStatus": "caution",
+        "nextAction": "pause_collect_more_data",
+        "reasonCodes": [
+          "THIN_DATA",
+          "DO_NOT_CONCLUDE"
+        ],
+        "targetDifficulty": "basic",
+        "questionCount": 3,
+        "targetSkillId": "math_sub_two",
+        "targetSubskillId": "sub_two",
+        "requiresHumanReview": false
+      }
+    },
+    {
+      "label": "reports\\learning-simulator\\deep\\per-student\\declining_student_g4_90d__soak1.report.json#unit11",
+      "relativePath": "reports\\learning-simulator\\deep\\per-student\\declining_student_g4_90d__soak1.report.json",
+      "focusUnitIndex": 11,
+      "sourceInfo": {
+        "scenarioId": "declining_student_g4_90d__soak1",
+        "focusUnitIndex": 11,
+        "generator": "learning-simulator-deep-v1",
+        "diagnosticPrimarySource": "diagnosticEngineV2",
+        "unitDisplayName": "סדרות",
+        "canonicalAction": "intervene",
+        "skillAlignmentConfidence": "inferred_safe",
+        "skillAlignmentSource": "topic_mapping",
+        "skillAlignmentWarnings": [],
+        "metadataResolution": {
+          "source": "metadataIndex",
+          "candidateCount": 1,
+          "subjectFallback": false,
+          "skillOnlyFallback": false,
+          "warnings": []
+        }
+      },
+      "warnings": [],
+      "missingFields": [],
+      "inputSnapshot": {
+        "subject": "math",
+        "engineDecision": "remediate",
+        "dataQuality": "thin",
+        "skillTaggingIncomplete": false,
+        "doNotConcludeLen": 1,
+        "metaLen": 1,
+        "metadataCandidateCount": 1,
+        "metadataSubjectFallback": false,
+        "metadataSkillOnlyFallback": false,
+        "currentSkillId": "math_sequence",
+        "currentSubskillId": "sequence"
+      },
+      "output": {
+        "plannerStatus": "caution",
+        "nextAction": "pause_collect_more_data",
+        "reasonCodes": [
+          "THIN_DATA",
+          "DO_NOT_CONCLUDE"
+        ],
+        "targetDifficulty": "basic",
+        "questionCount": 3,
+        "targetSkillId": "math_sequence",
+        "targetSubskillId": "sequence",
+        "requiresHumanReview": false
+      }
+    },
+    {
       "label": "reports\\learning-simulator\\deep\\per-student\\improving_student_g4_90d.report.json#unit0",
       "relativePath": "reports\\learning-simulator\\deep\\per-student\\improving_student_g4_90d.report.json",
       "focusUnitIndex": 0,
@@ -1345,6 +1962,618 @@
         "questionCount": 3,
         "targetSkillId": "math_eq_add_simple",
         "targetSubskillId": "eq_add_simple",
+        "requiresHumanReview": false
+      }
+    },
+    {
+      "label": "reports\\learning-simulator\\deep\\per-student\\improving_student_g4_90d__soak1.report.json#unit0",
+      "relativePath": "reports\\learning-simulator\\deep\\per-student\\improving_student_g4_90d__soak1.report.json",
+      "focusUnitIndex": 0,
+      "sourceInfo": {
+        "scenarioId": "improving_student_g4_90d__soak1",
+        "focusUnitIndex": 0,
+        "generator": "learning-simulator-deep-v1",
+        "diagnosticPrimarySource": "diagnosticEngineV2",
+        "unitDisplayName": "שברים",
+        "canonicalAction": "intervene",
+        "skillAlignmentConfidence": "inferred_safe",
+        "skillAlignmentSource": "topic_mapping",
+        "skillAlignmentWarnings": [],
+        "metadataResolution": {
+          "source": "metadataIndex",
+          "candidateCount": 1,
+          "subjectFallback": false,
+          "skillOnlyFallback": false,
+          "warnings": []
+        }
+      },
+      "warnings": [],
+      "missingFields": [],
+      "inputSnapshot": {
+        "subject": "math",
+        "engineDecision": "remediate",
+        "dataQuality": "thin",
+        "skillTaggingIncomplete": false,
+        "doNotConcludeLen": 1,
+        "metaLen": 1,
+        "metadataCandidateCount": 1,
+        "metadataSubjectFallback": false,
+        "metadataSkillOnlyFallback": false,
+        "currentSkillId": "math_frac_add_sub",
+        "currentSubskillId": "frac_add_sub"
+      },
+      "output": {
+        "plannerStatus": "caution",
+        "nextAction": "pause_collect_more_data",
+        "reasonCodes": [
+          "THIN_DATA",
+          "DO_NOT_CONCLUDE"
+        ],
+        "targetDifficulty": "basic",
+        "questionCount": 3,
+        "targetSkillId": "math_frac_add_sub",
+        "targetSubskillId": "frac_add_sub",
+        "requiresHumanReview": false
+      }
+    },
+    {
+      "label": "reports\\learning-simulator\\deep\\per-student\\improving_student_g4_90d__soak1.report.json#unit1",
+      "relativePath": "reports\\learning-simulator\\deep\\per-student\\improving_student_g4_90d__soak1.report.json",
+      "focusUnitIndex": 1,
+      "sourceInfo": {
+        "scenarioId": "improving_student_g4_90d__soak1",
+        "focusUnitIndex": 1,
+        "generator": "learning-simulator-deep-v1",
+        "diagnosticPrimarySource": "diagnosticEngineV2",
+        "unitDisplayName": "חיסור",
+        "canonicalAction": "intervene",
+        "skillAlignmentConfidence": "inferred_safe",
+        "skillAlignmentSource": "topic_mapping",
+        "skillAlignmentWarnings": [],
+        "metadataResolution": {
+          "source": "metadataIndex",
+          "candidateCount": 1,
+          "subjectFallback": false,
+          "skillOnlyFallback": false,
+          "warnings": []
+        }
+      },
+      "warnings": [],
+      "missingFields": [],
+      "inputSnapshot": {
+        "subject": "math",
+        "engineDecision": "remediate",
+        "dataQuality": "thin",
+        "skillTaggingIncomplete": false,
+        "doNotConcludeLen": 1,
+        "metaLen": 1,
+        "metadataCandidateCount": 1,
+        "metadataSubjectFallback": false,
+        "metadataSkillOnlyFallback": false,
+        "currentSkillId": "math_sub_two",
+        "currentSubskillId": "sub_two"
+      },
+      "output": {
+        "plannerStatus": "caution",
+        "nextAction": "pause_collect_more_data",
+        "reasonCodes": [
+          "THIN_DATA",
+          "DO_NOT_CONCLUDE"
+        ],
+        "targetDifficulty": "basic",
+        "questionCount": 3,
+        "targetSkillId": "math_sub_two",
+        "targetSubskillId": "sub_two",
+        "requiresHumanReview": false
+      }
+    },
+    {
+      "label": "reports\\learning-simulator\\deep\\per-student\\improving_student_g4_90d__soak1.report.json#unit2",
+      "relativePath": "reports\\learning-simulator\\deep\\per-student\\improving_student_g4_90d__soak1.report.json",
+      "focusUnitIndex": 2,
+      "sourceInfo": {
+        "scenarioId": "improving_student_g4_90d__soak1",
+        "focusUnitIndex": 2,
+        "generator": "learning-simulator-deep-v1",
+        "diagnosticPrimarySource": "diagnosticEngineV2",
+        "unitDisplayName": "עשרוניים",
+        "canonicalAction": "intervene",
+        "skillAlignmentConfidence": "inferred_safe",
+        "skillAlignmentSource": "topic_mapping",
+        "skillAlignmentWarnings": [],
+        "metadataResolution": {
+          "source": "metadataIndex",
+          "candidateCount": 1,
+          "subjectFallback": false,
+          "skillOnlyFallback": false,
+          "warnings": []
+        }
+      },
+      "warnings": [],
+      "missingFields": [],
+      "inputSnapshot": {
+        "subject": "math",
+        "engineDecision": "remediate",
+        "dataQuality": "thin",
+        "skillTaggingIncomplete": false,
+        "doNotConcludeLen": 1,
+        "metaLen": 1,
+        "metadataCandidateCount": 1,
+        "metadataSubjectFallback": false,
+        "metadataSkillOnlyFallback": false,
+        "currentSkillId": "math_dec_add",
+        "currentSubskillId": "dec_add"
+      },
+      "output": {
+        "plannerStatus": "caution",
+        "nextAction": "pause_collect_more_data",
+        "reasonCodes": [
+          "THIN_DATA",
+          "DO_NOT_CONCLUDE"
+        ],
+        "targetDifficulty": "basic",
+        "questionCount": 3,
+        "targetSkillId": "math_dec_add",
+        "targetSubskillId": "dec_add",
+        "requiresHumanReview": false
+      }
+    },
+    {
+      "label": "reports\\learning-simulator\\deep\\per-student\\improving_student_g4_90d__soak1.report.json#unit3",
+      "relativePath": "reports\\learning-simulator\\deep\\per-student\\improving_student_g4_90d__soak1.report.json",
+      "focusUnitIndex": 3,
+      "sourceInfo": {
+        "scenarioId": "improving_student_g4_90d__soak1",
+        "focusUnitIndex": 3,
+        "generator": "learning-simulator-deep-v1",
+        "diagnosticPrimarySource": "diagnosticEngineV2",
+        "unitDisplayName": "עיגול",
+        "canonicalAction": "intervene",
+        "skillAlignmentConfidence": "inferred_safe",
+        "skillAlignmentSource": "topic_mapping",
+        "skillAlignmentWarnings": [],
+        "metadataResolution": {
+          "source": "metadataIndex",
+          "candidateCount": 1,
+          "subjectFallback": false,
+          "skillOnlyFallback": false,
+          "warnings": []
+        }
+      },
+      "warnings": [],
+      "missingFields": [],
+      "inputSnapshot": {
+        "subject": "math",
+        "engineDecision": "remediate",
+        "dataQuality": "thin",
+        "skillTaggingIncomplete": false,
+        "doNotConcludeLen": 1,
+        "metaLen": 1,
+        "metadataCandidateCount": 1,
+        "metadataSubjectFallback": false,
+        "metadataSkillOnlyFallback": false,
+        "currentSkillId": "math_round",
+        "currentSubskillId": "round"
+      },
+      "output": {
+        "plannerStatus": "caution",
+        "nextAction": "pause_collect_more_data",
+        "reasonCodes": [
+          "THIN_DATA",
+          "DO_NOT_CONCLUDE"
+        ],
+        "targetDifficulty": "basic",
+        "questionCount": 3,
+        "targetSkillId": "math_round",
+        "targetSubskillId": "round",
+        "requiresHumanReview": false
+      }
+    },
+    {
+      "label": "reports\\learning-simulator\\deep\\per-student\\improving_student_g4_90d__soak1.report.json#unit4",
+      "relativePath": "reports\\learning-simulator\\deep\\per-student\\improving_student_g4_90d__soak1.report.json",
+      "focusUnitIndex": 4,
+      "sourceInfo": {
+        "scenarioId": "improving_student_g4_90d__soak1",
+        "focusUnitIndex": 4,
+        "generator": "learning-simulator-deep-v1",
+        "diagnosticPrimarySource": "diagnosticEngineV2",
+        "unitDisplayName": "כפל",
+        "canonicalAction": "intervene",
+        "skillAlignmentConfidence": "inferred_safe",
+        "skillAlignmentSource": "topic_mapping",
+        "skillAlignmentWarnings": [],
+        "metadataResolution": {
+          "source": "metadataIndex",
+          "candidateCount": 1,
+          "subjectFallback": false,
+          "skillOnlyFallback": false,
+          "warnings": []
+        }
+      },
+      "warnings": [],
+      "missingFields": [],
+      "inputSnapshot": {
+        "subject": "math",
+        "engineDecision": "remediate",
+        "dataQuality": "thin",
+        "skillTaggingIncomplete": false,
+        "doNotConcludeLen": 1,
+        "metaLen": 1,
+        "metadataCandidateCount": 1,
+        "metadataSubjectFallback": false,
+        "metadataSkillOnlyFallback": false,
+        "currentSkillId": "math_mul",
+        "currentSubskillId": "mul"
+      },
+      "output": {
+        "plannerStatus": "caution",
+        "nextAction": "pause_collect_more_data",
+        "reasonCodes": [
+          "THIN_DATA",
+          "DO_NOT_CONCLUDE"
+        ],
+        "targetDifficulty": "basic",
+        "questionCount": 3,
+        "targetSkillId": "math_mul",
+        "targetSubskillId": "mul",
+        "requiresHumanReview": false
+      }
+    },
+    {
+      "label": "reports\\learning-simulator\\deep\\per-student\\improving_student_g4_90d__soak1.report.json#unit5",
+      "relativePath": "reports\\learning-simulator\\deep\\per-student\\improving_student_g4_90d__soak1.report.json",
+      "focusUnitIndex": 5,
+      "sourceInfo": {
+        "scenarioId": "improving_student_g4_90d__soak1",
+        "focusUnitIndex": 5,
+        "generator": "learning-simulator-deep-v1",
+        "diagnosticPrimarySource": "diagnosticEngineV2",
+        "unitDisplayName": "חזקות",
+        "canonicalAction": "probe_only",
+        "skillAlignmentConfidence": "inferred_safe",
+        "skillAlignmentSource": "topic_mapping",
+        "skillAlignmentWarnings": [],
+        "metadataResolution": {
+          "source": "metadataIndex",
+          "candidateCount": 1,
+          "subjectFallback": false,
+          "skillOnlyFallback": false,
+          "warnings": []
+        }
+      },
+      "warnings": [],
+      "missingFields": [],
+      "inputSnapshot": {
+        "subject": "math",
+        "engineDecision": "review",
+        "dataQuality": "thin",
+        "skillTaggingIncomplete": false,
+        "doNotConcludeLen": 1,
+        "metaLen": 1,
+        "metadataCandidateCount": 1,
+        "metadataSubjectFallback": false,
+        "metadataSkillOnlyFallback": false,
+        "currentSkillId": "math_power_calc",
+        "currentSubskillId": "power_calc"
+      },
+      "output": {
+        "plannerStatus": "caution",
+        "nextAction": "pause_collect_more_data",
+        "reasonCodes": [
+          "THIN_DATA",
+          "DO_NOT_CONCLUDE"
+        ],
+        "targetDifficulty": "basic",
+        "questionCount": 3,
+        "targetSkillId": "math_power_calc",
+        "targetSubskillId": "power_calc",
+        "requiresHumanReview": false
+      }
+    },
+    {
+      "label": "reports\\learning-simulator\\deep\\per-student\\improving_student_g4_90d__soak1.report.json#unit6",
+      "relativePath": "reports\\learning-simulator\\deep\\per-student\\improving_student_g4_90d__soak1.report.json",
+      "focusUnitIndex": 6,
+      "sourceInfo": {
+        "scenarioId": "improving_student_g4_90d__soak1",
+        "focusUnitIndex": 6,
+        "generator": "learning-simulator-deep-v1",
+        "diagnosticPrimarySource": "diagnosticEngineV2",
+        "unitDisplayName": "אומדן",
+        "canonicalAction": "probe_only",
+        "skillAlignmentConfidence": "inferred_safe",
+        "skillAlignmentSource": "topic_mapping",
+        "skillAlignmentWarnings": [],
+        "metadataResolution": {
+          "source": "metadataIndex",
+          "candidateCount": 1,
+          "subjectFallback": false,
+          "skillOnlyFallback": false,
+          "warnings": []
+        }
+      },
+      "warnings": [],
+      "missingFields": [],
+      "inputSnapshot": {
+        "subject": "math",
+        "engineDecision": "review",
+        "dataQuality": "thin",
+        "skillTaggingIncomplete": false,
+        "doNotConcludeLen": 1,
+        "metaLen": 1,
+        "metadataCandidateCount": 1,
+        "metadataSubjectFallback": false,
+        "metadataSkillOnlyFallback": false,
+        "currentSkillId": "math_est_add",
+        "currentSubskillId": "est_add"
+      },
+      "output": {
+        "plannerStatus": "caution",
+        "nextAction": "pause_collect_more_data",
+        "reasonCodes": [
+          "THIN_DATA",
+          "DO_NOT_CONCLUDE"
+        ],
+        "targetDifficulty": "basic",
+        "questionCount": 3,
+        "targetSkillId": "math_est_add",
+        "targetSubskillId": "est_add",
+        "requiresHumanReview": false
+      }
+    },
+    {
+      "label": "reports\\learning-simulator\\deep\\per-student\\improving_student_g4_90d__soak1.report.json#unit7",
+      "relativePath": "reports\\learning-simulator\\deep\\per-student\\improving_student_g4_90d__soak1.report.json",
+      "focusUnitIndex": 7,
+      "sourceInfo": {
+        "scenarioId": "improving_student_g4_90d__soak1",
+        "focusUnitIndex": 7,
+        "generator": "learning-simulator-deep-v1",
+        "diagnosticPrimarySource": "diagnosticEngineV2",
+        "unitDisplayName": "חוש מספרים",
+        "canonicalAction": "probe_only",
+        "skillAlignmentConfidence": "inferred_safe",
+        "skillAlignmentSource": "topic_mapping",
+        "skillAlignmentWarnings": [],
+        "metadataResolution": {
+          "source": "metadataIndex",
+          "candidateCount": 1,
+          "subjectFallback": false,
+          "skillOnlyFallback": false,
+          "warnings": []
+        }
+      },
+      "warnings": [],
+      "missingFields": [],
+      "inputSnapshot": {
+        "subject": "math",
+        "engineDecision": "review",
+        "dataQuality": "thin",
+        "skillTaggingIncomplete": false,
+        "doNotConcludeLen": 1,
+        "metaLen": 1,
+        "metadataCandidateCount": 1,
+        "metadataSubjectFallback": false,
+        "metadataSkillOnlyFallback": false,
+        "currentSkillId": "math_ns_counting_forward",
+        "currentSubskillId": "ns_counting_forward"
+      },
+      "output": {
+        "plannerStatus": "caution",
+        "nextAction": "pause_collect_more_data",
+        "reasonCodes": [
+          "THIN_DATA",
+          "DO_NOT_CONCLUDE"
+        ],
+        "targetDifficulty": "basic",
+        "questionCount": 3,
+        "targetSkillId": "math_ns_counting_forward",
+        "targetSubskillId": "ns_counting_forward",
+        "requiresHumanReview": false
+      }
+    },
+    {
+      "label": "reports\\learning-simulator\\deep\\per-student\\improving_student_g4_90d__soak1.report.json#unit8",
+      "relativePath": "reports\\learning-simulator\\deep\\per-student\\improving_student_g4_90d__soak1.report.json",
+      "focusUnitIndex": 8,
+      "sourceInfo": {
+        "scenarioId": "improving_student_g4_90d__soak1",
+        "focusUnitIndex": 8,
+        "generator": "learning-simulator-deep-v1",
+        "diagnosticPrimarySource": "diagnosticEngineV2",
+        "unitDisplayName": "גורמים וכפולות",
+        "canonicalAction": "probe_only",
+        "skillAlignmentConfidence": "inferred_safe",
+        "skillAlignmentSource": "topic_mapping",
+        "skillAlignmentWarnings": [],
+        "metadataResolution": {
+          "source": "metadataIndex",
+          "candidateCount": 1,
+          "subjectFallback": false,
+          "skillOnlyFallback": false,
+          "warnings": []
+        }
+      },
+      "warnings": [],
+      "missingFields": [],
+      "inputSnapshot": {
+        "subject": "math",
+        "engineDecision": "review",
+        "dataQuality": "thin",
+        "skillTaggingIncomplete": false,
+        "doNotConcludeLen": 1,
+        "metaLen": 1,
+        "metadataCandidateCount": 1,
+        "metadataSubjectFallback": false,
+        "metadataSkillOnlyFallback": false,
+        "currentSkillId": "math_fm_factor",
+        "currentSubskillId": "fm_factor"
+      },
+      "output": {
+        "plannerStatus": "caution",
+        "nextAction": "pause_collect_more_data",
+        "reasonCodes": [
+          "THIN_DATA",
+          "DO_NOT_CONCLUDE"
+        ],
+        "targetDifficulty": "basic",
+        "questionCount": 3,
+        "targetSkillId": "math_fm_factor",
+        "targetSubskillId": "fm_factor",
+        "requiresHumanReview": false
+      }
+    },
+    {
+      "label": "reports\\learning-simulator\\deep\\per-student\\improving_student_g4_90d__soak1.report.json#unit9",
+      "relativePath": "reports\\learning-simulator\\deep\\per-student\\improving_student_g4_90d__soak1.report.json",
+      "focusUnitIndex": 9,
+      "sourceInfo": {
+        "scenarioId": "improving_student_g4_90d__soak1",
+        "focusUnitIndex": 9,
+        "generator": "learning-simulator-deep-v1",
+        "diagnosticPrimarySource": "diagnosticEngineV2",
+        "unitDisplayName": "חיבור",
+        "canonicalAction": "intervene",
+        "skillAlignmentConfidence": "inferred_safe",
+        "skillAlignmentSource": "topic_mapping",
+        "skillAlignmentWarnings": [],
+        "metadataResolution": {
+          "source": "metadataIndex",
+          "candidateCount": 1,
+          "subjectFallback": false,
+          "skillOnlyFallback": false,
+          "warnings": []
+        }
+      },
+      "warnings": [],
+      "missingFields": [],
+      "inputSnapshot": {
+        "subject": "math",
+        "engineDecision": "remediate",
+        "dataQuality": "thin",
+        "skillTaggingIncomplete": false,
+        "doNotConcludeLen": 1,
+        "metaLen": 1,
+        "metadataCandidateCount": 1,
+        "metadataSubjectFallback": false,
+        "metadataSkillOnlyFallback": false,
+        "currentSkillId": "math_add_two",
+        "currentSubskillId": "add_two"
+      },
+      "output": {
+        "plannerStatus": "caution",
+        "nextAction": "pause_collect_more_data",
+        "reasonCodes": [
+          "THIN_DATA",
+          "DO_NOT_CONCLUDE"
+        ],
+        "targetDifficulty": "basic",
+        "questionCount": 3,
+        "targetSkillId": "math_add_two",
+        "targetSubskillId": "add_two",
+        "requiresHumanReview": false
+      }
+    },
+    {
+      "label": "reports\\learning-simulator\\deep\\per-student\\improving_student_g4_90d__soak1.report.json#unit10",
+      "relativePath": "reports\\learning-simulator\\deep\\per-student\\improving_student_g4_90d__soak1.report.json",
+      "focusUnitIndex": 10,
+      "sourceInfo": {
+        "scenarioId": "improving_student_g4_90d__soak1",
+        "focusUnitIndex": 10,
+        "generator": "learning-simulator-deep-v1",
+        "diagnosticPrimarySource": "diagnosticEngineV2",
+        "unitDisplayName": "חילוק",
+        "canonicalAction": "intervene",
+        "skillAlignmentConfidence": "inferred_safe",
+        "skillAlignmentSource": "topic_mapping",
+        "skillAlignmentWarnings": [],
+        "metadataResolution": {
+          "source": "metadataIndex",
+          "candidateCount": 1,
+          "subjectFallback": false,
+          "skillOnlyFallback": false,
+          "warnings": []
+        }
+      },
+      "warnings": [],
+      "missingFields": [],
+      "inputSnapshot": {
+        "subject": "math",
+        "engineDecision": "remediate",
+        "dataQuality": "thin",
+        "skillTaggingIncomplete": false,
+        "doNotConcludeLen": 1,
+        "metaLen": 1,
+        "metadataCandidateCount": 1,
+        "metadataSubjectFallback": false,
+        "metadataSkillOnlyFallback": false,
+        "currentSkillId": "math_div",
+        "currentSubskillId": "div"
+      },
+      "output": {
+        "plannerStatus": "caution",
+        "nextAction": "pause_collect_more_data",
+        "reasonCodes": [
+          "THIN_DATA",
+          "DO_NOT_CONCLUDE"
+        ],
+        "targetDifficulty": "basic",
+        "questionCount": 3,
+        "targetSkillId": "math_div",
+        "targetSubskillId": "div",
+        "requiresHumanReview": false
+      }
+    },
+    {
+      "label": "reports\\learning-simulator\\deep\\per-student\\improving_student_g4_90d__soak1.report.json#unit11",
+      "relativePath": "reports\\learning-simulator\\deep\\per-student\\improving_student_g4_90d__soak1.report.json",
+      "focusUnitIndex": 11,
+      "sourceInfo": {
+        "scenarioId": "improving_student_g4_90d__soak1",
+        "focusUnitIndex": 11,
+        "generator": "learning-simulator-deep-v1",
+        "diagnosticPrimarySource": "diagnosticEngineV2",
+        "unitDisplayName": "מספרים ראשוניים ופריקים",
+        "canonicalAction": "probe_only",
+        "skillAlignmentConfidence": "inferred_safe",
+        "skillAlignmentSource": "topic_mapping",
+        "skillAlignmentWarnings": [],
+        "metadataResolution": {
+          "source": "metadataIndex",
+          "candidateCount": 1,
+          "subjectFallback": false,
+          "skillOnlyFallback": false,
+          "warnings": []
+        }
+      },
+      "warnings": [],
+      "missingFields": [],
+      "inputSnapshot": {
+        "subject": "math",
+        "engineDecision": "review",
+        "dataQuality": "thin",
+        "skillTaggingIncomplete": false,
+        "doNotConcludeLen": 1,
+        "metaLen": 1,
+        "metadataCandidateCount": 1,
+        "metadataSubjectFallback": false,
+        "metadataSkillOnlyFallback": false,
+        "currentSkillId": "math_prime_composite",
+        "currentSubskillId": "prime_composite"
+      },
+      "output": {
+        "plannerStatus": "caution",
+        "nextAction": "pause_collect_more_data",
+        "reasonCodes": [
+          "THIN_DATA",
+          "DO_NOT_CONCLUDE"
+        ],
+        "targetDifficulty": "basic",
+        "questionCount": 3,
+        "targetSkillId": "math_prime_composite",
+        "targetSubskillId": "prime_composite",
         "requiresHumanReview": false
       }
     },
@@ -1973,6 +3202,630 @@
       }
     },
     {
+      "label": "reports\\learning-simulator\\deep\\per-student\\inconsistent_student_g5_30d__soak1.report.json#unit0",
+      "relativePath": "reports\\learning-simulator\\deep\\per-student\\inconsistent_student_g5_30d__soak1.report.json",
+      "focusUnitIndex": 0,
+      "sourceInfo": {
+        "scenarioId": "inconsistent_student_g5_30d__soak1",
+        "focusUnitIndex": 0,
+        "generator": "learning-simulator-deep-v1",
+        "diagnosticPrimarySource": "diagnosticEngineV2",
+        "unitDisplayName": "חיבור",
+        "canonicalAction": "intervene",
+        "skillAlignmentConfidence": "inferred_safe",
+        "skillAlignmentSource": "topic_mapping",
+        "skillAlignmentWarnings": [],
+        "metadataResolution": {
+          "source": "metadataIndex",
+          "candidateCount": 1,
+          "subjectFallback": false,
+          "skillOnlyFallback": false,
+          "warnings": []
+        }
+      },
+      "warnings": [],
+      "missingFields": [],
+      "inputSnapshot": {
+        "subject": "math",
+        "engineDecision": "remediate",
+        "dataQuality": "thin",
+        "skillTaggingIncomplete": false,
+        "doNotConcludeLen": 1,
+        "metaLen": 1,
+        "metadataCandidateCount": 1,
+        "metadataSubjectFallback": false,
+        "metadataSkillOnlyFallback": false,
+        "currentSkillId": "math_add_two",
+        "currentSubskillId": "add_two"
+      },
+      "output": {
+        "plannerStatus": "caution",
+        "nextAction": "probe_skill",
+        "reasonCodes": [
+          "THIN_DATA",
+          "DO_NOT_CONCLUDE",
+          "PROBE_INCONSISTENCY"
+        ],
+        "targetDifficulty": "basic",
+        "questionCount": 3,
+        "targetSkillId": "math_add_two",
+        "targetSubskillId": "add_two",
+        "requiresHumanReview": false
+      }
+    },
+    {
+      "label": "reports\\learning-simulator\\deep\\per-student\\inconsistent_student_g5_30d__soak1.report.json#unit1",
+      "relativePath": "reports\\learning-simulator\\deep\\per-student\\inconsistent_student_g5_30d__soak1.report.json",
+      "focusUnitIndex": 1,
+      "sourceInfo": {
+        "scenarioId": "inconsistent_student_g5_30d__soak1",
+        "focusUnitIndex": 1,
+        "generator": "learning-simulator-deep-v1",
+        "diagnosticPrimarySource": "diagnosticEngineV2",
+        "unitDisplayName": "בעיות מילוליות",
+        "canonicalAction": "intervene",
+        "skillAlignmentConfidence": "inferred_safe",
+        "skillAlignmentSource": "topic_mapping",
+        "skillAlignmentWarnings": [],
+        "metadataResolution": {
+          "source": "metadataIndex",
+          "candidateCount": 1,
+          "subjectFallback": false,
+          "skillOnlyFallback": false,
+          "warnings": []
+        }
+      },
+      "warnings": [],
+      "missingFields": [],
+      "inputSnapshot": {
+        "subject": "math",
+        "engineDecision": "remediate",
+        "dataQuality": "thin",
+        "skillTaggingIncomplete": false,
+        "doNotConcludeLen": 1,
+        "metaLen": 1,
+        "metadataCandidateCount": 1,
+        "metadataSubjectFallback": false,
+        "metadataSkillOnlyFallback": false,
+        "currentSkillId": "math_wp_coins",
+        "currentSubskillId": "wp_coins"
+      },
+      "output": {
+        "plannerStatus": "caution",
+        "nextAction": "probe_skill",
+        "reasonCodes": [
+          "THIN_DATA",
+          "DO_NOT_CONCLUDE",
+          "PROBE_INCONSISTENCY"
+        ],
+        "targetDifficulty": "basic",
+        "questionCount": 3,
+        "targetSkillId": "math_wp_coins",
+        "targetSubskillId": "wp_coins",
+        "requiresHumanReview": false
+      }
+    },
+    {
+      "label": "reports\\learning-simulator\\deep\\per-student\\inconsistent_student_g5_30d__soak1.report.json#unit2",
+      "relativePath": "reports\\learning-simulator\\deep\\per-student\\inconsistent_student_g5_30d__soak1.report.json",
+      "focusUnitIndex": 2,
+      "sourceInfo": {
+        "scenarioId": "inconsistent_student_g5_30d__soak1",
+        "focusUnitIndex": 2,
+        "generator": "learning-simulator-deep-v1",
+        "diagnosticPrimarySource": "diagnosticEngineV2",
+        "unitDisplayName": "ערבוב",
+        "canonicalAction": "intervene",
+        "skillAlignmentConfidence": "inferred_safe",
+        "skillAlignmentSource": "topic_mapping",
+        "skillAlignmentWarnings": [],
+        "metadataResolution": {
+          "source": "metadataIndex",
+          "candidateCount": 1,
+          "subjectFallback": false,
+          "skillOnlyFallback": false,
+          "warnings": []
+        }
+      },
+      "warnings": [],
+      "missingFields": [],
+      "inputSnapshot": {
+        "subject": "math",
+        "engineDecision": "remediate",
+        "dataQuality": "thin",
+        "skillTaggingIncomplete": false,
+        "doNotConcludeLen": 1,
+        "metaLen": 1,
+        "metadataCandidateCount": 1,
+        "metadataSubjectFallback": false,
+        "metadataSkillOnlyFallback": false,
+        "currentSkillId": "math_add_three",
+        "currentSubskillId": "add_three"
+      },
+      "output": {
+        "plannerStatus": "caution",
+        "nextAction": "probe_skill",
+        "reasonCodes": [
+          "THIN_DATA",
+          "DO_NOT_CONCLUDE",
+          "PROBE_INCONSISTENCY"
+        ],
+        "targetDifficulty": "basic",
+        "questionCount": 3,
+        "targetSkillId": "math_add_three",
+        "targetSubskillId": "add_three",
+        "requiresHumanReview": false
+      }
+    },
+    {
+      "label": "reports\\learning-simulator\\deep\\per-student\\inconsistent_student_g5_30d__soak1.report.json#unit3",
+      "relativePath": "reports\\learning-simulator\\deep\\per-student\\inconsistent_student_g5_30d__soak1.report.json",
+      "focusUnitIndex": 3,
+      "sourceInfo": {
+        "scenarioId": "inconsistent_student_g5_30d__soak1",
+        "focusUnitIndex": 3,
+        "generator": "learning-simulator-deep-v1",
+        "diagnosticPrimarySource": "diagnosticEngineV2",
+        "unitDisplayName": "שברים",
+        "canonicalAction": "intervene",
+        "skillAlignmentConfidence": "inferred_safe",
+        "skillAlignmentSource": "topic_mapping",
+        "skillAlignmentWarnings": [],
+        "metadataResolution": {
+          "source": "metadataIndex",
+          "candidateCount": 1,
+          "subjectFallback": false,
+          "skillOnlyFallback": false,
+          "warnings": []
+        }
+      },
+      "warnings": [],
+      "missingFields": [],
+      "inputSnapshot": {
+        "subject": "math",
+        "engineDecision": "remediate",
+        "dataQuality": "thin",
+        "skillTaggingIncomplete": false,
+        "doNotConcludeLen": 1,
+        "metaLen": 1,
+        "metadataCandidateCount": 1,
+        "metadataSubjectFallback": false,
+        "metadataSkillOnlyFallback": false,
+        "currentSkillId": "math_frac_add_sub",
+        "currentSubskillId": "frac_add_sub"
+      },
+      "output": {
+        "plannerStatus": "caution",
+        "nextAction": "probe_skill",
+        "reasonCodes": [
+          "THIN_DATA",
+          "DO_NOT_CONCLUDE",
+          "PROBE_INCONSISTENCY"
+        ],
+        "targetDifficulty": "basic",
+        "questionCount": 3,
+        "targetSkillId": "math_frac_add_sub",
+        "targetSubskillId": "frac_add_sub",
+        "requiresHumanReview": false
+      }
+    },
+    {
+      "label": "reports\\learning-simulator\\deep\\per-student\\inconsistent_student_g5_30d__soak1.report.json#unit4",
+      "relativePath": "reports\\learning-simulator\\deep\\per-student\\inconsistent_student_g5_30d__soak1.report.json",
+      "focusUnitIndex": 4,
+      "sourceInfo": {
+        "scenarioId": "inconsistent_student_g5_30d__soak1",
+        "focusUnitIndex": 4,
+        "generator": "learning-simulator-deep-v1",
+        "diagnosticPrimarySource": "diagnosticEngineV2",
+        "unitDisplayName": "עשרוניים",
+        "canonicalAction": "intervene",
+        "skillAlignmentConfidence": "inferred_safe",
+        "skillAlignmentSource": "topic_mapping",
+        "skillAlignmentWarnings": [],
+        "metadataResolution": {
+          "source": "metadataIndex",
+          "candidateCount": 1,
+          "subjectFallback": false,
+          "skillOnlyFallback": false,
+          "warnings": []
+        }
+      },
+      "warnings": [],
+      "missingFields": [],
+      "inputSnapshot": {
+        "subject": "math",
+        "engineDecision": "remediate",
+        "dataQuality": "thin",
+        "skillTaggingIncomplete": false,
+        "doNotConcludeLen": 1,
+        "metaLen": 1,
+        "metadataCandidateCount": 1,
+        "metadataSubjectFallback": false,
+        "metadataSkillOnlyFallback": false,
+        "currentSkillId": "math_dec_add",
+        "currentSubskillId": "dec_add"
+      },
+      "output": {
+        "plannerStatus": "caution",
+        "nextAction": "probe_skill",
+        "reasonCodes": [
+          "THIN_DATA",
+          "DO_NOT_CONCLUDE",
+          "PROBE_INCONSISTENCY"
+        ],
+        "targetDifficulty": "basic",
+        "questionCount": 3,
+        "targetSkillId": "math_dec_add",
+        "targetSubskillId": "dec_add",
+        "requiresHumanReview": false
+      }
+    },
+    {
+      "label": "reports\\learning-simulator\\deep\\per-student\\inconsistent_student_g5_30d__soak1.report.json#unit5",
+      "relativePath": "reports\\learning-simulator\\deep\\per-student\\inconsistent_student_g5_30d__soak1.report.json",
+      "focusUnitIndex": 5,
+      "sourceInfo": {
+        "scenarioId": "inconsistent_student_g5_30d__soak1",
+        "focusUnitIndex": 5,
+        "generator": "learning-simulator-deep-v1",
+        "diagnosticPrimarySource": "diagnosticEngineV2",
+        "unitDisplayName": "משוואות",
+        "canonicalAction": "intervene",
+        "skillAlignmentConfidence": "inferred_safe",
+        "skillAlignmentSource": "topic_mapping",
+        "skillAlignmentWarnings": [],
+        "metadataResolution": {
+          "source": "metadataIndex",
+          "candidateCount": 1,
+          "subjectFallback": false,
+          "skillOnlyFallback": false,
+          "warnings": []
+        }
+      },
+      "warnings": [],
+      "missingFields": [],
+      "inputSnapshot": {
+        "subject": "math",
+        "engineDecision": "remediate",
+        "dataQuality": "thin",
+        "skillTaggingIncomplete": false,
+        "doNotConcludeLen": 1,
+        "metaLen": 1,
+        "metadataCandidateCount": 1,
+        "metadataSubjectFallback": false,
+        "metadataSkillOnlyFallback": false,
+        "currentSkillId": "math_eq_add_simple",
+        "currentSubskillId": "eq_add_simple"
+      },
+      "output": {
+        "plannerStatus": "caution",
+        "nextAction": "probe_skill",
+        "reasonCodes": [
+          "THIN_DATA",
+          "DO_NOT_CONCLUDE",
+          "PROBE_INCONSISTENCY"
+        ],
+        "targetDifficulty": "basic",
+        "questionCount": 3,
+        "targetSkillId": "math_eq_add_simple",
+        "targetSubskillId": "eq_add_simple",
+        "requiresHumanReview": false
+      }
+    },
+    {
+      "label": "reports\\learning-simulator\\deep\\per-student\\inconsistent_student_g5_30d__soak1.report.json#unit6",
+      "relativePath": "reports\\learning-simulator\\deep\\per-student\\inconsistent_student_g5_30d__soak1.report.json",
+      "focusUnitIndex": 6,
+      "sourceInfo": {
+        "scenarioId": "inconsistent_student_g5_30d__soak1",
+        "focusUnitIndex": 6,
+        "generator": "learning-simulator-deep-v1",
+        "diagnosticPrimarySource": "diagnosticEngineV2",
+        "unitDisplayName": "אחוזים",
+        "canonicalAction": "intervene",
+        "skillAlignmentConfidence": "inferred_safe",
+        "skillAlignmentSource": "topic_mapping",
+        "skillAlignmentWarnings": [],
+        "metadataResolution": {
+          "source": "metadataIndex",
+          "candidateCount": 1,
+          "subjectFallback": false,
+          "skillOnlyFallback": false,
+          "warnings": []
+        }
+      },
+      "warnings": [],
+      "missingFields": [],
+      "inputSnapshot": {
+        "subject": "math",
+        "engineDecision": "remediate",
+        "dataQuality": "thin",
+        "skillTaggingIncomplete": false,
+        "doNotConcludeLen": 1,
+        "metaLen": 1,
+        "metadataCandidateCount": 1,
+        "metadataSubjectFallback": false,
+        "metadataSkillOnlyFallback": false,
+        "currentSkillId": "math_perc_part_of",
+        "currentSubskillId": "perc_part_of"
+      },
+      "output": {
+        "plannerStatus": "caution",
+        "nextAction": "probe_skill",
+        "reasonCodes": [
+          "THIN_DATA",
+          "DO_NOT_CONCLUDE",
+          "PROBE_INCONSISTENCY"
+        ],
+        "targetDifficulty": "basic",
+        "questionCount": 3,
+        "targetSkillId": "math_perc_part_of",
+        "targetSubskillId": "perc_part_of",
+        "requiresHumanReview": false
+      }
+    },
+    {
+      "label": "reports\\learning-simulator\\deep\\per-student\\inconsistent_student_g5_30d__soak1.report.json#unit7",
+      "relativePath": "reports\\learning-simulator\\deep\\per-student\\inconsistent_student_g5_30d__soak1.report.json",
+      "focusUnitIndex": 7,
+      "sourceInfo": {
+        "scenarioId": "inconsistent_student_g5_30d__soak1",
+        "focusUnitIndex": 7,
+        "generator": "learning-simulator-deep-v1",
+        "diagnosticPrimarySource": "diagnosticEngineV2",
+        "unitDisplayName": "אומדן",
+        "canonicalAction": "probe_only",
+        "skillAlignmentConfidence": "inferred_safe",
+        "skillAlignmentSource": "topic_mapping",
+        "skillAlignmentWarnings": [],
+        "metadataResolution": {
+          "source": "metadataIndex",
+          "candidateCount": 1,
+          "subjectFallback": false,
+          "skillOnlyFallback": false,
+          "warnings": []
+        }
+      },
+      "warnings": [],
+      "missingFields": [],
+      "inputSnapshot": {
+        "subject": "math",
+        "engineDecision": "review",
+        "dataQuality": "thin",
+        "skillTaggingIncomplete": false,
+        "doNotConcludeLen": 1,
+        "metaLen": 1,
+        "metadataCandidateCount": 1,
+        "metadataSubjectFallback": false,
+        "metadataSkillOnlyFallback": false,
+        "currentSkillId": "math_est_add",
+        "currentSubskillId": "est_add"
+      },
+      "output": {
+        "plannerStatus": "caution",
+        "nextAction": "probe_skill",
+        "reasonCodes": [
+          "THIN_DATA",
+          "DO_NOT_CONCLUDE",
+          "PROBE_INCONSISTENCY"
+        ],
+        "targetDifficulty": "basic",
+        "questionCount": 3,
+        "targetSkillId": "math_est_add",
+        "targetSubskillId": "est_add",
+        "requiresHumanReview": false
+      }
+    },
+    {
+      "label": "reports\\learning-simulator\\deep\\per-student\\inconsistent_student_g5_30d__soak1.report.json#unit8",
+      "relativePath": "reports\\learning-simulator\\deep\\per-student\\inconsistent_student_g5_30d__soak1.report.json",
+      "focusUnitIndex": 8,
+      "sourceInfo": {
+        "scenarioId": "inconsistent_student_g5_30d__soak1",
+        "focusUnitIndex": 8,
+        "generator": "learning-simulator-deep-v1",
+        "diagnosticPrimarySource": "diagnosticEngineV2",
+        "unitDisplayName": "חיסור",
+        "canonicalAction": "intervene",
+        "skillAlignmentConfidence": "inferred_safe",
+        "skillAlignmentSource": "topic_mapping",
+        "skillAlignmentWarnings": [],
+        "metadataResolution": {
+          "source": "metadataIndex",
+          "candidateCount": 1,
+          "subjectFallback": false,
+          "skillOnlyFallback": false,
+          "warnings": []
+        }
+      },
+      "warnings": [],
+      "missingFields": [],
+      "inputSnapshot": {
+        "subject": "math",
+        "engineDecision": "remediate",
+        "dataQuality": "thin",
+        "skillTaggingIncomplete": false,
+        "doNotConcludeLen": 1,
+        "metaLen": 1,
+        "metadataCandidateCount": 1,
+        "metadataSubjectFallback": false,
+        "metadataSkillOnlyFallback": false,
+        "currentSkillId": "math_sub_two",
+        "currentSubskillId": "sub_two"
+      },
+      "output": {
+        "plannerStatus": "caution",
+        "nextAction": "probe_skill",
+        "reasonCodes": [
+          "THIN_DATA",
+          "DO_NOT_CONCLUDE",
+          "PROBE_INCONSISTENCY"
+        ],
+        "targetDifficulty": "basic",
+        "questionCount": 3,
+        "targetSkillId": "math_sub_two",
+        "targetSubskillId": "sub_two",
+        "requiresHumanReview": false
+      }
+    },
+    {
+      "label": "reports\\learning-simulator\\deep\\per-student\\inconsistent_student_g5_30d__soak1.report.json#unit9",
+      "relativePath": "reports\\learning-simulator\\deep\\per-student\\inconsistent_student_g5_30d__soak1.report.json",
+      "focusUnitIndex": 9,
+      "sourceInfo": {
+        "scenarioId": "inconsistent_student_g5_30d__soak1",
+        "focusUnitIndex": 9,
+        "generator": "learning-simulator-deep-v1",
+        "diagnosticPrimarySource": "diagnosticEngineV2",
+        "unitDisplayName": "חילוק עם שארית",
+        "canonicalAction": "intervene",
+        "skillAlignmentConfidence": "inferred_safe",
+        "skillAlignmentSource": "topic_mapping",
+        "skillAlignmentWarnings": [],
+        "metadataResolution": {
+          "source": "metadataIndex",
+          "candidateCount": 1,
+          "subjectFallback": false,
+          "skillOnlyFallback": false,
+          "warnings": []
+        }
+      },
+      "warnings": [],
+      "missingFields": [],
+      "inputSnapshot": {
+        "subject": "math",
+        "engineDecision": "remediate",
+        "dataQuality": "thin",
+        "skillTaggingIncomplete": false,
+        "doNotConcludeLen": 1,
+        "metaLen": 1,
+        "metadataCandidateCount": 1,
+        "metadataSubjectFallback": false,
+        "metadataSkillOnlyFallback": false,
+        "currentSkillId": "math_div_with_remainder",
+        "currentSubskillId": "div_with_remainder"
+      },
+      "output": {
+        "plannerStatus": "caution",
+        "nextAction": "probe_skill",
+        "reasonCodes": [
+          "THIN_DATA",
+          "DO_NOT_CONCLUDE",
+          "PROBE_INCONSISTENCY"
+        ],
+        "targetDifficulty": "basic",
+        "questionCount": 3,
+        "targetSkillId": "math_div_with_remainder",
+        "targetSubskillId": "div_with_remainder",
+        "requiresHumanReview": false
+      }
+    },
+    {
+      "label": "reports\\learning-simulator\\deep\\per-student\\inconsistent_student_g5_30d__soak1.report.json#unit10",
+      "relativePath": "reports\\learning-simulator\\deep\\per-student\\inconsistent_student_g5_30d__soak1.report.json",
+      "focusUnitIndex": 10,
+      "sourceInfo": {
+        "scenarioId": "inconsistent_student_g5_30d__soak1",
+        "focusUnitIndex": 10,
+        "generator": "learning-simulator-deep-v1",
+        "diagnosticPrimarySource": "diagnosticEngineV2",
+        "unitDisplayName": "סדרות",
+        "canonicalAction": "intervene",
+        "skillAlignmentConfidence": "inferred_safe",
+        "skillAlignmentSource": "topic_mapping",
+        "skillAlignmentWarnings": [],
+        "metadataResolution": {
+          "source": "metadataIndex",
+          "candidateCount": 1,
+          "subjectFallback": false,
+          "skillOnlyFallback": false,
+          "warnings": []
+        }
+      },
+      "warnings": [],
+      "missingFields": [],
+      "inputSnapshot": {
+        "subject": "math",
+        "engineDecision": "remediate",
+        "dataQuality": "thin",
+        "skillTaggingIncomplete": false,
+        "doNotConcludeLen": 1,
+        "metaLen": 1,
+        "metadataCandidateCount": 1,
+        "metadataSubjectFallback": false,
+        "metadataSkillOnlyFallback": false,
+        "currentSkillId": "math_sequence",
+        "currentSubskillId": "sequence"
+      },
+      "output": {
+        "plannerStatus": "caution",
+        "nextAction": "probe_skill",
+        "reasonCodes": [
+          "THIN_DATA",
+          "DO_NOT_CONCLUDE",
+          "PROBE_INCONSISTENCY"
+        ],
+        "targetDifficulty": "basic",
+        "questionCount": 3,
+        "targetSkillId": "math_sequence",
+        "targetSubskillId": "sequence",
+        "requiresHumanReview": false
+      }
+    },
+    {
+      "label": "reports\\learning-simulator\\deep\\per-student\\inconsistent_student_g5_30d__soak1.report.json#unit11",
+      "relativePath": "reports\\learning-simulator\\deep\\per-student\\inconsistent_student_g5_30d__soak1.report.json",
+      "focusUnitIndex": 11,
+      "sourceInfo": {
+        "scenarioId": "inconsistent_student_g5_30d__soak1",
+        "focusUnitIndex": 11,
+        "generator": "learning-simulator-deep-v1",
+        "diagnosticPrimarySource": "diagnosticEngineV2",
+        "unitDisplayName": "עיגול",
+        "canonicalAction": "intervene",
+        "skillAlignmentConfidence": "inferred_safe",
+        "skillAlignmentSource": "topic_mapping",
+        "skillAlignmentWarnings": [],
+        "metadataResolution": {
+          "source": "metadataIndex",
+          "candidateCount": 1,
+          "subjectFallback": false,
+          "skillOnlyFallback": false,
+          "warnings": []
+        }
+      },
+      "warnings": [],
+      "missingFields": [],
+      "inputSnapshot": {
+        "subject": "math",
+        "engineDecision": "remediate",
+        "dataQuality": "thin",
+        "skillTaggingIncomplete": false,
+        "doNotConcludeLen": 1,
+        "metaLen": 1,
+        "metadataCandidateCount": 1,
+        "metadataSubjectFallback": false,
+        "metadataSkillOnlyFallback": false,
+        "currentSkillId": "math_round",
+        "currentSubskillId": "round"
+      },
+      "output": {
+        "plannerStatus": "caution",
+        "nextAction": "probe_skill",
+        "reasonCodes": [
+          "THIN_DATA",
+          "DO_NOT_CONCLUDE",
+          "PROBE_INCONSISTENCY"
+        ],
+        "targetDifficulty": "basic",
+        "questionCount": 3,
+        "targetSkillId": "math_round",
+        "targetSubskillId": "round",
+        "requiresHumanReview": false
+      }
+    },
+    {
       "label": "reports\\learning-simulator\\deep\\per-student\\random_guessing_student_g3_30d.report.json#unit0",
       "relativePath": "reports\\learning-simulator\\deep\\per-student\\random_guessing_student_g3_30d.report.json",
       "focusUnitIndex": 0,
@@ -2597,6 +4450,624 @@
       }
     },
     {
+      "label": "reports\\learning-simulator\\deep\\per-student\\random_guessing_student_g3_30d__soak1.report.json#unit0",
+      "relativePath": "reports\\learning-simulator\\deep\\per-student\\random_guessing_student_g3_30d__soak1.report.json",
+      "focusUnitIndex": 0,
+      "sourceInfo": {
+        "scenarioId": "random_guessing_student_g3_30d__soak1",
+        "focusUnitIndex": 0,
+        "generator": "learning-simulator-deep-v1",
+        "diagnosticPrimarySource": "diagnosticEngineV2",
+        "unitDisplayName": "חילוק עם שארית",
+        "canonicalAction": "intervene",
+        "skillAlignmentConfidence": "inferred_safe",
+        "skillAlignmentSource": "topic_mapping",
+        "skillAlignmentWarnings": [],
+        "metadataResolution": {
+          "source": "metadataIndex",
+          "candidateCount": 1,
+          "subjectFallback": false,
+          "skillOnlyFallback": false,
+          "warnings": []
+        }
+      },
+      "warnings": [],
+      "missingFields": [],
+      "inputSnapshot": {
+        "subject": "math",
+        "engineDecision": "remediate",
+        "dataQuality": "thin",
+        "skillTaggingIncomplete": false,
+        "doNotConcludeLen": 1,
+        "metaLen": 1,
+        "metadataCandidateCount": 1,
+        "metadataSubjectFallback": false,
+        "metadataSkillOnlyFallback": false,
+        "currentSkillId": "math_div_with_remainder",
+        "currentSubskillId": "div_with_remainder"
+      },
+      "output": {
+        "plannerStatus": "caution",
+        "nextAction": "probe_skill",
+        "reasonCodes": [
+          "THIN_DATA",
+          "DO_NOT_CONCLUDE",
+          "PROBE_INCONSISTENCY"
+        ],
+        "targetDifficulty": "basic",
+        "questionCount": 3,
+        "targetSkillId": "math_div_with_remainder",
+        "targetSubskillId": "div_with_remainder",
+        "requiresHumanReview": false
+      }
+    },
+    {
+      "label": "reports\\learning-simulator\\deep\\per-student\\random_guessing_student_g3_30d__soak1.report.json#unit1",
+      "relativePath": "reports\\learning-simulator\\deep\\per-student\\random_guessing_student_g3_30d__soak1.report.json",
+      "focusUnitIndex": 1,
+      "sourceInfo": {
+        "scenarioId": "random_guessing_student_g3_30d__soak1",
+        "focusUnitIndex": 1,
+        "generator": "learning-simulator-deep-v1",
+        "diagnosticPrimarySource": "diagnosticEngineV2",
+        "unitDisplayName": "כפל",
+        "canonicalAction": "intervene",
+        "skillAlignmentConfidence": "inferred_safe",
+        "skillAlignmentSource": "topic_mapping",
+        "skillAlignmentWarnings": [],
+        "metadataResolution": {
+          "source": "metadataIndex",
+          "candidateCount": 1,
+          "subjectFallback": false,
+          "skillOnlyFallback": false,
+          "warnings": []
+        }
+      },
+      "warnings": [],
+      "missingFields": [],
+      "inputSnapshot": {
+        "subject": "math",
+        "engineDecision": "remediate",
+        "dataQuality": "thin",
+        "skillTaggingIncomplete": false,
+        "doNotConcludeLen": 1,
+        "metaLen": 1,
+        "metadataCandidateCount": 1,
+        "metadataSubjectFallback": false,
+        "metadataSkillOnlyFallback": false,
+        "currentSkillId": "math_mul",
+        "currentSubskillId": "mul"
+      },
+      "output": {
+        "plannerStatus": "caution",
+        "nextAction": "probe_skill",
+        "reasonCodes": [
+          "THIN_DATA",
+          "DO_NOT_CONCLUDE",
+          "PROBE_INCONSISTENCY"
+        ],
+        "targetDifficulty": "basic",
+        "questionCount": 3,
+        "targetSkillId": "math_mul",
+        "targetSubskillId": "mul",
+        "requiresHumanReview": false
+      }
+    },
+    {
+      "label": "reports\\learning-simulator\\deep\\per-student\\random_guessing_student_g3_30d__soak1.report.json#unit2",
+      "relativePath": "reports\\learning-simulator\\deep\\per-student\\random_guessing_student_g3_30d__soak1.report.json",
+      "focusUnitIndex": 2,
+      "sourceInfo": {
+        "scenarioId": "random_guessing_student_g3_30d__soak1",
+        "focusUnitIndex": 2,
+        "generator": "learning-simulator-deep-v1",
+        "diagnosticPrimarySource": "diagnosticEngineV2",
+        "unitDisplayName": "חיבור",
+        "canonicalAction": "intervene",
+        "skillAlignmentConfidence": "inferred_safe",
+        "skillAlignmentSource": "topic_mapping",
+        "skillAlignmentWarnings": [],
+        "metadataResolution": {
+          "source": "metadataIndex",
+          "candidateCount": 1,
+          "subjectFallback": false,
+          "skillOnlyFallback": false,
+          "warnings": []
+        }
+      },
+      "warnings": [],
+      "missingFields": [],
+      "inputSnapshot": {
+        "subject": "math",
+        "engineDecision": "remediate",
+        "dataQuality": "thin",
+        "skillTaggingIncomplete": false,
+        "doNotConcludeLen": 1,
+        "metaLen": 1,
+        "metadataCandidateCount": 1,
+        "metadataSubjectFallback": false,
+        "metadataSkillOnlyFallback": false,
+        "currentSkillId": "math_add_two",
+        "currentSubskillId": "add_two"
+      },
+      "output": {
+        "plannerStatus": "caution",
+        "nextAction": "probe_skill",
+        "reasonCodes": [
+          "THIN_DATA",
+          "DO_NOT_CONCLUDE",
+          "PROBE_INCONSISTENCY"
+        ],
+        "targetDifficulty": "basic",
+        "questionCount": 3,
+        "targetSkillId": "math_add_two",
+        "targetSubskillId": "add_two",
+        "requiresHumanReview": false
+      }
+    },
+    {
+      "label": "reports\\learning-simulator\\deep\\per-student\\random_guessing_student_g3_30d__soak1.report.json#unit3",
+      "relativePath": "reports\\learning-simulator\\deep\\per-student\\random_guessing_student_g3_30d__soak1.report.json",
+      "focusUnitIndex": 3,
+      "sourceInfo": {
+        "scenarioId": "random_guessing_student_g3_30d__soak1",
+        "focusUnitIndex": 3,
+        "generator": "learning-simulator-deep-v1",
+        "diagnosticPrimarySource": "diagnosticEngineV2",
+        "unitDisplayName": "עשרוניים",
+        "canonicalAction": "intervene",
+        "skillAlignmentConfidence": "inferred_safe",
+        "skillAlignmentSource": "topic_mapping",
+        "skillAlignmentWarnings": [],
+        "metadataResolution": {
+          "source": "metadataIndex",
+          "candidateCount": 1,
+          "subjectFallback": false,
+          "skillOnlyFallback": false,
+          "warnings": []
+        }
+      },
+      "warnings": [],
+      "missingFields": [],
+      "inputSnapshot": {
+        "subject": "math",
+        "engineDecision": "remediate",
+        "dataQuality": "thin",
+        "skillTaggingIncomplete": false,
+        "doNotConcludeLen": 1,
+        "metaLen": 1,
+        "metadataCandidateCount": 1,
+        "metadataSubjectFallback": false,
+        "metadataSkillOnlyFallback": false,
+        "currentSkillId": "math_dec_add",
+        "currentSubskillId": "dec_add"
+      },
+      "output": {
+        "plannerStatus": "caution",
+        "nextAction": "probe_skill",
+        "reasonCodes": [
+          "THIN_DATA",
+          "DO_NOT_CONCLUDE",
+          "PROBE_INCONSISTENCY"
+        ],
+        "targetDifficulty": "basic",
+        "questionCount": 3,
+        "targetSkillId": "math_dec_add",
+        "targetSubskillId": "dec_add",
+        "requiresHumanReview": false
+      }
+    },
+    {
+      "label": "reports\\learning-simulator\\deep\\per-student\\random_guessing_student_g3_30d__soak1.report.json#unit4",
+      "relativePath": "reports\\learning-simulator\\deep\\per-student\\random_guessing_student_g3_30d__soak1.report.json",
+      "focusUnitIndex": 4,
+      "sourceInfo": {
+        "scenarioId": "random_guessing_student_g3_30d__soak1",
+        "focusUnitIndex": 4,
+        "generator": "learning-simulator-deep-v1",
+        "diagnosticPrimarySource": "diagnosticEngineV2",
+        "unitDisplayName": "סימני התחלקות",
+        "canonicalAction": "intervene",
+        "skillAlignmentConfidence": "inferred_safe",
+        "skillAlignmentSource": "topic_mapping",
+        "skillAlignmentWarnings": [],
+        "metadataResolution": {
+          "source": "metadataIndex",
+          "candidateCount": 1,
+          "subjectFallback": false,
+          "skillOnlyFallback": false,
+          "warnings": []
+        }
+      },
+      "warnings": [],
+      "missingFields": [],
+      "inputSnapshot": {
+        "subject": "math",
+        "engineDecision": "remediate",
+        "dataQuality": "thin",
+        "skillTaggingIncomplete": false,
+        "doNotConcludeLen": 1,
+        "metaLen": 1,
+        "metadataCandidateCount": 1,
+        "metadataSubjectFallback": false,
+        "metadataSkillOnlyFallback": false,
+        "currentSkillId": "math_divisibility",
+        "currentSubskillId": "divisibility"
+      },
+      "output": {
+        "plannerStatus": "caution",
+        "nextAction": "probe_skill",
+        "reasonCodes": [
+          "THIN_DATA",
+          "DO_NOT_CONCLUDE",
+          "PROBE_INCONSISTENCY"
+        ],
+        "targetDifficulty": "basic",
+        "questionCount": 3,
+        "targetSkillId": "math_divisibility",
+        "targetSubskillId": "divisibility",
+        "requiresHumanReview": false
+      }
+    },
+    {
+      "label": "reports\\learning-simulator\\deep\\per-student\\random_guessing_student_g3_30d__soak1.report.json#unit5",
+      "relativePath": "reports\\learning-simulator\\deep\\per-student\\random_guessing_student_g3_30d__soak1.report.json",
+      "focusUnitIndex": 5,
+      "sourceInfo": {
+        "scenarioId": "random_guessing_student_g3_30d__soak1",
+        "focusUnitIndex": 5,
+        "generator": "learning-simulator-deep-v1",
+        "diagnosticPrimarySource": "diagnosticEngineV2",
+        "unitDisplayName": "בעיות מילוליות",
+        "canonicalAction": "intervene",
+        "skillAlignmentConfidence": "inferred_safe",
+        "skillAlignmentSource": "topic_mapping",
+        "skillAlignmentWarnings": [],
+        "metadataResolution": {
+          "source": "metadataIndex",
+          "candidateCount": 1,
+          "subjectFallback": false,
+          "skillOnlyFallback": false,
+          "warnings": []
+        }
+      },
+      "warnings": [],
+      "missingFields": [],
+      "inputSnapshot": {
+        "subject": "math",
+        "engineDecision": "remediate",
+        "dataQuality": "thin",
+        "skillTaggingIncomplete": false,
+        "doNotConcludeLen": 1,
+        "metaLen": 1,
+        "metadataCandidateCount": 1,
+        "metadataSubjectFallback": false,
+        "metadataSkillOnlyFallback": false,
+        "currentSkillId": "math_wp_coins",
+        "currentSubskillId": "wp_coins"
+      },
+      "output": {
+        "plannerStatus": "caution",
+        "nextAction": "probe_skill",
+        "reasonCodes": [
+          "THIN_DATA",
+          "DO_NOT_CONCLUDE",
+          "PROBE_INCONSISTENCY"
+        ],
+        "targetDifficulty": "basic",
+        "questionCount": 3,
+        "targetSkillId": "math_wp_coins",
+        "targetSubskillId": "wp_coins",
+        "requiresHumanReview": false
+      }
+    },
+    {
+      "label": "reports\\learning-simulator\\deep\\per-student\\random_guessing_student_g3_30d__soak1.report.json#unit6",
+      "relativePath": "reports\\learning-simulator\\deep\\per-student\\random_guessing_student_g3_30d__soak1.report.json",
+      "focusUnitIndex": 6,
+      "sourceInfo": {
+        "scenarioId": "random_guessing_student_g3_30d__soak1",
+        "focusUnitIndex": 6,
+        "generator": "learning-simulator-deep-v1",
+        "diagnosticPrimarySource": "diagnosticEngineV2",
+        "unitDisplayName": "סדרות",
+        "canonicalAction": "intervene",
+        "skillAlignmentConfidence": "inferred_safe",
+        "skillAlignmentSource": "topic_mapping",
+        "skillAlignmentWarnings": [],
+        "metadataResolution": {
+          "source": "metadataIndex",
+          "candidateCount": 1,
+          "subjectFallback": false,
+          "skillOnlyFallback": false,
+          "warnings": []
+        }
+      },
+      "warnings": [],
+      "missingFields": [],
+      "inputSnapshot": {
+        "subject": "math",
+        "engineDecision": "remediate",
+        "dataQuality": "thin",
+        "skillTaggingIncomplete": false,
+        "doNotConcludeLen": 1,
+        "metaLen": 1,
+        "metadataCandidateCount": 1,
+        "metadataSubjectFallback": false,
+        "metadataSkillOnlyFallback": false,
+        "currentSkillId": "math_sequence",
+        "currentSubskillId": "sequence"
+      },
+      "output": {
+        "plannerStatus": "caution",
+        "nextAction": "probe_skill",
+        "reasonCodes": [
+          "THIN_DATA",
+          "DO_NOT_CONCLUDE",
+          "PROBE_INCONSISTENCY"
+        ],
+        "targetDifficulty": "basic",
+        "questionCount": 3,
+        "targetSkillId": "math_sequence",
+        "targetSubskillId": "sequence",
+        "requiresHumanReview": false
+      }
+    },
+    {
+      "label": "reports\\learning-simulator\\deep\\per-student\\random_guessing_student_g3_30d__soak1.report.json#unit7",
+      "relativePath": "reports\\learning-simulator\\deep\\per-student\\random_guessing_student_g3_30d__soak1.report.json",
+      "focusUnitIndex": 7,
+      "sourceInfo": {
+        "scenarioId": "random_guessing_student_g3_30d__soak1",
+        "focusUnitIndex": 7,
+        "generator": "learning-simulator-deep-v1",
+        "diagnosticPrimarySource": "diagnosticEngineV2",
+        "unitDisplayName": "חיסור",
+        "canonicalAction": "intervene",
+        "skillAlignmentConfidence": "inferred_safe",
+        "skillAlignmentSource": "topic_mapping",
+        "skillAlignmentWarnings": [],
+        "metadataResolution": {
+          "source": "metadataIndex",
+          "candidateCount": 1,
+          "subjectFallback": false,
+          "skillOnlyFallback": false,
+          "warnings": []
+        }
+      },
+      "warnings": [],
+      "missingFields": [],
+      "inputSnapshot": {
+        "subject": "math",
+        "engineDecision": "remediate",
+        "dataQuality": "thin",
+        "skillTaggingIncomplete": false,
+        "doNotConcludeLen": 1,
+        "metaLen": 1,
+        "metadataCandidateCount": 1,
+        "metadataSubjectFallback": false,
+        "metadataSkillOnlyFallback": false,
+        "currentSkillId": "math_sub_two",
+        "currentSubskillId": "sub_two"
+      },
+      "output": {
+        "plannerStatus": "caution",
+        "nextAction": "probe_skill",
+        "reasonCodes": [
+          "THIN_DATA",
+          "DO_NOT_CONCLUDE",
+          "PROBE_INCONSISTENCY"
+        ],
+        "targetDifficulty": "basic",
+        "questionCount": 3,
+        "targetSkillId": "math_sub_two",
+        "targetSubskillId": "sub_two",
+        "requiresHumanReview": false
+      }
+    },
+    {
+      "label": "reports\\learning-simulator\\deep\\per-student\\random_guessing_student_g3_30d__soak1.report.json#unit8",
+      "relativePath": "reports\\learning-simulator\\deep\\per-student\\random_guessing_student_g3_30d__soak1.report.json",
+      "focusUnitIndex": 8,
+      "sourceInfo": {
+        "scenarioId": "random_guessing_student_g3_30d__soak1",
+        "focusUnitIndex": 8,
+        "generator": "learning-simulator-deep-v1",
+        "diagnosticPrimarySource": "diagnosticEngineV2",
+        "unitDisplayName": "חוש מספרים",
+        "canonicalAction": "probe_only",
+        "skillAlignmentConfidence": "inferred_safe",
+        "skillAlignmentSource": "topic_mapping",
+        "skillAlignmentWarnings": [],
+        "metadataResolution": {
+          "source": "metadataIndex",
+          "candidateCount": 1,
+          "subjectFallback": false,
+          "skillOnlyFallback": false,
+          "warnings": []
+        }
+      },
+      "warnings": [],
+      "missingFields": [],
+      "inputSnapshot": {
+        "subject": "math",
+        "engineDecision": "review",
+        "dataQuality": "thin",
+        "skillTaggingIncomplete": false,
+        "doNotConcludeLen": 1,
+        "metaLen": 1,
+        "metadataCandidateCount": 1,
+        "metadataSubjectFallback": false,
+        "metadataSkillOnlyFallback": false,
+        "currentSkillId": "math_ns_counting_forward",
+        "currentSubskillId": "ns_counting_forward"
+      },
+      "output": {
+        "plannerStatus": "caution",
+        "nextAction": "probe_skill",
+        "reasonCodes": [
+          "THIN_DATA",
+          "DO_NOT_CONCLUDE",
+          "PROBE_INCONSISTENCY"
+        ],
+        "targetDifficulty": "basic",
+        "questionCount": 3,
+        "targetSkillId": "math_ns_counting_forward",
+        "targetSubskillId": "ns_counting_forward",
+        "requiresHumanReview": false
+      }
+    },
+    {
+      "label": "reports\\learning-simulator\\deep\\per-student\\random_guessing_student_g3_30d__soak1.report.json#unit9",
+      "relativePath": "reports\\learning-simulator\\deep\\per-student\\random_guessing_student_g3_30d__soak1.report.json",
+      "focusUnitIndex": 9,
+      "sourceInfo": {
+        "scenarioId": "random_guessing_student_g3_30d__soak1",
+        "focusUnitIndex": 9,
+        "generator": "learning-simulator-deep-v1",
+        "diagnosticPrimarySource": "diagnosticEngineV2",
+        "unitDisplayName": "חילוק",
+        "canonicalAction": "intervene",
+        "skillAlignmentConfidence": "inferred_safe",
+        "skillAlignmentSource": "topic_mapping",
+        "skillAlignmentWarnings": [],
+        "metadataResolution": {
+          "source": "metadataIndex",
+          "candidateCount": 1,
+          "subjectFallback": false,
+          "skillOnlyFallback": false,
+          "warnings": []
+        }
+      },
+      "warnings": [],
+      "missingFields": [],
+      "inputSnapshot": {
+        "subject": "math",
+        "engineDecision": "remediate",
+        "dataQuality": "thin",
+        "skillTaggingIncomplete": false,
+        "doNotConcludeLen": 1,
+        "metaLen": 1,
+        "metadataCandidateCount": 1,
+        "metadataSubjectFallback": false,
+        "metadataSkillOnlyFallback": false,
+        "currentSkillId": "math_div",
+        "currentSubskillId": "div"
+      },
+      "output": {
+        "plannerStatus": "caution",
+        "nextAction": "probe_skill",
+        "reasonCodes": [
+          "THIN_DATA",
+          "DO_NOT_CONCLUDE",
+          "PROBE_INCONSISTENCY"
+        ],
+        "targetDifficulty": "basic",
+        "questionCount": 3,
+        "targetSkillId": "math_div",
+        "targetSubskillId": "div",
+        "requiresHumanReview": false
+      }
+    },
+    {
+      "label": "reports\\learning-simulator\\deep\\per-student\\random_guessing_student_g3_30d__soak1.report.json#unit10",
+      "relativePath": "reports\\learning-simulator\\deep\\per-student\\random_guessing_student_g3_30d__soak1.report.json",
+      "focusUnitIndex": 10,
+      "sourceInfo": {
+        "scenarioId": "random_guessing_student_g3_30d__soak1",
+        "focusUnitIndex": 10,
+        "generator": "learning-simulator-deep-v1",
+        "diagnosticPrimarySource": "diagnosticEngineV2",
+        "unitDisplayName": "Translation",
+        "canonicalAction": "intervene",
+        "skillAlignmentConfidence": null,
+        "skillAlignmentSource": null,
+        "skillAlignmentWarnings": [],
+        "metadataResolution": null
+      },
+      "warnings": [
+        "availableQuestionMetadata_missing"
+      ],
+      "missingFields": [],
+      "inputSnapshot": {
+        "subject": "english",
+        "engineDecision": "remediate",
+        "dataQuality": "thin",
+        "skillTaggingIncomplete": true,
+        "doNotConcludeLen": 1,
+        "metaLen": 0,
+        "metadataCandidateCount": 0,
+        "metadataSubjectFallback": false,
+        "metadataSkillOnlyFallback": false,
+        "currentSkillId": "",
+        "currentSubskillId": ""
+      },
+      "output": {
+        "plannerStatus": "needs_human_review",
+        "nextAction": "pause_collect_more_data",
+        "reasonCodes": [
+          "ENGLISH_SKILL_TAGGING_INCOMPLETE"
+        ],
+        "targetDifficulty": "standard",
+        "questionCount": 3,
+        "targetSkillId": "",
+        "targetSubskillId": "",
+        "requiresHumanReview": true
+      }
+    },
+    {
+      "label": "reports\\learning-simulator\\deep\\per-student\\random_guessing_student_g3_30d__soak1.report.json#unit11",
+      "relativePath": "reports\\learning-simulator\\deep\\per-student\\random_guessing_student_g3_30d__soak1.report.json",
+      "focusUnitIndex": 11,
+      "sourceInfo": {
+        "scenarioId": "random_guessing_student_g3_30d__soak1",
+        "focusUnitIndex": 11,
+        "generator": "learning-simulator-deep-v1",
+        "diagnosticPrimarySource": "diagnosticEngineV2",
+        "unitDisplayName": "Sentence Building",
+        "canonicalAction": "intervene",
+        "skillAlignmentConfidence": "inferred_safe",
+        "skillAlignmentSource": "topic_mapping",
+        "skillAlignmentWarnings": [],
+        "metadataResolution": {
+          "source": "metadataIndex",
+          "candidateCount": 1,
+          "subjectFallback": false,
+          "skillOnlyFallback": false,
+          "warnings": []
+        }
+      },
+      "warnings": [],
+      "missingFields": [],
+      "inputSnapshot": {
+        "subject": "english",
+        "engineDecision": "remediate",
+        "dataQuality": "thin",
+        "skillTaggingIncomplete": false,
+        "doNotConcludeLen": 1,
+        "metaLen": 1,
+        "metadataCandidateCount": 1,
+        "metadataSubjectFallback": false,
+        "metadataSkillOnlyFallback": false,
+        "currentSkillId": "routine_present_g3_study",
+        "currentSubskillId": "routine"
+      },
+      "output": {
+        "plannerStatus": "caution",
+        "nextAction": "probe_skill",
+        "reasonCodes": [
+          "THIN_DATA",
+          "DO_NOT_CONCLUDE",
+          "PROBE_INCONSISTENCY"
+        ],
+        "targetDifficulty": "basic",
+        "questionCount": 3,
+        "targetSkillId": "routine_present_g3_study",
+        "targetSubskillId": "routine",
+        "requiresHumanReview": false
+      }
+    },
+    {
       "label": "reports\\learning-simulator\\deep\\per-student\\strong_all_subjects_g3_30d.report.json#unit0",
       "relativePath": "reports\\learning-simulator\\deep\\per-student\\strong_all_subjects_g3_30d.report.json",
       "focusUnitIndex": 0,
@@ -3205,6 +5676,618 @@
         "questionCount": 3,
         "targetSkillId": "math_ns_counting_forward",
         "targetSubskillId": "ns_counting_forward",
+        "requiresHumanReview": false
+      }
+    },
+    {
+      "label": "reports\\learning-simulator\\deep\\per-student\\strong_all_subjects_g3_30d__soak1.report.json#unit0",
+      "relativePath": "reports\\learning-simulator\\deep\\per-student\\strong_all_subjects_g3_30d__soak1.report.json",
+      "focusUnitIndex": 0,
+      "sourceInfo": {
+        "scenarioId": "strong_all_subjects_g3_30d__soak1",
+        "focusUnitIndex": 0,
+        "generator": "learning-simulator-deep-v1",
+        "diagnosticPrimarySource": "diagnosticEngineV2",
+        "unitDisplayName": "חוש מספרים",
+        "canonicalAction": "withhold",
+        "skillAlignmentConfidence": "inferred_safe",
+        "skillAlignmentSource": "topic_mapping",
+        "skillAlignmentWarnings": [],
+        "metadataResolution": {
+          "source": "metadataIndex",
+          "candidateCount": 1,
+          "subjectFallback": false,
+          "skillOnlyFallback": false,
+          "warnings": []
+        }
+      },
+      "warnings": [],
+      "missingFields": [],
+      "inputSnapshot": {
+        "subject": "math",
+        "engineDecision": "maintain",
+        "dataQuality": "thin",
+        "skillTaggingIncomplete": false,
+        "doNotConcludeLen": 1,
+        "metaLen": 1,
+        "metadataCandidateCount": 1,
+        "metadataSubjectFallback": false,
+        "metadataSkillOnlyFallback": false,
+        "currentSkillId": "math_ns_counting_forward",
+        "currentSubskillId": "ns_counting_forward"
+      },
+      "output": {
+        "plannerStatus": "caution",
+        "nextAction": "pause_collect_more_data",
+        "reasonCodes": [
+          "THIN_DATA",
+          "DO_NOT_CONCLUDE"
+        ],
+        "targetDifficulty": "basic",
+        "questionCount": 3,
+        "targetSkillId": "math_ns_counting_forward",
+        "targetSubskillId": "ns_counting_forward",
+        "requiresHumanReview": false
+      }
+    },
+    {
+      "label": "reports\\learning-simulator\\deep\\per-student\\strong_all_subjects_g3_30d__soak1.report.json#unit1",
+      "relativePath": "reports\\learning-simulator\\deep\\per-student\\strong_all_subjects_g3_30d__soak1.report.json",
+      "focusUnitIndex": 1,
+      "sourceInfo": {
+        "scenarioId": "strong_all_subjects_g3_30d__soak1",
+        "focusUnitIndex": 1,
+        "generator": "learning-simulator-deep-v1",
+        "diagnosticPrimarySource": "diagnosticEngineV2",
+        "unitDisplayName": "משוואות",
+        "canonicalAction": "probe_only",
+        "skillAlignmentConfidence": "inferred_safe",
+        "skillAlignmentSource": "topic_mapping",
+        "skillAlignmentWarnings": [],
+        "metadataResolution": {
+          "source": "metadataIndex",
+          "candidateCount": 1,
+          "subjectFallback": false,
+          "skillOnlyFallback": false,
+          "warnings": []
+        }
+      },
+      "warnings": [],
+      "missingFields": [],
+      "inputSnapshot": {
+        "subject": "math",
+        "engineDecision": "review",
+        "dataQuality": "thin",
+        "skillTaggingIncomplete": false,
+        "doNotConcludeLen": 1,
+        "metaLen": 1,
+        "metadataCandidateCount": 1,
+        "metadataSubjectFallback": false,
+        "metadataSkillOnlyFallback": false,
+        "currentSkillId": "math_eq_add_simple",
+        "currentSubskillId": "eq_add_simple"
+      },
+      "output": {
+        "plannerStatus": "caution",
+        "nextAction": "pause_collect_more_data",
+        "reasonCodes": [
+          "THIN_DATA",
+          "DO_NOT_CONCLUDE"
+        ],
+        "targetDifficulty": "basic",
+        "questionCount": 3,
+        "targetSkillId": "math_eq_add_simple",
+        "targetSubskillId": "eq_add_simple",
+        "requiresHumanReview": false
+      }
+    },
+    {
+      "label": "reports\\learning-simulator\\deep\\per-student\\strong_all_subjects_g3_30d__soak1.report.json#unit2",
+      "relativePath": "reports\\learning-simulator\\deep\\per-student\\strong_all_subjects_g3_30d__soak1.report.json",
+      "focusUnitIndex": 2,
+      "sourceInfo": {
+        "scenarioId": "strong_all_subjects_g3_30d__soak1",
+        "focusUnitIndex": 2,
+        "generator": "learning-simulator-deep-v1",
+        "diagnosticPrimarySource": "diagnosticEngineV2",
+        "unitDisplayName": "חילוק עם שארית",
+        "canonicalAction": "probe_only",
+        "skillAlignmentConfidence": "inferred_safe",
+        "skillAlignmentSource": "topic_mapping",
+        "skillAlignmentWarnings": [],
+        "metadataResolution": {
+          "source": "metadataIndex",
+          "candidateCount": 1,
+          "subjectFallback": false,
+          "skillOnlyFallback": false,
+          "warnings": []
+        }
+      },
+      "warnings": [],
+      "missingFields": [],
+      "inputSnapshot": {
+        "subject": "math",
+        "engineDecision": "review",
+        "dataQuality": "thin",
+        "skillTaggingIncomplete": false,
+        "doNotConcludeLen": 1,
+        "metaLen": 1,
+        "metadataCandidateCount": 1,
+        "metadataSubjectFallback": false,
+        "metadataSkillOnlyFallback": false,
+        "currentSkillId": "math_div_with_remainder",
+        "currentSubskillId": "div_with_remainder"
+      },
+      "output": {
+        "plannerStatus": "caution",
+        "nextAction": "pause_collect_more_data",
+        "reasonCodes": [
+          "THIN_DATA",
+          "DO_NOT_CONCLUDE"
+        ],
+        "targetDifficulty": "basic",
+        "questionCount": 3,
+        "targetSkillId": "math_div_with_remainder",
+        "targetSubskillId": "div_with_remainder",
+        "requiresHumanReview": false
+      }
+    },
+    {
+      "label": "reports\\learning-simulator\\deep\\per-student\\strong_all_subjects_g3_30d__soak1.report.json#unit3",
+      "relativePath": "reports\\learning-simulator\\deep\\per-student\\strong_all_subjects_g3_30d__soak1.report.json",
+      "focusUnitIndex": 3,
+      "sourceInfo": {
+        "scenarioId": "strong_all_subjects_g3_30d__soak1",
+        "focusUnitIndex": 3,
+        "generator": "learning-simulator-deep-v1",
+        "diagnosticPrimarySource": "diagnosticEngineV2",
+        "unitDisplayName": "חיבור",
+        "canonicalAction": "withhold",
+        "skillAlignmentConfidence": "inferred_safe",
+        "skillAlignmentSource": "topic_mapping",
+        "skillAlignmentWarnings": [],
+        "metadataResolution": {
+          "source": "metadataIndex",
+          "candidateCount": 1,
+          "subjectFallback": false,
+          "skillOnlyFallback": false,
+          "warnings": []
+        }
+      },
+      "warnings": [],
+      "missingFields": [],
+      "inputSnapshot": {
+        "subject": "math",
+        "engineDecision": "maintain",
+        "dataQuality": "thin",
+        "skillTaggingIncomplete": false,
+        "doNotConcludeLen": 1,
+        "metaLen": 1,
+        "metadataCandidateCount": 1,
+        "metadataSubjectFallback": false,
+        "metadataSkillOnlyFallback": false,
+        "currentSkillId": "math_add_two",
+        "currentSubskillId": "add_two"
+      },
+      "output": {
+        "plannerStatus": "caution",
+        "nextAction": "pause_collect_more_data",
+        "reasonCodes": [
+          "THIN_DATA",
+          "DO_NOT_CONCLUDE"
+        ],
+        "targetDifficulty": "basic",
+        "questionCount": 3,
+        "targetSkillId": "math_add_two",
+        "targetSubskillId": "add_two",
+        "requiresHumanReview": false
+      }
+    },
+    {
+      "label": "reports\\learning-simulator\\deep\\per-student\\strong_all_subjects_g3_30d__soak1.report.json#unit4",
+      "relativePath": "reports\\learning-simulator\\deep\\per-student\\strong_all_subjects_g3_30d__soak1.report.json",
+      "focusUnitIndex": 4,
+      "sourceInfo": {
+        "scenarioId": "strong_all_subjects_g3_30d__soak1",
+        "focusUnitIndex": 4,
+        "generator": "learning-simulator-deep-v1",
+        "diagnosticPrimarySource": "diagnosticEngineV2",
+        "unitDisplayName": "כפל",
+        "canonicalAction": "withhold",
+        "skillAlignmentConfidence": "inferred_safe",
+        "skillAlignmentSource": "topic_mapping",
+        "skillAlignmentWarnings": [],
+        "metadataResolution": {
+          "source": "metadataIndex",
+          "candidateCount": 1,
+          "subjectFallback": false,
+          "skillOnlyFallback": false,
+          "warnings": []
+        }
+      },
+      "warnings": [],
+      "missingFields": [],
+      "inputSnapshot": {
+        "subject": "math",
+        "engineDecision": "maintain",
+        "dataQuality": "thin",
+        "skillTaggingIncomplete": false,
+        "doNotConcludeLen": 1,
+        "metaLen": 1,
+        "metadataCandidateCount": 1,
+        "metadataSubjectFallback": false,
+        "metadataSkillOnlyFallback": false,
+        "currentSkillId": "math_mul",
+        "currentSubskillId": "mul"
+      },
+      "output": {
+        "plannerStatus": "caution",
+        "nextAction": "pause_collect_more_data",
+        "reasonCodes": [
+          "THIN_DATA",
+          "DO_NOT_CONCLUDE"
+        ],
+        "targetDifficulty": "basic",
+        "questionCount": 3,
+        "targetSkillId": "math_mul",
+        "targetSubskillId": "mul",
+        "requiresHumanReview": false
+      }
+    },
+    {
+      "label": "reports\\learning-simulator\\deep\\per-student\\strong_all_subjects_g3_30d__soak1.report.json#unit5",
+      "relativePath": "reports\\learning-simulator\\deep\\per-student\\strong_all_subjects_g3_30d__soak1.report.json",
+      "focusUnitIndex": 5,
+      "sourceInfo": {
+        "scenarioId": "strong_all_subjects_g3_30d__soak1",
+        "focusUnitIndex": 5,
+        "generator": "learning-simulator-deep-v1",
+        "diagnosticPrimarySource": "diagnosticEngineV2",
+        "unitDisplayName": "השוואה",
+        "canonicalAction": "probe_only",
+        "skillAlignmentConfidence": "inferred_safe",
+        "skillAlignmentSource": "topic_mapping",
+        "skillAlignmentWarnings": [],
+        "metadataResolution": {
+          "source": "metadataIndex",
+          "candidateCount": 1,
+          "subjectFallback": false,
+          "skillOnlyFallback": false,
+          "warnings": []
+        }
+      },
+      "warnings": [],
+      "missingFields": [],
+      "inputSnapshot": {
+        "subject": "math",
+        "engineDecision": "review",
+        "dataQuality": "thin",
+        "skillTaggingIncomplete": false,
+        "doNotConcludeLen": 1,
+        "metaLen": 1,
+        "metadataCandidateCount": 1,
+        "metadataSubjectFallback": false,
+        "metadataSkillOnlyFallback": false,
+        "currentSkillId": "math_cmp",
+        "currentSubskillId": "cmp"
+      },
+      "output": {
+        "plannerStatus": "caution",
+        "nextAction": "pause_collect_more_data",
+        "reasonCodes": [
+          "THIN_DATA",
+          "DO_NOT_CONCLUDE"
+        ],
+        "targetDifficulty": "basic",
+        "questionCount": 3,
+        "targetSkillId": "math_cmp",
+        "targetSubskillId": "cmp",
+        "requiresHumanReview": false
+      }
+    },
+    {
+      "label": "reports\\learning-simulator\\deep\\per-student\\strong_all_subjects_g3_30d__soak1.report.json#unit6",
+      "relativePath": "reports\\learning-simulator\\deep\\per-student\\strong_all_subjects_g3_30d__soak1.report.json",
+      "focusUnitIndex": 6,
+      "sourceInfo": {
+        "scenarioId": "strong_all_subjects_g3_30d__soak1",
+        "focusUnitIndex": 6,
+        "generator": "learning-simulator-deep-v1",
+        "diagnosticPrimarySource": "diagnosticEngineV2",
+        "unitDisplayName": "חיסור",
+        "canonicalAction": "probe_only",
+        "skillAlignmentConfidence": "inferred_safe",
+        "skillAlignmentSource": "topic_mapping",
+        "skillAlignmentWarnings": [],
+        "metadataResolution": {
+          "source": "metadataIndex",
+          "candidateCount": 1,
+          "subjectFallback": false,
+          "skillOnlyFallback": false,
+          "warnings": []
+        }
+      },
+      "warnings": [],
+      "missingFields": [],
+      "inputSnapshot": {
+        "subject": "math",
+        "engineDecision": "review",
+        "dataQuality": "thin",
+        "skillTaggingIncomplete": false,
+        "doNotConcludeLen": 1,
+        "metaLen": 1,
+        "metadataCandidateCount": 1,
+        "metadataSubjectFallback": false,
+        "metadataSkillOnlyFallback": false,
+        "currentSkillId": "math_sub_two",
+        "currentSubskillId": "sub_two"
+      },
+      "output": {
+        "plannerStatus": "caution",
+        "nextAction": "pause_collect_more_data",
+        "reasonCodes": [
+          "THIN_DATA",
+          "DO_NOT_CONCLUDE"
+        ],
+        "targetDifficulty": "basic",
+        "questionCount": 3,
+        "targetSkillId": "math_sub_two",
+        "targetSubskillId": "sub_two",
+        "requiresHumanReview": false
+      }
+    },
+    {
+      "label": "reports\\learning-simulator\\deep\\per-student\\strong_all_subjects_g3_30d__soak1.report.json#unit7",
+      "relativePath": "reports\\learning-simulator\\deep\\per-student\\strong_all_subjects_g3_30d__soak1.report.json",
+      "focusUnitIndex": 7,
+      "sourceInfo": {
+        "scenarioId": "strong_all_subjects_g3_30d__soak1",
+        "focusUnitIndex": 7,
+        "generator": "learning-simulator-deep-v1",
+        "diagnosticPrimarySource": "diagnosticEngineV2",
+        "unitDisplayName": "חילוק",
+        "canonicalAction": "probe_only",
+        "skillAlignmentConfidence": "inferred_safe",
+        "skillAlignmentSource": "topic_mapping",
+        "skillAlignmentWarnings": [],
+        "metadataResolution": {
+          "source": "metadataIndex",
+          "candidateCount": 1,
+          "subjectFallback": false,
+          "skillOnlyFallback": false,
+          "warnings": []
+        }
+      },
+      "warnings": [],
+      "missingFields": [],
+      "inputSnapshot": {
+        "subject": "math",
+        "engineDecision": "review",
+        "dataQuality": "thin",
+        "skillTaggingIncomplete": false,
+        "doNotConcludeLen": 1,
+        "metaLen": 1,
+        "metadataCandidateCount": 1,
+        "metadataSubjectFallback": false,
+        "metadataSkillOnlyFallback": false,
+        "currentSkillId": "math_div",
+        "currentSubskillId": "div"
+      },
+      "output": {
+        "plannerStatus": "caution",
+        "nextAction": "pause_collect_more_data",
+        "reasonCodes": [
+          "THIN_DATA",
+          "DO_NOT_CONCLUDE"
+        ],
+        "targetDifficulty": "basic",
+        "questionCount": 3,
+        "targetSkillId": "math_div",
+        "targetSubskillId": "div",
+        "requiresHumanReview": false
+      }
+    },
+    {
+      "label": "reports\\learning-simulator\\deep\\per-student\\strong_all_subjects_g3_30d__soak1.report.json#unit8",
+      "relativePath": "reports\\learning-simulator\\deep\\per-student\\strong_all_subjects_g3_30d__soak1.report.json",
+      "focusUnitIndex": 8,
+      "sourceInfo": {
+        "scenarioId": "strong_all_subjects_g3_30d__soak1",
+        "focusUnitIndex": 8,
+        "generator": "learning-simulator-deep-v1",
+        "diagnosticPrimarySource": "diagnosticEngineV2",
+        "unitDisplayName": "זוויות",
+        "canonicalAction": "withhold",
+        "skillAlignmentConfidence": "inferred_safe",
+        "skillAlignmentSource": "taxonomy_bridge",
+        "skillAlignmentWarnings": [],
+        "metadataResolution": {
+          "source": "metadataIndex",
+          "candidateCount": 1,
+          "subjectFallback": false,
+          "skillOnlyFallback": false,
+          "warnings": []
+        }
+      },
+      "warnings": [],
+      "missingFields": [],
+      "inputSnapshot": {
+        "subject": "geometry",
+        "engineDecision": "maintain",
+        "dataQuality": "thin",
+        "skillTaggingIncomplete": false,
+        "doNotConcludeLen": 1,
+        "metaLen": 1,
+        "metadataCandidateCount": 1,
+        "metadataSubjectFallback": false,
+        "metadataSkillOnlyFallback": false,
+        "currentSkillId": "geo_angle_right_identify",
+        "currentSubskillId": "classification"
+      },
+      "output": {
+        "plannerStatus": "caution",
+        "nextAction": "pause_collect_more_data",
+        "reasonCodes": [
+          "THIN_DATA",
+          "DO_NOT_CONCLUDE"
+        ],
+        "targetDifficulty": "basic",
+        "questionCount": 3,
+        "targetSkillId": "geo_angle_right_identify",
+        "targetSubskillId": "classification",
+        "requiresHumanReview": false
+      }
+    },
+    {
+      "label": "reports\\learning-simulator\\deep\\per-student\\strong_all_subjects_g3_30d__soak1.report.json#unit9",
+      "relativePath": "reports\\learning-simulator\\deep\\per-student\\strong_all_subjects_g3_30d__soak1.report.json",
+      "focusUnitIndex": 9,
+      "sourceInfo": {
+        "scenarioId": "strong_all_subjects_g3_30d__soak1",
+        "focusUnitIndex": 9,
+        "generator": "learning-simulator-deep-v1",
+        "diagnosticPrimarySource": "diagnosticEngineV2",
+        "unitDisplayName": "היקף",
+        "canonicalAction": "withhold",
+        "skillAlignmentConfidence": "inferred_safe",
+        "skillAlignmentSource": "taxonomy_bridge",
+        "skillAlignmentWarnings": [],
+        "metadataResolution": {
+          "source": "metadataIndex",
+          "candidateCount": 1,
+          "subjectFallback": false,
+          "skillOnlyFallback": false,
+          "warnings": []
+        }
+      },
+      "warnings": [],
+      "missingFields": [],
+      "inputSnapshot": {
+        "subject": "geometry",
+        "engineDecision": "maintain",
+        "dataQuality": "thin",
+        "skillTaggingIncomplete": false,
+        "doNotConcludeLen": 1,
+        "metaLen": 1,
+        "metadataCandidateCount": 1,
+        "metadataSubjectFallback": false,
+        "metadataSkillOnlyFallback": false,
+        "currentSkillId": "geo_pv_area_vs_perimeter",
+        "currentSubskillId": "choose_measure"
+      },
+      "output": {
+        "plannerStatus": "caution",
+        "nextAction": "pause_collect_more_data",
+        "reasonCodes": [
+          "THIN_DATA",
+          "DO_NOT_CONCLUDE"
+        ],
+        "targetDifficulty": "basic",
+        "questionCount": 3,
+        "targetSkillId": "geo_pv_area_vs_perimeter",
+        "targetSubskillId": "choose_measure",
+        "requiresHumanReview": false
+      }
+    },
+    {
+      "label": "reports\\learning-simulator\\deep\\per-student\\strong_all_subjects_g3_30d__soak1.report.json#unit10",
+      "relativePath": "reports\\learning-simulator\\deep\\per-student\\strong_all_subjects_g3_30d__soak1.report.json",
+      "focusUnitIndex": 10,
+      "sourceInfo": {
+        "scenarioId": "strong_all_subjects_g3_30d__soak1",
+        "focusUnitIndex": 10,
+        "generator": "learning-simulator-deep-v1",
+        "diagnosticPrimarySource": "diagnosticEngineV2",
+        "unitDisplayName": "מקבילות ומאונכות",
+        "canonicalAction": "withhold",
+        "skillAlignmentConfidence": "inferred_safe",
+        "skillAlignmentSource": "taxonomy_bridge",
+        "skillAlignmentWarnings": [],
+        "metadataResolution": {
+          "source": "metadataIndex",
+          "candidateCount": 1,
+          "subjectFallback": false,
+          "skillOnlyFallback": false,
+          "warnings": []
+        }
+      },
+      "warnings": [],
+      "missingFields": [],
+      "inputSnapshot": {
+        "subject": "geometry",
+        "engineDecision": "maintain",
+        "dataQuality": "thin",
+        "skillTaggingIncomplete": false,
+        "doNotConcludeLen": 1,
+        "metaLen": 1,
+        "metadataCandidateCount": 1,
+        "metadataSubjectFallback": false,
+        "metadataSkillOnlyFallback": false,
+        "currentSkillId": "square_special",
+        "currentSubskillId": "square_rectangle"
+      },
+      "output": {
+        "plannerStatus": "caution",
+        "nextAction": "pause_collect_more_data",
+        "reasonCodes": [
+          "THIN_DATA",
+          "DO_NOT_CONCLUDE"
+        ],
+        "targetDifficulty": "basic",
+        "questionCount": 3,
+        "targetSkillId": "square_special",
+        "targetSubskillId": "square_rectangle",
+        "requiresHumanReview": false
+      }
+    },
+    {
+      "label": "reports\\learning-simulator\\deep\\per-student\\strong_all_subjects_g3_30d__soak1.report.json#unit11",
+      "relativePath": "reports\\learning-simulator\\deep\\per-student\\strong_all_subjects_g3_30d__soak1.report.json",
+      "focusUnitIndex": 11,
+      "sourceInfo": {
+        "scenarioId": "strong_all_subjects_g3_30d__soak1",
+        "focusUnitIndex": 11,
+        "generator": "learning-simulator-deep-v1",
+        "diagnosticPrimarySource": "diagnosticEngineV2",
+        "unitDisplayName": "שטח",
+        "canonicalAction": "withhold",
+        "skillAlignmentConfidence": "inferred_safe",
+        "skillAlignmentSource": "taxonomy_bridge",
+        "skillAlignmentWarnings": [],
+        "metadataResolution": {
+          "source": "metadataIndex",
+          "candidateCount": 1,
+          "subjectFallback": false,
+          "skillOnlyFallback": false,
+          "warnings": []
+        }
+      },
+      "warnings": [],
+      "missingFields": [],
+      "inputSnapshot": {
+        "subject": "geometry",
+        "engineDecision": "maintain",
+        "dataQuality": "thin",
+        "skillTaggingIncomplete": false,
+        "doNotConcludeLen": 1,
+        "metaLen": 1,
+        "metadataCandidateCount": 1,
+        "metadataSubjectFallback": false,
+        "metadataSkillOnlyFallback": false,
+        "currentSkillId": "geo_rect_area_plan",
+        "currentSubskillId": "area_rectangle"
+      },
+      "output": {
+        "plannerStatus": "caution",
+        "nextAction": "pause_collect_more_data",
+        "reasonCodes": [
+          "THIN_DATA",
+          "DO_NOT_CONCLUDE"
+        ],
+        "targetDifficulty": "basic",
+        "questionCount": 3,
+        "targetSkillId": "geo_rect_area_plan",
+        "targetSubskillId": "area_rectangle",
         "requiresHumanReview": false
       }
     },
@@ -3821,11 +6904,674 @@
       }
     },
     {
+      "label": "reports\\learning-simulator\\deep\\per-student\\weak_all_subjects_g3_30d__soak1.report.json#unit0",
+      "relativePath": "reports\\learning-simulator\\deep\\per-student\\weak_all_subjects_g3_30d__soak1.report.json",
+      "focusUnitIndex": 0,
+      "sourceInfo": {
+        "scenarioId": "weak_all_subjects_g3_30d__soak1",
+        "focusUnitIndex": 0,
+        "generator": "learning-simulator-deep-v1",
+        "diagnosticPrimarySource": "diagnosticEngineV2",
+        "unitDisplayName": "משוואות",
+        "canonicalAction": "intervene",
+        "skillAlignmentConfidence": "inferred_safe",
+        "skillAlignmentSource": "topic_mapping",
+        "skillAlignmentWarnings": [],
+        "metadataResolution": {
+          "source": "metadataIndex",
+          "candidateCount": 1,
+          "subjectFallback": false,
+          "skillOnlyFallback": false,
+          "warnings": []
+        }
+      },
+      "warnings": [],
+      "missingFields": [],
+      "inputSnapshot": {
+        "subject": "math",
+        "engineDecision": "remediate",
+        "dataQuality": "thin",
+        "skillTaggingIncomplete": false,
+        "doNotConcludeLen": 1,
+        "metaLen": 1,
+        "metadataCandidateCount": 1,
+        "metadataSubjectFallback": false,
+        "metadataSkillOnlyFallback": false,
+        "currentSkillId": "math_eq_add_simple",
+        "currentSubskillId": "eq_add_simple"
+      },
+      "output": {
+        "plannerStatus": "caution",
+        "nextAction": "pause_collect_more_data",
+        "reasonCodes": [
+          "THIN_DATA",
+          "DO_NOT_CONCLUDE"
+        ],
+        "targetDifficulty": "basic",
+        "questionCount": 3,
+        "targetSkillId": "math_eq_add_simple",
+        "targetSubskillId": "eq_add_simple",
+        "requiresHumanReview": false
+      }
+    },
+    {
+      "label": "reports\\learning-simulator\\deep\\per-student\\weak_all_subjects_g3_30d__soak1.report.json#unit1",
+      "relativePath": "reports\\learning-simulator\\deep\\per-student\\weak_all_subjects_g3_30d__soak1.report.json",
+      "focusUnitIndex": 1,
+      "sourceInfo": {
+        "scenarioId": "weak_all_subjects_g3_30d__soak1",
+        "focusUnitIndex": 1,
+        "generator": "learning-simulator-deep-v1",
+        "diagnosticPrimarySource": "diagnosticEngineV2",
+        "unitDisplayName": "חילוק",
+        "canonicalAction": "intervene",
+        "skillAlignmentConfidence": "inferred_safe",
+        "skillAlignmentSource": "topic_mapping",
+        "skillAlignmentWarnings": [],
+        "metadataResolution": {
+          "source": "metadataIndex",
+          "candidateCount": 1,
+          "subjectFallback": false,
+          "skillOnlyFallback": false,
+          "warnings": []
+        }
+      },
+      "warnings": [],
+      "missingFields": [],
+      "inputSnapshot": {
+        "subject": "math",
+        "engineDecision": "remediate",
+        "dataQuality": "thin",
+        "skillTaggingIncomplete": false,
+        "doNotConcludeLen": 1,
+        "metaLen": 1,
+        "metadataCandidateCount": 1,
+        "metadataSubjectFallback": false,
+        "metadataSkillOnlyFallback": false,
+        "currentSkillId": "math_div",
+        "currentSubskillId": "div"
+      },
+      "output": {
+        "plannerStatus": "caution",
+        "nextAction": "pause_collect_more_data",
+        "reasonCodes": [
+          "THIN_DATA",
+          "DO_NOT_CONCLUDE"
+        ],
+        "targetDifficulty": "basic",
+        "questionCount": 3,
+        "targetSkillId": "math_div",
+        "targetSubskillId": "div",
+        "requiresHumanReview": false
+      }
+    },
+    {
+      "label": "reports\\learning-simulator\\deep\\per-student\\weak_all_subjects_g3_30d__soak1.report.json#unit2",
+      "relativePath": "reports\\learning-simulator\\deep\\per-student\\weak_all_subjects_g3_30d__soak1.report.json",
+      "focusUnitIndex": 2,
+      "sourceInfo": {
+        "scenarioId": "weak_all_subjects_g3_30d__soak1",
+        "focusUnitIndex": 2,
+        "generator": "learning-simulator-deep-v1",
+        "diagnosticPrimarySource": "diagnosticEngineV2",
+        "unitDisplayName": "חיבור",
+        "canonicalAction": "intervene",
+        "skillAlignmentConfidence": "inferred_safe",
+        "skillAlignmentSource": "topic_mapping",
+        "skillAlignmentWarnings": [],
+        "metadataResolution": {
+          "source": "metadataIndex",
+          "candidateCount": 1,
+          "subjectFallback": false,
+          "skillOnlyFallback": false,
+          "warnings": []
+        }
+      },
+      "warnings": [],
+      "missingFields": [],
+      "inputSnapshot": {
+        "subject": "math",
+        "engineDecision": "remediate",
+        "dataQuality": "thin",
+        "skillTaggingIncomplete": false,
+        "doNotConcludeLen": 1,
+        "metaLen": 1,
+        "metadataCandidateCount": 1,
+        "metadataSubjectFallback": false,
+        "metadataSkillOnlyFallback": false,
+        "currentSkillId": "math_add_two",
+        "currentSubskillId": "add_two"
+      },
+      "output": {
+        "plannerStatus": "caution",
+        "nextAction": "pause_collect_more_data",
+        "reasonCodes": [
+          "THIN_DATA",
+          "DO_NOT_CONCLUDE"
+        ],
+        "targetDifficulty": "basic",
+        "questionCount": 3,
+        "targetSkillId": "math_add_two",
+        "targetSubskillId": "add_two",
+        "requiresHumanReview": false
+      }
+    },
+    {
+      "label": "reports\\learning-simulator\\deep\\per-student\\weak_all_subjects_g3_30d__soak1.report.json#unit3",
+      "relativePath": "reports\\learning-simulator\\deep\\per-student\\weak_all_subjects_g3_30d__soak1.report.json",
+      "focusUnitIndex": 3,
+      "sourceInfo": {
+        "scenarioId": "weak_all_subjects_g3_30d__soak1",
+        "focusUnitIndex": 3,
+        "generator": "learning-simulator-deep-v1",
+        "diagnosticPrimarySource": "diagnosticEngineV2",
+        "unitDisplayName": "שברים",
+        "canonicalAction": "intervene",
+        "skillAlignmentConfidence": "inferred_safe",
+        "skillAlignmentSource": "topic_mapping",
+        "skillAlignmentWarnings": [],
+        "metadataResolution": {
+          "source": "metadataIndex",
+          "candidateCount": 1,
+          "subjectFallback": false,
+          "skillOnlyFallback": false,
+          "warnings": []
+        }
+      },
+      "warnings": [],
+      "missingFields": [],
+      "inputSnapshot": {
+        "subject": "math",
+        "engineDecision": "remediate",
+        "dataQuality": "thin",
+        "skillTaggingIncomplete": false,
+        "doNotConcludeLen": 1,
+        "metaLen": 1,
+        "metadataCandidateCount": 1,
+        "metadataSubjectFallback": false,
+        "metadataSkillOnlyFallback": false,
+        "currentSkillId": "math_frac_add_sub",
+        "currentSubskillId": "frac_add_sub"
+      },
+      "output": {
+        "plannerStatus": "caution",
+        "nextAction": "pause_collect_more_data",
+        "reasonCodes": [
+          "THIN_DATA",
+          "DO_NOT_CONCLUDE"
+        ],
+        "targetDifficulty": "basic",
+        "questionCount": 3,
+        "targetSkillId": "math_frac_add_sub",
+        "targetSubskillId": "frac_add_sub",
+        "requiresHumanReview": false
+      }
+    },
+    {
+      "label": "reports\\learning-simulator\\deep\\per-student\\weak_all_subjects_g3_30d__soak1.report.json#unit4",
+      "relativePath": "reports\\learning-simulator\\deep\\per-student\\weak_all_subjects_g3_30d__soak1.report.json",
+      "focusUnitIndex": 4,
+      "sourceInfo": {
+        "scenarioId": "weak_all_subjects_g3_30d__soak1",
+        "focusUnitIndex": 4,
+        "generator": "learning-simulator-deep-v1",
+        "diagnosticPrimarySource": "diagnosticEngineV2",
+        "unitDisplayName": "בעיות מילוליות",
+        "canonicalAction": "intervene",
+        "skillAlignmentConfidence": "inferred_safe",
+        "skillAlignmentSource": "topic_mapping",
+        "skillAlignmentWarnings": [],
+        "metadataResolution": {
+          "source": "metadataIndex",
+          "candidateCount": 1,
+          "subjectFallback": false,
+          "skillOnlyFallback": false,
+          "warnings": []
+        }
+      },
+      "warnings": [],
+      "missingFields": [],
+      "inputSnapshot": {
+        "subject": "math",
+        "engineDecision": "remediate",
+        "dataQuality": "thin",
+        "skillTaggingIncomplete": false,
+        "doNotConcludeLen": 1,
+        "metaLen": 1,
+        "metadataCandidateCount": 1,
+        "metadataSubjectFallback": false,
+        "metadataSkillOnlyFallback": false,
+        "currentSkillId": "math_wp_coins",
+        "currentSubskillId": "wp_coins"
+      },
+      "output": {
+        "plannerStatus": "caution",
+        "nextAction": "pause_collect_more_data",
+        "reasonCodes": [
+          "THIN_DATA",
+          "DO_NOT_CONCLUDE"
+        ],
+        "targetDifficulty": "basic",
+        "questionCount": 3,
+        "targetSkillId": "math_wp_coins",
+        "targetSubskillId": "wp_coins",
+        "requiresHumanReview": false
+      }
+    },
+    {
+      "label": "reports\\learning-simulator\\deep\\per-student\\weak_all_subjects_g3_30d__soak1.report.json#unit5",
+      "relativePath": "reports\\learning-simulator\\deep\\per-student\\weak_all_subjects_g3_30d__soak1.report.json",
+      "focusUnitIndex": 5,
+      "sourceInfo": {
+        "scenarioId": "weak_all_subjects_g3_30d__soak1",
+        "focusUnitIndex": 5,
+        "generator": "learning-simulator-deep-v1",
+        "diagnosticPrimarySource": "diagnosticEngineV2",
+        "unitDisplayName": "עשרוניים",
+        "canonicalAction": "intervene",
+        "skillAlignmentConfidence": "inferred_safe",
+        "skillAlignmentSource": "topic_mapping",
+        "skillAlignmentWarnings": [],
+        "metadataResolution": {
+          "source": "metadataIndex",
+          "candidateCount": 1,
+          "subjectFallback": false,
+          "skillOnlyFallback": false,
+          "warnings": []
+        }
+      },
+      "warnings": [],
+      "missingFields": [],
+      "inputSnapshot": {
+        "subject": "math",
+        "engineDecision": "remediate",
+        "dataQuality": "thin",
+        "skillTaggingIncomplete": false,
+        "doNotConcludeLen": 1,
+        "metaLen": 1,
+        "metadataCandidateCount": 1,
+        "metadataSubjectFallback": false,
+        "metadataSkillOnlyFallback": false,
+        "currentSkillId": "math_dec_add",
+        "currentSubskillId": "dec_add"
+      },
+      "output": {
+        "plannerStatus": "caution",
+        "nextAction": "pause_collect_more_data",
+        "reasonCodes": [
+          "THIN_DATA",
+          "DO_NOT_CONCLUDE"
+        ],
+        "targetDifficulty": "basic",
+        "questionCount": 3,
+        "targetSkillId": "math_dec_add",
+        "targetSubskillId": "dec_add",
+        "requiresHumanReview": false
+      }
+    },
+    {
+      "label": "reports\\learning-simulator\\deep\\per-student\\weak_all_subjects_g3_30d__soak1.report.json#unit6",
+      "relativePath": "reports\\learning-simulator\\deep\\per-student\\weak_all_subjects_g3_30d__soak1.report.json",
+      "focusUnitIndex": 6,
+      "sourceInfo": {
+        "scenarioId": "weak_all_subjects_g3_30d__soak1",
+        "focusUnitIndex": 6,
+        "generator": "learning-simulator-deep-v1",
+        "diagnosticPrimarySource": "diagnosticEngineV2",
+        "unitDisplayName": "כפל",
+        "canonicalAction": "intervene",
+        "skillAlignmentConfidence": "inferred_safe",
+        "skillAlignmentSource": "topic_mapping",
+        "skillAlignmentWarnings": [],
+        "metadataResolution": {
+          "source": "metadataIndex",
+          "candidateCount": 1,
+          "subjectFallback": false,
+          "skillOnlyFallback": false,
+          "warnings": []
+        }
+      },
+      "warnings": [],
+      "missingFields": [],
+      "inputSnapshot": {
+        "subject": "math",
+        "engineDecision": "remediate",
+        "dataQuality": "thin",
+        "skillTaggingIncomplete": false,
+        "doNotConcludeLen": 1,
+        "metaLen": 1,
+        "metadataCandidateCount": 1,
+        "metadataSubjectFallback": false,
+        "metadataSkillOnlyFallback": false,
+        "currentSkillId": "math_mul",
+        "currentSubskillId": "mul"
+      },
+      "output": {
+        "plannerStatus": "caution",
+        "nextAction": "pause_collect_more_data",
+        "reasonCodes": [
+          "THIN_DATA",
+          "DO_NOT_CONCLUDE"
+        ],
+        "targetDifficulty": "basic",
+        "questionCount": 3,
+        "targetSkillId": "math_mul",
+        "targetSubskillId": "mul",
+        "requiresHumanReview": false
+      }
+    },
+    {
+      "label": "reports\\learning-simulator\\deep\\per-student\\weak_all_subjects_g3_30d__soak1.report.json#unit7",
+      "relativePath": "reports\\learning-simulator\\deep\\per-student\\weak_all_subjects_g3_30d__soak1.report.json",
+      "focusUnitIndex": 7,
+      "sourceInfo": {
+        "scenarioId": "weak_all_subjects_g3_30d__soak1",
+        "focusUnitIndex": 7,
+        "generator": "learning-simulator-deep-v1",
+        "diagnosticPrimarySource": "diagnosticEngineV2",
+        "unitDisplayName": "השוואה",
+        "canonicalAction": "probe_only",
+        "skillAlignmentConfidence": "inferred_safe",
+        "skillAlignmentSource": "topic_mapping",
+        "skillAlignmentWarnings": [],
+        "metadataResolution": {
+          "source": "metadataIndex",
+          "candidateCount": 1,
+          "subjectFallback": false,
+          "skillOnlyFallback": false,
+          "warnings": []
+        }
+      },
+      "warnings": [],
+      "missingFields": [],
+      "inputSnapshot": {
+        "subject": "math",
+        "engineDecision": "review",
+        "dataQuality": "thin",
+        "skillTaggingIncomplete": false,
+        "doNotConcludeLen": 1,
+        "metaLen": 1,
+        "metadataCandidateCount": 1,
+        "metadataSubjectFallback": false,
+        "metadataSkillOnlyFallback": false,
+        "currentSkillId": "math_cmp",
+        "currentSubskillId": "cmp"
+      },
+      "output": {
+        "plannerStatus": "caution",
+        "nextAction": "pause_collect_more_data",
+        "reasonCodes": [
+          "THIN_DATA",
+          "DO_NOT_CONCLUDE"
+        ],
+        "targetDifficulty": "basic",
+        "questionCount": 3,
+        "targetSkillId": "math_cmp",
+        "targetSubskillId": "cmp",
+        "requiresHumanReview": false
+      }
+    },
+    {
+      "label": "reports\\learning-simulator\\deep\\per-student\\weak_all_subjects_g3_30d__soak1.report.json#unit8",
+      "relativePath": "reports\\learning-simulator\\deep\\per-student\\weak_all_subjects_g3_30d__soak1.report.json",
+      "focusUnitIndex": 8,
+      "sourceInfo": {
+        "scenarioId": "weak_all_subjects_g3_30d__soak1",
+        "focusUnitIndex": 8,
+        "generator": "learning-simulator-deep-v1",
+        "diagnosticPrimarySource": "diagnosticEngineV2",
+        "unitDisplayName": "סדרות",
+        "canonicalAction": "intervene",
+        "skillAlignmentConfidence": "inferred_safe",
+        "skillAlignmentSource": "topic_mapping",
+        "skillAlignmentWarnings": [],
+        "metadataResolution": {
+          "source": "metadataIndex",
+          "candidateCount": 1,
+          "subjectFallback": false,
+          "skillOnlyFallback": false,
+          "warnings": []
+        }
+      },
+      "warnings": [],
+      "missingFields": [],
+      "inputSnapshot": {
+        "subject": "math",
+        "engineDecision": "remediate",
+        "dataQuality": "thin",
+        "skillTaggingIncomplete": false,
+        "doNotConcludeLen": 1,
+        "metaLen": 1,
+        "metadataCandidateCount": 1,
+        "metadataSubjectFallback": false,
+        "metadataSkillOnlyFallback": false,
+        "currentSkillId": "math_sequence",
+        "currentSubskillId": "sequence"
+      },
+      "output": {
+        "plannerStatus": "caution",
+        "nextAction": "pause_collect_more_data",
+        "reasonCodes": [
+          "THIN_DATA",
+          "DO_NOT_CONCLUDE"
+        ],
+        "targetDifficulty": "basic",
+        "questionCount": 3,
+        "targetSkillId": "math_sequence",
+        "targetSubskillId": "sequence",
+        "requiresHumanReview": false
+      }
+    },
+    {
+      "label": "reports\\learning-simulator\\deep\\per-student\\weak_all_subjects_g3_30d__soak1.report.json#unit9",
+      "relativePath": "reports\\learning-simulator\\deep\\per-student\\weak_all_subjects_g3_30d__soak1.report.json",
+      "focusUnitIndex": 9,
+      "sourceInfo": {
+        "scenarioId": "weak_all_subjects_g3_30d__soak1",
+        "focusUnitIndex": 9,
+        "generator": "learning-simulator-deep-v1",
+        "diagnosticPrimarySource": "diagnosticEngineV2",
+        "unitDisplayName": "סדר פעולות",
+        "canonicalAction": "intervene",
+        "skillAlignmentConfidence": "inferred_safe",
+        "skillAlignmentSource": "topic_mapping",
+        "skillAlignmentWarnings": [],
+        "metadataResolution": {
+          "source": "metadataIndex",
+          "candidateCount": 1,
+          "subjectFallback": false,
+          "skillOnlyFallback": false,
+          "warnings": []
+        }
+      },
+      "warnings": [],
+      "missingFields": [],
+      "inputSnapshot": {
+        "subject": "math",
+        "engineDecision": "remediate",
+        "dataQuality": "thin",
+        "skillTaggingIncomplete": false,
+        "doNotConcludeLen": 1,
+        "metaLen": 1,
+        "metadataCandidateCount": 1,
+        "metadataSubjectFallback": false,
+        "metadataSkillOnlyFallback": false,
+        "currentSkillId": "math_order_parentheses",
+        "currentSubskillId": "order_parentheses"
+      },
+      "output": {
+        "plannerStatus": "caution",
+        "nextAction": "pause_collect_more_data",
+        "reasonCodes": [
+          "THIN_DATA",
+          "DO_NOT_CONCLUDE"
+        ],
+        "targetDifficulty": "basic",
+        "questionCount": 3,
+        "targetSkillId": "math_order_parentheses",
+        "targetSubskillId": "order_parentheses",
+        "requiresHumanReview": false
+      }
+    },
+    {
+      "label": "reports\\learning-simulator\\deep\\per-student\\weak_all_subjects_g3_30d__soak1.report.json#unit10",
+      "relativePath": "reports\\learning-simulator\\deep\\per-student\\weak_all_subjects_g3_30d__soak1.report.json",
+      "focusUnitIndex": 10,
+      "sourceInfo": {
+        "scenarioId": "weak_all_subjects_g3_30d__soak1",
+        "focusUnitIndex": 10,
+        "generator": "learning-simulator-deep-v1",
+        "diagnosticPrimarySource": "diagnosticEngineV2",
+        "unitDisplayName": "סימני התחלקות",
+        "canonicalAction": "probe_only",
+        "skillAlignmentConfidence": "inferred_safe",
+        "skillAlignmentSource": "topic_mapping",
+        "skillAlignmentWarnings": [],
+        "metadataResolution": {
+          "source": "metadataIndex",
+          "candidateCount": 1,
+          "subjectFallback": false,
+          "skillOnlyFallback": false,
+          "warnings": []
+        }
+      },
+      "warnings": [],
+      "missingFields": [],
+      "inputSnapshot": {
+        "subject": "math",
+        "engineDecision": "review",
+        "dataQuality": "thin",
+        "skillTaggingIncomplete": false,
+        "doNotConcludeLen": 1,
+        "metaLen": 1,
+        "metadataCandidateCount": 1,
+        "metadataSubjectFallback": false,
+        "metadataSkillOnlyFallback": false,
+        "currentSkillId": "math_divisibility",
+        "currentSubskillId": "divisibility"
+      },
+      "output": {
+        "plannerStatus": "caution",
+        "nextAction": "pause_collect_more_data",
+        "reasonCodes": [
+          "THIN_DATA",
+          "DO_NOT_CONCLUDE"
+        ],
+        "targetDifficulty": "basic",
+        "questionCount": 3,
+        "targetSkillId": "math_divisibility",
+        "targetSubskillId": "divisibility",
+        "requiresHumanReview": false
+      }
+    },
+    {
+      "label": "reports\\learning-simulator\\deep\\per-student\\weak_all_subjects_g3_30d__soak1.report.json#unit11",
+      "relativePath": "reports\\learning-simulator\\deep\\per-student\\weak_all_subjects_g3_30d__soak1.report.json",
+      "focusUnitIndex": 11,
+      "sourceInfo": {
+        "scenarioId": "weak_all_subjects_g3_30d__soak1",
+        "focusUnitIndex": 11,
+        "generator": "learning-simulator-deep-v1",
+        "diagnosticPrimarySource": "diagnosticEngineV2",
+        "unitDisplayName": "מרובעים",
+        "canonicalAction": "intervene",
+        "skillAlignmentConfidence": "inferred_safe",
+        "skillAlignmentSource": "taxonomy_bridge",
+        "skillAlignmentWarnings": [],
+        "metadataResolution": {
+          "source": "metadataIndex",
+          "candidateCount": 1,
+          "subjectFallback": false,
+          "skillOnlyFallback": false,
+          "warnings": []
+        }
+      },
+      "warnings": [],
+      "missingFields": [],
+      "inputSnapshot": {
+        "subject": "geometry",
+        "engineDecision": "remediate",
+        "dataQuality": "thin",
+        "skillTaggingIncomplete": false,
+        "doNotConcludeLen": 1,
+        "metaLen": 1,
+        "metadataCandidateCount": 1,
+        "metadataSubjectFallback": false,
+        "metadataSkillOnlyFallback": false,
+        "currentSkillId": "square_special",
+        "currentSubskillId": "square_rectangle"
+      },
+      "output": {
+        "plannerStatus": "caution",
+        "nextAction": "pause_collect_more_data",
+        "reasonCodes": [
+          "THIN_DATA",
+          "DO_NOT_CONCLUDE"
+        ],
+        "targetDifficulty": "basic",
+        "questionCount": 3,
+        "targetSkillId": "square_special",
+        "targetSubskillId": "square_rectangle",
+        "requiresHumanReview": false
+      }
+    },
+    {
       "label": "reports\\learning-simulator\\deep\\per-student\\weak_english_grammar_g4_30d.report.json#unit0",
       "relativePath": "reports\\learning-simulator\\deep\\per-student\\weak_english_grammar_g4_30d.report.json",
       "focusUnitIndex": 0,
       "sourceInfo": {
         "scenarioId": "weak_english_grammar_g4_30d",
+        "focusUnitIndex": 0,
+        "generator": "learning-simulator-deep-v1",
+        "diagnosticPrimarySource": "diagnosticEngineV2",
+        "unitDisplayName": "Grammar",
+        "canonicalAction": "diagnose_only",
+        "skillAlignmentConfidence": "inferred_safe",
+        "skillAlignmentSource": "topic_mapping",
+        "skillAlignmentWarnings": [],
+        "metadataResolution": {
+          "source": "metadataIndex",
+          "candidateCount": 4,
+          "subjectFallback": false,
+          "skillOnlyFallback": false,
+          "warnings": []
+        }
+      },
+      "warnings": [],
+      "missingFields": [],
+      "inputSnapshot": {
+        "subject": "english",
+        "engineDecision": "remediate",
+        "dataQuality": "thin",
+        "skillTaggingIncomplete": false,
+        "doNotConcludeLen": 2,
+        "metaLen": 4,
+        "metadataCandidateCount": 4,
+        "metadataSubjectFallback": false,
+        "metadataSkillOnlyFallback": false,
+        "currentSkillId": "en_grammar_be_present",
+        "currentSubskillId": "be_basic"
+      },
+      "output": {
+        "plannerStatus": "caution",
+        "nextAction": "pause_collect_more_data",
+        "reasonCodes": [
+          "THIN_DATA",
+          "DO_NOT_CONCLUDE"
+        ],
+        "targetDifficulty": "basic",
+        "questionCount": 3,
+        "targetSkillId": "en_grammar_be_present",
+        "targetSubskillId": "be_basic",
+        "requiresHumanReview": false
+      }
+    },
+    {
+      "label": "reports\\learning-simulator\\deep\\per-student\\weak_english_grammar_g4_30d__soak1.report.json#unit0",
+      "relativePath": "reports\\learning-simulator\\deep\\per-student\\weak_english_grammar_g4_30d__soak1.report.json",
+      "focusUnitIndex": 0,
+      "sourceInfo": {
+        "scenarioId": "weak_english_grammar_g4_30d__soak1",
         "focusUnitIndex": 0,
         "generator": "learning-simulator-deep-v1",
         "diagnosticPrimarySource": "diagnosticEngineV2",
@@ -3923,11 +7669,113 @@
       }
     },
     {
+      "label": "reports\\learning-simulator\\deep\\per-student\\weak_geometry_area_g5_30d__soak1.report.json#unit0",
+      "relativePath": "reports\\learning-simulator\\deep\\per-student\\weak_geometry_area_g5_30d__soak1.report.json",
+      "focusUnitIndex": 0,
+      "sourceInfo": {
+        "scenarioId": "weak_geometry_area_g5_30d__soak1",
+        "focusUnitIndex": 0,
+        "generator": "learning-simulator-deep-v1",
+        "diagnosticPrimarySource": "diagnosticEngineV2",
+        "unitDisplayName": "שטח",
+        "canonicalAction": "diagnose_only",
+        "skillAlignmentConfidence": "inferred_safe",
+        "skillAlignmentSource": "taxonomy_bridge",
+        "skillAlignmentWarnings": [],
+        "metadataResolution": {
+          "source": "metadataIndex",
+          "candidateCount": 1,
+          "subjectFallback": false,
+          "skillOnlyFallback": false,
+          "warnings": []
+        }
+      },
+      "warnings": [],
+      "missingFields": [],
+      "inputSnapshot": {
+        "subject": "geometry",
+        "engineDecision": "remediate",
+        "dataQuality": "thin",
+        "skillTaggingIncomplete": false,
+        "doNotConcludeLen": 2,
+        "metaLen": 1,
+        "metadataCandidateCount": 1,
+        "metadataSubjectFallback": false,
+        "metadataSkillOnlyFallback": false,
+        "currentSkillId": "geo_rect_area_plan",
+        "currentSubskillId": "area_rectangle"
+      },
+      "output": {
+        "plannerStatus": "caution",
+        "nextAction": "pause_collect_more_data",
+        "reasonCodes": [
+          "THIN_DATA",
+          "DO_NOT_CONCLUDE"
+        ],
+        "targetDifficulty": "basic",
+        "questionCount": 3,
+        "targetSkillId": "geo_rect_area_plan",
+        "targetSubskillId": "area_rectangle",
+        "requiresHumanReview": false
+      }
+    },
+    {
       "label": "reports\\learning-simulator\\deep\\per-student\\weak_hebrew_comprehension_g3_30d.report.json#unit0",
       "relativePath": "reports\\learning-simulator\\deep\\per-student\\weak_hebrew_comprehension_g3_30d.report.json",
       "focusUnitIndex": 0,
       "sourceInfo": {
         "scenarioId": "weak_hebrew_comprehension_g3_30d",
+        "focusUnitIndex": 0,
+        "generator": "learning-simulator-deep-v1",
+        "diagnosticPrimarySource": "diagnosticEngineV2",
+        "unitDisplayName": "הבנת הנקרא",
+        "canonicalAction": "diagnose_only",
+        "skillAlignmentConfidence": "inferred_safe",
+        "skillAlignmentSource": "topic_mapping",
+        "skillAlignmentWarnings": [],
+        "metadataResolution": {
+          "source": "metadataIndex",
+          "candidateCount": 2,
+          "subjectFallback": false,
+          "skillOnlyFallback": false,
+          "warnings": []
+        }
+      },
+      "warnings": [],
+      "missingFields": [],
+      "inputSnapshot": {
+        "subject": "hebrew",
+        "engineDecision": "remediate",
+        "dataQuality": "thin",
+        "skillTaggingIncomplete": false,
+        "doNotConcludeLen": 2,
+        "metaLen": 2,
+        "metadataCandidateCount": 2,
+        "metadataSubjectFallback": false,
+        "metadataSkillOnlyFallback": false,
+        "currentSkillId": "hebrew_archive_comprehension",
+        "currentSubskillId": "g3"
+      },
+      "output": {
+        "plannerStatus": "caution",
+        "nextAction": "pause_collect_more_data",
+        "reasonCodes": [
+          "THIN_DATA",
+          "DO_NOT_CONCLUDE"
+        ],
+        "targetDifficulty": "basic",
+        "questionCount": 3,
+        "targetSkillId": "hebrew_archive_comprehension",
+        "targetSubskillId": "g3",
+        "requiresHumanReview": false
+      }
+    },
+    {
+      "label": "reports\\learning-simulator\\deep\\per-student\\weak_hebrew_comprehension_g3_30d__soak1.report.json#unit0",
+      "relativePath": "reports\\learning-simulator\\deep\\per-student\\weak_hebrew_comprehension_g3_30d__soak1.report.json",
+      "focusUnitIndex": 0,
+      "sourceInfo": {
+        "scenarioId": "weak_hebrew_comprehension_g3_30d__soak1",
         "focusUnitIndex": 0,
         "generator": "learning-simulator-deep-v1",
         "diagnosticPrimarySource": "diagnosticEngineV2",
@@ -4025,6 +7873,57 @@
       }
     },
     {
+      "label": "reports\\learning-simulator\\deep\\per-student\\weak_math_fractions_g5_30d__soak1.report.json#unit0",
+      "relativePath": "reports\\learning-simulator\\deep\\per-student\\weak_math_fractions_g5_30d__soak1.report.json",
+      "focusUnitIndex": 0,
+      "sourceInfo": {
+        "scenarioId": "weak_math_fractions_g5_30d__soak1",
+        "focusUnitIndex": 0,
+        "generator": "learning-simulator-deep-v1",
+        "diagnosticPrimarySource": "diagnosticEngineV2",
+        "unitDisplayName": "שברים",
+        "canonicalAction": "diagnose_only",
+        "skillAlignmentConfidence": "inferred_safe",
+        "skillAlignmentSource": "topic_mapping",
+        "skillAlignmentWarnings": [],
+        "metadataResolution": {
+          "source": "metadataIndex",
+          "candidateCount": 1,
+          "subjectFallback": false,
+          "skillOnlyFallback": false,
+          "warnings": []
+        }
+      },
+      "warnings": [],
+      "missingFields": [],
+      "inputSnapshot": {
+        "subject": "math",
+        "engineDecision": "remediate",
+        "dataQuality": "thin",
+        "skillTaggingIncomplete": false,
+        "doNotConcludeLen": 2,
+        "metaLen": 1,
+        "metadataCandidateCount": 1,
+        "metadataSubjectFallback": false,
+        "metadataSkillOnlyFallback": false,
+        "currentSkillId": "math_frac_add_sub",
+        "currentSubskillId": "frac_add_sub"
+      },
+      "output": {
+        "plannerStatus": "caution",
+        "nextAction": "pause_collect_more_data",
+        "reasonCodes": [
+          "THIN_DATA",
+          "DO_NOT_CONCLUDE"
+        ],
+        "targetDifficulty": "basic",
+        "questionCount": 3,
+        "targetSkillId": "math_frac_add_sub",
+        "targetSubskillId": "frac_add_sub",
+        "requiresHumanReview": false
+      }
+    },
+    {
       "label": "reports\\learning-simulator\\deep\\per-student\\weak_moledet_geography_maps_g4_30d.report.json#unit0",
       "relativePath": "reports\\learning-simulator\\deep\\per-student\\weak_moledet_geography_maps_g4_30d.report.json",
       "focusUnitIndex": 0,
@@ -4076,11 +7975,113 @@
       }
     },
     {
+      "label": "reports\\learning-simulator\\deep\\per-student\\weak_moledet_geography_maps_g4_30d__soak1.report.json#unit0",
+      "relativePath": "reports\\learning-simulator\\deep\\per-student\\weak_moledet_geography_maps_g4_30d__soak1.report.json",
+      "focusUnitIndex": 0,
+      "sourceInfo": {
+        "scenarioId": "weak_moledet_geography_maps_g4_30d__soak1",
+        "focusUnitIndex": 0,
+        "generator": "learning-simulator-deep-v1",
+        "diagnosticPrimarySource": "diagnosticEngineV2",
+        "unitDisplayName": "מפות",
+        "canonicalAction": "diagnose_only",
+        "skillAlignmentConfidence": "inferred_safe",
+        "skillAlignmentSource": "topic_mapping",
+        "skillAlignmentWarnings": [],
+        "metadataResolution": {
+          "source": "metadataIndex",
+          "candidateCount": 14,
+          "subjectFallback": false,
+          "skillOnlyFallback": false,
+          "warnings": []
+        }
+      },
+      "warnings": [],
+      "missingFields": [],
+      "inputSnapshot": {
+        "subject": "moledet-geography",
+        "engineDecision": "remediate",
+        "dataQuality": "thin",
+        "skillTaggingIncomplete": false,
+        "doNotConcludeLen": 2,
+        "metaLen": 14,
+        "metadataCandidateCount": 14,
+        "metadataSubjectFallback": false,
+        "metadataSkillOnlyFallback": false,
+        "currentSkillId": "moledet_geo_maps",
+        "currentSubskillId": "g4"
+      },
+      "output": {
+        "plannerStatus": "caution",
+        "nextAction": "pause_collect_more_data",
+        "reasonCodes": [
+          "THIN_DATA",
+          "DO_NOT_CONCLUDE"
+        ],
+        "targetDifficulty": "basic",
+        "questionCount": 3,
+        "targetSkillId": "moledet_geo_maps",
+        "targetSubskillId": "g4",
+        "requiresHumanReview": false
+      }
+    },
+    {
       "label": "reports\\learning-simulator\\deep\\per-student\\weak_science_experiments_g5_30d.report.json#unit0",
       "relativePath": "reports\\learning-simulator\\deep\\per-student\\weak_science_experiments_g5_30d.report.json",
       "focusUnitIndex": 0,
       "sourceInfo": {
         "scenarioId": "weak_science_experiments_g5_30d",
+        "focusUnitIndex": 0,
+        "generator": "learning-simulator-deep-v1",
+        "diagnosticPrimarySource": "diagnosticEngineV2",
+        "unitDisplayName": "ניסויים ותהליכים",
+        "canonicalAction": "diagnose_only",
+        "skillAlignmentConfidence": "inferred_safe",
+        "skillAlignmentSource": "topic_mapping",
+        "skillAlignmentWarnings": [],
+        "metadataResolution": {
+          "source": "metadataIndex",
+          "candidateCount": 14,
+          "subjectFallback": false,
+          "skillOnlyFallback": false,
+          "warnings": []
+        }
+      },
+      "warnings": [],
+      "missingFields": [],
+      "inputSnapshot": {
+        "subject": "science",
+        "engineDecision": "remediate",
+        "dataQuality": "thin",
+        "skillTaggingIncomplete": false,
+        "doNotConcludeLen": 2,
+        "metaLen": 14,
+        "metadataCandidateCount": 14,
+        "metadataSubjectFallback": false,
+        "metadataSkillOnlyFallback": false,
+        "currentSkillId": "experiments",
+        "currentSubskillId": "sci_experiments_general"
+      },
+      "output": {
+        "plannerStatus": "caution",
+        "nextAction": "pause_collect_more_data",
+        "reasonCodes": [
+          "THIN_DATA",
+          "DO_NOT_CONCLUDE"
+        ],
+        "targetDifficulty": "basic",
+        "questionCount": 3,
+        "targetSkillId": "experiments",
+        "targetSubskillId": "sci_experiments_general",
+        "requiresHumanReview": false
+      }
+    },
+    {
+      "label": "reports\\learning-simulator\\deep\\per-student\\weak_science_experiments_g5_30d__soak1.report.json#unit0",
+      "relativePath": "reports\\learning-simulator\\deep\\per-student\\weak_science_experiments_g5_30d__soak1.report.json",
+      "focusUnitIndex": 0,
+      "sourceInfo": {
+        "scenarioId": "weak_science_experiments_g5_30d__soak1",
         "focusUnitIndex": 0,
         "generator": "learning-simulator-deep-v1",
         "diagnosticPrimarySource": "diagnosticEngineV2",

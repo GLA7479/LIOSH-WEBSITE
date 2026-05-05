@@ -1,0 +1,100 @@
+{
+  "scenarioId": "weak_hebrew_comprehension_g3_30d__soak1",
+  "profileRef": "p_weak_hebrew_comprehension",
+  "generator": "learning-simulator-deep-behavior-v1",
+  "oracle": {
+    "evidence": {
+      "sessionCount": 72,
+      "questionTotal": 1161,
+      "correctTotal": 431,
+      "mistakeEventCount": 407,
+      "subjectsTouched": [
+        "hebrew"
+      ],
+      "overallAccuracyPct": 37.1,
+      "mistakeRateApprox": 0.351
+    },
+    "subjectMetrics": {
+      "hebrew": {
+        "totalQ": 1161,
+        "correctQ": 431,
+        "accuracyPct": 37.1
+      }
+    },
+    "topicMetrics": {
+      "hebrew:comprehension": {
+        "totalQ": 1161,
+        "correctQ": 431,
+        "subject": "hebrew",
+        "topic": "comprehension",
+        "accuracyPct": 37.1
+      }
+    },
+    "trendOracle": {
+      "direction": "flat",
+      "earlyMean": 0.36785288906999436,
+      "lateMean": 0.3668576328212551,
+      "delta": -0.0009952562487392513,
+      "sessionSamples": 72
+    },
+    "volatility": {
+      "stdev": 0.022392753847289646,
+      "n": 72,
+      "meanAccuracy": 0.3718215586443139
+    },
+    "paceOracle": {
+      "meanSessionDurationSec": 2389.5,
+      "meanSecondsPerQuestion": 148.19,
+      "mistakeEventCount": 407,
+      "mistakeRateApprox": 0.351
+    },
+    "reportSignals": {
+      "totalQuestions": 1161,
+      "overallAccuracy": 37,
+      "contractTopThinDowngraded": true,
+      "contractTopEvidenceQuestionCount": 1161,
+      "contractPrimarySubjectId": "hebrew",
+      "topicBucketKeys": [
+        "comprehension"
+      ],
+      "diagnosedCount": 1,
+      "unitCount": 1,
+      "contradictoryConfidenceCount": 0,
+      "executiveWindowQuestions": 1161,
+      "rowTrendsLength": 0
+    },
+    "behaviorHints": {
+      "suspiciousZeroDiagnosesWithVolume": false,
+      "thinContractVsHighMetaQuestions": true,
+      "diagnosisCoverageRatio": 1
+    },
+    "sessionRowCount": 72
+  },
+  "assertions": [
+    {
+      "assertionId": "no_diagnostic_contradictory_confidence_spike",
+      "pass": true,
+      "expected": {
+        "maxContradictions": 8
+      },
+      "actual": {
+        "contradictoryConfidenceCount": 0
+      },
+      "likelyCause": "behavior_oracle_threshold",
+      "evidence": {
+        "scope": "global_sanity"
+      }
+    }
+  ],
+  "pass": true,
+  "failureCauseSummary": {
+    "failedCount": 0,
+    "counts": {
+      "simulator_data": 0,
+      "behavior_oracle_threshold": 0,
+      "engine_report": 0,
+      "unknown": 0
+    },
+    "dominantLikelyCause": "none"
+  }
+}

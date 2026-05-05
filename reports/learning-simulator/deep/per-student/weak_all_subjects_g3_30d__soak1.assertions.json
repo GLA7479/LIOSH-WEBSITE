@@ -1,0 +1,61 @@
+{
+  "scenarioId": "weak_all_subjects_g3_30d__soak1",
+  "profileRef": "p_weak_all_subjects",
+  "expected": {
+    "evidenceLevelExpected": [
+      "medium",
+      "high"
+    ],
+    "confidenceShouldBeCautious": true,
+    "noFalseStrongConclusion": true,
+    "noContradiction": true
+  },
+  "counts": {
+    "assertionsRun": 4,
+    "passed": 4,
+    "failed": 0
+  },
+  "overallPass": true,
+  "results": [
+    {
+      "assertion": "evidenceLevelExpected",
+      "pass": true,
+      "evidence": {
+        "want": [
+          "medium",
+          "high"
+        ],
+        "effectiveQ": 1741
+      },
+      "method": "structured"
+    },
+    {
+      "assertion": "confidenceShouldBeCautious",
+      "pass": true,
+      "evidence": {
+        "want": true,
+        "cautious": true,
+        "effectiveQ": 1741,
+        "note": null,
+        "sample": "כמה אפשר לסמוך על זה: עדיין לא גבוה — צריך עוד תרגול לפני שסוגרים תמונה ברורה. בנושא קהילה: בלבול תפקידים מבט כולל: ב־40 מתוך 42 נושאים שנבדקו יש בסיס ראשוני לשיחה בבית על כיוון ממוקד. יש מספיק תרגול בתקופה כדי לדבר על מ"
+      },
+      "method": "structured+text"
+    },
+    {
+      "assertion": "noContradiction",
+      "pass": true,
+      "evidence": {
+        "contradictoryUnits": 0
+      },
+      "method": "structured"
+    },
+    {
+      "assertion": "noFalseStrongConclusion",
+      "pass": true,
+      "evidence": {
+        "suspectUnits": []
+      },
+      "method": "structured"
+    }
+  ]
+}

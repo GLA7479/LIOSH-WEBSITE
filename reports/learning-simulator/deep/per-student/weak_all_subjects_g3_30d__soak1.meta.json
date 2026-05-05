@@ -1,0 +1,92 @@
+{
+  "scenarioId": "weak_all_subjects_g3_30d__soak1",
+  "profileRef": "p_weak_all_subjects",
+  "mode": "deep",
+  "tier": "deep",
+  "seed": 103009,
+  "anchorDate": "2026-05-11T08:00:00.000Z",
+  "timeHorizonDays": 30,
+  "generator": "deep-runner-v1",
+  "stats": {
+    "scenarioId": "weak_all_subjects_g3_30d__soak1",
+    "sessionCount": 110,
+    "questionTotal": 1741,
+    "correctTotal": 822,
+    "mistakeEventCount": 528,
+    "subjectsTouched": [
+      "geometry",
+      "moledet_geography",
+      "science",
+      "math",
+      "hebrew",
+      "english"
+    ],
+    "topicsBySubject": {
+      "geometry": [
+        "angles",
+        "area",
+        "quadrilaterals",
+        "triangles"
+      ],
+      "moledet_geography": [
+        "citizenship",
+        "community",
+        "geography",
+        "homeland",
+        "maps",
+        "mixed",
+        "values"
+      ],
+      "science": [
+        "animals",
+        "body",
+        "earth_space",
+        "environment",
+        "experiments",
+        "materials",
+        "plants"
+      ],
+      "math": [
+        "addition",
+        "compare",
+        "decimals",
+        "divisibility",
+        "division",
+        "equations",
+        "fractions",
+        "multiplication",
+        "order_of_operations",
+        "sequences",
+        "word_problems"
+      ],
+      "hebrew": [
+        "comprehension",
+        "grammar",
+        "mixed",
+        "reading",
+        "speaking",
+        "vocabulary",
+        "writing"
+      ],
+      "english": [
+        "grammar",
+        "mixed",
+        "sentences",
+        "translation",
+        "vocabulary",
+        "writing"
+      ]
+    }
+  },
+  "validation": {
+    "ok": true,
+    "errors": [],
+    "warnings": []
+  },
+  "warnings": [],
+  "errors": [],
+  "deepHorizonValidation": {
+    "ok": true,
+    "errors": []
+  }
+}

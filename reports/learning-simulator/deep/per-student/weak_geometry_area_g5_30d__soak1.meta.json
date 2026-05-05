@@ -1,0 +1,36 @@
+{
+  "scenarioId": "weak_geometry_area_g5_30d__soak1",
+  "profileRef": "p_weak_geometry_area",
+  "mode": "deep",
+  "tier": "deep",
+  "seed": 103018,
+  "anchorDate": "2026-05-20T08:00:00.000Z",
+  "timeHorizonDays": 30,
+  "generator": "deep-runner-v1",
+  "stats": {
+    "scenarioId": "weak_geometry_area_g5_30d__soak1",
+    "sessionCount": 74,
+    "questionTotal": 1164,
+    "correctTotal": 453,
+    "mistakeEventCount": 396,
+    "subjectsTouched": [
+      "geometry"
+    ],
+    "topicsBySubject": {
+      "geometry": [
+        "area"
+      ]
+    }
+  },
+  "validation": {
+    "ok": true,
+    "errors": [],
+    "warnings": []
+  },
+  "warnings": [],
+  "errors": [],
+  "deepHorizonValidation": {
+    "ok": true,
+    "errors": []
+  }
+}

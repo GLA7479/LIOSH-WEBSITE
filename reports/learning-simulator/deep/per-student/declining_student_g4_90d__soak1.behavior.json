@@ -1,0 +1,344 @@
+{
+  "scenarioId": "declining_student_g4_90d__soak1",
+  "profileRef": "p_declining_student",
+  "generator": "learning-simulator-deep-behavior-v1",
+  "oracle": {
+    "evidence": {
+      "sessionCount": 210,
+      "questionTotal": 3319,
+      "correctTotal": 2218,
+      "mistakeEventCount": 683,
+      "subjectsTouched": [
+        "hebrew",
+        "math",
+        "geometry"
+      ],
+      "overallAccuracyPct": 66.8,
+      "mistakeRateApprox": 0.206
+    },
+    "subjectMetrics": {
+      "math": {
+        "totalQ": 2005,
+        "correctQ": 1339,
+        "accuracyPct": 66.8
+      },
+      "geometry": {
+        "totalQ": 408,
+        "correctQ": 269,
+        "accuracyPct": 65.9
+      },
+      "hebrew": {
+        "totalQ": 906,
+        "correctQ": 610,
+        "accuracyPct": 67.3
+      }
+    },
+    "topicMetrics": {
+      "math:decimals": {
+        "totalQ": 88,
+        "correctQ": 62,
+        "subject": "math",
+        "topic": "decimals",
+        "accuracyPct": 70.5
+      },
+      "math:multiplication": {
+        "totalQ": 683,
+        "correctQ": 449,
+        "subject": "math",
+        "topic": "multiplication",
+        "accuracyPct": 65.7
+      },
+      "math:equations": {
+        "totalQ": 60,
+        "correctQ": 42,
+        "subject": "math",
+        "topic": "equations",
+        "accuracyPct": 70
+      },
+      "math:division": {
+        "totalQ": 64,
+        "correctQ": 46,
+        "subject": "math",
+        "topic": "division",
+        "accuracyPct": 71.9
+      },
+      "math:powers": {
+        "totalQ": 96,
+        "correctQ": 69,
+        "subject": "math",
+        "topic": "powers",
+        "accuracyPct": 71.9
+      },
+      "math:addition": {
+        "totalQ": 66,
+        "correctQ": 44,
+        "subject": "math",
+        "topic": "addition",
+        "accuracyPct": 66.7
+      },
+      "math:estimation": {
+        "totalQ": 55,
+        "correctQ": 38,
+        "subject": "math",
+        "topic": "estimation",
+        "accuracyPct": 69.1
+      },
+      "math:fractions": {
+        "totalQ": 88,
+        "correctQ": 63,
+        "subject": "math",
+        "topic": "fractions",
+        "accuracyPct": 71.6
+      },
+      "math:prime_composite": {
+        "totalQ": 117,
+        "correctQ": 81,
+        "subject": "math",
+        "topic": "prime_composite",
+        "accuracyPct": 69.2
+      },
+      "math:zero_one_properties": {
+        "totalQ": 96,
+        "correctQ": 66,
+        "subject": "math",
+        "topic": "zero_one_properties",
+        "accuracyPct": 68.8
+      },
+      "math:subtraction": {
+        "totalQ": 64,
+        "correctQ": 44,
+        "subject": "math",
+        "topic": "subtraction",
+        "accuracyPct": 68.8
+      },
+      "math:sequences": {
+        "totalQ": 99,
+        "correctQ": 65,
+        "subject": "math",
+        "topic": "sequences",
+        "accuracyPct": 65.7
+      },
+      "math:compare": {
+        "totalQ": 120,
+        "correctQ": 79,
+        "subject": "math",
+        "topic": "compare",
+        "accuracyPct": 65.8
+      },
+      "math:rounding": {
+        "totalQ": 40,
+        "correctQ": 27,
+        "subject": "math",
+        "topic": "rounding",
+        "accuracyPct": 67.5
+      },
+      "math:mixed": {
+        "totalQ": 103,
+        "correctQ": 62,
+        "subject": "math",
+        "topic": "mixed",
+        "accuracyPct": 60.2
+      },
+      "math:division_with_remainder": {
+        "totalQ": 74,
+        "correctQ": 51,
+        "subject": "math",
+        "topic": "division_with_remainder",
+        "accuracyPct": 68.9
+      },
+      "math:number_sense": {
+        "totalQ": 37,
+        "correctQ": 22,
+        "subject": "math",
+        "topic": "number_sense",
+        "accuracyPct": 59.5
+      },
+      "math:divisibility": {
+        "totalQ": 19,
+        "correctQ": 11,
+        "subject": "math",
+        "topic": "divisibility",
+        "accuracyPct": 57.9
+      },
+      "math:factors_multiples": {
+        "totalQ": 36,
+        "correctQ": 18,
+        "subject": "math",
+        "topic": "factors_multiples",
+        "accuracyPct": 50
+      },
+      "geometry:area": {
+        "totalQ": 258,
+        "correctQ": 170,
+        "subject": "geometry",
+        "topic": "area",
+        "accuracyPct": 65.9
+      },
+      "geometry:symmetry": {
+        "totalQ": 71,
+        "correctQ": 51,
+        "subject": "geometry",
+        "topic": "symmetry",
+        "accuracyPct": 71.8
+      },
+      "geometry:volume": {
+        "totalQ": 47,
+        "correctQ": 30,
+        "subject": "geometry",
+        "topic": "volume",
+        "accuracyPct": 63.8
+      },
+      "geometry:diagonal": {
+        "totalQ": 32,
+        "correctQ": 18,
+        "subject": "geometry",
+        "topic": "diagonal",
+        "accuracyPct": 56.3
+      },
+      "hebrew:grammar": {
+        "totalQ": 438,
+        "correctQ": 293,
+        "subject": "hebrew",
+        "topic": "grammar",
+        "accuracyPct": 66.9
+      },
+      "hebrew:mixed": {
+        "totalQ": 71,
+        "correctQ": 47,
+        "subject": "hebrew",
+        "topic": "mixed",
+        "accuracyPct": 66.2
+      },
+      "hebrew:vocabulary": {
+        "totalQ": 97,
+        "correctQ": 71,
+        "subject": "hebrew",
+        "topic": "vocabulary",
+        "accuracyPct": 73.2
+      },
+      "hebrew:comprehension": {
+        "totalQ": 97,
+        "correctQ": 64,
+        "subject": "hebrew",
+        "topic": "comprehension",
+        "accuracyPct": 66
+      },
+      "hebrew:writing": {
+        "totalQ": 45,
+        "correctQ": 30,
+        "subject": "hebrew",
+        "topic": "writing",
+        "accuracyPct": 66.7
+      },
+      "hebrew:reading": {
+        "totalQ": 75,
+        "correctQ": 52,
+        "subject": "hebrew",
+        "topic": "reading",
+        "accuracyPct": 69.3
+      },
+      "hebrew:speaking": {
+        "totalQ": 83,
+        "correctQ": 53,
+        "subject": "hebrew",
+        "topic": "speaking",
+        "accuracyPct": 63.9
+      }
+    },
+    "trendOracle": {
+      "direction": "down",
+      "earlyMean": 0.7946986237753596,
+      "lateMean": 0.5344668902403313,
+      "delta": -0.26023173353502826,
+      "sessionSamples": 210
+    },
+    "volatility": {
+      "stdev": 0.11392244670404161,
+      "n": 210,
+      "meanAccuracy": 0.6657843008180243
+    },
+    "paceOracle": {
+      "meanSessionDurationSec": 1713.6,
+      "meanSecondsPerQuestion": 108.42,
+      "mistakeEventCount": 683,
+      "mistakeRateApprox": 0.206
+    },
+    "reportSignals": {
+      "totalQuestions": 3319,
+      "overallAccuracy": 67,
+      "contractTopThinDowngraded": true,
+      "contractTopEvidenceQuestionCount": 683,
+      "contractPrimarySubjectId": "math",
+      "topicBucketKeys": [
+        "decimals",
+        "multiplication",
+        "equations",
+        "division",
+        "powers",
+        "addition",
+        "estimation",
+        "fractions",
+        "prime_composite",
+        "zero_one_properties",
+        "subtraction",
+        "sequences",
+        "compare",
+        "rounding",
+        "mixed",
+        "division_with_remainder",
+        "number_sense",
+        "divisibility",
+        "factors_multiples",
+        "area",
+        "symmetry",
+        "volume",
+        "diagonal",
+        "grammar",
+        "mixed",
+        "vocabulary",
+        "comprehension",
+        "writing",
+        "reading",
+        "speaking"
+      ],
+      "diagnosedCount": 22,
+      "unitCount": 30,
+      "contradictoryConfidenceCount": 0,
+      "executiveWindowQuestions": 3319,
+      "rowTrendsLength": 0
+    },
+    "behaviorHints": {
+      "suspiciousZeroDiagnosesWithVolume": false,
+      "thinContractVsHighMetaQuestions": true,
+      "diagnosisCoverageRatio": 0.733
+    },
+    "sessionRowCount": 210
+  },
+  "assertions": [
+    {
+      "assertionId": "no_diagnostic_contradictory_confidence_spike",
+      "pass": true,
+      "expected": {
+        "maxContradictions": 8
+      },
+      "actual": {
+        "contradictoryConfidenceCount": 0
+      },
+      "likelyCause": "behavior_oracle_threshold",
+      "evidence": {
+        "scope": "global_sanity"
+      }
+    }
+  ],
+  "pass": true,
+  "failureCauseSummary": {
+    "failedCount": 0,
+    "counts": {
+      "simulator_data": 0,
+      "behavior_oracle_threshold": 0,
+      "engine_report": 0,
+      "unknown": 0
+    },
+    "dominantLikelyCause": "none"
+  }
+}

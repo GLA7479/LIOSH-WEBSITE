@@ -1,0 +1,100 @@
+{
+  "scenarioId": "weak_moledet_geography_maps_g4_30d__soak1",
+  "profileRef": "p_weak_moledet_maps",
+  "generator": "learning-simulator-deep-behavior-v1",
+  "oracle": {
+    "evidence": {
+      "sessionCount": 70,
+      "questionTotal": 1102,
+      "correctTotal": 399,
+      "mistakeEventCount": 387,
+      "subjectsTouched": [
+        "moledet_geography"
+      ],
+      "overallAccuracyPct": 36.2,
+      "mistakeRateApprox": 0.351
+    },
+    "subjectMetrics": {
+      "moledet_geography": {
+        "totalQ": 1102,
+        "correctQ": 399,
+        "accuracyPct": 36.2
+      }
+    },
+    "topicMetrics": {
+      "moledet_geography:maps": {
+        "totalQ": 1102,
+        "correctQ": 399,
+        "subject": "moledet_geography",
+        "topic": "maps",
+        "accuracyPct": 36.2
+      }
+    },
+    "trendOracle": {
+      "direction": "flat",
+      "earlyMean": 0.3597089865472219,
+      "lateMean": 0.36795047380380197,
+      "delta": 0.008241487256580082,
+      "sessionSamples": 70
+    },
+    "volatility": {
+      "stdev": 0.022570115999261803,
+      "n": 70,
+      "meanAccuracy": 0.36258556158323946
+    },
+    "paceOracle": {
+      "meanSessionDurationSec": 1696.1,
+      "meanSecondsPerQuestion": 107.74,
+      "mistakeEventCount": 387,
+      "mistakeRateApprox": 0.351
+    },
+    "reportSignals": {
+      "totalQuestions": 1089,
+      "overallAccuracy": 36,
+      "contractTopThinDowngraded": true,
+      "contractTopEvidenceQuestionCount": 1089,
+      "contractPrimarySubjectId": "moledet-geography",
+      "topicBucketKeys": [
+        "maps"
+      ],
+      "diagnosedCount": 1,
+      "unitCount": 1,
+      "contradictoryConfidenceCount": 0,
+      "executiveWindowQuestions": 1089,
+      "rowTrendsLength": 0
+    },
+    "behaviorHints": {
+      "suspiciousZeroDiagnosesWithVolume": false,
+      "thinContractVsHighMetaQuestions": true,
+      "diagnosisCoverageRatio": 1
+    },
+    "sessionRowCount": 70
+  },
+  "assertions": [
+    {
+      "assertionId": "no_diagnostic_contradictory_confidence_spike",
+      "pass": true,
+      "expected": {
+        "maxContradictions": 8
+      },
+      "actual": {
+        "contradictoryConfidenceCount": 0
+      },
+      "likelyCause": "behavior_oracle_threshold",
+      "evidence": {
+        "scope": "global_sanity"
+      }
+    }
+  ],
+  "pass": true,
+  "failureCauseSummary": {
+    "failedCount": 0,
+    "counts": {
+      "simulator_data": 0,
+      "behavior_oracle_threshold": 0,
+      "engine_report": 0,
+      "unknown": 0
+    },
+    "dominantLikelyCause": "none"
+  }
+}

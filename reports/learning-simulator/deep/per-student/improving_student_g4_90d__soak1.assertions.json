@@ -1,0 +1,64 @@
+{
+  "scenarioId": "improving_student_g4_90d__soak1",
+  "profileRef": "p_improving_student",
+  "expected": {
+    "trendExpected": [
+      "up"
+    ],
+    "noContradiction": true,
+    "evidenceLevelExpected": [
+      "medium",
+      "high"
+    ]
+  },
+  "counts": {
+    "assertionsRun": 3,
+    "passed": 3,
+    "failed": 0
+  },
+  "overallPass": true,
+  "results": [
+    {
+      "assertion": "trendExpected",
+      "pass": true,
+      "evidence": {
+        "want": [
+          "up"
+        ],
+        "sufficientUp": 0,
+        "anyUp": 0,
+        "sufficientDown": 0,
+        "anyDown": 0,
+        "majorTrendsSample": "בטווח התקופה נבדקו 31 נושאים. נושאים שנשמרים טוב: 0 מתוך מה שנבדק. ב־24 נושאים יש בסיס לשיחה ממוקדת בבית. ב־0 נושאים עדיין אין תמונה ברורה.",
+        "storageOracle": {
+          "direction": "up",
+          "earlyMean": 0.5546288007443197,
+          "lateMean": 0.7525243510908497,
+          "n": 216,
+          "delta": 0.19789555034652995
+        }
+      },
+      "method": "structured+storage-oracle"
+    },
+    {
+      "assertion": "evidenceLevelExpected",
+      "pass": true,
+      "evidence": {
+        "want": [
+          "medium",
+          "high"
+        ],
+        "effectiveQ": 3431
+      },
+      "method": "structured"
+    },
+    {
+      "assertion": "noContradiction",
+      "pass": true,
+      "evidence": {
+        "contradictoryUnits": 0
+      },
+      "method": "structured"
+    }
+  ]
+}

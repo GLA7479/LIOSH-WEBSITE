@@ -1,0 +1,32 @@
+{
+  "scenarioId": "weak_moledet_geography_maps_g4_7d__soak1",
+  "profileRef": "p_weak_moledet_maps",
+  "mode": "aggregate",
+  "tier": "quick",
+  "seed": 101015,
+  "anchorDate": "2026-05-08T08:00:00.000Z",
+  "timeHorizonDays": 7,
+  "generator": "aggregate-runner-v1",
+  "stats": {
+    "scenarioId": "weak_moledet_geography_maps_g4_7d__soak1",
+    "sessionCount": 12,
+    "questionTotal": 192,
+    "correctTotal": 70,
+    "mistakeEventCount": 68,
+    "subjectsTouched": [
+      "moledet_geography"
+    ],
+    "topicsBySubject": {
+      "moledet_geography": [
+        "maps"
+      ]
+    }
+  },
+  "validation": {
+    "ok": true,
+    "errors": [],
+    "warnings": []
+  },
+  "warnings": [],
+  "errors": []
+}

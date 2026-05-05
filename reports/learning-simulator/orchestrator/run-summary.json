@@ -1,8 +1,8 @@
 {
   "mode": "full",
-  "startedAt": "2026-05-05T19:19:29.102Z",
-  "finishedAt": "2026-05-05T19:28:20.052Z",
-  "totalDurationMs": 530948,
+  "startedAt": "2026-05-05T22:03:22.237Z",
+  "finishedAt": "2026-05-05T22:08:07.614Z",
+  "totalDurationMs": 285376,
   "pass": true,
   "failedStep": null,
   "steps": [
@@ -11,7 +11,7 @@
       "label": "Coverage matrix",
       "script": "qa:learning-simulator:matrix",
       "exitCode": 0,
-      "durationMs": 1547,
+      "durationMs": 1035,
       "pass": true
     },
     {
@@ -19,7 +19,7 @@
       "label": "Schema validation (profiles + scenarios)",
       "script": "qa:learning-simulator:schema",
       "exitCode": 0,
-      "durationMs": 1424,
+      "durationMs": 920,
       "pass": true
     },
     {
@@ -27,7 +27,7 @@
       "label": "Aggregate simulator (quick scenarios)",
       "script": "qa:learning-simulator:aggregate",
       "exitCode": 0,
-      "durationMs": 1433,
+      "durationMs": 870,
       "pass": true
     },
     {
@@ -35,7 +35,7 @@
       "label": "Parent report assertions (Phase 3)",
       "script": "qa:learning-simulator:reports",
       "exitCode": 0,
-      "durationMs": 3415,
+      "durationMs": 1893,
       "pass": true
     },
     {
@@ -43,7 +43,7 @@
       "label": "Engine truth audit (aggregation ↔ diagnosis V2 ↔ report model)",
       "script": "qa:learning-simulator:engine",
       "exitCode": 0,
-      "durationMs": 3857,
+      "durationMs": 3381,
       "pass": true
     },
     {
@@ -51,7 +51,7 @@
       "label": "Professional diagnostic framework QA (mock contracts)",
       "script": "qa:learning-simulator:diagnostic-framework",
       "exitCode": 0,
-      "durationMs": 1009,
+      "durationMs": 841,
       "pass": true
     },
     {
@@ -59,7 +59,7 @@
       "label": "Professional framework real scenario validation",
       "script": "qa:learning-simulator:framework-real-scenarios",
       "exitCode": 0,
-      "durationMs": 2483,
+      "durationMs": 2072,
       "pass": true
     },
     {
@@ -67,7 +67,7 @@
       "label": "Engine completion summary artifact",
       "script": "qa:learning-simulator:engine-completion-summary",
       "exitCode": 0,
-      "durationMs": 1047,
+      "durationMs": 728,
       "pass": true
     },
     {
@@ -75,7 +75,7 @@
       "label": "Question bank metadata gate (static scan + taxonomy blocking policy)",
       "script": "qa:question-metadata",
       "exitCode": 0,
-      "durationMs": 1592,
+      "durationMs": 1226,
       "pass": true
     },
     {
@@ -83,7 +83,7 @@
       "label": "Question skill metadata QA",
       "script": "qa:learning-simulator:question-skill-metadata",
       "exitCode": 0,
-      "durationMs": 1627,
+      "durationMs": 1159,
       "pass": true
     },
     {
@@ -91,7 +91,7 @@
       "label": "Misconception engine QA",
       "script": "qa:learning-simulator:misconceptions",
       "exitCode": 0,
-      "durationMs": 1082,
+      "durationMs": 737,
       "pass": true
     },
     {
@@ -99,7 +99,7 @@
       "label": "Mastery engine QA",
       "script": "qa:learning-simulator:mastery",
       "exitCode": 0,
-      "durationMs": 1127,
+      "durationMs": 733,
       "pass": true
     },
     {
@@ -107,7 +107,7 @@
       "label": "Dependency engine QA",
       "script": "qa:learning-simulator:dependencies",
       "exitCode": 0,
-      "durationMs": 1078,
+      "durationMs": 764,
       "pass": true
     },
     {
@@ -115,7 +115,7 @@
       "label": "Calibration engine QA",
       "script": "qa:learning-simulator:calibration",
       "exitCode": 0,
-      "durationMs": 989,
+      "durationMs": 758,
       "pass": true
     },
     {
@@ -123,7 +123,7 @@
       "label": "Reliability engine QA",
       "script": "qa:learning-simulator:reliability",
       "exitCode": 0,
-      "durationMs": 1023,
+      "durationMs": 922,
       "pass": true
     },
     {
@@ -131,7 +131,7 @@
       "label": "Probe engine QA",
       "script": "qa:learning-simulator:probes",
       "exitCode": 0,
-      "durationMs": 1082,
+      "durationMs": 1160,
       "pass": true
     },
     {
@@ -139,7 +139,7 @@
       "label": "Cross-subject engine QA",
       "script": "qa:learning-simulator:cross-subject",
       "exitCode": 0,
-      "durationMs": 1011,
+      "durationMs": 1149,
       "pass": true
     },
     {
@@ -147,7 +147,7 @@
       "label": "Professional engine output QA",
       "script": "qa:learning-simulator:professional-engine-output",
       "exitCode": 0,
-      "durationMs": 1038,
+      "durationMs": 1914,
       "pass": true
     },
     {
@@ -155,7 +155,7 @@
       "label": "Professional engine synthetic validation",
       "script": "qa:learning-simulator:professional-engine",
       "exitCode": 0,
-      "durationMs": 1357,
+      "durationMs": 1773,
       "pass": true
     },
     {
@@ -163,21 +163,22 @@
       "label": "Adaptive planner artifacts (metadata-backed non-live safety gate)",
       "script": "test:adaptive-planner:artifacts",
       "exitCode": 0,
-      "durationMs": 1648,
+      "durationMs": 1266,
       "pass": true,
       "adaptivePlanner": {
-        "plannerRuns": 126,
+        "plannerRuns": 204,
         "safetyViolationCount": 0,
-        "inputsWithAvailableMetadata": 126,
-        "availableQuestionMetadataMissing": 0,
+        "inputsWithAvailableMetadata": 203,
+        "availableQuestionMetadataMissing": 1,
         "metadataSubjectFallbackCount": 0,
         "byPlannerStatus": {
-          "caution": 122,
+          "caution": 199,
+          "needs_human_review": 1,
           "ready": 4
         },
         "byNextAction": {
-          "pause_collect_more_data": 98,
-          "probe_skill": 24,
+          "pause_collect_more_data": 153,
+          "probe_skill": 47,
           "practice_current": 2,
           "advance_skill": 2
         },
@@ -192,7 +193,7 @@
       "label": "Adaptive planner runtime bridge (practice snapshot → recommendation)",
       "script": "test:adaptive-planner:runtime",
       "exitCode": 0,
-      "durationMs": 1617,
+      "durationMs": 1094,
       "pass": true
     },
     {
@@ -200,7 +201,7 @@
       "label": "Adaptive planner recommendation UI mapping (Phase 3 gates)",
       "script": "test:adaptive-planner:recommendation-ui",
       "exitCode": 0,
-      "durationMs": 1291,
+      "durationMs": 1119,
       "pass": true
     },
     {
@@ -208,7 +209,7 @@
       "label": "Adaptive planner recommended practice (Phase 4 adapter + button rules)",
       "script": "test:adaptive-planner:recommended-practice",
       "exitCode": 0,
-      "durationMs": 1413,
+      "durationMs": 1276,
       "pass": true
     },
     {
@@ -216,7 +217,7 @@
       "label": "Adaptive planner AI explainer guards (Phase 5)",
       "script": "test:adaptive-planner:ai-explainer",
       "exitCode": 0,
-      "durationMs": 1218,
+      "durationMs": 1211,
       "pass": true
     },
     {
@@ -224,7 +225,7 @@
       "label": "Behavior checks (Phase 5)",
       "script": "qa:learning-simulator:behavior",
       "exitCode": 0,
-      "durationMs": 1160,
+      "durationMs": 1806,
       "pass": true
     },
     {
@@ -232,7 +233,7 @@
       "label": "Question integrity (Phase 4)",
       "script": "qa:learning-simulator:questions",
       "exitCode": 0,
-      "durationMs": 1847,
+      "durationMs": 2984,
       "pass": true
     },
     {
@@ -240,7 +241,7 @@
       "label": "Matrix smoke (sampled cells → aggregate)",
       "script": "qa:learning-simulator:matrix-smoke",
       "exitCode": 0,
-      "durationMs": 1189,
+      "durationMs": 1500,
       "pass": true
     },
     {
@@ -248,7 +249,7 @@
       "label": "Coverage catalog (819 cells)",
       "script": "qa:learning-simulator:coverage",
       "exitCode": 0,
-      "durationMs": 1161,
+      "durationMs": 1289,
       "pass": true
     },
     {
@@ -256,7 +257,7 @@
       "label": "Unsupported cells classification",
       "script": "qa:learning-simulator:unsupported",
       "exitCode": 0,
-      "durationMs": 1244,
+      "durationMs": 1876,
       "pass": true
     },
     {
@@ -264,7 +265,7 @@
       "label": "Content gap audit (informational)",
       "script": "qa:learning-simulator:content-gaps",
       "exitCode": 0,
-      "durationMs": 995,
+      "durationMs": 3252,
       "pass": true
     },
     {
@@ -272,7 +273,7 @@
       "label": "Content gap backlog (documentation)",
       "script": "qa:learning-simulator:content-backlog",
       "exitCode": 0,
-      "durationMs": 947,
+      "durationMs": 3778,
       "pass": true
     },
     {
@@ -280,7 +281,7 @@
       "label": "Scenario coverage (fixtures + smoke)",
       "script": "qa:learning-simulator:scenario-coverage",
       "exitCode": 0,
-      "durationMs": 1066,
+      "durationMs": 4488,
       "pass": true
     },
     {
@@ -288,7 +289,7 @@
       "label": "Critical matrix deep assertions",
       "script": "qa:learning-simulator:critical-deep",
       "exitCode": 0,
-      "durationMs": 3171,
+      "durationMs": 4894,
       "pass": true
     },
     {
@@ -296,7 +297,7 @@
       "label": "Profile stress (synthetic profiles)",
       "script": "qa:learning-simulator:profile-stress",
       "exitCode": 0,
-      "durationMs": 4145,
+      "durationMs": 3901,
       "pass": true
     },
     {
@@ -304,7 +305,7 @@
       "label": "Scenario coverage (+ critical deep + profile stress)",
       "script": "qa:learning-simulator:scenario-coverage",
       "exitCode": 0,
-      "durationMs": 1050,
+      "durationMs": 820,
       "pass": true
     },
     {
@@ -312,7 +313,7 @@
       "label": "Render release gate (browser/SSR smoke for learning + parent-report)",
       "script": "qa:learning-simulator:render",
       "exitCode": 0,
-      "durationMs": 346209,
+      "durationMs": 100045,
       "pass": true
     },
     {
@@ -320,7 +321,7 @@
       "label": "PDF export gate (parent-report file download)",
       "script": "qa:learning-simulator:pdf-export",
       "exitCode": 0,
-      "durationMs": 45489,
+      "durationMs": 66177,
       "pass": true
     },
     {
@@ -328,7 +329,7 @@
       "label": "Deep longitudinal simulator",
       "script": "qa:learning-simulator:deep",
       "exitCode": 0,
-      "durationMs": 5300,
+      "durationMs": 6513,
       "pass": true
     },
     {
@@ -336,7 +337,7 @@
       "label": "Next.js production build",
       "script": "build",
       "exitCode": 0,
-      "durationMs": 73035,
+      "durationMs": 47459,
       "pass": true
     },
     {
@@ -344,7 +345,7 @@
       "label": "Parent report phase1 selftest",
       "script": "test:parent-report-phase1",
       "exitCode": 0,
-      "durationMs": 2227,
+      "durationMs": 1278,
       "pass": true
     },
     {
@@ -352,7 +353,7 @@
       "label": "Parent narrative safety (artifact JSON)",
       "script": "test:parent-report-narrative-safety-artifacts",
       "exitCode": 0,
-      "durationMs": 1902,
+      "durationMs": 1356,
       "pass": true,
       "narrativeSafety": {
         "status": "warnings_only",
@@ -378,7 +379,7 @@
       "label": "Intelligence layer v1 usage selftest",
       "script": "test:intelligence-layer-v1-usage",
       "exitCode": 0,
-      "durationMs": 1377,
+      "durationMs": 1111,
       "pass": true
     },
     {
@@ -386,7 +387,7 @@
       "label": "Release readiness summary (master QA artifact)",
       "script": "qa:learning-simulator:release-summary",
       "exitCode": 0,
-      "durationMs": 838,
+      "durationMs": 719,
       "pass": true
     }
   ],
@@ -464,18 +465,19 @@
     "summaryMdPath": "reports/parent-report-narrative-safety-artifacts/summary.md"
   },
   "adaptivePlanner": {
-    "plannerRuns": 126,
+    "plannerRuns": 204,
     "safetyViolationCount": 0,
-    "inputsWithAvailableMetadata": 126,
-    "availableQuestionMetadataMissing": 0,
+    "inputsWithAvailableMetadata": 203,
+    "availableQuestionMetadataMissing": 1,
     "metadataSubjectFallbackCount": 0,
     "byPlannerStatus": {
-      "caution": 122,
+      "caution": 199,
+      "needs_human_review": 1,
       "ready": 4
     },
     "byNextAction": {
-      "pause_collect_more_data": 98,
-      "probe_skill": 24,
+      "pause_collect_more_data": 153,
+      "probe_skill": 47,
       "practice_current": 2,
       "advance_skill": 2
     },

@@ -1,6 +1,6 @@
 # Parent report AI scenario simulator
 
-- Generated: 2026-05-05T18:58:05.106Z
+- Generated: 2026-05-05T22:01:24.317Z
 - Live AI used: false
 - All passed: true
 

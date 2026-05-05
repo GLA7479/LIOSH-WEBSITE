@@ -1,16 +1,17 @@
 {
-  "generatedAt": "2026-05-05T19:19:33.422Z",
+  "generatedAt": "2026-05-05T22:03:25.022Z",
   "generator": "run-aggregate-v1",
   "matrixRowCount": 819,
   "counts": {
-    "scenarios": 10,
-    "okScenarios": 10
+    "scenarios": 20,
+    "okScenarios": 20,
+    "baseQuickScenarios": 10
   },
   "totals": {
-    "sessions": 229,
-    "questions": 3600,
-    "mistakes": 870,
-    "storageArtifacts": 20
+    "sessions": 458,
+    "questions": 7259,
+    "mistakes": 1755,
+    "storageArtifacts": 40
   },
   "perScenario": [
     {
@@ -32,12 +33,43 @@
       "warnings": []
     },
     {
+      "scenarioId": "strong_all_subjects_g3_7d__soak1",
+      "ok": true,
+      "sessionCount": 42,
+      "questionTotal": 688,
+      "correctTotal": 619,
+      "mistakeEventCount": 42,
+      "subjectsTouched": [
+        "hebrew",
+        "english",
+        "geometry",
+        "math",
+        "moledet_geography",
+        "science"
+      ],
+      "errors": [],
+      "warnings": []
+    },
+    {
       "scenarioId": "thin_data_g3_1d",
       "ok": true,
       "sessionCount": 2,
       "questionTotal": 13,
       "correctTotal": 9,
       "mistakeEventCount": 2,
+      "subjectsTouched": [
+        "math"
+      ],
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "scenarioId": "thin_data_g3_1d__soak1",
+      "ok": true,
+      "sessionCount": 2,
+      "questionTotal": 16,
+      "correctTotal": 11,
+      "mistakeEventCount": 3,
       "subjectsTouched": [
         "math"
       ],
@@ -60,6 +92,21 @@
       "warnings": []
     },
     {
+      "scenarioId": "improving_student_g4_30d__soak1",
+      "ok": true,
+      "sessionCount": 48,
+      "questionTotal": 786,
+      "correctTotal": 513,
+      "mistakeEventCount": 168,
+      "subjectsTouched": [
+        "math",
+        "english",
+        "science"
+      ],
+      "errors": [],
+      "warnings": []
+    },
+    {
       "scenarioId": "declining_student_g4_30d",
       "ok": true,
       "sessionCount": 48,
@@ -75,12 +122,40 @@
       "warnings": []
     },
     {
+      "scenarioId": "declining_student_g4_30d__soak1",
+      "ok": true,
+      "sessionCount": 48,
+      "questionTotal": 769,
+      "correctTotal": 507,
+      "mistakeEventCount": 166,
+      "subjectsTouched": [
+        "math",
+        "hebrew",
+        "geometry"
+      ],
+      "errors": [],
+      "warnings": []
+    },
+    {
       "scenarioId": "weak_math_fractions_g5_7d",
       "ok": true,
       "sessionCount": 18,
       "questionTotal": 290,
       "correctTotal": 99,
       "mistakeEventCount": 125,
+      "subjectsTouched": [
+        "math"
+      ],
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "scenarioId": "weak_math_fractions_g5_7d__soak1",
+      "ok": true,
+      "sessionCount": 18,
+      "questionTotal": 288,
+      "correctTotal": 102,
+      "mistakeEventCount": 123,
       "subjectsTouched": [
         "math"
       ],
@@ -101,12 +176,38 @@
       "warnings": []
     },
     {
+      "scenarioId": "weak_hebrew_comprehension_g3_7d__soak1",
+      "ok": true,
+      "sessionCount": 15,
+      "questionTotal": 255,
+      "correctTotal": 96,
+      "mistakeEventCount": 88,
+      "subjectsTouched": [
+        "hebrew"
+      ],
+      "errors": [],
+      "warnings": []
+    },
+    {
       "scenarioId": "weak_english_grammar_g4_7d",
       "ok": true,
       "sessionCount": 16,
       "questionTotal": 274,
       "correctTotal": 111,
       "mistakeEventCount": 90,
+      "subjectsTouched": [
+        "english"
+      ],
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "scenarioId": "weak_english_grammar_g4_7d__soak1",
+      "ok": true,
+      "sessionCount": 16,
+      "questionTotal": 234,
+      "correctTotal": 95,
+      "mistakeEventCount": 76,
       "subjectsTouched": [
         "english"
       ],
@@ -127,6 +228,19 @@
       "warnings": []
     },
     {
+      "scenarioId": "weak_science_cause_effect_g5_7d__soak1",
+      "ok": true,
+      "sessionCount": 14,
+      "questionTotal": 215,
+      "correctTotal": 78,
+      "mistakeEventCount": 77,
+      "subjectsTouched": [
+        "science"
+      ],
+      "errors": [],
+      "warnings": []
+    },
+    {
       "scenarioId": "weak_geometry_area_g5_7d",
       "ok": true,
       "sessionCount": 14,
@@ -140,12 +254,38 @@
       "warnings": []
     },
     {
+      "scenarioId": "weak_geometry_area_g5_7d__soak1",
+      "ok": true,
+      "sessionCount": 14,
+      "questionTotal": 216,
+      "correctTotal": 85,
+      "mistakeEventCount": 74,
+      "subjectsTouched": [
+        "geometry"
+      ],
+      "errors": [],
+      "warnings": []
+    },
+    {
       "scenarioId": "weak_moledet_geography_maps_g4_7d",
       "ok": true,
       "sessionCount": 12,
       "questionTotal": 182,
       "correctTotal": 67,
       "mistakeEventCount": 63,
+      "subjectsTouched": [
+        "moledet_geography"
+      ],
+      "errors": [],
+      "warnings": []
+    },
+    {
+      "scenarioId": "weak_moledet_geography_maps_g4_7d__soak1",
+      "ok": true,
+      "sessionCount": 12,
+      "questionTotal": 192,
+      "correctTotal": 70,
+      "mistakeEventCount": 68,
       "subjectsTouched": [
         "moledet_geography"
       ],

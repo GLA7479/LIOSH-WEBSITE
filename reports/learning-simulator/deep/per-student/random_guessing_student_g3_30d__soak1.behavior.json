@@ -1,0 +1,342 @@
+{
+  "scenarioId": "random_guessing_student_g3_30d__soak1",
+  "profileRef": "p_random_guessing_student",
+  "generator": "learning-simulator-deep-behavior-v1",
+  "oracle": {
+    "evidence": {
+      "sessionCount": 96,
+      "questionTotal": 1570,
+      "correctTotal": 525,
+      "mistakeEventCount": 615,
+      "subjectsTouched": [
+        "science",
+        "english",
+        "math",
+        "hebrew"
+      ],
+      "overallAccuracyPct": 33.4,
+      "mistakeRateApprox": 0.392
+    },
+    "subjectMetrics": {
+      "math": {
+        "totalQ": 475,
+        "correctQ": 160,
+        "accuracyPct": 33.7
+      },
+      "english": {
+        "totalQ": 412,
+        "correctQ": 139,
+        "accuracyPct": 33.7
+      },
+      "science": {
+        "totalQ": 322,
+        "correctQ": 106,
+        "accuracyPct": 32.9
+      },
+      "hebrew": {
+        "totalQ": 361,
+        "correctQ": 120,
+        "accuracyPct": 33.2
+      }
+    },
+    "topicMetrics": {
+      "math:division_with_remainder": {
+        "totalQ": 101,
+        "correctQ": 34,
+        "subject": "math",
+        "topic": "division_with_remainder",
+        "accuracyPct": 33.7
+      },
+      "math:multiplication": {
+        "totalQ": 63,
+        "correctQ": 22,
+        "subject": "math",
+        "topic": "multiplication",
+        "accuracyPct": 34.9
+      },
+      "math:addition": {
+        "totalQ": 131,
+        "correctQ": 43,
+        "subject": "math",
+        "topic": "addition",
+        "accuracyPct": 32.8
+      },
+      "math:decimals": {
+        "totalQ": 30,
+        "correctQ": 11,
+        "subject": "math",
+        "topic": "decimals",
+        "accuracyPct": 36.7
+      },
+      "math:divisibility": {
+        "totalQ": 28,
+        "correctQ": 9,
+        "subject": "math",
+        "topic": "divisibility",
+        "accuracyPct": 32.1
+      },
+      "math:word_problems": {
+        "totalQ": 27,
+        "correctQ": 9,
+        "subject": "math",
+        "topic": "word_problems",
+        "accuracyPct": 33.3
+      },
+      "math:sequences": {
+        "totalQ": 45,
+        "correctQ": 15,
+        "subject": "math",
+        "topic": "sequences",
+        "accuracyPct": 33.3
+      },
+      "math:subtraction": {
+        "totalQ": 20,
+        "correctQ": 7,
+        "subject": "math",
+        "topic": "subtraction",
+        "accuracyPct": 35
+      },
+      "math:number_sense": {
+        "totalQ": 11,
+        "correctQ": 4,
+        "subject": "math",
+        "topic": "number_sense",
+        "accuracyPct": 36.4
+      },
+      "math:division": {
+        "totalQ": 19,
+        "correctQ": 6,
+        "subject": "math",
+        "topic": "division",
+        "accuracyPct": 31.6
+      },
+      "english:translation": {
+        "totalQ": 18,
+        "correctQ": 6,
+        "subject": "english",
+        "topic": "translation",
+        "accuracyPct": 33.3
+      },
+      "english:sentences": {
+        "totalQ": 85,
+        "correctQ": 28,
+        "subject": "english",
+        "topic": "sentences",
+        "accuracyPct": 32.9
+      },
+      "english:writing": {
+        "totalQ": 77,
+        "correctQ": 27,
+        "subject": "english",
+        "topic": "writing",
+        "accuracyPct": 35.1
+      },
+      "english:grammar": {
+        "totalQ": 175,
+        "correctQ": 59,
+        "subject": "english",
+        "topic": "grammar",
+        "accuracyPct": 33.7
+      },
+      "english:mixed": {
+        "totalQ": 42,
+        "correctQ": 14,
+        "subject": "english",
+        "topic": "mixed",
+        "accuracyPct": 33.3
+      },
+      "english:vocabulary": {
+        "totalQ": 15,
+        "correctQ": 5,
+        "subject": "english",
+        "topic": "vocabulary",
+        "accuracyPct": 33.3
+      },
+      "science:materials": {
+        "totalQ": 30,
+        "correctQ": 10,
+        "subject": "science",
+        "topic": "materials",
+        "accuracyPct": 33.3
+      },
+      "science:experiments": {
+        "totalQ": 19,
+        "correctQ": 6,
+        "subject": "science",
+        "topic": "experiments",
+        "accuracyPct": 31.6
+      },
+      "science:environment": {
+        "totalQ": 46,
+        "correctQ": 15,
+        "subject": "science",
+        "topic": "environment",
+        "accuracyPct": 32.6
+      },
+      "science:animals": {
+        "totalQ": 132,
+        "correctQ": 44,
+        "subject": "science",
+        "topic": "animals",
+        "accuracyPct": 33.3
+      },
+      "science:body": {
+        "totalQ": 41,
+        "correctQ": 13,
+        "subject": "science",
+        "topic": "body",
+        "accuracyPct": 31.7
+      },
+      "science:earth_space": {
+        "totalQ": 54,
+        "correctQ": 18,
+        "subject": "science",
+        "topic": "earth_space",
+        "accuracyPct": 33.3
+      },
+      "hebrew:mixed": {
+        "totalQ": 51,
+        "correctQ": 18,
+        "subject": "hebrew",
+        "topic": "mixed",
+        "accuracyPct": 35.3
+      },
+      "hebrew:writing": {
+        "totalQ": 47,
+        "correctQ": 16,
+        "subject": "hebrew",
+        "topic": "writing",
+        "accuracyPct": 34
+      },
+      "hebrew:reading": {
+        "totalQ": 171,
+        "correctQ": 56,
+        "subject": "hebrew",
+        "topic": "reading",
+        "accuracyPct": 32.7
+      },
+      "hebrew:speaking": {
+        "totalQ": 25,
+        "correctQ": 8,
+        "subject": "hebrew",
+        "topic": "speaking",
+        "accuracyPct": 32
+      },
+      "hebrew:vocabulary": {
+        "totalQ": 40,
+        "correctQ": 13,
+        "subject": "hebrew",
+        "topic": "vocabulary",
+        "accuracyPct": 32.5
+      },
+      "hebrew:comprehension": {
+        "totalQ": 13,
+        "correctQ": 4,
+        "subject": "hebrew",
+        "topic": "comprehension",
+        "accuracyPct": 30.8
+      },
+      "hebrew:grammar": {
+        "totalQ": 14,
+        "correctQ": 5,
+        "subject": "hebrew",
+        "topic": "grammar",
+        "accuracyPct": 35.7
+      }
+    },
+    "trendOracle": {
+      "direction": "flat",
+      "earlyMean": 0.33416400864035345,
+      "lateMean": 0.33517903664962495,
+      "delta": 0.0010150280092715014,
+      "sessionSamples": 96
+    },
+    "volatility": {
+      "stdev": 0.024142668315545363,
+      "n": 96,
+      "meanAccuracy": 0.33399677324309657
+    },
+    "paceOracle": {
+      "meanSessionDurationSec": 1337.9,
+      "meanSecondsPerQuestion": 81.81,
+      "mistakeEventCount": 615,
+      "mistakeRateApprox": 0.392
+    },
+    "reportSignals": {
+      "totalQuestions": 1539,
+      "overallAccuracy": 33,
+      "contractTopThinDowngraded": true,
+      "contractTopEvidenceQuestionCount": 175,
+      "contractPrimarySubjectId": "english",
+      "topicBucketKeys": [
+        "division_with_remainder",
+        "multiplication",
+        "addition",
+        "decimals",
+        "divisibility",
+        "word_problems",
+        "sequences",
+        "subtraction",
+        "number_sense",
+        "division",
+        "translation",
+        "sentences",
+        "writing",
+        "grammar",
+        "mixed",
+        "vocabulary",
+        "materials",
+        "experiments",
+        "environment",
+        "animals",
+        "body",
+        "earth_space",
+        "mixed",
+        "writing",
+        "reading",
+        "speaking",
+        "vocabulary",
+        "comprehension",
+        "grammar"
+      ],
+      "diagnosedCount": 28,
+      "unitCount": 29,
+      "contradictoryConfidenceCount": 0,
+      "executiveWindowQuestions": 1539,
+      "rowTrendsLength": 0
+    },
+    "behaviorHints": {
+      "suspiciousZeroDiagnosesWithVolume": false,
+      "thinContractVsHighMetaQuestions": true,
+      "diagnosisCoverageRatio": 0.966
+    },
+    "sessionRowCount": 96
+  },
+  "assertions": [
+    {
+      "assertionId": "no_diagnostic_contradictory_confidence_spike",
+      "pass": true,
+      "expected": {
+        "maxContradictions": 8
+      },
+      "actual": {
+        "contradictoryConfidenceCount": 0
+      },
+      "likelyCause": "behavior_oracle_threshold",
+      "evidence": {
+        "scope": "global_sanity"
+      }
+    }
+  ],
+  "pass": true,
+  "failureCauseSummary": {
+    "failedCount": 0,
+    "counts": {
+      "simulator_data": 0,
+      "behavior_oracle_threshold": 0,
+      "engine_report": 0,
+      "unknown": 0
+    },
+    "dominantLikelyCause": "none"
+  }
+}

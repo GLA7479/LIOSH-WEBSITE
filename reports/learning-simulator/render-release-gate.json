@@ -1,8 +1,8 @@
 {
-  "runId": "render-gate-mot0jp9s",
-  "generatedAt": "2026-05-05T19:20:24.496Z",
+  "runId": "render-gate-mot6el6f",
+  "generatedAt": "2026-05-05T22:04:23.607Z",
   "browserMode": true,
-  "baseURL": "http://127.0.0.1:59872",
+  "baseURL": "http://127.0.0.1:51218",
   "checksTotal": 7,
   "checksPassed": 7,
   "checksFailed": 0,

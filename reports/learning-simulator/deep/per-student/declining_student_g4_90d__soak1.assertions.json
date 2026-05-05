@@ -1,0 +1,48 @@
+{
+  "scenarioId": "declining_student_g4_90d__soak1",
+  "profileRef": "p_declining_student",
+  "expected": {
+    "trendExpected": [
+      "down"
+    ],
+    "noContradiction": true
+  },
+  "counts": {
+    "assertionsRun": 2,
+    "passed": 2,
+    "failed": 0
+  },
+  "overallPass": true,
+  "results": [
+    {
+      "assertion": "trendExpected",
+      "pass": true,
+      "evidence": {
+        "want": [
+          "down"
+        ],
+        "sufficientUp": 0,
+        "anyUp": 0,
+        "sufficientDown": 0,
+        "anyDown": 0,
+        "majorTrendsSample": "בטווח התקופה נבדקו 30 נושאים. נושאים שנשמרים טוב: 0 מתוך מה שנבדק. ב־22 נושאים יש בסיס לשיחה ממוקדת בבית. ב־0 נושאים עדיין אין תמונה ברורה.",
+        "storageOracle": {
+          "direction": "down",
+          "earlyMean": 0.7946986237753596,
+          "lateMean": 0.5344668902403313,
+          "n": 210,
+          "delta": -0.26023173353502826
+        }
+      },
+      "method": "structured+storage-oracle"
+    },
+    {
+      "assertion": "noContradiction",
+      "pass": true,
+      "evidence": {
+        "contradictoryUnits": 0
+      },
+      "method": "structured"
+    }
+  ]
+}
