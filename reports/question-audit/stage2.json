@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-05-04T23:48:20.211Z",
+  "generatedAt": "2026-05-05T00:30:41.715Z",
   "harnessMerged": {
     "mathKindsFromHarnessFiles": 107,
     "geoKindsFromHarnessFiles": 70,
@@ -571,25 +571,25 @@
     },
     "english": {
       "grammar": {
-        "rows": 683,
-        "staticRows": 683,
+        "rows": 719,
+        "staticRows": 719,
         "sampleRows": 0,
-        "withSubtype": 683,
-        "withPatternFamily": 683
+        "withSubtype": 719,
+        "withPatternFamily": 719
       },
       "translation": {
-        "rows": 41,
-        "staticRows": 41,
+        "rows": 52,
+        "staticRows": 52,
         "sampleRows": 0,
-        "withSubtype": 41,
-        "withPatternFamily": 41
+        "withSubtype": 52,
+        "withPatternFamily": 52
       },
       "sentence": {
-        "rows": 128,
-        "staticRows": 128,
+        "rows": 133,
+        "staticRows": 133,
         "sampleRows": 0,
-        "withSubtype": 128,
-        "withPatternFamily": 128
+        "withSubtype": 133,
+        "withPatternFamily": 133
       }
     },
     "geometry": {

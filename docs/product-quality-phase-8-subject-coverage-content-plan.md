@@ -1,7 +1,7 @@
 # Product Quality Phase 8 — Subject Coverage & Content Improvement Plan
 
 **Last updated:** 2026-05-05  
-**Status:** Planning doc; **Phase 10** metadata complete; **Phase 11–12** Science review reports published ([**Phase 11** spot sample](product-quality-phase-11-science-factual-distractor-review.md), [**Phase 12** full-bank mechanical sweep](product-quality-phase-12-science-full-content-review.md)) — **documentation only; no bank edits**. **Phase 14** English translation **model** review: [`product-quality-phase-14-english-translation-model-review.md`](product-quality-phase-14-english-translation-model-review.md). **Phase 15** English translation **audit representation** fix (script + regenerated `question-audit/*` only): [`product-quality-phase-15-english-audit-representation-fix.md`](product-quality-phase-15-english-audit-representation-fix.md). **Phase 16** Geometry **metadata + formula/diagram risk** review (documentation only): [`product-quality-phase-16-geometry-metadata-formula-risk-review.md`](product-quality-phase-16-geometry-metadata-formula-risk-review.md). **Phase 17** Geometry **audit subtype fill** (script + `question-audit/*` only): [`product-quality-phase-17-geometry-audit-representation-fix.md`](product-quality-phase-17-geometry-audit-representation-fix.md). **Phase 18** Math **probe harness planning**: [`product-quality-phase-18-math-probe-harness-plan.md`](product-quality-phase-18-math-probe-harness-plan.md). **Phase 19** Math **probe harness implementation** ([`scripts/audit-math-probes.mjs`](../scripts/audit-math-probes.mjs), [`reports/math-probe-audit/`](../reports/math-probe-audit/)): [`product-quality-phase-19-math-probe-harness.md`](product-quality-phase-19-math-probe-harness.md). **Phase 20** Hebrew **structural cleanup plan** (overlap / legacy duplicate signals → structural vs owner wording; **planning only**): [`product-quality-phase-20-hebrew-structural-cleanup-plan.md`](product-quality-phase-20-hebrew-structural-cleanup-plan.md). **Phase 21** Hebrew **intentional spiral allowlist** (audit split: **28** C1 overlaps → `hebrewIntentionalSpiralOverlaps`; **no** bank edits): [`product-quality-phase-21-hebrew-spiral-allowlist.md`](product-quality-phase-21-hebrew-spiral-allowlist.md). **Phase 22** Hebrew **unresolved structural inspection** + one **safe duplicate removal** (G5 vocabulary; **no** wording edits): [`product-quality-phase-22-hebrew-unresolved-structural-fixes.md`](product-quality-phase-22-hebrew-unresolved-structural-fixes.md). **Phase 23** Homeland / Geography **factual freshness + map/civic ambiguity review** (documentation only — **no** bank edits): [`product-quality-phase-23-homeland-geography-factual-review.md`](product-quality-phase-23-homeland-geography-factual-review.md). **Phase 24** English **`subtype` gap review** (audit vs bank metadata — **no** content edits): [`product-quality-phase-24-english-subtype-metadata-review.md`](product-quality-phase-24-english-subtype-metadata-review.md). **Phase 25** English **`subtype` audit fill** (script + [`reports/question-audit/`](../reports/question-audit/) only — **`subtype`** ← **`poolKey`** when bank omits): [`product-quality-phase-25-english-subtype-audit-representation-fix.md`](product-quality-phase-25-english-subtype-audit-representation-fix.md).  
+**Status:** Planning doc; **Phase 10** metadata complete; **Phase 11–12** Science review reports published ([**Phase 11** spot sample](product-quality-phase-11-science-factual-distractor-review.md), [**Phase 12** full-bank mechanical sweep](product-quality-phase-12-science-full-content-review.md)) — **documentation only; no bank edits**. **Phase 14** English translation **model** review: [`product-quality-phase-14-english-translation-model-review.md`](product-quality-phase-14-english-translation-model-review.md). **Phase 15** English translation **audit representation** fix (script + regenerated `question-audit/*` only): [`product-quality-phase-15-english-audit-representation-fix.md`](product-quality-phase-15-english-audit-representation-fix.md). **Phase 16** Geometry **metadata + formula/diagram risk** review (documentation only): [`product-quality-phase-16-geometry-metadata-formula-risk-review.md`](product-quality-phase-16-geometry-metadata-formula-risk-review.md). **Phase 17** Geometry **audit subtype fill** (script + `question-audit/*` only): [`product-quality-phase-17-geometry-audit-representation-fix.md`](product-quality-phase-17-geometry-audit-representation-fix.md). **Phase 18** Math **probe harness planning**: [`product-quality-phase-18-math-probe-harness-plan.md`](product-quality-phase-18-math-probe-harness-plan.md). **Phase 19** Math **probe harness implementation** ([`scripts/audit-math-probes.mjs`](../scripts/audit-math-probes.mjs), [`reports/math-probe-audit/`](../reports/math-probe-audit/)): [`product-quality-phase-19-math-probe-harness.md`](product-quality-phase-19-math-probe-harness.md). **Phase 20** Hebrew **structural cleanup plan** (overlap / legacy duplicate signals → structural vs owner wording; **planning only**): [`product-quality-phase-20-hebrew-structural-cleanup-plan.md`](product-quality-phase-20-hebrew-structural-cleanup-plan.md). **Phase 21** Hebrew **intentional spiral allowlist** (audit split: **28** C1 overlaps → `hebrewIntentionalSpiralOverlaps`; **no** bank edits): [`product-quality-phase-21-hebrew-spiral-allowlist.md`](product-quality-phase-21-hebrew-spiral-allowlist.md). **Phase 22** Hebrew **unresolved structural inspection** + one **safe duplicate removal** (G5 vocabulary; **no** wording edits): [`product-quality-phase-22-hebrew-unresolved-structural-fixes.md`](product-quality-phase-22-hebrew-unresolved-structural-fixes.md). **Phase 23** Homeland / Geography **factual freshness + map/civic ambiguity review** (documentation only — **no** bank edits): [`product-quality-phase-23-homeland-geography-factual-review.md`](product-quality-phase-23-homeland-geography-factual-review.md). **Phase 24** English **`subtype` gap review** (audit vs bank metadata — **no** content edits): [`product-quality-phase-24-english-subtype-metadata-review.md`](product-quality-phase-24-english-subtype-metadata-review.md). **Phase 25** English **`subtype` audit fill** (script + [`reports/question-audit/`](../reports/question-audit/) only — **`subtype`** ← **`poolKey`** when bank omits): [`product-quality-phase-25-english-subtype-audit-representation-fix.md`](product-quality-phase-25-english-subtype-audit-representation-fix.md). **Phase 26** deep **subject coverage matrix** + readiness summary (report only): [`product-quality-phase-26-subject-content-readiness-summary.md`](product-quality-phase-26-subject-content-readiness-summary.md). **Phase 27** English **targeted expansion plan** (historical planning baseline): [`product-quality-phase-27-english-targeted-expansion-plan.md`](product-quality-phase-27-english-targeted-expansion-plan.md). **Phases 28–30** English **bank expansion** (+**52** rows, audit regenerated): [`product-quality-phase-28-english-expansion-batch-1.md`](product-quality-phase-28-english-expansion-batch-1.md), [`product-quality-phase-29-english-grammar-expansion-batch.md`](product-quality-phase-29-english-grammar-expansion-batch.md), [`product-quality-phase-30-english-expansion-quality-review.md`](product-quality-phase-30-english-expansion-quality-review.md).  
 **Strict boundary (Phase 8 original):** Phase 8 was documentation-only. **Phases 9–10** changed **only** neutral metadata in [`data/science-questions.js`](../data/science-questions.js) and [`data/science-questions-phase3.js`](../data/science-questions-phase3.js); no stems, answers, or grade gates.
 
 ### Phase 9 — Science `patternFamily` first batch (historical counts)
@@ -105,11 +105,46 @@ Details: [`docs/product-quality-phase-19-math-probe-harness.md`](product-quality
 | Scope | Result |
 |-------|--------|
 | Code | [`scripts/audit-question-banks.mjs`](../scripts/audit-question-banks.mjs) — **`englishAuditSubtype(item, poolKey)`** for **`english_pool_item`** rows |
-| English rows | **852**; audit **`subtype`** empty **0** (was **621** per **Phase 24** export rule) |
+| English rows | **904** (was **852** pre Phase 28–30); audit **`subtype`** empty **0** (was **621** per **Phase 24** export rule) |
 | Translation phrase rows | **`runtime_translation`** / **`optionCount: runtime`** unchanged (**Phase 15**) |
 | Banks under `data/english-questions/` | **Unchanged** |
 
 Details: [`docs/product-quality-phase-25-english-subtype-audit-representation-fix.md`](product-quality-phase-25-english-subtype-audit-representation-fix.md).
+
+### Phase 26 — Subject coverage matrix + readiness summary (report only)
+
+| Scope | Result |
+|-------|--------|
+| Deliverable | [`docs/product-quality-phase-26-subject-content-readiness-summary.md`](product-quality-phase-26-subject-content-readiness-summary.md) |
+| Banks / runtime | **Unchanged** |
+
+### Phase 27 — English targeted expansion plan (historical backlog)
+
+| Scope | Result |
+|-------|--------|
+| Deliverable | [`docs/product-quality-phase-27-english-targeted-expansion-plan.md`](product-quality-phase-27-english-targeted-expansion-plan.md) |
+| Banks under `data/english-questions/` | Planning baseline only — implementation in Phases **28–30** |
+
+### Phase 28 — English expansion batch 1 (**16** new rows)
+
+| Scope | Result |
+|-------|--------|
+| Deliverable | [`docs/product-quality-phase-28-english-expansion-batch-1.md`](product-quality-phase-28-english-expansion-batch-1.md) |
+| Banks | [`data/english-questions/translation-pools.js`](../data/english-questions/translation-pools.js), [`data/english-questions/sentence-pools.js`](../data/english-questions/sentence-pools.js) |
+
+### Phase 29 — English grammar distribution batch (**36** new rows)
+
+| Scope | Result |
+|-------|--------|
+| Deliverable | [`docs/product-quality-phase-29-english-grammar-expansion-batch.md`](product-quality-phase-29-english-grammar-expansion-batch.md) |
+| Banks | [`data/english-questions/grammar-pools.js`](../data/english-questions/grammar-pools.js) |
+
+### Phase 30 — English expansion quality review
+
+| Scope | Result |
+|-------|--------|
+| Deliverable | [`docs/product-quality-phase-30-english-expansion-quality-review.md`](product-quality-phase-30-english-expansion-quality-review.md) |
+| Runtime / UI / APIs | **Unchanged** |
 
 ## Sources
 
@@ -120,7 +155,7 @@ Details: [`docs/product-quality-phase-25-english-subtype-audit-representation-fi
 - [`docs/question-bank-professional-qa-plan.md`](question-bank-professional-qa-plan.md)
 - [`docs/product-quality-phase-3-hebrew-owner-review.md`](product-quality-phase-3-hebrew-owner-review.md)
 
-The latest audit contains **12157** rows (**Phase 22** removed one redundant Hebrew duplicate row from export).
+The latest audit contains **12209** rows after **Phases 28–30** (+**52** English rows); baseline before English expansion was **12157** (**Phase 22** had removed one redundant Hebrew duplicate row from export).
 
 ---
 
@@ -131,7 +166,7 @@ The latest audit contains **12157** rows (**Phase 22** removed one redundant Heb
 | **Math** | 3942 | G1-G6 | **Ready enough** with focused diagnostic follow-up | Balanced easy/medium/hard (**1314** each); broad topic generator coverage; no missing difficulty / subtype / patternFamily in audit output | Plain **`items.json`** still excludes probe kinds — **Phase 19** harness validates probes separately | Optional CI for **`audit:math-probes`**; optional merge probe rows into main audit | Story diversity, context variety |
 | **Geometry** | 2548 | G1-G6 | **Ready enough** with metadata polish | Broad topic set; no missing difficulty or patternFamily; **`subtype`** populated for all audit rows (**Phase 17**) | Formula/diagram spot-check per **Phase 16** themes | Optional generator **`params.subtype`** parity; content QA | Broaden real-world contexts |
 | **Hebrew** | 926 | G1-G6 | **Needs owner review** | No missing difficulty / patternFamily / subtype; full grade span | Phase 3 unresolved duplicate/overlap owner decisions | Owner approval for legacy triple stems + high-risk overlap rows. **Owner exact wording required** for any wording change | Spiral-repetition keep list can wait after spot-check |
-| **English** | 852 | G1-G6 | **Needs focused fixes** | English translation difficulty metadata fixed; no missing difficulty; **Phase 15** audit labels translation phrase rows (`runtime_translation` / `optionCount: runtime`) — not “broken MCQ”; **Phase 25** fills audit **`subtype`** from **`poolKey`** when bank omits (**0** missing in export) | Product/content priorities (breadth, distractors) — **not** audit **`subtype`** sparsity (**Phase 24–25**) | Owner/content choices for expansion | Wider topical variety |
+| **English** | 904 | G1-G6 | **Needs focused fixes** | English translation difficulty metadata fixed; no missing difficulty; **Phase 15** audit labels translation phrase rows (`runtime_translation` / `optionCount: runtime`) — not “broken MCQ”; **Phase 25** fills audit **`subtype`** from **`poolKey`** when bank omits (**0** missing in export) | Product/content priorities (breadth, distractors) — **not** audit **`subtype`** sparsity (**Phase 24–25**) | Owner/content choices for expansion | Wider topical variety |
 | **Science** | 383 | G1-G6 via broad grade spans | **Metadata complete**; **Phase 11 spot-review documented** | Full `patternFamily` + `subtype` (**Phase 10**); spot sample flagged **`animals_4`** for owner wording/factual alignment (see Phase 11 doc) | Full-bank human read still optional | Owner decision on Phase 11 flagged items; broader factual pass by family | Add questions only after owner-approved fixes |
 | **Homeland / Geography** | 3506 | G1-G6 | **Ready enough** | Largest static bank; full metadata; balanced difficulty; all option counts 4 | Phase 23 documented template/vagueness + duplicate-stem clusters for owner triage | Spot-check factual freshness and map/civic ambiguity (**Phase 23** report) | Contemporary examples and terminology polish |
 
@@ -237,7 +272,7 @@ The latest audit contains **12157** rows (**Phase 22** removed one redundant Heb
 
 **Overrepresented topics:** grammar is dominant.
 
-**Launch readiness:** **needs focused fixes** for **product priorities** (breadth, distractor quality) — **Phase 25** closed the audit **`subtype`** column gap in export; remaining English backlog is **content/strategy**, not missing **`subtype`** in [`reports/question-audit/items.json`](../reports/question-audit/items.json).
+**Launch readiness:** **needs focused fixes** for **product priorities** (breadth, distractor quality) — **Phase 25** closed the audit **`subtype`** column gap in export; remaining English backlog is **content/strategy**, not missing **`subtype`** in [`reports/question-audit/items.json`](../reports/question-audit/items.json). **Phase 27** defines exact **target cells**, **launch minimums**, and a **16**-item first batch plan: [`product-quality-phase-27-english-targeted-expansion-plan.md`](product-quality-phase-27-english-targeted-expansion-plan.md).
 
 ---
 

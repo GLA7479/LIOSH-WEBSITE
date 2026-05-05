@@ -222,6 +222,116 @@ export const SENTENCE_POOLS = {
       "subtype": "base"
     },
     {
+      "template": "My toy ___ red",
+      "options": [
+        "am",
+        "is",
+        "are"
+      ],
+      "correct": "is",
+      "explanation": "My toy (it) → is.",
+      "minGrade": 1,
+      "maxGrade": 1,
+      "patternFamily": "base_be_toy_g1_p28",
+      "difficulty": "basic",
+      "cognitiveLevel": "recall",
+      "expectedErrorTypes": [
+        "grammar_error",
+        "sentence_order_error",
+        "careless_error"
+      ],
+      "skillId": "base_be_toy_g1_p28",
+      "subtype": "base"
+    },
+    {
+      "template": "The ducks ___ in the pond",
+      "options": [
+        "am",
+        "is",
+        "are"
+      ],
+      "correct": "are",
+      "explanation": "Ducks (they) → are.",
+      "minGrade": 1,
+      "maxGrade": 1,
+      "patternFamily": "base_be_ducks_g1_p28",
+      "difficulty": "basic",
+      "cognitiveLevel": "recall",
+      "expectedErrorTypes": [
+        "grammar_error",
+        "sentence_order_error",
+        "careless_error"
+      ],
+      "skillId": "base_be_ducks_g1_p28",
+      "subtype": "base"
+    },
+    {
+      "template": "Juice ___ cold in the fridge",
+      "options": [
+        "am",
+        "is",
+        "are"
+      ],
+      "correct": "is",
+      "explanation": "Juice (it) → is.",
+      "minGrade": 1,
+      "maxGrade": 1,
+      "patternFamily": "base_be_juice_g1_p28",
+      "difficulty": "basic",
+      "cognitiveLevel": "recall",
+      "expectedErrorTypes": [
+        "grammar_error",
+        "sentence_order_error",
+        "careless_error"
+      ],
+      "skillId": "base_be_juice_g1_p28",
+      "subtype": "base"
+    },
+    {
+      "template": "Mom and Dad ___ home now",
+      "options": [
+        "am",
+        "is",
+        "are"
+      ],
+      "correct": "are",
+      "explanation": "Mom and Dad (they) → are.",
+      "minGrade": 1,
+      "maxGrade": 1,
+      "patternFamily": "base_be_parents_g1_p28",
+      "difficulty": "basic",
+      "cognitiveLevel": "recall",
+      "expectedErrorTypes": [
+        "grammar_error",
+        "sentence_order_error",
+        "careless_error"
+      ],
+      "skillId": "base_be_parents_g1_p28",
+      "subtype": "base"
+    },
+    {
+      "template": "The baby ___ sleepy",
+      "options": [
+        "am",
+        "is",
+        "are"
+      ],
+      "correct": "is",
+      "explanation": "The baby (it) → is.",
+      "minGrade": 1,
+      "maxGrade": 1,
+      "patternFamily": "base_be_baby_g1_p28",
+      "difficulty": "basic",
+      "cognitiveLevel": "recall",
+      "expectedErrorTypes": [
+        "grammar_error",
+        "sentence_order_error",
+        "careless_error"
+      ],
+      "skillId": "base_be_baby_g1_p28",
+      "subtype": "base"
+    },
+    {
       "template": "You ___ my partner in class",
       "options": [
         "am",

@@ -18,6 +18,54 @@ export const TRANSLATION_POOLS = {
       "difficulty": "basic"
     },
     {
+      "en": "Thank you, teacher",
+      "he": "תודה, מורה",
+      "minGrade": 1,
+      "maxGrade": 1,
+      "patternFamily": "translation_classroom_g1_p28a",
+      "difficulty": "basic"
+    },
+    {
+      "en": "Good morning, class",
+      "he": "בוקר טוב, כיתה",
+      "minGrade": 1,
+      "maxGrade": 1,
+      "patternFamily": "translation_classroom_g1_p28b",
+      "difficulty": "basic"
+    },
+    {
+      "en": "I have a pencil",
+      "he": "יש לי עפרון",
+      "minGrade": 1,
+      "maxGrade": 1,
+      "patternFamily": "translation_classroom_g1_p28c",
+      "difficulty": "basic"
+    },
+    {
+      "en": "This is my bag",
+      "he": "זה התיק שלי",
+      "minGrade": 1,
+      "maxGrade": 1,
+      "patternFamily": "translation_classroom_g1_p28d",
+      "difficulty": "basic"
+    },
+    {
+      "en": "Look at the board",
+      "he": "הסתכלו על הלוח",
+      "minGrade": 1,
+      "maxGrade": 1,
+      "patternFamily": "translation_classroom_g1_p28e",
+      "difficulty": "basic"
+    },
+    {
+      "en": "We like our school",
+      "he": "אנחנו אוהבים את בית הספר שלנו",
+      "minGrade": 1,
+      "maxGrade": 1,
+      "patternFamily": "translation_classroom_g1_p28f",
+      "difficulty": "basic"
+    },
+    {
       "en": "Raise your hand",
       "he": "הרימו את היד",
       "minGrade": 2,
@@ -31,6 +79,30 @@ export const TRANSLATION_POOLS = {
       "minGrade": 2,
       "maxGrade": 2,
       "patternFamily": "translation_classroom_g2",
+      "difficulty": "basic"
+    },
+    {
+      "en": "Please open your book",
+      "he": "בבקשה פתחו את הספר",
+      "minGrade": 2,
+      "maxGrade": 2,
+      "patternFamily": "translation_classroom_g2_p28a",
+      "difficulty": "basic"
+    },
+    {
+      "en": "Work with a partner",
+      "he": "עבדו עם בן זוג",
+      "minGrade": 2,
+      "maxGrade": 2,
+      "patternFamily": "translation_classroom_g2_p28b",
+      "difficulty": "basic"
+    },
+    {
+      "en": "Put your things away",
+      "he": "סידרו את הדברים",
+      "minGrade": 2,
+      "maxGrade": 2,
+      "patternFamily": "translation_classroom_g2_p28c",
       "difficulty": "basic"
     },
     {
@@ -65,6 +137,22 @@ export const TRANSLATION_POOLS = {
       "minGrade": 2,
       "maxGrade": 2,
       "patternFamily": "translation_routines_g2",
+      "difficulty": "basic"
+    },
+    {
+      "en": "I wash my hands before lunch",
+      "he": "אני שוטף ידיים לפני ארוחת צהריים",
+      "minGrade": 2,
+      "maxGrade": 2,
+      "patternFamily": "translation_routines_g2_p28d",
+      "difficulty": "basic"
+    },
+    {
+      "en": "We turn off the lights at night",
+      "he": "אנחנו מכבים את האורות בלילה",
+      "minGrade": 2,
+      "maxGrade": 2,
+      "patternFamily": "translation_routines_g2_p28e",
       "difficulty": "basic"
     },
     {
