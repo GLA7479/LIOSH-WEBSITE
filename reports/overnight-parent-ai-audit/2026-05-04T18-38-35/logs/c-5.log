@@ -1,5 +1,0 @@
-
-> leo-k-kids-site@1.0.0 test:parent-copilot-scope-collision
-> tsx scripts/parent-copilot-scope-collision-suite.mjs
-
-parent-copilot-scope-collision-suite: OK

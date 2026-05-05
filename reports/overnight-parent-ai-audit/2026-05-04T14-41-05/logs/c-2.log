@@ -1,5 +1,0 @@
-
-> leo-k-kids-site@1.0.0 test:parent-copilot-parent-render
-> tsx scripts/parent-copilot-parent-render-suite.mjs
-
-parent-copilot-parent-render-suite: OK

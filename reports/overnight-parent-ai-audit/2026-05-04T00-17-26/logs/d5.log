@@ -1,5 +1,0 @@
-
-> leo-k-kids-site@1.0.0 test:parent-ai:external-question
-> tsx scripts/parent-ai-external-question-simulator.mjs
-
-parent-ai-external-question-simulator: 4/4 passed

@@ -1,9 +1,0 @@
-{
-  "id": "build",
-  "phase": "A",
-  "status": "skipped_smoke",
-  "npmScript": "build",
-  "durationMs": 1,
-  "failureCategory": "ADVISORY_WARNING",
-  "note": "Webpack warnings from question-metadata scanner → planner bridge may be pre-existing."
-}

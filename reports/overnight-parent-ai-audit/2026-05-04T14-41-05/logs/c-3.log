@@ -1,5 +1,0 @@
-
-> leo-k-kids-site@1.0.0 test:parent-copilot-product-behavior
-> tsx scripts/parent-copilot-product-behavior-suite.mjs
-
-parent-copilot-product-behavior-suite: OK

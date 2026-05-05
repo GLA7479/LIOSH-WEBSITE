@@ -1,5 +1,0 @@
-
-> leo-k-kids-site@1.0.0 test:parent-report-phase1
-> tsx scripts/parent-report-phase1-selftest.mjs
-
-parent-report phase1 selftest: OK

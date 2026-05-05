@@ -8,6 +8,10 @@ node_modules/
 /playwright-report/
 /test-results/
 
+# QA harness outputs (large; do not commit by default — pin a baseline with: git add -f <path>)
+reports/sample-pdfs-timeout-fix-test/
+reports/overnight-parent-ai-audit/*
+
 # Next.js
 /.next/
 /out/
