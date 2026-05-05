@@ -12,6 +12,8 @@
  *   OVERNIGHT_SMOKE_SKIP_BUILD=1  — with --smoke, skip npm run build
  *   OVERNIGHT_EXTERNAL_QA_URL=https://...  — optional; use this dev/staging base for PDF gates instead of
  *     spawning local Next (otherwise .env QA_BASE_URL is ignored for PDF phase to avoid stale ports).
+ *   OVERNIGHT_SAMPLE_PDFS_TIMEOUT_MS=<ms>  — optional; timeout for f-sample-pdfs only (default 60 min).
+ *     Parent PDF export / ls pdf-export still use T_PDF (20 min).
  */
 import { spawn } from "node:child_process";
 import fs from "fs";
@@ -38,6 +40,18 @@ const ROOT = path.join(__dirname, "..");
 const T_BUILD = 15 * 60 * 1000;
 const T_TEST = 10 * 60 * 1000;
 const T_PDF = 20 * 60 * 1000;
+/** f-sample-pdfs only — Playwright multi-profile run; separate from T_PDF (parent PDF export). */
+const DEFAULT_SAMPLE_PDFS_TIMEOUT_MS = 60 * 60 * 1000;
+
+function samplePdfsTimeoutMs() {
+  const raw = process.env.OVERNIGHT_SAMPLE_PDFS_TIMEOUT_MS;
+  if (raw != null && String(raw).trim() !== "") {
+    const n = Number(raw);
+    if (Number.isFinite(n) && n >= 60_000) return Math.floor(n);
+  }
+  return DEFAULT_SAMPLE_PDFS_TIMEOUT_MS;
+}
+
 const T_LS_QUICK = 45 * 60 * 1000;
 const T_LS_FULL = 120 * 60 * 1000;
 const DEV_HEALTH_MAX_MS = 240000;
@@ -433,7 +447,7 @@ async function main() {
       await recordNodeArgv(
         "f-sample-pdfs",
         [path.join(ROOT, "scripts/overnight-parent-ai-sample-pdfs.mjs"), "--outDir", sampleDir],
-        T_PDF,
+        samplePdfsTimeoutMs(),
         "F"
       );
       if (!SMOKE) {

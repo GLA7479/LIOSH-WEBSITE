@@ -1,0 +1,22 @@
+{
+  "status": "PASS",
+  "keys": [
+    "version",
+    "generatedAt",
+    "studentWindow",
+    "subjects",
+    "skillFindings",
+    "subskillFindings",
+    "misconceptions",
+    "mastery",
+    "dependencies",
+    "reliability",
+    "calibration",
+    "probes",
+    "crossSubjectPatterns",
+    "globalDoNotConclude",
+    "engineConfidence",
+    "engineReadiness",
+    "limitations"
+  ]
+}

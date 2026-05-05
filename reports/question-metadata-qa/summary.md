@@ -1,12 +1,12 @@
 # Question metadata QA
 
-- **Generated:** 2026-05-04T18:46:12.537Z
+- **Generated:** 2026-05-05T19:19:46.811Z
 - **Gate decision:** `pass_with_advisory` — scanOutcome=`ok`, advisoryStatus=`WARN`
-- **Blocking issues (policy):** 0 | **Advisory:** 15876 | **Exempt (catalog):** 878
-- **Questions scanned:** 5756
+- **Blocking issues (policy):** 0 | **Advisory:** 15960 | **Exempt (catalog):** 878
+- **Questions scanned:** 5797
 - **High / medium risk:** 439 / 0
 - **Duplicate declared IDs (cross-file):** 0
-- **Skill buckets below 5 questions:** 299
+- **Skill buckets below 5 questions:** 343
 
 ## Blocking vs advisory (policy gate)
 
@@ -14,7 +14,7 @@
 | --- | --- |
 | gateDecision | pass_with_advisory |
 | blockingIssueCount | 0 |
-| advisoryIssueCount | 15876 |
+| advisoryIssueCount | 15960 |
 | exemptedIssueCount | 878 |
 
 ### Top blocking codes
@@ -25,9 +25,9 @@ _None._
 
 | Code | Count |
 | --- | ---: |
-| missing_prerequisite_skill_ids | 5750 |
-| implicit_id_only | 5373 |
-| missing_explanation | 4753 |
+| missing_prerequisite_skill_ids | 5791 |
+| implicit_id_only | 5414 |
+| missing_explanation | 4755 |
 
 ### Known exemptions
 
@@ -39,7 +39,7 @@ English **missing_skillId** / **missing_subskillId** on grammar pools are deferr
 | --- | ---: | --- | ---: | ---: | ---: |
 | science | 383 | strong | 100 | 100 | 0 |
 | hebrew | 54 | strong | 100 | 0 | 0 |
-| english | 670 | weak | 34.5 | 92.5 | 439 |
+| english | 711 | weak | 38.3 | 92.7 | 439 |
 | moledet-geography | 3506 | strong | 100 | 0 | 0 |
 | hebrew-archive | 1091 | strong | 100 | 0 | 0 |
 | geometry | 52 | strong | 100 | 0 | 0 |
@@ -48,9 +48,9 @@ English **missing_skillId** / **missing_subskillId** on grammar pools are deferr
 
 | Code | Count |
 | --- | ---: |
-| missing_prerequisite_skill_ids | 5750 |
-| implicit_id_only | 5373 |
-| missing_explanation | 4753 |
+| missing_prerequisite_skill_ids | 5791 |
+| implicit_id_only | 5414 |
+| missing_explanation | 4755 |
 | missing_skillId | 439 |
 | missing_subskillId | 439 |
 

@@ -1,0 +1,5 @@
+
+> leo-k-kids-site@1.0.0 test:parent-copilot-recommendation-semantic
+> tsx scripts/parent-copilot-recommendation-semantic-suite.mjs
+
+parent-copilot-recommendation-semantic-suite: OK

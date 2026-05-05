@@ -1,0 +1,36 @@
+{
+  "scenarioId": "weak_english_grammar_g4_30d",
+  "profileRef": "p_weak_english_grammar",
+  "mode": "deep",
+  "tier": "deep",
+  "seed": 93009,
+  "anchorDate": "2026-05-18T08:00:00.000Z",
+  "timeHorizonDays": 30,
+  "generator": "deep-runner-v1",
+  "stats": {
+    "scenarioId": "weak_english_grammar_g4_30d",
+    "sessionCount": 76,
+    "questionTotal": 1230,
+    "correctTotal": 498,
+    "mistakeEventCount": 406,
+    "subjectsTouched": [
+      "english"
+    ],
+    "topicsBySubject": {
+      "english": [
+        "grammar"
+      ]
+    }
+  },
+  "validation": {
+    "ok": true,
+    "errors": [],
+    "warnings": []
+  },
+  "warnings": [],
+  "errors": [],
+  "deepHorizonValidation": {
+    "ok": true,
+    "errors": []
+  }
+}

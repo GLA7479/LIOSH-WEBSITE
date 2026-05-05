@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "generatedAt": "2026-05-04T18:46:12.537Z",
+  "generatedAt": "2026-05-05T19:19:46.811Z",
   "skills": [
     {
       "subject": "english",
@@ -146,6 +146,22 @@
     },
     {
       "subject": "english",
+      "skillId": "base_be_baby_g1_p28",
+      "totalQuestions": 1,
+      "subskillsCovered": 1,
+      "subskillIds": [
+        "base"
+      ],
+      "difficultyDistribution": {
+        "basic": 1
+      },
+      "expectedErrorCoverageCount": 1,
+      "prerequisiteCoverageCount": 0,
+      "enoughQuestionsForReliableDiagnosis": false,
+      "riskLevel": "high"
+    },
+    {
+      "subject": "english",
       "skillId": "base_be_compound_subject_g5",
       "totalQuestions": 1,
       "subskillsCovered": 1,
@@ -170,6 +186,22 @@
       ],
       "difficultyDistribution": {
         "advanced": 1
+      },
+      "expectedErrorCoverageCount": 1,
+      "prerequisiteCoverageCount": 0,
+      "enoughQuestionsForReliableDiagnosis": false,
+      "riskLevel": "high"
+    },
+    {
+      "subject": "english",
+      "skillId": "base_be_ducks_g1_p28",
+      "totalQuestions": 1,
+      "subskillsCovered": 1,
+      "subskillIds": [
+        "base"
+      ],
+      "difficultyDistribution": {
+        "basic": 1
       },
       "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
@@ -434,6 +466,38 @@
     },
     {
       "subject": "english",
+      "skillId": "base_be_juice_g1_p28",
+      "totalQuestions": 1,
+      "subskillsCovered": 1,
+      "subskillIds": [
+        "base"
+      ],
+      "difficultyDistribution": {
+        "basic": 1
+      },
+      "expectedErrorCoverageCount": 1,
+      "prerequisiteCoverageCount": 0,
+      "enoughQuestionsForReliableDiagnosis": false,
+      "riskLevel": "high"
+    },
+    {
+      "subject": "english",
+      "skillId": "base_be_parents_g1_p28",
+      "totalQuestions": 1,
+      "subskillsCovered": 1,
+      "subskillIds": [
+        "base"
+      ],
+      "difficultyDistribution": {
+        "basic": 1
+      },
+      "expectedErrorCoverageCount": 1,
+      "prerequisiteCoverageCount": 0,
+      "enoughQuestionsForReliableDiagnosis": false,
+      "riskLevel": "high"
+    },
+    {
+      "subject": "english",
       "skillId": "base_be_plural_g1",
       "totalQuestions": 1,
       "subskillsCovered": 1,
@@ -570,6 +634,22 @@
       ],
       "difficultyDistribution": {
         "standard": 1
+      },
+      "expectedErrorCoverageCount": 1,
+      "prerequisiteCoverageCount": 0,
+      "enoughQuestionsForReliableDiagnosis": false,
+      "riskLevel": "high"
+    },
+    {
+      "subject": "english",
+      "skillId": "base_be_toy_g1_p28",
+      "totalQuestions": 1,
+      "subskillsCovered": 1,
+      "subskillIds": [
+        "base"
+      ],
+      "difficultyDistribution": {
+        "basic": 1
       },
       "expectedErrorCoverageCount": 1,
       "prerequisiteCoverageCount": 0,
@@ -2735,6 +2815,582 @@
       "prerequisiteCoverageCount": 0,
       "enoughQuestionsForReliableDiagnosis": true,
       "riskLevel": "medium"
+    },
+    {
+      "subject": "english",
+      "skillId": "phase29_g2_std_01",
+      "totalQuestions": 1,
+      "subskillsCovered": 1,
+      "subskillIds": [
+        "phase29_g2_standard"
+      ],
+      "difficultyDistribution": {
+        "standard": 1
+      },
+      "expectedErrorCoverageCount": 1,
+      "prerequisiteCoverageCount": 0,
+      "enoughQuestionsForReliableDiagnosis": false,
+      "riskLevel": "high"
+    },
+    {
+      "subject": "english",
+      "skillId": "phase29_g2_std_02",
+      "totalQuestions": 1,
+      "subskillsCovered": 1,
+      "subskillIds": [
+        "phase29_g2_standard"
+      ],
+      "difficultyDistribution": {
+        "standard": 1
+      },
+      "expectedErrorCoverageCount": 1,
+      "prerequisiteCoverageCount": 0,
+      "enoughQuestionsForReliableDiagnosis": false,
+      "riskLevel": "high"
+    },
+    {
+      "subject": "english",
+      "skillId": "phase29_g2_std_03",
+      "totalQuestions": 1,
+      "subskillsCovered": 1,
+      "subskillIds": [
+        "phase29_g2_standard"
+      ],
+      "difficultyDistribution": {
+        "standard": 1
+      },
+      "expectedErrorCoverageCount": 1,
+      "prerequisiteCoverageCount": 0,
+      "enoughQuestionsForReliableDiagnosis": false,
+      "riskLevel": "high"
+    },
+    {
+      "subject": "english",
+      "skillId": "phase29_g2_std_04",
+      "totalQuestions": 1,
+      "subskillsCovered": 1,
+      "subskillIds": [
+        "phase29_g2_standard"
+      ],
+      "difficultyDistribution": {
+        "standard": 1
+      },
+      "expectedErrorCoverageCount": 1,
+      "prerequisiteCoverageCount": 0,
+      "enoughQuestionsForReliableDiagnosis": false,
+      "riskLevel": "high"
+    },
+    {
+      "subject": "english",
+      "skillId": "phase29_g2_std_05",
+      "totalQuestions": 1,
+      "subskillsCovered": 1,
+      "subskillIds": [
+        "phase29_g2_standard"
+      ],
+      "difficultyDistribution": {
+        "standard": 1
+      },
+      "expectedErrorCoverageCount": 1,
+      "prerequisiteCoverageCount": 0,
+      "enoughQuestionsForReliableDiagnosis": false,
+      "riskLevel": "high"
+    },
+    {
+      "subject": "english",
+      "skillId": "phase29_g2_std_06",
+      "totalQuestions": 1,
+      "subskillsCovered": 1,
+      "subskillIds": [
+        "phase29_g2_standard"
+      ],
+      "difficultyDistribution": {
+        "standard": 1
+      },
+      "expectedErrorCoverageCount": 1,
+      "prerequisiteCoverageCount": 0,
+      "enoughQuestionsForReliableDiagnosis": false,
+      "riskLevel": "high"
+    },
+    {
+      "subject": "english",
+      "skillId": "phase29_g2_std_07",
+      "totalQuestions": 1,
+      "subskillsCovered": 1,
+      "subskillIds": [
+        "phase29_g2_standard"
+      ],
+      "difficultyDistribution": {
+        "standard": 1
+      },
+      "expectedErrorCoverageCount": 1,
+      "prerequisiteCoverageCount": 0,
+      "enoughQuestionsForReliableDiagnosis": false,
+      "riskLevel": "high"
+    },
+    {
+      "subject": "english",
+      "skillId": "phase29_g2_std_08",
+      "totalQuestions": 1,
+      "subskillsCovered": 1,
+      "subskillIds": [
+        "phase29_g2_standard"
+      ],
+      "difficultyDistribution": {
+        "standard": 1
+      },
+      "expectedErrorCoverageCount": 1,
+      "prerequisiteCoverageCount": 0,
+      "enoughQuestionsForReliableDiagnosis": false,
+      "riskLevel": "high"
+    },
+    {
+      "subject": "english",
+      "skillId": "phase29_g3_adv_01",
+      "totalQuestions": 1,
+      "subskillsCovered": 1,
+      "subskillIds": [
+        "phase29_g3_advanced"
+      ],
+      "difficultyDistribution": {
+        "advanced": 1
+      },
+      "expectedErrorCoverageCount": 1,
+      "prerequisiteCoverageCount": 0,
+      "enoughQuestionsForReliableDiagnosis": false,
+      "riskLevel": "high"
+    },
+    {
+      "subject": "english",
+      "skillId": "phase29_g3_adv_02",
+      "totalQuestions": 1,
+      "subskillsCovered": 1,
+      "subskillIds": [
+        "phase29_g3_advanced"
+      ],
+      "difficultyDistribution": {
+        "advanced": 1
+      },
+      "expectedErrorCoverageCount": 1,
+      "prerequisiteCoverageCount": 0,
+      "enoughQuestionsForReliableDiagnosis": false,
+      "riskLevel": "high"
+    },
+    {
+      "subject": "english",
+      "skillId": "phase29_g3_adv_03",
+      "totalQuestions": 1,
+      "subskillsCovered": 1,
+      "subskillIds": [
+        "phase29_g3_advanced"
+      ],
+      "difficultyDistribution": {
+        "advanced": 1
+      },
+      "expectedErrorCoverageCount": 1,
+      "prerequisiteCoverageCount": 0,
+      "enoughQuestionsForReliableDiagnosis": false,
+      "riskLevel": "high"
+    },
+    {
+      "subject": "english",
+      "skillId": "phase29_g3_adv_04",
+      "totalQuestions": 1,
+      "subskillsCovered": 1,
+      "subskillIds": [
+        "phase29_g3_advanced"
+      ],
+      "difficultyDistribution": {
+        "advanced": 1
+      },
+      "expectedErrorCoverageCount": 1,
+      "prerequisiteCoverageCount": 0,
+      "enoughQuestionsForReliableDiagnosis": false,
+      "riskLevel": "high"
+    },
+    {
+      "subject": "english",
+      "skillId": "phase29_g3_adv_05",
+      "totalQuestions": 1,
+      "subskillsCovered": 1,
+      "subskillIds": [
+        "phase29_g3_advanced"
+      ],
+      "difficultyDistribution": {
+        "advanced": 1
+      },
+      "expectedErrorCoverageCount": 1,
+      "prerequisiteCoverageCount": 0,
+      "enoughQuestionsForReliableDiagnosis": false,
+      "riskLevel": "high"
+    },
+    {
+      "subject": "english",
+      "skillId": "phase29_g3_adv_06",
+      "totalQuestions": 1,
+      "subskillsCovered": 1,
+      "subskillIds": [
+        "phase29_g3_advanced"
+      ],
+      "difficultyDistribution": {
+        "advanced": 1
+      },
+      "expectedErrorCoverageCount": 1,
+      "prerequisiteCoverageCount": 0,
+      "enoughQuestionsForReliableDiagnosis": false,
+      "riskLevel": "high"
+    },
+    {
+      "subject": "english",
+      "skillId": "phase29_g4_adv_01",
+      "totalQuestions": 1,
+      "subskillsCovered": 1,
+      "subskillIds": [
+        "phase29_g4_advanced"
+      ],
+      "difficultyDistribution": {
+        "advanced": 1
+      },
+      "expectedErrorCoverageCount": 1,
+      "prerequisiteCoverageCount": 0,
+      "enoughQuestionsForReliableDiagnosis": false,
+      "riskLevel": "high"
+    },
+    {
+      "subject": "english",
+      "skillId": "phase29_g4_adv_02",
+      "totalQuestions": 1,
+      "subskillsCovered": 1,
+      "subskillIds": [
+        "phase29_g4_advanced"
+      ],
+      "difficultyDistribution": {
+        "advanced": 1
+      },
+      "expectedErrorCoverageCount": 1,
+      "prerequisiteCoverageCount": 0,
+      "enoughQuestionsForReliableDiagnosis": false,
+      "riskLevel": "high"
+    },
+    {
+      "subject": "english",
+      "skillId": "phase29_g4_adv_03",
+      "totalQuestions": 1,
+      "subskillsCovered": 1,
+      "subskillIds": [
+        "phase29_g4_advanced"
+      ],
+      "difficultyDistribution": {
+        "advanced": 1
+      },
+      "expectedErrorCoverageCount": 1,
+      "prerequisiteCoverageCount": 0,
+      "enoughQuestionsForReliableDiagnosis": false,
+      "riskLevel": "high"
+    },
+    {
+      "subject": "english",
+      "skillId": "phase29_g4_adv_04",
+      "totalQuestions": 1,
+      "subskillsCovered": 1,
+      "subskillIds": [
+        "phase29_g4_advanced"
+      ],
+      "difficultyDistribution": {
+        "advanced": 1
+      },
+      "expectedErrorCoverageCount": 1,
+      "prerequisiteCoverageCount": 0,
+      "enoughQuestionsForReliableDiagnosis": false,
+      "riskLevel": "high"
+    },
+    {
+      "subject": "english",
+      "skillId": "phase29_g4_adv_05",
+      "totalQuestions": 1,
+      "subskillsCovered": 1,
+      "subskillIds": [
+        "phase29_g4_advanced"
+      ],
+      "difficultyDistribution": {
+        "advanced": 1
+      },
+      "expectedErrorCoverageCount": 1,
+      "prerequisiteCoverageCount": 0,
+      "enoughQuestionsForReliableDiagnosis": false,
+      "riskLevel": "high"
+    },
+    {
+      "subject": "english",
+      "skillId": "phase29_g4_adv_06",
+      "totalQuestions": 1,
+      "subskillsCovered": 1,
+      "subskillIds": [
+        "phase29_g4_advanced"
+      ],
+      "difficultyDistribution": {
+        "advanced": 1
+      },
+      "expectedErrorCoverageCount": 1,
+      "prerequisiteCoverageCount": 0,
+      "enoughQuestionsForReliableDiagnosis": false,
+      "riskLevel": "high"
+    },
+    {
+      "subject": "english",
+      "skillId": "phase29_g5_std_01",
+      "totalQuestions": 1,
+      "subskillsCovered": 1,
+      "subskillIds": [
+        "phase29_g5_standard"
+      ],
+      "difficultyDistribution": {
+        "standard": 1
+      },
+      "expectedErrorCoverageCount": 1,
+      "prerequisiteCoverageCount": 0,
+      "enoughQuestionsForReliableDiagnosis": false,
+      "riskLevel": "high"
+    },
+    {
+      "subject": "english",
+      "skillId": "phase29_g5_std_02",
+      "totalQuestions": 1,
+      "subskillsCovered": 1,
+      "subskillIds": [
+        "phase29_g5_standard"
+      ],
+      "difficultyDistribution": {
+        "standard": 1
+      },
+      "expectedErrorCoverageCount": 1,
+      "prerequisiteCoverageCount": 0,
+      "enoughQuestionsForReliableDiagnosis": false,
+      "riskLevel": "high"
+    },
+    {
+      "subject": "english",
+      "skillId": "phase29_g5_std_03",
+      "totalQuestions": 1,
+      "subskillsCovered": 1,
+      "subskillIds": [
+        "phase29_g5_standard"
+      ],
+      "difficultyDistribution": {
+        "standard": 1
+      },
+      "expectedErrorCoverageCount": 1,
+      "prerequisiteCoverageCount": 0,
+      "enoughQuestionsForReliableDiagnosis": false,
+      "riskLevel": "high"
+    },
+    {
+      "subject": "english",
+      "skillId": "phase29_g5_std_04",
+      "totalQuestions": 1,
+      "subskillsCovered": 1,
+      "subskillIds": [
+        "phase29_g5_standard"
+      ],
+      "difficultyDistribution": {
+        "standard": 1
+      },
+      "expectedErrorCoverageCount": 1,
+      "prerequisiteCoverageCount": 0,
+      "enoughQuestionsForReliableDiagnosis": false,
+      "riskLevel": "high"
+    },
+    {
+      "subject": "english",
+      "skillId": "phase29_g5_std_05",
+      "totalQuestions": 1,
+      "subskillsCovered": 1,
+      "subskillIds": [
+        "phase29_g5_standard"
+      ],
+      "difficultyDistribution": {
+        "standard": 1
+      },
+      "expectedErrorCoverageCount": 1,
+      "prerequisiteCoverageCount": 0,
+      "enoughQuestionsForReliableDiagnosis": false,
+      "riskLevel": "high"
+    },
+    {
+      "subject": "english",
+      "skillId": "phase29_g5_std_06",
+      "totalQuestions": 1,
+      "subskillsCovered": 1,
+      "subskillIds": [
+        "phase29_g5_standard"
+      ],
+      "difficultyDistribution": {
+        "standard": 1
+      },
+      "expectedErrorCoverageCount": 1,
+      "prerequisiteCoverageCount": 0,
+      "enoughQuestionsForReliableDiagnosis": false,
+      "riskLevel": "high"
+    },
+    {
+      "subject": "english",
+      "skillId": "phase29_g5_std_07",
+      "totalQuestions": 1,
+      "subskillsCovered": 1,
+      "subskillIds": [
+        "phase29_g5_standard"
+      ],
+      "difficultyDistribution": {
+        "standard": 1
+      },
+      "expectedErrorCoverageCount": 1,
+      "prerequisiteCoverageCount": 0,
+      "enoughQuestionsForReliableDiagnosis": false,
+      "riskLevel": "high"
+    },
+    {
+      "subject": "english",
+      "skillId": "phase29_g5_std_08",
+      "totalQuestions": 1,
+      "subskillsCovered": 1,
+      "subskillIds": [
+        "phase29_g5_standard"
+      ],
+      "difficultyDistribution": {
+        "standard": 1
+      },
+      "expectedErrorCoverageCount": 1,
+      "prerequisiteCoverageCount": 0,
+      "enoughQuestionsForReliableDiagnosis": false,
+      "riskLevel": "high"
+    },
+    {
+      "subject": "english",
+      "skillId": "phase29_g6_std_01",
+      "totalQuestions": 1,
+      "subskillsCovered": 1,
+      "subskillIds": [
+        "phase29_g6_standard"
+      ],
+      "difficultyDistribution": {
+        "standard": 1
+      },
+      "expectedErrorCoverageCount": 1,
+      "prerequisiteCoverageCount": 0,
+      "enoughQuestionsForReliableDiagnosis": false,
+      "riskLevel": "high"
+    },
+    {
+      "subject": "english",
+      "skillId": "phase29_g6_std_02",
+      "totalQuestions": 1,
+      "subskillsCovered": 1,
+      "subskillIds": [
+        "phase29_g6_standard"
+      ],
+      "difficultyDistribution": {
+        "standard": 1
+      },
+      "expectedErrorCoverageCount": 1,
+      "prerequisiteCoverageCount": 0,
+      "enoughQuestionsForReliableDiagnosis": false,
+      "riskLevel": "high"
+    },
+    {
+      "subject": "english",
+      "skillId": "phase29_g6_std_03",
+      "totalQuestions": 1,
+      "subskillsCovered": 1,
+      "subskillIds": [
+        "phase29_g6_standard"
+      ],
+      "difficultyDistribution": {
+        "standard": 1
+      },
+      "expectedErrorCoverageCount": 1,
+      "prerequisiteCoverageCount": 0,
+      "enoughQuestionsForReliableDiagnosis": false,
+      "riskLevel": "high"
+    },
+    {
+      "subject": "english",
+      "skillId": "phase29_g6_std_04",
+      "totalQuestions": 1,
+      "subskillsCovered": 1,
+      "subskillIds": [
+        "phase29_g6_standard"
+      ],
+      "difficultyDistribution": {
+        "standard": 1
+      },
+      "expectedErrorCoverageCount": 1,
+      "prerequisiteCoverageCount": 0,
+      "enoughQuestionsForReliableDiagnosis": false,
+      "riskLevel": "high"
+    },
+    {
+      "subject": "english",
+      "skillId": "phase29_g6_std_05",
+      "totalQuestions": 1,
+      "subskillsCovered": 1,
+      "subskillIds": [
+        "phase29_g6_standard"
+      ],
+      "difficultyDistribution": {
+        "standard": 1
+      },
+      "expectedErrorCoverageCount": 1,
+      "prerequisiteCoverageCount": 0,
+      "enoughQuestionsForReliableDiagnosis": false,
+      "riskLevel": "high"
+    },
+    {
+      "subject": "english",
+      "skillId": "phase29_g6_std_06",
+      "totalQuestions": 1,
+      "subskillsCovered": 1,
+      "subskillIds": [
+        "phase29_g6_standard"
+      ],
+      "difficultyDistribution": {
+        "standard": 1
+      },
+      "expectedErrorCoverageCount": 1,
+      "prerequisiteCoverageCount": 0,
+      "enoughQuestionsForReliableDiagnosis": false,
+      "riskLevel": "high"
+    },
+    {
+      "subject": "english",
+      "skillId": "phase29_g6_std_07",
+      "totalQuestions": 1,
+      "subskillsCovered": 1,
+      "subskillIds": [
+        "phase29_g6_standard"
+      ],
+      "difficultyDistribution": {
+        "standard": 1
+      },
+      "expectedErrorCoverageCount": 1,
+      "prerequisiteCoverageCount": 0,
+      "enoughQuestionsForReliableDiagnosis": false,
+      "riskLevel": "high"
+    },
+    {
+      "subject": "english",
+      "skillId": "phase29_g6_std_08",
+      "totalQuestions": 1,
+      "subskillsCovered": 1,
+      "subskillIds": [
+        "phase29_g6_standard"
+      ],
+      "difficultyDistribution": {
+        "standard": 1
+      },
+      "expectedErrorCoverageCount": 1,
+      "prerequisiteCoverageCount": 0,
+      "enoughQuestionsForReliableDiagnosis": false,
+      "riskLevel": "high"
     },
     {
       "subject": "english",
@@ -5085,34 +5741,16 @@
     },
     {
       "subject": "science",
-      "skillId": "animals",
-      "totalQuestions": 51,
+      "skillId": "sci_animals_classification",
+      "totalQuestions": 47,
       "subskillsCovered": 1,
       "subskillIds": [
         "sci_animals_general"
       ],
       "difficultyDistribution": {
         "basic": 21,
-        "standard": 19,
-        "advanced": 11
-      },
-      "expectedErrorCoverageCount": 51,
-      "prerequisiteCoverageCount": 0,
-      "enoughQuestionsForReliableDiagnosis": true,
-      "riskLevel": "medium"
-    },
-    {
-      "subject": "science",
-      "skillId": "body",
-      "totalQuestions": 47,
-      "subskillsCovered": 1,
-      "subskillIds": [
-        "sci_body_general"
-      ],
-      "difficultyDistribution": {
-        "standard": 12,
-        "advanced": 11,
-        "basic": 24
+        "standard": 18,
+        "advanced": 8
       },
       "expectedErrorCoverageCount": 47,
       "prerequisiteCoverageCount": 0,
@@ -5121,102 +5759,28 @@
     },
     {
       "subject": "science",
-      "skillId": "earth_space",
-      "totalQuestions": 66,
+      "skillId": "sci_animals_life_processes",
+      "totalQuestions": 3,
       "subskillsCovered": 1,
       "subskillIds": [
-        "sci_earth_space_general"
+        "sci_animals_general"
       ],
       "difficultyDistribution": {
-        "basic": 17,
-        "standard": 27,
-        "advanced": 22
+        "advanced": 2,
+        "standard": 1
       },
-      "expectedErrorCoverageCount": 66,
+      "expectedErrorCoverageCount": 3,
       "prerequisiteCoverageCount": 0,
-      "enoughQuestionsForReliableDiagnosis": true,
-      "riskLevel": "medium"
-    },
-    {
-      "subject": "science",
-      "skillId": "environment",
-      "totalQuestions": 65,
-      "subskillsCovered": 1,
-      "subskillIds": [
-        "sci_environment_general"
-      ],
-      "difficultyDistribution": {
-        "basic": 11,
-        "standard": 26,
-        "advanced": 28
-      },
-      "expectedErrorCoverageCount": 65,
-      "prerequisiteCoverageCount": 0,
-      "enoughQuestionsForReliableDiagnosis": true,
-      "riskLevel": "medium"
-    },
-    {
-      "subject": "science",
-      "skillId": "experiments",
-      "totalQuestions": 59,
-      "subskillsCovered": 1,
-      "subskillIds": [
-        "sci_experiments_general"
-      ],
-      "difficultyDistribution": {
-        "basic": 9,
-        "standard": 21,
-        "advanced": 29
-      },
-      "expectedErrorCoverageCount": 59,
-      "prerequisiteCoverageCount": 0,
-      "enoughQuestionsForReliableDiagnosis": true,
-      "riskLevel": "medium"
-    },
-    {
-      "subject": "science",
-      "skillId": "materials",
-      "totalQuestions": 46,
-      "subskillsCovered": 1,
-      "subskillIds": [
-        "sci_materials_general"
-      ],
-      "difficultyDistribution": {
-        "basic": 14,
-        "standard": 20,
-        "advanced": 12
-      },
-      "expectedErrorCoverageCount": 46,
-      "prerequisiteCoverageCount": 0,
-      "enoughQuestionsForReliableDiagnosis": true,
-      "riskLevel": "medium"
-    },
-    {
-      "subject": "science",
-      "skillId": "plants",
-      "totalQuestions": 46,
-      "subskillsCovered": 1,
-      "subskillIds": [
-        "sci_plants_general"
-      ],
-      "difficultyDistribution": {
-        "basic": 16,
-        "standard": 19,
-        "advanced": 11
-      },
-      "expectedErrorCoverageCount": 46,
-      "prerequisiteCoverageCount": 0,
-      "enoughQuestionsForReliableDiagnosis": true,
-      "riskLevel": "medium"
+      "enoughQuestionsForReliableDiagnosis": false,
+      "riskLevel": "high"
     },
     {
       "subject": "science",
       "skillId": "sci_body_fact_recall",
       "totalQuestions": 2,
-      "subskillsCovered": 2,
+      "subskillsCovered": 1,
       "subskillIds": [
-        "science_body_heart_location",
-        "science_body_sense_organs"
+        "sci_body_general"
       ],
       "difficultyDistribution": {
         "basic": 2
@@ -5228,11 +5792,223 @@
     },
     {
       "subject": "science",
+      "skillId": "sci_body_health",
+      "totalQuestions": 2,
+      "subskillsCovered": 1,
+      "subskillIds": [
+        "sci_body_general"
+      ],
+      "difficultyDistribution": {
+        "advanced": 2
+      },
+      "expectedErrorCoverageCount": 2,
+      "prerequisiteCoverageCount": 0,
+      "enoughQuestionsForReliableDiagnosis": false,
+      "riskLevel": "high"
+    },
+    {
+      "subject": "science",
+      "skillId": "sci_body_systems",
+      "totalQuestions": 45,
+      "subskillsCovered": 1,
+      "subskillIds": [
+        "sci_body_general"
+      ],
+      "difficultyDistribution": {
+        "standard": 12,
+        "advanced": 9,
+        "basic": 24
+      },
+      "expectedErrorCoverageCount": 45,
+      "prerequisiteCoverageCount": 0,
+      "enoughQuestionsForReliableDiagnosis": true,
+      "riskLevel": "medium"
+    },
+    {
+      "subject": "science",
+      "skillId": "sci_earth_space_cycles",
+      "totalQuestions": 62,
+      "subskillsCovered": 2,
+      "subskillIds": [
+        "sci_earth_space_general",
+        "sci_experiments_general"
+      ],
+      "difficultyDistribution": {
+        "basic": 17,
+        "standard": 24,
+        "advanced": 21
+      },
+      "expectedErrorCoverageCount": 62,
+      "prerequisiteCoverageCount": 0,
+      "enoughQuestionsForReliableDiagnosis": true,
+      "riskLevel": "medium"
+    },
+    {
+      "subject": "science",
+      "skillId": "sci_earth_space_weather",
+      "totalQuestions": 5,
+      "subskillsCovered": 1,
+      "subskillIds": [
+        "sci_earth_space_general"
+      ],
+      "difficultyDistribution": {
+        "advanced": 2,
+        "standard": 3
+      },
+      "expectedErrorCoverageCount": 5,
+      "prerequisiteCoverageCount": 0,
+      "enoughQuestionsForReliableDiagnosis": true,
+      "riskLevel": "medium"
+    },
+    {
+      "subject": "science",
+      "skillId": "sci_environment_ecosystems",
+      "totalQuestions": 53,
+      "subskillsCovered": 2,
+      "subskillIds": [
+        "sci_animals_general",
+        "sci_environment_general"
+      ],
+      "difficultyDistribution": {
+        "advanced": 25,
+        "basic": 7,
+        "standard": 21
+      },
+      "expectedErrorCoverageCount": 53,
+      "prerequisiteCoverageCount": 0,
+      "enoughQuestionsForReliableDiagnosis": true,
+      "riskLevel": "medium"
+    },
+    {
+      "subject": "science",
+      "skillId": "sci_environment_sustainability",
+      "totalQuestions": 13,
+      "subskillsCovered": 1,
+      "subskillIds": [
+        "sci_environment_general"
+      ],
+      "difficultyDistribution": {
+        "basic": 4,
+        "standard": 5,
+        "advanced": 4
+      },
+      "expectedErrorCoverageCount": 13,
+      "prerequisiteCoverageCount": 0,
+      "enoughQuestionsForReliableDiagnosis": true,
+      "riskLevel": "medium"
+    },
+    {
+      "subject": "science",
+      "skillId": "sci_experiments_observation_inference",
+      "totalQuestions": 9,
+      "subskillsCovered": 1,
+      "subskillIds": [
+        "sci_experiments_general"
+      ],
+      "difficultyDistribution": {
+        "advanced": 5,
+        "basic": 1,
+        "standard": 3
+      },
+      "expectedErrorCoverageCount": 9,
+      "prerequisiteCoverageCount": 0,
+      "enoughQuestionsForReliableDiagnosis": true,
+      "riskLevel": "medium"
+    },
+    {
+      "subject": "science",
+      "skillId": "sci_experiments_scientific_method",
+      "totalQuestions": 49,
+      "subskillsCovered": 1,
+      "subskillIds": [
+        "sci_experiments_general"
+      ],
+      "difficultyDistribution": {
+        "basic": 8,
+        "standard": 18,
+        "advanced": 23
+      },
+      "expectedErrorCoverageCount": 49,
+      "prerequisiteCoverageCount": 0,
+      "enoughQuestionsForReliableDiagnosis": true,
+      "riskLevel": "medium"
+    },
+    {
+      "subject": "science",
+      "skillId": "sci_materials_changes",
+      "totalQuestions": 2,
+      "subskillsCovered": 1,
+      "subskillIds": [
+        "sci_materials_general"
+      ],
+      "difficultyDistribution": {
+        "advanced": 2
+      },
+      "expectedErrorCoverageCount": 2,
+      "prerequisiteCoverageCount": 0,
+      "enoughQuestionsForReliableDiagnosis": false,
+      "riskLevel": "high"
+    },
+    {
+      "subject": "science",
+      "skillId": "sci_materials_properties",
+      "totalQuestions": 44,
+      "subskillsCovered": 1,
+      "subskillIds": [
+        "sci_materials_general"
+      ],
+      "difficultyDistribution": {
+        "basic": 14,
+        "standard": 20,
+        "advanced": 10
+      },
+      "expectedErrorCoverageCount": 44,
+      "prerequisiteCoverageCount": 0,
+      "enoughQuestionsForReliableDiagnosis": true,
+      "riskLevel": "medium"
+    },
+    {
+      "subject": "science",
+      "skillId": "sci_plants_growth",
+      "totalQuestions": 39,
+      "subskillsCovered": 1,
+      "subskillIds": [
+        "sci_plants_general"
+      ],
+      "difficultyDistribution": {
+        "basic": 14,
+        "standard": 14,
+        "advanced": 11
+      },
+      "expectedErrorCoverageCount": 39,
+      "prerequisiteCoverageCount": 0,
+      "enoughQuestionsForReliableDiagnosis": true,
+      "riskLevel": "medium"
+    },
+    {
+      "subject": "science",
+      "skillId": "sci_plants_parts",
+      "totalQuestions": 7,
+      "subskillsCovered": 1,
+      "subskillIds": [
+        "sci_plants_general"
+      ],
+      "difficultyDistribution": {
+        "standard": 5,
+        "basic": 2
+      },
+      "expectedErrorCoverageCount": 7,
+      "prerequisiteCoverageCount": 0,
+      "enoughQuestionsForReliableDiagnosis": true,
+      "riskLevel": "medium"
+    },
+    {
+      "subject": "science",
       "skillId": "sci_respiration_concept",
       "totalQuestions": 1,
       "subskillsCovered": 1,
       "subskillIds": [
-        "science_respiratory_gas_exchange"
+        "sci_body_general"
       ],
       "difficultyDistribution": {
         "standard": 1

@@ -1,0 +1,5 @@
+
+> leo-k-kids-site@1.0.0 test:parent-ai-phase-e:external
+> tsx scripts/parent-ai-phase-e-external-simulator.mjs
+
+OK parent-ai-phase-e-external-simulator

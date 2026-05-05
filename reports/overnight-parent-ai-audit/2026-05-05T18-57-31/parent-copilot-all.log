@@ -1,0 +1,105 @@
+
+> leo-k-kids-site@1.0.0 test:parent-copilot-phase6
+> tsx scripts/parent-copilot-phase6-hebrew-robustness-suite.mjs
+
+parent-copilot-phase6-hebrew-robustness-suite: PASS
+
+
+---
+
+
+> leo-k-kids-site@1.0.0 test:parent-copilot-observability-contract
+> tsx scripts/parent-copilot-observability-contract-suite.mjs
+
+parent-copilot-observability-contract-suite: OK
+
+
+---
+
+
+> leo-k-kids-site@1.0.0 test:parent-copilot-parent-render
+> tsx scripts/parent-copilot-parent-render-suite.mjs
+
+parent-copilot-parent-render-suite: OK
+
+
+---
+
+
+> leo-k-kids-site@1.0.0 test:parent-copilot-product-behavior
+> tsx scripts/parent-copilot-product-behavior-suite.mjs
+
+parent-copilot-product-behavior-suite: OK
+
+
+---
+
+
+> leo-k-kids-site@1.0.0 test:parent-copilot-classifier-edge-matrix
+> tsx scripts/parent-copilot-classifier-edge-matrix-suite.mjs
+
+parent-copilot-classifier-edge-matrix-suite: OK
+
+
+---
+
+
+> leo-k-kids-site@1.0.0 test:parent-copilot-scope-collision
+> tsx scripts/parent-copilot-scope-collision-suite.mjs
+
+parent-copilot-scope-collision-suite: OK
+
+
+---
+
+
+> leo-k-kids-site@1.0.0 test:parent-copilot-semantic-nearmiss
+> tsx scripts/parent-copilot-semantic-nearmiss-suite.mjs
+
+parent-copilot-semantic-nearmiss-suite: OK
+
+
+---
+
+
+> leo-k-kids-site@1.0.0 test:parent-copilot-broad-report-routing
+> tsx scripts/parent-copilot-question-class-behavior-suite.mjs
+
+parent-copilot-question-class-behavior-suite: OK
+
+
+---
+
+
+> leo-k-kids-site@1.0.0 test:parent-copilot-recommendation-semantic
+> tsx scripts/parent-copilot-recommendation-semantic-suite.mjs
+
+parent-copilot-recommendation-semantic-suite: OK
+
+
+---
+
+
+> leo-k-kids-site@1.0.0 test:parent-copilot-question-class-behavior
+> tsx scripts/parent-copilot-question-class-behavior-suite.mjs
+
+parent-copilot-question-class-behavior-suite: OK
+
+
+---
+
+
+> leo-k-kids-site@1.0.0 test:parent-copilot-async-llm-gate
+> tsx scripts/parent-copilot-async-llm-gate-suite.mjs
+
+parent-copilot-async-llm-gate-suite: OK
+
+
+---
+
+
+> leo-k-kids-site@1.0.0 test:parent-copilot-copilot-turn-api
+> tsx scripts/parent-copilot-copilot-turn-api-selftest.mjs && tsx scripts/parent-copilot-server-snapshot-selftest.mjs
+
+OK parent-copilot-copilot-turn-api-selftest
+OK parent-copilot-server-snapshot-selftest

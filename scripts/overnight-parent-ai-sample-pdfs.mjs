@@ -9,6 +9,8 @@
  * Playwright harness: mocks `/api/student/me` (same family as qa-parent-pdf-export) and waits for
  * `#parent-report-detailed-print` + attached `.parent-report-parent-ai-insight` (same visibility contract
  * as qa-parent-pdf-export.mjs) so print/PDF is never captured on a half-hydrated route.
+ *
+ * Logs: stdout lines with ISO timestamps (flushed before long waits for overnight log capture).
  */
 import fs from "fs";
 import path from "path";
@@ -42,6 +44,11 @@ const REQUIRED_HEBREW_SNIPPET = "תובנה להורה";
 /** Cold first-hit on dev can exceed `domcontentloaded`+insight without the print root (Phase C.1 parity). */
 const DETAILED_PRINT_ROOT_MS = 240_000;
 const INSIGHT_WAIT_MS = 240_000;
+
+/** Immediate stdout line (newline flush) before long Playwright waits. */
+function logLine(msg) {
+  process.stdout.write(`[${new Date().toISOString()}] [overnight-sample-pdfs] ${msg}\n`);
+}
 
 /**
  * Entire body runs in Chromium; must not reference Node or outer scope.
@@ -251,7 +258,9 @@ async function mockStudentMe(page) {
  * @param {string} label
  */
 async function waitForDetailedReportReadyForPrint(page, label) {
+  logLine(`waiting for detailed print root (#parent-report-detailed-print) label=${label}`);
   await page.waitForSelector("#parent-report-detailed-print", { timeout: DETAILED_PRINT_ROOT_MS });
+  logLine(`waiting for Parent AI insight (detailed, .parent-report-parent-ai-insight) label=${label}`);
   await page.waitForSelector(".parent-report-parent-ai-insight", {
     timeout: INSIGHT_WAIT_MS,
     state: "attached",
@@ -260,6 +269,7 @@ async function waitForDetailedReportReadyForPrint(page, label) {
   if (!t.includes("תובנה")) {
     throw new Error(`[${label}] Parent AI insight card missing heading text (expected תובנה in card)`);
   }
+  logLine(`detailed insight ready label=${label}`);
 }
 
 /**
@@ -267,6 +277,7 @@ async function waitForDetailedReportReadyForPrint(page, label) {
  * @param {string} label
  */
 async function waitForShortReportInsightForPrint(page, label) {
+  logLine(`waiting for Parent AI insight (short report) label=${label}`);
   await page.waitForSelector(".parent-report-parent-ai-insight", {
     timeout: INSIGHT_WAIT_MS,
     state: "attached",
@@ -275,9 +286,11 @@ async function waitForShortReportInsightForPrint(page, label) {
   if (!t.includes("תובנה")) {
     throw new Error(`[${label}] short report insight missing heading text`);
   }
+  logLine(`short insight ready label=${label}`);
 }
 
 async function main() {
+  logLine(`start script baseUrl=${base} outDir=${outDir}`);
   fs.mkdirSync(outDir, { recursive: true });
   const summary = {
     baseUrl: base,
@@ -290,7 +303,9 @@ async function main() {
   };
 
   const browser = await chromium.launch({ headless: true });
+  logLine("browser launched");
   for (const profileId of PROFILE_IDS) {
+    logLine(`start profile=${profileId}`);
     const sessionNow = Date.now();
     const payload = { profileId, now: sessionNow };
     const context = await browser.newContext({ viewport: { width: 1366, height: 900 }, locale: "he-IL" });
@@ -299,27 +314,35 @@ async function main() {
     const label = profileId;
     try {
       await mockStudentMe(page);
+      logLine(`profile=${label} goto / (seed origin)`);
       await page.goto(`${base}/`, { waitUntil: "domcontentloaded", timeout: 120000 });
       await page.evaluate(browserSeed, payload);
 
+      logLine(`profile=${label} start detailed PDF flow → /learning/parent-report-detailed`);
       await page.goto(`${base}/learning/parent-report-detailed`, { waitUntil: "domcontentloaded", timeout: 120000 });
       await waitForDetailedReportReadyForPrint(page, `${label}-detailed`);
+      logLine(`profile=${label} emulate print + page.pdf (detailed full)`);
       await page.emulateMedia({ media: "print" });
       let buf = await page.pdf({ ...pdfOpts });
       const detailedPath = path.join(outDir, `${label}__parent-report-detailed-full.pdf`);
       fs.writeFileSync(detailedPath, buf);
+      logLine(`profile=${label} wrote detailed PDF path=${detailedPath} bytes=${buf.length}`);
 
+      logLine(`profile=${label} start short PDF flow → /learning/parent-report`);
       await page.goto(`${base}/learning/parent-report`, { waitUntil: "domcontentloaded", timeout: 120000 });
       await waitForShortReportInsightForPrint(page, `${label}-short`);
+      logLine(`profile=${label} emulate print + page.pdf (short)`);
       await page.emulateMedia({ media: "print" });
       buf = await page.pdf({ ...pdfOpts });
       const shortPath = path.join(outDir, `${label}__parent-report-short.pdf`);
       fs.writeFileSync(shortPath, buf);
+      logLine(`profile=${label} wrote short PDF path=${shortPath} bytes=${buf.length}`);
 
       summary.profiles.push({ id: label, detailedPath, shortPath, status: "ok" });
       summary.generatedPdfCount += 2;
       summary.generatedFiles.push(path.basename(detailedPath), path.basename(shortPath));
     } catch (e) {
+      logLine(`profile=${label} ERROR ${String(e?.message || e)}`);
       summary.ok = false;
       summary.validationErrors.push(`${label}: ${String(e?.message || e)}`);
       summary.profiles.push({ id: label, status: "error", error: String(e?.message || e) });
@@ -328,6 +351,7 @@ async function main() {
     }
   }
   await browser.close();
+  logLine("browser closed; starting post-generation validation");
 
   const summaryPath = path.join(outDir, "sample-pdfs-summary.json");
 
@@ -344,25 +368,34 @@ async function main() {
     if (p.status !== "ok") continue;
     for (const key of ["detailedPath", "shortPath"]) {
       const fp = p[key];
+      const kind = key === "detailedPath" ? "detailed" : "short";
       if (!fp || !fs.existsSync(fp)) {
         summary.ok = false;
         summary.validationErrors.push(`Missing file: ${fp}`);
+        logLine(`validation FAIL profile=${p.id} kind=${kind} missing file`);
         continue;
       }
       const st = fs.statSync(fp);
       if (st.size < MIN_PDF_BYTES) {
         summary.ok = false;
         summary.validationErrors.push(`PDF too small (${st.size} bytes): ${fp}`);
+        logLine(`validation FAIL profile=${p.id} kind=${kind} file=${path.basename(fp)} reason=min_size bytes=${st.size} min=${MIN_PDF_BYTES}`);
+        continue;
       }
       try {
         const text = await extractPdfText(fs.readFileSync(fp));
-        if (!text.includes(REQUIRED_HEBREW_SNIPPET)) {
+        const snippetOk = text.includes(REQUIRED_HEBREW_SNIPPET);
+        if (!snippetOk) {
           summary.ok = false;
           summary.validationErrors.push(`PDF missing expected Hebrew insight text (${REQUIRED_HEBREW_SNIPPET}): ${path.basename(fp)}`);
+          logLine(`validation FAIL profile=${p.id} kind=${kind} file=${path.basename(fp)} reason=missing_hebrew_snippet`);
+        } else {
+          logLine(`validation OK profile=${p.id} kind=${kind} file=${path.basename(fp)} bytes=${st.size} snippetOk=true`);
         }
       } catch (e) {
         summary.ok = false;
         summary.validationErrors.push(`PDF text extract failed for ${path.basename(fp)}: ${e?.message || e}`);
+        logLine(`validation FAIL profile=${p.id} kind=${kind} file=${path.basename(fp)} reason=extract_error ${e?.message || e}`);
       }
     }
   }
@@ -375,6 +408,7 @@ async function main() {
   }
 
   fs.writeFileSync(summaryPath, JSON.stringify(summary, null, 2), "utf8");
+  logLine(`wrote summary ${summaryPath} ok=${summary.ok}`);
 
   const label = summary.ok ? "OK" : "FAIL";
   console.log("overnight-parent-ai-sample-pdfs:", label, outDir);

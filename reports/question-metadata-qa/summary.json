@@ -1,19 +1,19 @@
 {
   "version": 1,
-  "generatedAt": "2026-05-04T18:46:12.537Z",
+  "generatedAt": "2026-05-05T19:19:46.811Z",
   "gate": {
     "scanOutcome": "ok",
     "partialLoadErrors": false,
     "advisoryStatus": "WARN",
     "gateDecision": "pass_with_advisory",
     "blockingIssueCount": 0,
-    "advisoryIssueCount": 15876,
+    "advisoryIssueCount": 15960,
     "exemptedIssueCount": 878,
     "blockingIssuesByCode": {},
     "advisoryIssuesByCode": {
-      "missing_prerequisite_skill_ids": 5750,
-      "implicit_id_only": 5373,
-      "missing_explanation": 4753
+      "missing_prerequisite_skill_ids": 5791,
+      "implicit_id_only": 5414,
+      "missing_explanation": 4755
     },
     "blockingFiles": [],
     "knownExemptions": {
@@ -34,7 +34,7 @@
       "subjectSourceMatchers": {}
     },
     "exitPolicy": "Exit 1 if scanOutcome is error (no records or load failures) or gateDecision is fail_blocking_metadata. Advisory gaps alone exit 0.",
-    "recordsParsed": 5756,
+    "recordsParsed": 5797,
     "loadErrorsCount": 0,
     "proceduralSourcesDocumented": 4
   },
@@ -89,25 +89,25 @@
     ]
   },
   "totals": {
-    "questionsScanned": 5756,
+    "questionsScanned": 5797,
     "highRiskCount": 439,
     "mediumRiskCount": 0,
     "duplicateDeclaredIds": 0,
-    "skillBucketsLowVolume": 299,
+    "skillBucketsLowVolume": 343,
     "minQuestionsPerSkillThreshold": 5
   },
   "topMissingMetadataFields": [
     [
       "missing_prerequisite_skill_ids",
-      5750
+      5791
     ],
     [
       "implicit_id_only",
-      5373
+      5414
     ],
     [
       "missing_explanation",
-      4753
+      4755
     ],
     [
       "missing_skillId",
@@ -191,21 +191,21 @@
     },
     "english": {
       "subject": "english",
-      "totalQuestions": 670,
+      "totalQuestions": 711,
       "filesScanned": 3,
       "filePaths": [
         "data/english-questions/grammar-pools.js",
         "data/english-questions/sentence-pools.js",
         "data/english-questions/translation-pools.js"
       ],
-      "pctWithSkillId": 34.5,
-      "pctWithSubskillId": 34.5,
+      "pctWithSkillId": 38.3,
+      "pctWithSubskillId": 38.3,
       "pctWithDifficulty": 100,
       "pctWithCognitiveLevel": 100,
       "pctWithExpectedErrorTypes": 100,
       "pctWithPrerequisiteSkillIds": 0,
       "pctWithCorrectAnswer": 100,
-      "pctWithExplanation": 92.5,
+      "pctWithExplanation": 92.7,
       "duplicateIdsInSubject": 0,
       "highRiskQuestionCount": 439,
       "mediumRiskQuestionCount": 0,
@@ -219,11 +219,11 @@
       "topIssueCodes": [
         [
           "implicit_id_only",
-          670
+          711
         ],
         [
           "missing_prerequisite_skill_ids",
-          670
+          711
         ],
         [
           "missing_skillId",
@@ -235,11 +235,11 @@
         ],
         [
           "missing_explanation",
-          50
+          52
         ]
       ],
       "readinessScore": "weak",
-      "avgCompleteness": 0.677
+      "avgCompleteness": 0.686
     },
     "moledet-geography": {
       "subject": "moledet-geography",

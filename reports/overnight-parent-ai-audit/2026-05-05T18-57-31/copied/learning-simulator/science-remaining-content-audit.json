@@ -1,0 +1,110 @@
+{
+  "generatedAt": "2026-05-02T12:00:00.000Z",
+  "source": "reports/learning-simulator/content-gap-backlog.json",
+  "scienceItemsExtracted": 21,
+  "missingCellsByTopic": {
+    "science:body": [
+      "g1|science|body|hard",
+      "g2|science|body|hard",
+      "g5|science|body|easy",
+      "g6|science|body|easy"
+    ],
+    "science:earth_space": [
+      "g1|science|earth_space|hard",
+      "g2|science|earth_space|hard",
+      "g2|science|earth_space|medium",
+      "g5|science|earth_space|easy",
+      "g6|science|earth_space|easy"
+    ],
+    "science:environment": [
+      "g1|science|environment|hard",
+      "g2|science|environment|hard",
+      "g5|science|environment|easy",
+      "g6|science|environment|easy"
+    ],
+    "science:materials": [
+      "g1|science|materials|hard",
+      "g2|science|materials|hard",
+      "g5|science|materials|easy",
+      "g6|science|materials|easy"
+    ],
+    "science:plants": ["g1|science|plants|hard"],
+    "science:experiments": [
+      "g2|science|experiments|hard",
+      "g5|science|experiments|easy",
+      "g6|science|experiments|easy"
+    ]
+  },
+  "plannedAdditions": [
+    {
+      "id": "science_remaining_g1_hard_body",
+      "covers": ["g1|science|body|hard"]
+    },
+    {
+      "id": "science_remaining_g1_hard_earth_space",
+      "covers": ["g1|science|earth_space|hard"]
+    },
+    {
+      "id": "science_remaining_g1_hard_environment",
+      "covers": ["g1|science|environment|hard"]
+    },
+    {
+      "id": "science_remaining_g1_hard_materials",
+      "covers": ["g1|science|materials|hard"]
+    },
+    {
+      "id": "science_remaining_g1_hard_plants",
+      "covers": ["g1|science|plants|hard"]
+    },
+    {
+      "id": "science_remaining_g2_hard_body",
+      "covers": ["g2|science|body|hard"]
+    },
+    {
+      "id": "science_remaining_g2_earth_space_easy_hard",
+      "covers": [
+        "g2|science|earth_space|hard",
+        "g2|science|earth_space|medium"
+      ],
+      "note": "minLevel easy, maxLevel hard spans ranks 0–2 including medium (1) and hard (2)"
+    },
+    {
+      "id": "science_remaining_g2_hard_environment",
+      "covers": ["g2|science|environment|hard"]
+    },
+    {
+      "id": "science_remaining_g2_hard_experiments",
+      "covers": ["g2|science|experiments|hard"]
+    },
+    {
+      "id": "science_remaining_g2_hard_materials",
+      "covers": ["g2|science|materials|hard"]
+    },
+    {
+      "id": "science_remaining_g56_easy_body",
+      "covers": ["g5|science|body|easy", "g6|science|body|easy"]
+    },
+    {
+      "id": "science_remaining_g56_easy_earth_space",
+      "covers": ["g5|science|earth_space|easy", "g6|science|earth_space|easy"]
+    },
+    {
+      "id": "science_remaining_g56_easy_environment",
+      "covers": ["g5|science|environment|easy", "g6|science|environment|easy"]
+    },
+    {
+      "id": "science_remaining_g56_easy_experiments",
+      "covers": ["g5|science|experiments|easy", "g6|science|experiments|easy"]
+    },
+    {
+      "id": "science_remaining_g56_easy_materials",
+      "covers": ["g5|science|materials|easy", "g6|science|materials|easy"]
+    }
+  ],
+  "mcqRowsAdded": 15,
+  "expectedOutcome": {
+    "scienceBacklogItems": "21 → 0",
+    "totalBacklogItems": "36 → 15",
+    "remainingSubjects": ["english:translation"]
+  }
+}
