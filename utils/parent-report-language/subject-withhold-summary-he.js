@@ -65,6 +65,7 @@ export function unitsSuggestInstability(units) {
  *   units?: unknown[],
  *   subjectLabelHe?: string,
  *   reportSubjectAccuracy?: number | null,
+ *   reportTotalQuestions?: number,
  * }} ctx
  */
 export function withholdSummaryCopyHe(mode, ctx) {
@@ -86,10 +87,25 @@ export function withholdSummaryCopyHe(mode, ctx) {
   const dc = Math.max(0, Number(ctx.diagnosedCount) || 0);
   const pattern = String(ctx.weakPatternHe || "").trim();
   const units = Array.isArray(ctx.units) ? ctx.units : [];
+  const reportTotalQuestions = Math.max(0, Number(ctx.reportTotalQuestions) || 0);
+  /** Plenty of practice overall → avoid generic cautious row/topic copy for one thinner slice */
+  const globalVolumeSupportsRichCopy = reportTotalQuestions >= 80;
 
   const thinLine = m === "subject" ? GENERIC_CAUTIOUS_SUBJECT_LINE_HE : GENERIC_CAUTIOUS_TOPIC_LINE_HE;
 
   if (volume > 0 && volume < 35) {
+    if (globalVolumeSupportsRichCopy) {
+      if (dc >= 1 && pattern) return C.weakPattern(pattern);
+      if (reportAcc != null && reportAcc > 0 && reportAcc <= 55 && volume >= 15) {
+        if (m === "subject") {
+          return subjectLabelHe
+            ? `ב${subjectLabelHe} נראה קושי יחסי לפי הדיוק בסיכום התרגול — כדאי להתמקד בתרגול קצר וממוקד.`
+            : C.medium;
+        }
+        return TOPIC_COPY.medium;
+      }
+      return volume >= 15 ? C.medium : C.richStable;
+    }
     return thinLine;
   }
 
@@ -128,6 +144,9 @@ export function withholdSummaryCopyHe(mode, ctx) {
   }
 
   if (volume >= 10) {
+    if (globalVolumeSupportsRichCopy) {
+      return C.medium;
+    }
     return thinLine;
   }
 

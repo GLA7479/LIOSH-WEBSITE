@@ -2225,6 +2225,7 @@ function buildSubjectProfilesFromV2(baseReport) {
       }
       const sumQ = units.reduce((acc, u) => acc + (Number(u?.evidenceTrace?.[0]?.value?.questions) || 0), 0);
       const reportQ = subjectQuestionCountFromReportSummary(baseReport, sid);
+      const totalReportQ = Math.max(0, Number(baseReport?.summary?.totalQuestions) || 0);
       return withholdSummaryCopyHe("subject", {
         subjectReportQuestions: reportQ,
         sumUnitQuestions: sumQ,
@@ -2234,6 +2235,7 @@ function buildSubjectProfilesFromV2(baseReport) {
         units,
         subjectLabelHe: SUBJECT_LABEL_HE[sid],
         reportSubjectAccuracy: subjectAccuracyFromReportSummary(baseReport, sid),
+        reportTotalQuestions: totalReportQ,
       });
     })();
 

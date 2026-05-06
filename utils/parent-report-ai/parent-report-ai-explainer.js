@@ -77,17 +77,25 @@ export function buildStrictParentReportAIInput(raw) {
  */
 export function getDeterministicParentReportExplanation(input) {
   const subjectHe = SUBJECT_LABEL_HE[input.subject] || "המקצוע שנלמד";
-  const dc = input.dataConfidence;
-  const thin = dc === "thin" || dc === "low";
+  const dc = String(input.dataConfidence || "").toLowerCase();
+  const accBand = String(input.accuracyBand || "").toLowerCase();
 
   const parts = [];
-  if (thin) {
+  if (dc === "thin") {
     parts.push(
-      `לגבי ${subjectHe}: לעת עתה יש מידע מוגבל מתוך התרגולים שנאספו בתקופה זו ולכן התמונה להורה היא זהירה ומצומצמת.`
+      `לגבי ${subjectHe}: מהתרגול המועט שנאסף אפשר לקבל כיוון ראשוני בלבד.`
+    );
+  } else if (dc === "low") {
+    parts.push(
+      `לגבי ${subjectHe}: הנתונים בטווח עדיין מצומצמים — מהתרגול שנאסף אפשר לקבל כיוון ראשוני בלבד.`
+    );
+  } else if (accBand === "low" || accBand === "mixed") {
+    parts.push(
+      `לגבי ${subjectHe}: מהתרגול שנאסף אפשר לראות תחום שכדאי לחזק בבית — כדאי להמשיך לעקוב ולא לקבוע חד משמעית רק ממפגש בודד.`
     );
   } else {
     parts.push(
-      `לגבי ${subjectHe}: מהתרגול שנאסף אפשר לראות כיוון ראשוני — כדאי להמשיך לעקוב ולא לקבוע מסקנה חדה רק ממפגש בודד.`,
+      `לגבי ${subjectHe}: מהתרגול שנאסף אפשר לראות תמונה ברורה יותר של חוזקות ונושאים לחיזוק — כדאי להמשיך לעקוב בעדינות.`,
     );
   }
 

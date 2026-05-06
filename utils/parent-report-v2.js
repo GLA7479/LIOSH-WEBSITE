@@ -1157,11 +1157,12 @@ function intelligenceSummaryFromV2Units(list) {
 
 /**
  * @param {unknown[]} units
- * @param {{ subjectReportQuestions?: number, subjectLabelHe?: string, reportSubjectAccuracy?: number|null }} [opts]
+ * @param {{ subjectReportQuestions?: number, subjectLabelHe?: string, reportSubjectAccuracy?: number|null, reportTotalQuestions?: number }} [opts]
  */
 function summarizeV2UnitsForSubject(units, opts = {}) {
   const list = Array.isArray(units) ? units : [];
   const subjectReportQuestions = Math.max(0, Number(opts.subjectReportQuestions) || 0);
+  const reportTotalQuestions = Math.max(0, Number(opts.reportTotalQuestions) || 0);
   const subjectLabelHe = String(opts.subjectLabelHe || "").trim();
   const reportSubjectAccuracyRaw =
     opts.reportSubjectAccuracy == null ? null : Number(opts.reportSubjectAccuracy);
@@ -1336,6 +1337,7 @@ function summarizeV2UnitsForSubject(units, opts = {}) {
           units: list,
           subjectLabelHe,
           reportSubjectAccuracy,
+          reportTotalQuestions,
         });
         return normalizeParentFacingHe(`בנושא ${name}: ${inner}`);
       }
@@ -1414,7 +1416,13 @@ export function buildDiagnosticCardsForSubjectForTests(subjectId, subjectUnits, 
  * @param {unknown} diagnosticEngineV2
  * @param {Record<string, Record<string, unknown>>|null|undefined} maps
  */
-function buildPatternDiagnosticsFromV2(diagnosticEngineV2, maps, subjectQuestionCounts, subjectAccuracyById) {
+function buildPatternDiagnosticsFromV2(
+  diagnosticEngineV2,
+  maps,
+  subjectQuestionCounts,
+  subjectAccuracyById,
+  reportTotalQuestions,
+) {
   const units = Array.isArray(diagnosticEngineV2?.units) ? diagnosticEngineV2.units : [];
   const counts =
     subjectQuestionCounts && typeof subjectQuestionCounts === "object" ? subjectQuestionCounts : {};
@@ -1429,12 +1437,14 @@ function buildPatternDiagnosticsFromV2(diagnosticEngineV2, maps, subjectQuestion
     const accRaw = accMap[sid];
     const reportAcc =
       accRaw != null && Number.isFinite(Number(accRaw)) ? Math.round(Number(accRaw)) : null;
+    const rtq = Math.max(0, Number(reportTotalQuestions) || 0);
     subjects[sid] = {
       subjectLabelHe: labelHe || sid,
       ...summarizeV2UnitsForSubject(subjectUnits, {
         subjectReportQuestions: srQ,
         subjectLabelHe: labelHe,
         reportSubjectAccuracy: reportAcc,
+        reportTotalQuestions: rtq,
       }),
       diagnosticCards: buildDiagnosticCardsForSubject(sid, subjectUnits, topicMap),
     };
@@ -2103,7 +2113,13 @@ export function generateParentReportV2(
     "moledet-geography": moledetGeographyAccuracy,
   };
   const patternDiagnostics = hasV2Units
-    ? buildPatternDiagnosticsFromV2(diagnosticEngineV2, maps, subjectQuestionCounts, subjectAccuracyById)
+    ? buildPatternDiagnosticsFromV2(
+        diagnosticEngineV2,
+        maps,
+        subjectQuestionCounts,
+        subjectAccuracyById,
+        totalQuestions,
+      )
     : legacyPatternDiagnostics;
 
   const INSUFFICIENT_SUBJECT_Q = 8;

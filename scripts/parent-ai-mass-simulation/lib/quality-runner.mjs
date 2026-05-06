@@ -78,8 +78,8 @@ function collectDetailedParentFacingBlob(detailed) {
   return parts.join("\n");
 }
 
-function scanReportProfileConsistency(student, shortMd, detailedMd) {
-  const combined = `${shortMd}\n${detailedMd}`;
+function scanReportProfileConsistency(student, shortMd, detailedMd, pdfExtractedText = "") {
+  const combined = `${shortMd}\n${detailedMd}\n${pdfExtractedText}`;
   const issues = [];
   const p = student.profileType;
 
@@ -233,7 +233,13 @@ export async function runQualitySuite(ctx) {
       fail("internal_terms_in_report_html", student.studentId, `parent-reports/${student.studentId}/`);
     }
 
-    const profIssues = scanReportProfileConsistency(student, shortMd, detailedMd);
+    let pdfExtractedForStudent = "";
+    const shortPdfQ = path.join(ctx.outputRoot, "pdfs", "short", `${student.studentId}.pdf`);
+    const detailedPdfQ = path.join(ctx.outputRoot, "pdfs", "detailed", `${student.studentId}.pdf`);
+    if (fs.existsSync(shortPdfQ)) pdfExtractedForStudent += `${await extractPdfText(shortPdfQ)}\n`;
+    if (fs.existsSync(detailedPdfQ)) pdfExtractedForStudent += `${await extractPdfText(detailedPdfQ)}\n`;
+
+    const profIssues = scanReportProfileConsistency(student, shortMd, detailedMd, pdfExtractedForStudent);
     for (const pi of profIssues) {
       totalChecks += 1;
       fail(pi.code, pi.detail, `parent-reports/${student.studentId}/short.md`);
@@ -260,7 +266,7 @@ export async function runQualitySuite(ctx) {
 
     const contractBlob = collectDetailedParentFacingBlob(detailedObj || {});
     const jsonBlob = `${contractBlob}\n${shortObj ? JSON.stringify(shortObj) : ""}\n${detailedObj ? JSON.stringify(detailedObj) : ""}`;
-    const megaBlob = `${contractBlob}\n${shortMd}\n${detailedMd}\n${jsonBlob}`;
+    const megaBlob = `${contractBlob}\n${shortMd}\n${detailedMd}\n${pdfExtractedForStudent}\n${jsonBlob}`;
     const overallQ = Number(detailedObj?.overallSnapshot?.totalQuestions) || 0;
     const p = student.profileType;
 
