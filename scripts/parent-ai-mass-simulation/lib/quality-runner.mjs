@@ -57,7 +57,10 @@ function scanReportProfileConsistency(student, shortMd, detailedMd) {
   if (p === "weak_english" && !/אנגלית/i.test(combined)) {
     issues.push({ code: "weak_english_missing_signal", detail: student.studentId });
   }
-  if (p === "thin_data" && !/מעט|מוגבל|לא מספיק|דליל/i.test(combined)) {
+  if (
+    p === "thin_data" &&
+    !/מעט|מוגבל|לא מספיק|דליל|מצומצם/i.test(combined)
+  ) {
     issues.push({ code: "thin_data_missing_language", detail: student.studentId });
   }
   return issues;

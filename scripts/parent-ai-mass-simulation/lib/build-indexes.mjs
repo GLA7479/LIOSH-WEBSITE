@@ -26,6 +26,8 @@ export function buildQuestionsIndex(questionStats, questionRows) {
     bySubjectQuestionSource: questionStats.bySubjectQuestionSource ?? {},
     questionQualityValidationScopeNote:
       "איכות שאלות נבחנת רק במקצועות עם שאלות real. מקצועות placeholder אינם מוכיחים איכות בנק שאלות.",
+    questionRunsVsReportEvidenceNote:
+      "question-runs/ הוא סימולציית QA נפרדת ולא מזין את generateParentReportV2. ראה EVIDENCE_SOURCES.md ו-report-evidence-runs/ לראיות שבדוח.",
   };
 }
 
@@ -117,6 +119,7 @@ export function studentsIndexPayload(students) {
       parentAiChatFiles: s.parentAiChatFiles,
       reportFiles: s.reportFiles,
       pdfFiles: s.pdfFiles,
+      reportEvidenceFiles: s.reportEvidenceFiles ?? null,
       simulatedAnswers: s.generatedAnswers?.length ?? 0,
     })),
   };

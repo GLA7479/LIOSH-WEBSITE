@@ -1,3 +1,0 @@
-# Mastery engine QA
-
-PASS

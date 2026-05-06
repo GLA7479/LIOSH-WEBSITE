@@ -40,6 +40,9 @@ function sessionsFromSpec(rng, grade, count, correctRatio, levelMix, now) {
 }
 
 function mathOperationsSessions(rng, grade, profileType, now) {
+  if (profileType === "weak_math") {
+    return sessionsFromSpec(rng, grade, 12, 0.26, ["easy", "medium", "hard", "mixed"], now);
+  }
   let ratio = 0.72;
   let count = 5;
   if (profileType.includes("weak") || profileType === "thin_data") {
@@ -102,10 +105,16 @@ export function applyMassStudentSeed(student, storage = globalThis.localStorage)
   set(store, "mleo_player_name", student.displayName);
 
   const mathSessions = mathOperationsSessions(rng, grade, pid, now);
+  const subCount =
+    pid === "weak_math"
+      ? Math.max(8, Math.floor(mathSessions.length / 2))
+      : Math.max(1, Math.floor(mathSessions.length / 2));
+  const subRatio = pid === "weak_math" ? 0.27 : 0.65;
+  const subSessions = sessionsFromSpec(rng, grade, subCount, subRatio, ["easy", "medium"], now);
   set(store, "mleo_time_tracking", {
     operations: {
       addition: { sessions: mathSessions },
-      subtraction: { sessions: sessionsFromSpec(rng, grade, Math.max(1, Math.floor(mathSessions.length / 2)), 0.65, ["easy", "medium"], now) },
+      subtraction: { sessions: subSessions },
     },
   });
 
@@ -117,10 +126,18 @@ export function applyMassStudentSeed(student, storage = globalThis.localStorage)
     },
     { t: 0, c: 0 }
   );
+  const subTotals = subSessions.reduce(
+    (a, s) => {
+      a.t += s.total;
+      a.c += s.correct;
+      return a;
+    },
+    { t: 0, c: 0 }
+  );
   set(store, "mleo_math_master_progress", {
     progress: {
       addition: { total: mathTotals.t || 20, correct: mathTotals.c || 12 },
-      subtraction: { total: 40, correct: 26 },
+      subtraction: { total: subTotals.t || 40, correct: subTotals.c || 26 },
     },
   });
 
@@ -155,12 +172,40 @@ export function applyMassStudentSeed(student, storage = globalThis.localStorage)
   function fillTopic(subjectKey, tracking, topic) {
     const { n, r } = sessionIntensity();
     let ratio = r;
-    if (isWeakSubject(subjectKey)) ratio = Math.min(ratio, 0.48);
-    if (subjectKey === "math" && pid === "weak_math") ratio = 0.35;
-    if (subjectKey === "hebrew" && pid === "weak_hebrew") ratio = 0.36;
-    if (subjectKey === "english" && pid === "weak_english") ratio = 0.36;
-    if (pid === "strong_stable") ratio = Math.max(ratio, 0.85);
-    const count = pid === "thin_data" ? 1 : n;
+    let count = n;
+
+    if (pid === "thin_data") {
+      const sess = sessionsFromSpec(rng, grade, 1, 0.45, ["easy", "medium", "hard"], now);
+      addSessions(tracking, topic, sess);
+      return sess.reduce((a, s) => ({ t: a.t + s.total, c: a.c + s.correct }), { t: 0, c: 0 });
+    }
+
+    if (pid === "weak_math") {
+      if (subjectKey === "math") {
+        ratio = 0.26;
+        count = Math.max(n, 10);
+      } else {
+        ratio = 0.69;
+      }
+    } else if (pid === "weak_hebrew") {
+      if (subjectKey === "hebrew") {
+        ratio = 0.27;
+        count = Math.max(n, 10);
+      } else {
+        ratio = 0.68;
+      }
+    } else if (pid === "weak_english") {
+      if (subjectKey === "english") {
+        ratio = 0.27;
+        count = Math.max(n, 10);
+      } else {
+        ratio = 0.68;
+      }
+    } else {
+      if (isWeakSubject(subjectKey)) ratio = Math.min(ratio, 0.48);
+      if (pid === "strong_stable") ratio = Math.max(ratio, 0.85);
+    }
+
     const sess = sessionsFromSpec(rng, grade, count, ratio, ["easy", "medium", "hard"], now);
     addSessions(tracking, topic, sess);
     const sum = sess.reduce((a, s) => ({ t: a.t + s.total, c: a.c + s.correct }), { t: 0, c: 0 });

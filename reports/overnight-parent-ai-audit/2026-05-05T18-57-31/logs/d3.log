@@ -1,6 +1,0 @@
-
-> leo-k-kids-site@1.0.0 test:parent-ai:feedback-aggregate
-> node scripts/parent-ai-feedback-aggregate-test.mjs && node scripts/parent-ai-feedback-aggregate.mjs
-
-OK parent-ai-feedback-aggregate-test
-parent-ai-feedback-aggregate: OK (C:\Users\ERAN YOSEF\Desktop\final projects\FINAL-WEB\LIOSH-WEB-TRY\scripts\fixtures\parent-ai-synthetic-telemetry-events.json → C:\Users\ERAN YOSEF\Desktop\final projects\FINAL-WEB\LIOSH-WEB-TRY\reports\parent-ai\feedback + C:\Users\ERAN YOSEF\Desktop\final projects\FINAL-WEB\LIOSH-WEB-TRY\reports\parent-ai\improvement-suggestions)

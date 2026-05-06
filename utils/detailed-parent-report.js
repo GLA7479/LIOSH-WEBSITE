@@ -1984,6 +1984,75 @@ function applyNarrativeConsistencyToExecutiveSummary(executiveSummary, subjectPr
   };
 }
 
+/** Minimum subject volume to compare cross-subject aggregates in parent-facing copy */
+const CROSS_SUBJECT_WEAK_RANK_MIN_Q = 10;
+/** Minimum accuracy gap (percentage points) vs the next subject to call out one weakest area */
+const CROSS_SUBJECT_WEAK_MIN_GAP = 3;
+
+function collectPerSubjectAggregateRowsFromSummary(summary) {
+  const s = summary && typeof summary === "object" ? summary : {};
+  return [
+    { q: Number(s.mathQuestions) || 0, acc: Number(s.mathAccuracy) || 0, labelHe: SUBJECT_LABEL_HE.math },
+    { q: Number(s.geometryQuestions) || 0, acc: Number(s.geometryAccuracy) || 0, labelHe: SUBJECT_LABEL_HE.geometry },
+    { q: Number(s.englishQuestions) || 0, acc: Number(s.englishAccuracy) || 0, labelHe: SUBJECT_LABEL_HE.english },
+    { q: Number(s.scienceQuestions) || 0, acc: Number(s.scienceAccuracy) || 0, labelHe: SUBJECT_LABEL_HE.science },
+    { q: Number(s.hebrewQuestions) || 0, acc: Number(s.hebrewAccuracy) || 0, labelHe: SUBJECT_LABEL_HE.hebrew },
+    {
+      q: Number(s.moledetGeographyQuestions) || 0,
+      acc: Number(s.moledetGeographyAccuracy) || 0,
+      labelHe: SUBJECT_LABEL_HE["moledet-geography"],
+    },
+  ];
+}
+
+function pickClearWeakestSubjectFromSummaryAggregates(summary) {
+  const ranked = collectPerSubjectAggregateRowsFromSummary(summary)
+    .filter((r) => r.q >= CROSS_SUBJECT_WEAK_RANK_MIN_Q)
+    .sort((a, b) => a.acc - b.acc || b.q - a.q);
+  if (ranked.length < 2) return null;
+  const worst = ranked[0];
+  const second = ranked[1];
+  if (second.acc - worst.acc < CROSS_SUBJECT_WEAK_MIN_GAP) return null;
+  return worst;
+}
+
+function crossSubjectWeakFocusLineHe(worst) {
+  return `לפי סיכום התרגול בטווח שנבחר, הדיוק הנמוך ביותר (כ־${worst.acc}% על ${worst.q} תשובות) מופיע כרגע ב${worst.labelHe} — כדאי לתת שם דגש ממוקד השבוע.`;
+}
+
+/**
+ * When topic-level diagnosis does not surface a clear מיקוד בית, still give parents a Hebrew subject label
+ * from cross-subject accuracy aggregates (same numbers shown elsewhere in the report).
+ */
+function augmentExecutiveSummaryWithCrossSubjectAccuracyWeakSignal(executiveSummary, summary) {
+  const es = executiveSummary && typeof executiveSummary === "object" ? { ...executiveSummary } : {};
+  const totalQ = Number(summary?.totalQuestions) || 0;
+  /** Sparse windows (e.g. thin practice): rank-across-subjects headlines are misleading — keep topic/engine copy only */
+  if (totalQ > 0 && totalQ < 120) return es;
+
+  const worst = pickClearWeakestSubjectFromSummaryAggregates(summary);
+  if (!worst) return es;
+
+  const line = crossSubjectWeakFocusLineHe(worst);
+  const blob = [
+    String(es.homeFocusHe || ""),
+    ...(Array.isArray(es.majorTrendsHe) ? es.majorTrendsHe : []).map(String),
+    String(es.cautionNoteHe || ""),
+  ].join("\n");
+  if (blob.includes(worst.labelHe)) return es;
+
+  const prevHome = String(es.homeFocusHe || "");
+  const genericHome = !prevHome.trim() || /עדיין אין מוקד ברור/.test(prevHome);
+
+  if (genericHome) {
+    es.homeFocusHe = line;
+  } else {
+    es.homeFocusHe = `${line} ${prevHome}`.trim();
+  }
+
+  return es;
+}
+
 /**
  * Align detailed subject trend copy with row-level `trend.summaryHe` when present (same maps as V2).
  * @param {object|null|undefined} mapRow
@@ -2408,6 +2477,10 @@ export function buildDetailedParentReportFromBaseReport(baseReport, meta = {}) {
     };
   });
   executiveSummary = applyNarrativeConsistencyToExecutiveSummary(executiveSummary, subjectProfiles);
+  executiveSummary = augmentExecutiveSummaryWithCrossSubjectAccuracyWeakSignal(
+    executiveSummary,
+    baseReport.summary || {},
+  );
   const parentProductContractV1 = buildParentProductContractV1({
     executiveSummary,
     subjectProfiles,

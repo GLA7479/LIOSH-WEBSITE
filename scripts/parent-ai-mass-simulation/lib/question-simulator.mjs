@@ -86,18 +86,23 @@ export function simulateQuestionRuns(opts) {
       let questionText = `[סימולציה] תרגול ${topic} ב-${subject} (${difficulty})`;
       /** @type {"real"|"synthetic"|"placeholder"} */
       let questionSource = "synthetic";
+      /** @type {"hit"|"fallback"|"none"} */
+      let adapterStatus = "none";
 
       if (mode === "hybrid" || mode === "real") {
-        const hq = resolveHybridQuestionRow(rng, { grade: student.grade, subject, topic });
+        const hq = resolveHybridQuestionRow(rng, { grade: student.grade, subject, topic, difficulty });
         if (hq && hq.source === "real") {
           questionText = hq.questionText;
           qid = `${hq.questionId}__${student.studentId}__${i}`;
           questionSource = "real";
+          adapterStatus = "hit";
         } else if (mode === "real") {
           questionSource = "placeholder";
           questionText = `[placeholder] אין שאלה אמיתית זמינה ל-${subject}/${topic} — ${difficulty}`;
+          adapterStatus = "fallback";
         } else {
           questionSource = "placeholder";
+          adapterStatus = "fallback";
         }
       }
 
@@ -119,6 +124,7 @@ export function simulateQuestionRuns(opts) {
         responseTimeMs,
         sessionId,
         questionSource,
+        adapterStatus,
         contributesToParentReportEvidence: rng() > 0.08,
       };
       rows.push(row);
@@ -160,6 +166,8 @@ export function aggregateQuestionStats(rows) {
   const byDifficulty = {};
   const byQuestionSource = { real: 0, synthetic: 0, placeholder: 0 };
   const bySubjectQuestionSource = {};
+  const bySubjectAdapterStats = {};
+  const bySubjectDifficultySource = {};
   let correct = 0;
   const mistakeCounts = {};
   for (const r of rows) {
@@ -170,9 +178,45 @@ export function aggregateQuestionStats(rows) {
     const qs = r.questionSource || "synthetic";
     byQuestionSource[qs] = (byQuestionSource[qs] || 0) + 1;
     if (!bySubjectQuestionSource[r.subject]) {
-      bySubjectQuestionSource[r.subject] = { real: 0, synthetic: 0, placeholder: 0 };
+      bySubjectQuestionSource[r.subject] = {
+        real: 0,
+        synthetic: 0,
+        placeholder: 0,
+        realQuestionCount: 0,
+        placeholderQuestionCount: 0,
+        adapterHitCount: 0,
+        adapterFallbackCount: 0,
+      };
     }
     bySubjectQuestionSource[r.subject][qs] = (bySubjectQuestionSource[r.subject][qs] || 0) + 1;
+    bySubjectQuestionSource[r.subject].realQuestionCount = bySubjectQuestionSource[r.subject].real;
+    bySubjectQuestionSource[r.subject].placeholderQuestionCount = bySubjectQuestionSource[r.subject].placeholder;
+    if (r.adapterStatus === "hit") {
+      bySubjectQuestionSource[r.subject].adapterHitCount += 1;
+    } else if (r.adapterStatus === "fallback") {
+      bySubjectQuestionSource[r.subject].adapterFallbackCount += 1;
+    }
+
+    if (!bySubjectAdapterStats[r.subject]) {
+      bySubjectAdapterStats[r.subject] = {
+        realQuestionCount: 0,
+        placeholderQuestionCount: 0,
+        adapterHitCount: 0,
+        adapterFallbackCount: 0,
+      };
+    }
+    if (qs === "real") bySubjectAdapterStats[r.subject].realQuestionCount += 1;
+    if (qs === "placeholder") bySubjectAdapterStats[r.subject].placeholderQuestionCount += 1;
+    if (r.adapterStatus === "hit") bySubjectAdapterStats[r.subject].adapterHitCount += 1;
+    if (r.adapterStatus === "fallback") bySubjectAdapterStats[r.subject].adapterFallbackCount += 1;
+
+    if (!bySubjectDifficultySource[r.subject]) bySubjectDifficultySource[r.subject] = {};
+    if (!bySubjectDifficultySource[r.subject][r.difficulty]) {
+      bySubjectDifficultySource[r.subject][r.difficulty] = { real: 0, synthetic: 0, placeholder: 0 };
+    }
+    bySubjectDifficultySource[r.subject][r.difficulty][qs] =
+      (bySubjectDifficultySource[r.subject][r.difficulty][qs] || 0) + 1;
+
     if (r.isCorrect) correct += 1;
     if (r.mistakeType) mistakeCounts[r.mistakeType] = (mistakeCounts[r.mistakeType] || 0) + 1;
   }
@@ -189,5 +233,7 @@ export function aggregateQuestionStats(rows) {
     placeholderQuestionCount: byQuestionSource.placeholder,
     byQuestionSource,
     bySubjectQuestionSource,
+    bySubjectAdapterStats,
+    bySubjectDifficultySource,
   };
 }

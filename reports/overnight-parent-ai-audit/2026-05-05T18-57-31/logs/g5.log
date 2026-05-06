@@ -1,7 +1,0 @@
-
-> leo-k-kids-site@1.0.0 test:adaptive-planner:scenario-simulator
-> tsx scripts/adaptive-planner-scenario-simulator.mjs
-
-Wrote C:\Users\ERAN YOSEF\Desktop\final projects\FINAL-WEB\LIOSH-WEB-TRY\reports\adaptive-learning-planner\scenario-simulator.json
-Wrote C:\Users\ERAN YOSEF\Desktop\final projects\FINAL-WEB\LIOSH-WEB-TRY\reports\adaptive-learning-planner\scenario-simulator.md
-All scenarios passed: true (live AI: false)

@@ -3,6 +3,7 @@ import path from "node:path";
 import { installBrowserGlobals } from "./browser-globals.mjs";
 import { applyMassStudentSeed, buildMassStudentStorageSnapshot } from "./seed-engine.mjs";
 import { exportProductParentReportPdfPack } from "./product-pdf-playwright.mjs";
+import { writeStudentReportEvidence } from "./report-evidence-export.mjs";
 
 function htmlToParentFacingLines(html) {
   const src = String(html || "");
@@ -182,6 +183,8 @@ export async function writeParentReportsAndProductPdfs(opts) {
       detailedMd: `parent-reports/${student.studentId}/detailed.md`,
       detailedHtml: `parent-reports/${student.studentId}/detailed.html`,
     };
+
+    writeStudentReportEvidence(opts.outputRoot, student, detailed);
 
     student.pdfFiles =
       student.pdfExportShortMeta && student.pdfExportDetailedMeta

@@ -34,6 +34,7 @@ import {
 } from "./lib/build-indexes.mjs";
 import { runQualitySuite } from "./lib/quality-runner.mjs";
 import { buildManualReviewPack } from "./lib/manual-review-pack.mjs";
+import { writeEvidenceSourcesReadme, writeQuestionRunsReadme } from "./lib/report-evidence-export.mjs";
 import { GRADE_ORDER, SUBJECT_KEYS } from "./lib/constants.mjs";
 import { assertPdfServerReachable } from "./lib/product-pdf-playwright.mjs";
 
@@ -181,8 +182,10 @@ async function main() {
     "pdf-previews/short",
     "pdf-previews/detailed",
     "samples-for-manual-review",
+    "report-evidence-runs",
   ];
   for (const d of subdirs) fs.mkdirSync(path.join(outputRoot, d), { recursive: true });
+  writeEvidenceSourcesReadme(outputRoot);
 
   const { students, subjectsResolved } = generateStudents({
     studentCount,
@@ -202,6 +205,7 @@ async function main() {
     outputRoot,
     questionSourceMode,
   });
+  writeQuestionRunsReadme(outputRoot);
 
   const questionStats = aggregateQuestionStats(questionRows);
   const parentAiTurnsByStudent = allocateFair(parentAiGlobalLimit, students.length);

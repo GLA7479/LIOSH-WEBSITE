@@ -1,5 +1,0 @@
-
-> leo-k-kids-site@1.0.0 test:parent-ai:assistant-qa
-> tsx scripts/parent-ai-assistant-qa-simulator.mjs
-
-parent-ai-assistant-qa-simulator: 8/8 passed
