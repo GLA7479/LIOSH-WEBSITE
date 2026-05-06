@@ -1,6 +1,14 @@
 import fs from "node:fs";
 import path from "node:path";
 
+/** Mirrors `utils/parent-report-language/subject-withhold-summary-he.js` (tsx resolves cross-root imports inconsistently). */
+function isGenericCautiousPracticeLineHe(text) {
+  const t = String(text || "");
+  const hasPractice = /יש\s+נתוני\s+תרגול/.test(t);
+  const hasCautious = /מה\s+שנראה\s+מהתרגולים\s+עדיין\s+זהיר/.test(t);
+  return hasPractice && hasCautious;
+}
+
 async function extractPdfText(filePath) {
   try {
     const mod = await import("pdf-parse");
@@ -33,6 +41,43 @@ function hebrewLetterCount(t) {
   return (String(t || "").match(/[\u0590-\u05FF]/g) || []).length;
 }
 
+function collectDetailedParentFacingBlob(detailed) {
+  const parts = [];
+  const push = (v) => {
+    if (typeof v === "string" && v.trim()) parts.push(v);
+  };
+  const es = detailed?.executiveSummary;
+  if (es && typeof es === "object") {
+    push(es.mainHomeRecommendationHe);
+    push(es.cautionNoteHe);
+    push(es.homeFocusHe);
+  }
+  const ppc = detailed?.parentProductContractV1;
+  if (ppc && typeof ppc === "object") {
+    const top = ppc.top && typeof ppc.top === "object" ? ppc.top : {};
+    push(top.mainStatusHe);
+    push(top.whyHe);
+    const subs = ppc.subjects && typeof ppc.subjects === "object" ? ppc.subjects : {};
+    for (const row of Object.values(subs)) {
+      if (row && typeof row === "object") {
+        push(row.mainStatusHe);
+        push(row.whyHe);
+      }
+    }
+  }
+  for (const sp of detailed?.subjectProfiles || []) {
+    push(sp.summaryHe);
+    push(sp.confidenceSummaryHe);
+    for (const tr of sp.topicRecommendations || []) {
+      if (tr && typeof tr === "object") {
+        push(tr.whyThisRecommendationHe);
+        push(tr.cautionLineHe);
+      }
+    }
+  }
+  return parts.join("\n");
+}
+
 function scanReportProfileConsistency(student, shortMd, detailedMd) {
   const combined = `${shortMd}\n${detailedMd}`;
   const issues = [];
@@ -62,6 +107,19 @@ function scanReportProfileConsistency(student, shortMd, detailedMd) {
     !/מעט|מוגבל|לא מספיק|דליל|מצומצם/i.test(combined)
   ) {
     issues.push({ code: "thin_data_missing_language", detail: student.studentId });
+  }
+  const genericCautiousMd =
+    isGenericCautiousPracticeLineHe(combined) ||
+    /יש\s+נתוני\s+תרגול.+מה\s+שנראה\s+מהתרגולים\s+עדיין\s+זהיר.+עוד\s+תרגול/u.test(combined);
+  if ((p === "strong_stable" || p === "rich_data") && genericCautiousMd) {
+    issues.push({ code: "report_summary_should_vary_by_profile_type", detail: student.studentId });
+    issues.push({
+      code: "parent_facing_text_should_not_repeat_generic_cautious_line_for_all_profiles",
+      detail: student.studentId,
+    });
+  }
+  if (/מגמה\s+כללית\s+שאפשר\s+לשתף\s+בהירות/u.test(combined)) {
+    issues.push({ code: "parent_facing_hebrew_should_not_include_awkward_phrase", detail: student.studentId });
   }
   return issues;
 }
@@ -180,6 +238,125 @@ export async function runQualitySuite(ctx) {
       totalChecks += 1;
       fail(pi.code, pi.detail, `parent-reports/${student.studentId}/short.md`);
     }
+
+    const detailedJsonPath = path.join(ctx.outputRoot, "parent-reports", student.studentId, "detailed.json");
+    const shortJsonPath = path.join(ctx.outputRoot, "parent-reports", student.studentId, "short.json");
+    let detailedObj = null;
+    let shortObj = null;
+    try {
+      if (fs.existsSync(detailedJsonPath)) {
+        detailedObj = JSON.parse(fs.readFileSync(detailedJsonPath, "utf8"));
+      }
+    } catch {
+      detailedObj = null;
+    }
+    try {
+      if (fs.existsSync(shortJsonPath)) {
+        shortObj = JSON.parse(fs.readFileSync(shortJsonPath, "utf8"));
+      }
+    } catch {
+      shortObj = null;
+    }
+
+    const contractBlob = collectDetailedParentFacingBlob(detailedObj || {});
+    const jsonBlob = `${contractBlob}\n${shortObj ? JSON.stringify(shortObj) : ""}\n${detailedObj ? JSON.stringify(detailedObj) : ""}`;
+    const megaBlob = `${contractBlob}\n${shortMd}\n${detailedMd}\n${jsonBlob}`;
+    const overallQ = Number(detailedObj?.overallSnapshot?.totalQuestions) || 0;
+    const p = student.profileType;
+
+    totalChecks += 5;
+    if ((p === "strong_stable" || p === "rich_data") && overallQ >= 80 && isGenericCautiousPracticeLineHe(megaBlob)) {
+      fail(
+        "detailed_json_should_not_repeat_generic_cautious_subject_line_for_all_profiles",
+        student.studentId,
+        `parent-reports/${student.studentId}/`,
+      );
+    }
+
+    if (
+      (p === "strong_stable" || p === "rich_data") &&
+      overallQ >= 80 &&
+      /עדיין\s+לא\s+הצטבר\s+מספיק\s+מידע\s+לתמונה\s+רחבה/u.test(contractBlob)
+    ) {
+      fail(
+        "rich_or_strong_contract_should_not_use_thin_data_language",
+        student.studentId,
+        `parent-reports/${student.studentId}/detailed.json`,
+      );
+    }
+
+    const weakProfile = String(p || "").startsWith("weak_") || p === "weak_all_subjects";
+    if (weakProfile && overallQ >= 25 && !/התמקד|ממוקד|חיזוק|קושי|חולש|פער|דיוק|טעות|שגיאות/i.test(contractBlob)) {
+      fail(
+        "weak_profile_contract_should_mention_focus_or_weakness",
+        student.studentId,
+        `parent-reports/${student.studentId}/detailed.json`,
+      );
+    }
+  }
+
+  const contractMainByProfile = new Map();
+  for (const student of ctx.students) {
+    if (!ctx.reportStudentIds.has(student.studentId)) continue;
+    const detailedJsonPath = path.join(ctx.outputRoot, "parent-reports", student.studentId, "detailed.json");
+    if (!fs.existsSync(detailedJsonPath)) continue;
+    let d = null;
+    try {
+      d = JSON.parse(fs.readFileSync(detailedJsonPath, "utf8"));
+    } catch {
+      continue;
+    }
+    const q = Number(d?.overallSnapshot?.totalQuestions) || 0;
+    if (q < 40) continue;
+    const line = String(d?.parentProductContractV1?.top?.mainStatusHe || "").trim();
+    if (!line) continue;
+    const p = student.profileType;
+    if (!contractMainByProfile.has(p)) contractMainByProfile.set(p, new Set());
+    contractMainByProfile.get(p).add(line);
+  }
+  const strongLine = contractMainByProfile.get("strong_stable")?.size
+    ? [...contractMainByProfile.get("strong_stable")][0]
+    : "";
+  const weakMathLine = contractMainByProfile.get("weak_math")?.size
+    ? [...contractMainByProfile.get("weak_math")][0]
+    : "";
+  totalChecks += 1;
+  if (strongLine && weakMathLine && strongLine === weakMathLine) {
+    const strongStudent = ctx.students.find((s) => s.profileType === "strong_stable");
+    const weakMathStudent = ctx.students.find((s) => s.profileType === "weak_math");
+    let samePrimary = false;
+    if (strongStudent && weakMathStudent) {
+      try {
+        const pStrong = path.join(
+          ctx.outputRoot,
+          "parent-reports",
+          strongStudent.studentId,
+          "detailed.json",
+        );
+        const pWeak = path.join(
+          ctx.outputRoot,
+          "parent-reports",
+          weakMathStudent.studentId,
+          "detailed.json",
+        );
+        if (fs.existsSync(pStrong) && fs.existsSync(pWeak)) {
+          const dS = JSON.parse(fs.readFileSync(pStrong, "utf8"));
+          const dW = JSON.parse(fs.readFileSync(pWeak, "utf8"));
+          samePrimary =
+            String(dS?.parentProductContractV1?.primarySubjectId || "") ===
+            String(dW?.parentProductContractV1?.primarySubjectId || "");
+        }
+      } catch {
+        samePrimary = false;
+      }
+    }
+    if (!samePrimary) {
+      fail(
+        "parent_facing_contract_should_vary_by_profile_type",
+        strongLine,
+        "parent-reports/*/detailed.json",
+      );
+    }
   }
 
   for (const row of ctx.globalInteractions || []) {
@@ -200,6 +377,15 @@ export async function runQualitySuite(ctx) {
     if (scanInternalLeak(a)) {
       totalChecks += 1;
       fail("internal_terms_in_copilot", row.parentQuestionId, `parent-ai-chats/${row.studentId}.json`);
+    }
+    const pt = String(row.profileType || "");
+    totalChecks += 1;
+    if ((pt === "strong_stable" || pt === "rich_data") && isGenericCautiousPracticeLineHe(a)) {
+      fail(
+        "detailed_json_should_not_repeat_generic_cautious_subject_line_for_all_profiles",
+        `${row.studentId} · parent-ai`,
+        `parent-ai-chats/${row.studentId}.json`,
+      );
     }
   }
 

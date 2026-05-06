@@ -575,7 +575,9 @@ function runDeterministicCore(input) {
     intent !== "clinical_boundary" &&
     intent !== "sensitive_education_choice" &&
     intent !== "parent_policy_refusal" &&
-    intent !== "off_report_subject_clarification"
+    intent !== "off_report_subject_clarification" &&
+    intent !== "off_topic_redirect" &&
+    intent !== "simple_parent_explanation"
   ) {
     const aggDraft = buildSemanticAggregateDraft({
       questionClass: aggregateQuestionClass,

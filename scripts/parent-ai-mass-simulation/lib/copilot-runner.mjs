@@ -103,12 +103,21 @@ function extendedAssertions(entry, res, student, answerText, gScore) {
   }
 
   if (entry.category === "unrelated_off_topic") {
-    const redirect = /נתוני הלמידה|דוח|תרגול|הורה|מתמקד|לא ניתן|מחוץ|לא יכול|עוזרים בתחום הדוח/i.test(answerText);
+    const redirect = /נתוני הלמידה|דוח הלמידה|דוח\s*הלמידה|תרגול\s*של\s*הילד|מתמקד|במסגרת הכלי|לא ניתן|מחוץ|לא יכול|עוזרים בתחום|בתוך החוויה/i.test(
+      answerText,
+    );
     const genericOnly = /אין כרגע מספיק תרגול בנושאים בדוח כדי לענות/i.test(answerText);
+    const evidenceDump =
+      /לפי רשימת המקורות המעוגנים|לפי מה שמוצג עכשיו בדוח, אלה המקצועות|זה מה שהדוח נותן כרגע/u.test(answerText);
     base.push({
       id: "off_topic_redirect_polite",
       pass: redirect && !genericOnly,
       detail: redirect ? (genericOnly ? "הפניה כללית מדי; חסרה הפניה מפורשת להיקף דוח/למידה." : undefined) : "חסרה הפניה להיקף דוח/למידה.",
+    });
+    base.push({
+      id: "unrelated_off_topic_must_explicitly_redirect_scope",
+      pass: redirect && !evidenceDump && !/לפי רשימת המקורות המעוגנים/u.test(answerText),
+      detail: evidenceDump ? "נדרשת הפניה לטווח הדוח בלי להציף ראיות מהדוח." : undefined,
     });
   }
 
@@ -171,11 +180,17 @@ function extendedAssertions(entry, res, student, answerText, gScore) {
   if (entry.category === "simple_explanation") {
     base.push({
       id: "simple_hebrew_attempt",
-      pass: answerText.length > 30 && !/\b[a-z]{8,}\b/i.test(answerText) && /בדוח|תרגול|הילד/u.test(answerText),
+      pass: answerText.length > 30 && !/\b[a-z]{8,}\b/i.test(answerText) && /בדוח|תרגול|הילד|סך הכל|דיוק/u.test(answerText),
     });
     base.push({
       id: "simple_explanation_mentions_concrete_signal",
       pass: /%|\d+\s*שאלות|דיוק|חזק|חלש|מעט נתון|חשבון|עברית|אנגלית|מדעים|גאומטריה|מולדת/u.test(answerText),
+    });
+    base.push({
+      id: "simple_explanation_must_be_plain_parent_language",
+      pass:
+        !/מקורות מעוגנים|סיכום תקופתי|\bsource\b|רשימת המקורות/u.test(answerText) &&
+        answerText.length > 35,
     });
   }
 
@@ -214,7 +229,38 @@ function extendedAssertions(entry, res, student, answerText, gScore) {
           /(\d\)|1\)|2\)|3\)|ראשית|אחר כך|ולבסוף|ואז|קודם כל)/u.test(answerText) || /צעד\s*מעשי/u.test(answerText),
       });
     }
+    const mathLeak = /לפי\s*המספרים\s*בחשבון/u.test(answerText);
+    const badMathForProfile =
+      mathLeak && (student.profileType === "weak_english" || student.profileType === "weak_hebrew");
+    base.push({
+      id: "action_plan_must_use_correct_subject_not_hardcoded_math",
+      pass: !badMathForProfile,
+      detail: badMathForProfile ? "צעדים שמצביעים על חשבון למרות שפרופיל החולשה אינו מתמטיקה." : undefined,
+    });
+    base.push({
+      id: "action_plan_must_include_numbered_or_clear_steps",
+      pass: /\d\)\s/u.test(answerText) && (answerText.match(/\d\)/g) || []).length >= 3,
+    });
+    if (strongOrRich) {
+      base.push({
+        id: "action_plan_must_not_claim_insufficient_basis_for_rich_or_strong",
+        pass: !/עדיין אין בדוח בסיס חזק מספיק/u.test(answerText),
+      });
+    }
+    base.push({
+      id: "action_plan_must_not_include_zero_good_topics_line",
+      pass: !/נושאים שנשמרים טוב:\s*0\b/u.test(answerText),
+    });
   }
+
+  base.push({
+    id: "parent_facing_text_should_not_include_periodic_summary_label_in_ai_answer",
+    pass: !/סיכום תקופתי/u.test(answerText),
+  });
+  base.push({
+    id: "parent_facing_hebrew_should_not_include_awkward_phrase",
+    pass: !/מגמה כללית שאפשר לשתף בהירות/u.test(answerText),
+  });
 
   if (entry.category === "contradiction_challenge") {
     base.push({

@@ -9,8 +9,9 @@ node_modules/
 /test-results/
 
 # QA harness outputs (large; do not commit by default — pin a baseline with: git add -f <path>)
-reports/sample-pdfs-timeout-fix-test/
-reports/overnight-parent-ai-audit/*
+
+# Generated QA/report outputs
+reports/
 
 # Next.js
 /.next/

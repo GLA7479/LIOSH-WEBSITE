@@ -162,6 +162,25 @@ export function composeAnswerDraft(plan, truthPacket, coachingCtx = null) {
       debug: { intelligenceV1: intelligenceV1DebugSnapshot(truthPacket) },
     };
   }
+  if (intentEarly === "off_topic_redirect") {
+    return {
+      answerBlocks: [
+        {
+          type: "observation",
+          textHe:
+            "הכלי מתמקד כאן בדוח הלמידה ובתרגול שנכנס לטווח שנבחר — לא בשאלות כמו מזג אוויר, חדשות, קניות או קוד.",
+          source: "composed",
+        },
+        {
+          type: "meaning",
+          textHe:
+            "אין בתוך החוויה הזו מענה למידע שמגיע מחוץ לדוח המידע של התלמיד; אפשר לשאול על מה שנראה חזק או פחות חזק לפי התרגול, על מה שכתוב בדוח, או על צעד קטן להמשך השבוע.",
+          source: "composed",
+        },
+      ],
+      debug: { intelligenceV1: intelligenceV1DebugSnapshot(truthPacket) },
+    };
+  }
   if (intentEarly === "parent_policy_refusal") {
     return {
       answerBlocks: [
@@ -220,6 +239,15 @@ export function composeAnswerDraft(plan, truthPacket, coachingCtx = null) {
       answerBlocks.push({ type: "meaning", textHe: interp, source: "contract_slot" });
     }
     if (b === "next_step") {
+      const dlRec = truthPacket?.derivedLimits || {};
+      const recommendationOk =
+        dlRec.recommendationEligible === true && String(dlRec.recommendationIntensityCap || "RI0") !== "RI0";
+      if (
+        !recommendationOk &&
+        (intent === "what_to_do_today" || intent === "what_to_do_this_week")
+      ) {
+        continue;
+      }
       if (act) {
         const skipWhenIvSaysNoWeakTopic =
           hasIntelligenceSignals &&
@@ -230,7 +258,10 @@ export function composeAnswerDraft(plan, truthPacket, coachingCtx = null) {
           answerBlocks.push({ type: "next_step", textHe: act, source: "contract_slot" });
         }
       } else if (intent === "what_to_do_today" || intent === "what_to_do_this_week") {
-        const subj = String(truthPacket?.surfaceFacts?.subjectLabelHe || "").trim() || "מקצוע מהדוח";
+        const subj =
+          String(truthPacket?.surfaceFacts?.weakFocusSubjectLabelHe || "").trim() ||
+          String(truthPacket?.surfaceFacts?.subjectLabelHe || "").trim() ||
+          "מקצוע מהדוח";
         answerBlocks.push({
           type: "next_step",
           textHe:

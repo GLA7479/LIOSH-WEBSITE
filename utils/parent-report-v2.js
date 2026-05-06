@@ -63,6 +63,7 @@ import {
   v2SubjectMemoryPartialEvidenceHe,
   topicRecommendationV2CautionGatedHe,
 } from "./parent-report-language/index.js";
+import { withholdSummaryCopyHe } from "./parent-report-language/subject-withhold-summary-he.js";
 import {
   resolveUnitHomeMethodHe,
   resolveUnitNextGoalHe,
@@ -1154,8 +1155,20 @@ function intelligenceSummaryFromV2Units(list) {
   return { lowConfidenceCount, noWeaknessCount, recurrenceCount };
 }
 
-function summarizeV2UnitsForSubject(units) {
+/**
+ * @param {unknown[]} units
+ * @param {{ subjectReportQuestions?: number, subjectLabelHe?: string, reportSubjectAccuracy?: number|null }} [opts]
+ */
+function summarizeV2UnitsForSubject(units, opts = {}) {
   const list = Array.isArray(units) ? units : [];
+  const subjectReportQuestions = Math.max(0, Number(opts.subjectReportQuestions) || 0);
+  const subjectLabelHe = String(opts.subjectLabelHe || "").trim();
+  const reportSubjectAccuracyRaw =
+    opts.reportSubjectAccuracy == null ? null : Number(opts.reportSubjectAccuracy);
+  const reportSubjectAccuracy =
+    reportSubjectAccuracyRaw != null && Number.isFinite(reportSubjectAccuracyRaw)
+      ? Math.max(0, Math.min(100, Math.round(reportSubjectAccuracyRaw)))
+      : null;
   if (list.length === 0) {
     return {
       hasAnySignal: false,
@@ -1314,9 +1327,17 @@ function summarizeV2UnitsForSubject(units) {
     const sumUnitQuestions = list.reduce((acc, u) => acc + safeNumber(u?.evidenceTrace?.[0]?.value?.questions), 0);
     if (act === "withhold") {
       if (sumUnitQuestions >= 10) {
-        return normalizeParentFacingHe(
-          `בנושא ${name}: יש נתוני תרגול, אך מה שנראה מהתרגולים עדיין זהיר — כדאי להמשיך לעקוב אחרי עוד תרגול.`
-        );
+        const inner = withholdSummaryCopyHe("topic", {
+          subjectReportQuestions,
+          sumUnitQuestions,
+          strengthUnitCount: strengthUnits.length,
+          diagnosedCount: diagnosed.length,
+          weakPatternHe: String(topWeak?.taxonomy?.patternHe || "").trim(),
+          units: list,
+          subjectLabelHe,
+          reportSubjectAccuracy,
+        });
+        return normalizeParentFacingHe(`בנושא ${name}: ${inner}`);
       }
       return normalizeParentFacingHe(`בנושא ${name}: עדיין אין מספיק מה שרואים בשורות כדי לסגור תמונה ברורה.`);
     }
@@ -1370,8 +1391,8 @@ function summarizeV2UnitsForSubject(units) {
 }
 
 /** Test hook: keep regular-report recommendation mapping verifiable in phase suites. */
-export function summarizeV2UnitsForSubjectForTests(units) {
-  return summarizeV2UnitsForSubject(units);
+export function summarizeV2UnitsForSubjectForTests(units, opts) {
+  return summarizeV2UnitsForSubject(units, opts);
 }
 
 /** Test hook: diagnostic evidence lines per unit + row. */
@@ -1393,15 +1414,28 @@ export function buildDiagnosticCardsForSubjectForTests(subjectId, subjectUnits, 
  * @param {unknown} diagnosticEngineV2
  * @param {Record<string, Record<string, unknown>>|null|undefined} maps
  */
-function buildPatternDiagnosticsFromV2(diagnosticEngineV2, maps) {
+function buildPatternDiagnosticsFromV2(diagnosticEngineV2, maps, subjectQuestionCounts, subjectAccuracyById) {
   const units = Array.isArray(diagnosticEngineV2?.units) ? diagnosticEngineV2.units : [];
+  const counts =
+    subjectQuestionCounts && typeof subjectQuestionCounts === "object" ? subjectQuestionCounts : {};
+  const accMap =
+    subjectAccuracyById && typeof subjectAccuracyById === "object" ? subjectAccuracyById : {};
   const subjects = {};
   for (const sid of V2_SUBJECT_ORDER) {
     const subjectUnits = units.filter((u) => String(u?.subjectId || "") === sid);
     const topicMap = maps?.[sid] && typeof maps[sid] === "object" ? maps[sid] : {};
+    const srQ = Math.max(0, Number(counts[sid]) || 0);
+    const labelHe = String(V2_SUBJECT_LABEL_HE[sid] || sid).trim();
+    const accRaw = accMap[sid];
+    const reportAcc =
+      accRaw != null && Number.isFinite(Number(accRaw)) ? Math.round(Number(accRaw)) : null;
     subjects[sid] = {
-      subjectLabelHe: V2_SUBJECT_LABEL_HE[sid] || sid,
-      ...summarizeV2UnitsForSubject(subjectUnits),
+      subjectLabelHe: labelHe || sid,
+      ...summarizeV2UnitsForSubject(subjectUnits, {
+        subjectReportQuestions: srQ,
+        subjectLabelHe: labelHe,
+        reportSubjectAccuracy: reportAcc,
+      }),
       diagnosticCards: buildDiagnosticCardsForSubject(sid, subjectUnits, topicMap),
     };
   }
@@ -2052,8 +2086,24 @@ export function generateParentReportV2(
     rawMistakesBySubject
   );
   const hasV2Units = Array.isArray(diagnosticEngineV2?.units) && diagnosticEngineV2.units.length > 0;
+  const subjectQuestionCounts = {
+    math: mathTotalQuestions,
+    geometry: geometryTotalQuestions,
+    english: englishTotalQuestions,
+    science: scienceTotalQuestions,
+    hebrew: hebrewTotalQuestions,
+    "moledet-geography": moledetGeographyTotalQuestions,
+  };
+  const subjectAccuracyById = {
+    math: mathAccuracy,
+    geometry: geometryAccuracy,
+    english: englishAccuracy,
+    science: scienceAccuracy,
+    hebrew: hebrewAccuracy,
+    "moledet-geography": moledetGeographyAccuracy,
+  };
   const patternDiagnostics = hasV2Units
-    ? buildPatternDiagnosticsFromV2(diagnosticEngineV2, maps)
+    ? buildPatternDiagnosticsFromV2(diagnosticEngineV2, maps, subjectQuestionCounts, subjectAccuracyById)
     : legacyPatternDiagnostics;
 
   const INSUFFICIENT_SUBJECT_Q = 8;

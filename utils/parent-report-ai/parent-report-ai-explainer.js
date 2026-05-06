@@ -86,7 +86,9 @@ export function getDeterministicParentReportExplanation(input) {
       `לגבי ${subjectHe}: לעת עתה יש מידע מוגבל מתוך התרגולים שנאספו בתקופה זו ולכן התמונה להורה היא זהירה ומצומצמת.`
     );
   } else {
-    parts.push(`לגבי ${subjectHe}: נראה מהתרגולים האחרונים מגמה כללית שאפשר לשתף בהירות עם ההורה.`);
+    parts.push(
+      `לגבי ${subjectHe}: מהתרגול שנאסף אפשר לראות כיוון ראשוני — כדאי להמשיך לעקוב ולא לקבוע מסקנה חדה רק ממפגש בודד.`,
+    );
   }
 
   if (input.mainStrengths) {

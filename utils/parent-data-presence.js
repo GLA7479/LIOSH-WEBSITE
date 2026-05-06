@@ -229,3 +229,39 @@ export function subjectQuestionCountFromReportSummary(report, subjectId) {
       return 0;
   }
 }
+
+/**
+ * Subject accuracy (0–100) from V2 summary for a canonical subject id.
+ * @param {Record<string, unknown>|null|undefined} report
+ * @param {string} subjectId
+ */
+export function subjectAccuracyFromReportSummary(report, subjectId) {
+  const s = report?.summary;
+  if (!s || typeof s !== "object") return null;
+  let raw = null;
+  switch (subjectId) {
+    case "math":
+      raw = s.mathAccuracy;
+      break;
+    case "geometry":
+      raw = s.geometryAccuracy;
+      break;
+    case "english":
+      raw = s.englishAccuracy;
+      break;
+    case "science":
+      raw = s.scienceAccuracy;
+      break;
+    case "hebrew":
+      raw = s.hebrewAccuracy;
+      break;
+    case "moledet-geography":
+      raw = s.moledetGeographyAccuracy;
+      break;
+    default:
+      return null;
+  }
+  const n = Number(raw);
+  if (!Number.isFinite(n)) return null;
+  return Math.max(0, Math.min(100, Math.round(n)));
+}

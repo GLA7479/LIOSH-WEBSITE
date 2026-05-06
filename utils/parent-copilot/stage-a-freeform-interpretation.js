@@ -26,6 +26,8 @@ import { SUBJECT_ORDER, subjectLabelHe } from "./contract-reader.js";
  *   "report_trust_question" |
  *   "parent_policy_refusal" |
  *   "off_report_subject_clarification" |
+ *   "off_topic_redirect" |
+ *   "simple_parent_explanation" |
  *   "unclear"
  * )} CanonicalParentIntent
  */
@@ -63,6 +65,8 @@ export const CANONICAL_PARENT_INTENTS = [
   "report_trust_question",
   "parent_policy_refusal",
   "off_report_subject_clarification",
+  "off_topic_redirect",
+  "simple_parent_explanation",
   "unclear",
 ];
 
@@ -373,6 +377,22 @@ const INTENT_PARAPHRASES = {
     /מה\s*ההבדל\s*בין|מה\s*ההבדל\s*ל/u,
     /מה\s*זה\s*אומר\s*בפשטות/u,
   ],
+  off_topic_redirect: [
+    /מזג\s*האוויר|מזג\s*אוויר/u,
+    /מתכון|עוגה/u,
+    /כדורגל|מי\s*ניצח|משחק\s*אתמול/u,
+    /ביטקוין|ביטקוין/u,
+    /javascript|עזור\s*לי\s*עם\s*קוד|קוד\s*\(/u,
+    /איפה\s*לקנות|נעליים/u,
+    /תכתוב\s*לי\s*שיר|^שיר\s*על/u,
+    /מה\s*החדשות|חדשות\s*היום/u,
+  ],
+  simple_parent_explanation: [
+    /תסביר\s*לי\s*כמו\s*להורה|בלי\s*מושגים\s*מקצועיים/u,
+    /תסביר\s*לי\s*במשפט\s*אחד/u,
+    /תן\s*לי\s*רק\s*3\s*נקודות/u,
+    /במילים\s*פשוטות\s*בלי\s*ז׳רגון/u,
+  ],
   unclear: [/^$/u],
 };
 
@@ -446,6 +466,25 @@ function strengthVsInterpretationScopeFromFolded(folded) {
 }
 
 /**
+ * Obvious non-learning utterances (weather, shopping, code, news, …).
+ * @param {string} t normalized lowercase utterance
+ * @param {string} folded folded utterance
+ */
+function offTopicUtteranceHeuristic(t, folded) {
+  const s = `${t}\n${folded}`;
+  return (
+    /מזג\s*האוויר|מזג\s*אוויר/u.test(s) ||
+    /מתכון|עוגה/u.test(s) ||
+    /כדורגל|מי\s*ניצח|משחק\s*אתמול/u.test(s) ||
+    /ביטקוין/u.test(s) ||
+    /javascript|עזור\s*לי\s*עם\s*קוד/u.test(s) ||
+    /איפה\s*לקנות|נעליים/u.test(s) ||
+    /תכתוב\s*לי\s*שיר|^שיר\s*על/u.test(s) ||
+    /מה\s*החדשות|חדשות\s*היום/u.test(s)
+  );
+}
+
+/**
  * Free-form Stage A interpretation.
  * @param {string} utteranceRaw
  * @param {unknown} payload
@@ -468,6 +507,10 @@ export function interpretFreeformStageA(utteranceRaw, payload) {
     scores[/** @type {CanonicalParentIntent} */ (intent)] = s;
   }
 
+  if (offTopicUtteranceHeuristic(t, folded)) {
+    scores.off_topic_redirect = Math.max(scores.off_topic_redirect || 0, 12);
+  }
+
   // Product QA equivalence overrides for high-frequency free-form phrasings.
   if (/מה\s*הכי\s*חשוב\s*עכשיו\s*בבית/.test(t) || /מה\s*הכי\s*חשוב\s*עכשיו\s*בבית/.test(folded)) {
     scores.what_to_do_this_week += 3;
@@ -486,6 +529,9 @@ export function interpretFreeformStageA(utteranceRaw, payload) {
   }
   if (/מה\s*לעשות\s*מחר|מחר\s*מה\s*לעשות/u.test(t) || /מה\s*לעשות\s*מחר/u.test(folded)) {
     scores.what_to_do_today += 6;
+  }
+  if (/תסביר\s*לי\s*כמו\s*להורה|בלי\s*מושגים\s*מקצועיים/u.test(t) || /תסביר\s*לי\s*כמו\s*להורה/u.test(folded)) {
+    scores.simple_parent_explanation += 10;
   }
 
   let best = /** @type {CanonicalParentIntent} */ ("unclear");
@@ -515,6 +561,13 @@ export function interpretFreeformStageA(utteranceRaw, payload) {
   if ((scores.clinical_boundary || 0) > 0) {
     best = "clinical_boundary";
     bestScore = scores.clinical_boundary || 0;
+    topIntentCount = 1;
+    second = 0;
+  }
+
+  if ((scores.off_topic_redirect || 0) >= 8 && best !== "clinical_boundary") {
+    best = "off_topic_redirect";
+    bestScore = scores.off_topic_redirect || 0;
     topIntentCount = 1;
     second = 0;
   }

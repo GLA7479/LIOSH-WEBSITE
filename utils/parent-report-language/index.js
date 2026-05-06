@@ -46,3 +46,11 @@ export {
   v2SubjectMemoryPartialEvidenceHe,
   v2SubjectDiagnosticRestraintHe,
 } from "./short-report-v2-copy.js";
+export {
+  withholdSummaryCopyHe,
+  withholdConfidenceSummaryFallbackHe,
+  isGenericCautiousPracticeLineHe,
+  GENERIC_CAUTIOUS_SUBJECT_LINE_HE,
+  GENERIC_CAUTIOUS_TOPIC_LINE_HE,
+  unitsSuggestInstability,
+} from "./subject-withhold-summary-he.js";

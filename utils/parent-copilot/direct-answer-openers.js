@@ -13,6 +13,10 @@ export function parentDirectOpenerHe(intent, truthPacket) {
   const exec = String(truthPacket?.scopeType || "") === "executive";
   const recOk = !!dl.recommendationEligible && String(dl.recommendationIntensityCap || "RI0") !== "RI0";
   const fragile = !!dl.cannotConcludeYet || String(dl.confidenceBand || "") === "low" || String(dl.readiness || "") === "insufficient";
+  const sfQ = Math.max(0, Number(truthPacket?.surfaceFacts?.questions ?? 0));
+  const sfA = Math.max(0, Number(truthPacket?.surfaceFacts?.accuracy ?? 0));
+  /** Enough practice in-window to avoid «no basis» framing for action intents (executive rollup). */
+  const practiceLooksSubstantial = sfQ >= 90 && sfA >= 50;
 
   switch (k) {
     case "explain_report":
@@ -25,9 +29,16 @@ export function parentDirectOpenerHe(intent, truthPacket) {
         : "אפשר לסדר מה חשוב קודם לפי מה שהדוח כבר מנסח בבירור — בלי להרחיב מעבר לזה.";
     case "what_to_do_today":
     case "what_to_do_this_week":
-      return recOk
-        ? "יש בדוח בסיס לצעד קטן ומדיד — לא לתוכנית ארוכה שלא נשענת על אותו ניסוח."
-        : "עדיין אין בדוח בסיס חזק מספיק לצעד גדול; עדיף משהו זעיר או המתנה עד שייתווסף תרגול.";
+      if (recOk) {
+        return "יש בדוח בסיס לצעד קטן ומדיד — לא לתוכנית ארוכה שלא נשענת על אותו ניסוח.";
+      }
+      if (practiceLooksSubstantial && !fragile) {
+        return "לפי נפח התרגול והמספרים בטווח, אפשר לבחור צעד קטן וברור — בלי לפתוח ב«אין עדיין בסיס», ובלי תוכנית גדולה ליום אחד.";
+      }
+      if (practiceLooksSubstantial && fragile) {
+        return "יש בתקופה נפח תרגול משמעותי; עדיין חלק מהניסוחים בדוח זהירים — לכן הצעדים הבאים קטנים ומדידים, לא דרמטיים.";
+      }
+      return "עדיין אין בדוח בסיס חזק מספיק לצעד גדול; עדיף משהו זעיר או המתנה עד שייתווסף תרגול.";
     case "why_not_advance":
       return "עצירת עלייה ברמה או האטה מופיעות בדוח כשהניסוח עדיין לא סוגר מספיק — לא בהכרח כישלון.";
     case "what_is_going_well":
@@ -46,6 +57,9 @@ export function parentDirectOpenerHe(intent, truthPacket) {
       return "נשארים עם המילים שמופיעות בדוח עצמו — בלי להמציא מונח חדש.";
     case "strength_vs_weakness_summary":
       return "הדוח נותן שני כיוונים — מה נראה חזק יותר כרגע ומה עדיין דורש עבודה — בתוך אותו טווח נתונים.";
+    case "off_topic_redirect":
+    case "simple_parent_explanation":
+      return "";
     default:
       return exec
         ? "זה מה שהדוח נותן כרגע לגבי התקופה — לא מעבר."

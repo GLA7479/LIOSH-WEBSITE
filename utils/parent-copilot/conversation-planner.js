@@ -132,6 +132,12 @@ export function planConversation(intent, truthPacket, hints = null) {
       if (continuityRepeat || rot % 2 === 1) blocks.push("meaning", "observation", "caution");
       else blocks.push("observation", "meaning", "caution");
       break;
+    case "off_topic_redirect":
+      blocks.push("observation", "meaning");
+      break;
+    case "simple_parent_explanation":
+      obsMean();
+      break;
     case "is_intervention_needed":
       if (interpretationScope === "confidence_uncertainty") {
         if (continuityRepeat || rot % 2 === 1) blocks.push("uncertainty_reason", "meaning");

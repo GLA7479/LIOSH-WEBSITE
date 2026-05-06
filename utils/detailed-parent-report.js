@@ -53,6 +53,7 @@ import {
   normalizeParentFacingHe,
   tierStableStrengthHe,
 } from "./parent-report-language/index.js";
+import { withholdSummaryCopyHe, withholdConfidenceSummaryFallbackHe } from "./parent-report-language/subject-withhold-summary-he.js";
 import {
   mergeCrossSubjectConclusionReadinessContract,
   applyGateToTextClampToTopicRecommendations,
@@ -74,6 +75,7 @@ import {
 import {
   deriveRawMetricStrengthLinesHe,
   mergeExecutiveStrengthLinesHe,
+  subjectAccuracyFromReportSummary,
   subjectQuestionCountFromReportSummary,
 } from "./parent-data-presence.js";
 
@@ -1972,7 +1974,13 @@ function applyNarrativeConsistencyToExecutiveSummary(executiveSummary, subjectPr
     return envelope === "WE0" || envelope === "WE1";
   });
   if (restrainedRows.length === 0) return es;
-  const restrainedLine = "בחלק מהנושאים מה שנראה מהתרגולים עדיין זהיר, ולכן נשארים בצעדים קטנים עד להתבססות נתון נוסף.";
+  const totalSubjectQ = profiles.reduce((acc, sp) => acc + (Number(sp?.subjectQuestionCount) || 0), 0);
+  const restrainedLine =
+    totalSubjectQ >= 120
+      ? "בחלק מהנושאים עדיין יש מה לחזק — נשארים בצעדים קטנים ובוחנים שוב אחרי תרגול נוסף."
+      : totalSubjectQ >= 60
+        ? "בחלק מהנושאים התמונה עדיין לא סגורה לגמרי — נשארים בצעדים קטנים עד שמתבהר מה נשמר."
+        : "בחלק מהנושאים העדות עדיין מצומצמת — נשארים בצעדים קטנים עד להתבססות נתון נוסף.";
   const existingMain = String(es.mainHomeRecommendationHe || "").trim();
   if (existingMain) return es;
   return {
@@ -2216,10 +2224,17 @@ function buildSubjectProfilesFromV2(baseReport) {
         return `בנושא ${diagnosticLeadSource.displayName}: ${diagnosticLeadSource.taxonomy?.patternHe || "צריך בירור נוסף"}`;
       }
       const sumQ = units.reduce((acc, u) => acc + (Number(u?.evidenceTrace?.[0]?.value?.questions) || 0), 0);
-      if (sumQ >= 10) {
-        return "יש נתוני תרגול במקצוע, אך מה שנראה מהתרגולים עדיין זהיר — כדאי להמשיך לעקוב אחרי עוד תרגול.";
-      }
-      return "אין מספיק מה שרואים בשורות בשלב זה.";
+      const reportQ = subjectQuestionCountFromReportSummary(baseReport, sid);
+      return withholdSummaryCopyHe("subject", {
+        subjectReportQuestions: reportQ,
+        sumUnitQuestions: sumQ,
+        strengthUnitCount: strengthUnits.length,
+        diagnosedCount: diagnosed.length,
+        weakPatternHe: String(diagnosticLeadSource?.taxonomy?.patternHe || "").trim(),
+        units,
+        subjectLabelHe: SUBJECT_LABEL_HE[sid],
+        reportSubjectAccuracy: subjectAccuracyFromReportSummary(baseReport, sid),
+      });
     })();
 
     out.push({
@@ -2251,7 +2266,20 @@ function buildSubjectProfilesFromV2(baseReport) {
             csOf(subjectAnchorUnit)?.assessment?.confidenceLevel || subjectAnchorUnit?.confidence?.level
           )
         : subjectQuestionCountFromReportSummary(baseReport, sid) > 0
-          ? "יש נתוני תרגול במקצוע, אך מה שנראה מהתרגולים עדיין זהיר — כדאי להמשיך לעקוב."
+          ? (() => {
+              const sq = subjectQuestionCountFromReportSummary(baseReport, sid);
+              const sumU = units.reduce(
+                (acc, u) => acc + (Number(u?.evidenceTrace?.[0]?.value?.questions) || 0),
+                0,
+              );
+              return withholdConfidenceSummaryFallbackHe({
+                subjectReportQuestions: sq,
+                sumUnitQuestions: sumU,
+                strengthUnitCount: strengthUnits.length,
+                diagnosedCount: diagnosed.length,
+                reportSubjectAccuracy: subjectAccuracyFromReportSummary(baseReport, sid),
+              });
+            })()
           : "עדיין לא הצטבר מספיק מידע לתמונה רחבה מהתרגולים.",
       recommendedHomeMethodHe: resolveUnitHomeMethodHe(subjectAnchorUnit),
       whatNotToDoHe: subjectAnchorUnit?.intervention?.avoidHe || null,

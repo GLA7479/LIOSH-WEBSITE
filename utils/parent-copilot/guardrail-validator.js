@@ -208,7 +208,12 @@ export function validateAnswerDraft(draft, truthPacket, hints = null) {
     if (joined.includes(ph)) failCodes.push("filler_blacklist");
   }
   const slotBundle = String(slotText + joined);
-  if (intent !== "clinical_boundary" && intent !== "sensitive_education_choice") {
+  if (
+    intent !== "clinical_boundary" &&
+    intent !== "sensitive_education_choice" &&
+    intent !== "off_topic_redirect" &&
+    intent !== "simple_parent_explanation"
+  ) {
     for (const hedge of truthPacket?.allowedClaimEnvelope?.requiredHedges || []) {
       if (hedge && !slotBundle.includes(String(hedge))) failCodes.push("missing_required_hedge");
     }

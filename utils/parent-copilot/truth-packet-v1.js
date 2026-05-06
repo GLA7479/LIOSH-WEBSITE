@@ -180,23 +180,39 @@ function appendDistinctSentence(base, tail) {
   return b ? `${b} ${t}` : t;
 }
 
+/** Topic title for parents — drops internal «— סיכום תקופתי» suffix when present. */
+function parentFacingTopicTitleHe(dn) {
+  return String(dn || "")
+    .replace(/\s*—\s*סיכום תקופתי\s*$/iu, "")
+    .trim();
+}
+
+function isMisleadingZeroStableTrendLine(line) {
+  return /נושאים שנשמרים טוב:\s*0\b/u.test(String(line || ""));
+}
+
 /**
- * Executive truth slots shaped by **canonical parent intent** (Stage A class), not the literal question string.
- * Uses only anchored rows + executive summary trends already in the payload.
- * @param {{
- *   allAnchored: Array<{ subject: string; tr: object }>;
- *   trendLines: string[];
- *   totalQ: number;
- *   avgAcc: number;
- *   subjectDistinctCount: number;
- *   anyCannotConclude: boolean;
- *   uncertainRows: number;
- *   canonicalIntent: string;
- * }} x
- * @returns {{ observation: string; interpretation: string }}
+ * Second executive trend line is sometimes a rollup artifact (0 «stable» rows). Suppress for rich windows.
+ * @param {string} line
+ * @param {number} totalQ
  */
-function buildExecutiveIntentNarrativeSlots(x) {
-  const metas = x.allAnchored.map((row) => {
+function shouldAttachExecutiveSecondTrendLine(line, totalQ) {
+  const tq = Math.max(0, Number(totalQ) || 0);
+  /** Below ~full-window volume, extra «rollup» lines read like noise—especially for thin profiles. */
+  if (tq < 88) return false;
+  const s = String(line || "").trim();
+  if (!s) return false;
+  if (looksLikeNumericOrCountLead(s)) return false;
+  if (tq >= 80 && isMisleadingZeroStableTrendLine(s)) return false;
+  return true;
+}
+
+/**
+ * Rank anchored topic rows for executive narratives (weak-first / strong-first).
+ * @param {Array<{ subject: string; tr: object }>} allAnchored
+ */
+function buildAnchoredMetasForExecutive(allAnchored) {
+  const metas = allAnchored.map((row) => {
     const tr = row.tr;
     const cv = tr?.contractsV1 && typeof tr.contractsV1 === "object" ? tr.contractsV1 : {};
     const nar = cv.narrative && typeof cv.narrative === "object" ? cv.narrative : {};
@@ -213,29 +229,6 @@ function buildExecutiveIntentNarrativeSlots(x) {
     const confidenceBand = mapConfidenceBand(cv.confidence?.confidenceBand);
     return { obs, interp, unc, cannot, acc, q, dn, sid, readiness, confidenceBand };
   });
-
-  const trends = x.trendLines.filter(Boolean);
-  const namedBits = metas
-    .slice(0, 5)
-    .map((m) => `${subjectLabelHe(m.sid)} — «${m.dn}»`)
-    .join(" · ");
-
-  const labelPair = (m) => `${subjectLabelHe(m.sid)} («${m.dn}»)`;
-
-  const sparseExecutive = metas.length <= 1;
-
-  const defaultObs =
-    metas.length && metas[0].obs
-      ? `לפי הדוח, הניסוח המעוגן הראשון הוא ב${labelPair(metas[0])}: ${clipHe(metas[0].obs, 170)}.`
-      : namedBits
-        ? `בדוח מופיעים ניסוחים מעוגנים: ${namedBits}.`
-        : "בדוח יש כרגע מידע מעוגן; ככל שיוצגו ניסוחים נוספים, התמונה תתעבה.";
-
-  const defaultInterpBase =
-    (metas[0]?.interp && clipHe(metas[0].interp, 200)) ||
-    (trends[0] && !looksLikeNumericOrCountLead(trends[0]) ? trends[0] : "") ||
-    "מה שחסר בדוח הוא בעיקר רוחב של ניסוחים מעוגנים — לא בהכרח מספרים בפני עצמם.";
-  const defaultInterp = appendDistinctSentence(defaultInterpBase, supportingNumericTail(x));
 
   const rankedWorstFirst = metas
     .filter((m) => m.q > 0)
@@ -262,6 +255,57 @@ function buildExecutiveIntentNarrativeSlots(x) {
       return String(a.dn).localeCompare(String(b.dn), "he");
     });
 
+  return { metas, rankedWorstFirst, rankedBestFirst };
+}
+
+/**
+ * Executive truth slots shaped by **canonical parent intent** (Stage A class), not the literal question string.
+ * Uses only anchored rows + executive summary trends already in the payload.
+ * @param {{
+ *   allAnchored: Array<{ subject: string; tr: object }>;
+ *   trendLines: string[];
+ *   totalQ: number;
+ *   avgAcc: number;
+ *   subjectDistinctCount: number;
+ *   anyCannotConclude: boolean;
+ *   uncertainRows: number;
+ *   canonicalIntent: string;
+ *   recommendationEligible?: boolean;
+ *   recommendationIntensityCap?: string;
+ * }} x
+ * @returns {{ observation: string; interpretation: string; action?: string|null }}
+ */
+function buildExecutiveIntentNarrativeSlots(x) {
+  const { metas, rankedWorstFirst, rankedBestFirst } = buildAnchoredMetasForExecutive(x.allAnchored);
+
+  const trends = x.trendLines.filter(Boolean);
+  const namedBits = metas
+    .slice(0, 5)
+    .map((m) => `${subjectLabelHe(m.sid)} — ${parentFacingTopicTitleHe(m.dn) || "נושא מהדוח"}`)
+    .join(" · ");
+
+  const labelPair = (m) => {
+    const sub = subjectLabelHe(m.sid);
+    const topic = parentFacingTopicTitleHe(m.dn);
+    if (!topic || topic === sub) return sub;
+    return `${sub} — ${topic}`;
+  };
+
+  const sparseExecutive = metas.length <= 1;
+
+  const defaultObs =
+    metas.length && metas[0].obs
+      ? `לפי הדוח, הניסוח המעוגן הראשון הוא ב${labelPair(metas[0])}: ${clipHe(metas[0].obs, 170)}.`
+      : namedBits
+        ? `בדוח מופיעים ניסוחים מעוגנים: ${namedBits}.`
+        : "בדוח יש כרגע מידע מעוגן; ככל שיוצגו ניסוחים נוספים, התמונה תתעבה.";
+
+  const defaultInterpBase =
+    (metas[0]?.interp && clipHe(metas[0].interp, 200)) ||
+    (trends[0] && !looksLikeNumericOrCountLead(trends[0]) ? trends[0] : "") ||
+    "מה שחסר בדוח הוא בעיקר רוחב של ניסוחים מעוגנים — לא בהכרח מספרים בפני עצמם.";
+  const defaultInterp = appendDistinctSentence(defaultInterpBase, supportingNumericTail(x));
+
   const intent = String(x.canonicalIntent || "unclear").trim() || "unclear";
 
   switch (intent) {
@@ -276,7 +320,10 @@ function buildExecutiveIntentNarrativeSlots(x) {
         if (m.interp) interpParts.push(`ב${labelPair(m)} הדוח מתאר: ${clipHe(m.interp, 130)}`);
       }
       if (!interpParts.length && metas[0]?.interp) interpParts.push(clipHe(metas[0].interp, 180));
-      const trendExtra = trends[1] && !looksLikeNumericOrCountLead(trends[1]) ? `שורת רקע מהסיכום התקופתי: ${trends[1]}` : "";
+      const trendExtra =
+        trends[1] && shouldAttachExecutiveSecondTrendLine(trends[1], x.totalQ)
+          ? `נוסף מהדוח: ${trends[1]}`
+          : "";
       let interp = appendDistinctSentence(interpParts.join(" · "), trendExtra);
       interp = appendDistinctSentence(interp, supportingNumericTail(x));
       if (!interp.trim()) interp = defaultInterp;
@@ -289,7 +336,9 @@ function buildExecutiveIntentNarrativeSlots(x) {
           ? `לפי הניסוחים המעוגנים בדוח, מה שנראה כרגע חזק יחסית: ${top.map((m) => `${labelPair(m)} — ${m.obs ? clipHe(m.obs, 95) : "ניסוח קצר מופיע בלי הרחבה"}`).join(" · ")}.`
           : defaultObs;
       const accNote =
-        top.length > 0 ? `ליד המספרים: ${top.map((m) => `ב«${m.dn}» המדד מסתכם בכ־${m.acc}%`).join("; ")}.` : "";
+        top.length > 0
+          ? `ליד המספרים: ${top.map((m) => `ב${parentFacingTopicTitleHe(m.dn)} המדד מסתכם בכ־${m.acc}%`).join("; ")}.`
+          : "";
       const interp0 = top[0]?.interp ? clipHe(top[0].interp, 180) : "";
       let interp = appendDistinctSentence(interp0, accNote);
       interp = appendDistinctSentence(interp, supportingNumericTail(x));
@@ -302,7 +351,10 @@ function buildExecutiveIntentNarrativeSlots(x) {
         low.length > 0
           ? `מה שהדוח מתאר כרגע כדורש חיזוק או תשומת לב: ${low.map((m) => `${labelPair(m)} — ${m.obs ? clipHe(m.obs, 95) : "יש ניסוח מעוגן"}`).join(" · ")}.`
           : defaultObs;
-      const accNote = low.length > 0 ? `ליד המדדים: ${low.map((m) => `ב«${m.dn}» כ־${m.acc}%`).join("; ")}.` : "";
+      const accNote =
+        low.length > 0
+          ? `ליד המדדים: ${low.map((m) => `ב${parentFacingTopicTitleHe(m.dn)} כ־${m.acc}%`).join("; ")}.`
+          : "";
       const interp0 = low[0]?.interp ? clipHe(low[0].interp, 190) : "";
       let interp = appendDistinctSentence(interp0, accNote);
       interp = appendDistinctSentence(interp, supportingNumericTail(x));
@@ -324,8 +376,8 @@ function buildExecutiveIntentNarrativeSlots(x) {
       if (best?.interp) interpParts.push(`בצד שמקבל חיזוק בניסוח: ${clipHe(best.interp, 125)}`);
       if (worst && worst !== best && worst.interp) interpParts.push(`בצד שדורש עבודה: ${clipHe(worst.interp, 125)}`);
       let interp = interpParts.join(" · ");
-      if (trends[1] && !looksLikeNumericOrCountLead(trends[1])) {
-        interp = appendDistinctSentence(interp, `שורת רקע מהסיכום התקופתי: ${trends[1]}`);
+      if (trends[1] && shouldAttachExecutiveSecondTrendLine(trends[1], x.totalQ)) {
+        interp = appendDistinctSentence(interp, `נוסף מהדוח: ${trends[1]}`);
       }
       interp = appendDistinctSentence(interp, supportingNumericTail(x));
       if (!interp.trim()) interp = defaultInterp;
@@ -350,13 +402,41 @@ function buildExecutiveIntentNarrativeSlots(x) {
       const obs = focus
         ? `כשבוחרים צעד מעשי מתוך הדוח, הגיוני להתייחס קודם למה שמצביע על פער: ${labelPair(focus)}.`
         : defaultObs;
-      let interp = metas[0]?.interp ? clipHe(metas[0].interp, 160) : defaultInterpBase;
-      if (trends[1] && !looksLikeNumericOrCountLead(trends[1])) {
-        interp = appendDistinctSentence(interp, `שורת רקע מהסיכום התקופתי: ${trends[1]}`);
+      let interp = focus?.interp ? clipHe(focus.interp, 160) : defaultInterpBase;
+      if (trends[1] && shouldAttachExecutiveSecondTrendLine(trends[1], x.totalQ)) {
+        interp = appendDistinctSentence(interp, `נוסף מהדוח: ${trends[1]}`);
       }
       interp = appendDistinctSentence(interp, supportingNumericTail(x));
       if (!interp.trim()) interp = defaultInterp;
-      return { observation: obs, interpretation: interp };
+      const week = intent === "what_to_do_this_week";
+      const thinPlan = x.totalQ < 90 || sparseExecutive;
+      const allowRec =
+        x.recommendationEligible === true && String(x.recommendationIntensityCap || "RI0") !== "RI0";
+      /** @type {string|null} */
+      let action = null;
+      /** @type {string|null} */
+      let stepsOnly = null;
+      if (focus && !thinPlan) {
+        const subjName = subjectLabelHe(focus.sid);
+        const topicClean = parentFacingTopicTitleHe(focus.dn);
+        const topicShort = clipHe(topicClean, 44);
+        const stepAnchor =
+          !topicClean || topicClean === subjName
+            ? subjName
+            : `${subjName} · ${topicShort}`;
+        stepsOnly = week
+          ? `1) לבחור את הנושא שדורש חיזוק ב${stepAnchor} ולחלק תרגול לשלושה חלונות קצרים בשבוע.\n2) בכל חלון לפתור 5–8 שאלות קצרות ולבדוק אם אותה טעות חוזרת.\n3) בסוף השבוע משפט אחד עם הילד — מה התקדם ומה עדיין צריך חיזוק.`
+          : `1) מחר 10 דקות תרגול ממוקד ב${stepAnchor}.\n2) אחר כך 5–8 שאלות קצרות ולבדוק אם אותה טעות חוזרת.\n3) לסיים במשפט אחד עם הילד על מה ניסיתם יחד.`;
+      } else if (thinPlan) {
+        stepsOnly = week
+          ? `1) לעשות השבוע עוד מספר סשנים קצרים של תרגול כדי שהדוח ייצב תמונה.\n2) לבחור נושא אחד שחוזר כקשה ולאזן חיזוק קצר מול לא להעמיס.\n3) בסוף השבוע לסכם במשפט אחד מה התקדם.`
+          : `1) לעשות מחר שני סבבים קצרים של תרגול (כ־8–10 דקות כל אחד).\n2) לבחור נושא אחד שחוזר כקשה ולנסות שוב בקצב רגוע.\n3) לסיים במשפט אחד עם הילד מה הרגישם בבית.`;
+      }
+      if (stepsOnly) {
+        if (allowRec) action = stepsOnly;
+        else interp = appendDistinctSentence(interp, stepsOnly.replace(/\n/g, " "));
+      }
+      return { observation: obs, interpretation: interp, action };
     }
     case "how_to_tell_child": {
       const m = metas[0];
@@ -401,7 +481,7 @@ function buildExecutiveIntentNarrativeSlots(x) {
     case "clarify_term": {
       const m = metas[0];
       const obs = m
-        ? `כדי להבין מונח מהדוח, הנה שורת עוגן מ«${m.dn}» ב${subjectLabelHe(m.sid)}: ${clipHe(m.obs, 200)}`
+        ? `כדי להבין מונח מהדוח, הנה שורת עוגן מ${parentFacingTopicTitleHe(m.dn)} ב${subjectLabelHe(m.sid)}: ${clipHe(m.obs, 200)}`
         : defaultObs;
       return {
         observation: obs,
@@ -445,10 +525,35 @@ function buildExecutiveIntentNarrativeSlots(x) {
       if (metas[0]?.interp) interpParts.push(clipHe(metas[0].interp, 200));
       if (metas[1]?.interp) interpParts.push(`במקביל, ב${labelPair(metas[1])}: ${clipHe(metas[1].interp, 170)}`);
       let interp = interpParts.join(" ");
-      const narrTrend = trends.find((line) => line && !looksLikeNumericOrCountLead(line));
-      if (narrTrend) interp = appendDistinctSentence(interp, `שורת רקע מהסיכום התקופתי שמלווה את הדוח: ${narrTrend}`);
+      const narrTrend = trends.find(
+        (line) => line && !looksLikeNumericOrCountLead(line) && shouldAttachExecutiveSecondTrendLine(line, x.totalQ),
+      );
+      if (narrTrend) interp = appendDistinctSentence(interp, `נוסף מהדוח: ${narrTrend}`);
       interp = appendDistinctSentence(interp, supportingNumericTail(x));
       if (!interp.trim()) interp = defaultInterp;
+      return { observation: obs, interpretation: interp };
+    }
+    case "simple_parent_explanation": {
+      const best = rankedBestFirst[0];
+      const worst = rankedWorstFirst[0];
+      let obs;
+      if (sparseExecutive || x.totalQ < 80) {
+        obs =
+          "יש כרגע לא הרבה תרגול שמופיע בדוח אצל הילד — התמונה כללית עדיין חלקית, וכדאי לצבור עוד קצת תרגול לפני מסקנה חדה.";
+      } else if (best && worst && (best.sid !== worst.sid || best.dn !== worst.dn)) {
+        obs = `בגדול: ב${subjectLabelHe(best.sid)} נראה יחסית יותר יציב לפי מה שנספר בדוח, וב${subjectLabelHe(worst.sid)} יש יותר מקום לחיזוק לפי אותו טווח.`;
+      } else if (worst) {
+        obs = `בגדול: הפער הבולט יותר לפי מה שנספר בדוח הוא סביב ${subjectLabelHe(worst.sid)} — שם כדאי לשים תשומת לב רגועה בבית.`;
+      } else {
+        obs =
+          "בדוח יש נתונים מהתרגול על כמה מקצועות — אפשר להסתכל על זה כמו על תמונה כללית של מה שנעשה בתקופה, לא כמו ציון אחד.";
+      }
+      let interp = `במשפטים פשוטים: בסך הכל נספרו בערך ${x.totalQ} שאלות בטווח התקופה, והדיוק המשוקלל הוא בערך ${x.avgAcc}%.`;
+      if (worst && worst.acc < 55) {
+        interp += ` המקום שבו זה נראה פחות יציב הוא סביב ${subjectLabelHe(worst.sid)} — שם כדאי לחזק בקצב קצר וקבוע.`;
+      } else if (best && best.acc >= 75) {
+        interp += ` יש גם כיוון חזק יחסית ב${subjectLabelHe(best.sid)} — אפשר לבנות עליו ביטחון הדרגתי.`;
+      }
       return { observation: obs, interpretation: interp };
     }
     case "unclear":
@@ -468,9 +573,11 @@ function buildExecutiveIntentNarrativeSlots(x) {
           ? "חלק מהמוקדים עדיין עם ניסוח זהיר או מוקדם לסגירה — זה מגביל כמה ברורה התמונה הכוללת."
           : "רוב המוקדים עם ניסוח יציב יחסית, כך שניתן לקרוא את הדוח כהדרגה של נקודות קונקרטיות ולא כציון כללי אחד.";
       interp = appendDistinctSentence(interp, supportingNumericTail(x));
-      const narrTrendLead = trends.find((line) => line && !looksLikeNumericOrCountLead(line));
+      const narrTrendLead = trends.find(
+        (line) => line && !looksLikeNumericOrCountLead(line) && shouldAttachExecutiveSecondTrendLine(line, x.totalQ),
+      );
       if (narrTrendLead) {
-        obs = appendDistinctSentence(obs, `שורת סיכום שמלווה את הדוח: ${narrTrendLead}`);
+        obs = appendDistinctSentence(obs, `נוסף מהדוח: ${narrTrendLead}`);
       }
       return { observation: obs, interpretation: interp };
     }
@@ -670,6 +777,8 @@ function buildTruthPacketV1NoAnchoredFallback(scope) {
       accuracy: acc,
       displayName,
       subjectLabelHe: subjectLabelHe(subjectId),
+      weakFocusSubjectLabelHe: "",
+      weakFocusTopicDisplayNameHe: "",
       relevantSummaryLines: summaryLines,
     },
     allowedClaimEnvelope: {
@@ -822,7 +931,7 @@ export function buildTruthPacketV1(payload, scope) {
     const avgAcc = totalQ > 0 ? Math.round(weightedAcc / totalQ) : 0;
     q = totalQ;
     acc = avgAcc;
-    displayName = "סיכום תקופתי";
+    displayName = "מבט על התקופה";
     readiness = minReadiness >= 3 ? "ready" : minReadiness === 2 ? "emerging" : minReadiness === 1 ? "forming" : "insufficient";
     confidenceBand = minConfidence >= 2 ? "high" : minConfidence === 1 ? "medium" : "low";
     cannotConcludeYet = anyCannotConclude || totalQ <= 0;
@@ -863,7 +972,15 @@ export function buildTruthPacketV1(payload, scope) {
       anyCannotConclude,
       uncertainRows,
       canonicalIntent: canon,
+      recommendationEligible,
+      recommendationIntensityCap,
     });
+    const slotAction =
+      intentSlots &&
+      intentSlots.action != null &&
+      String(intentSlots.action || "").trim().length > 0
+        ? String(intentSlots.action || "").trim()
+        : "";
     const executiveNarrative = {
       ...narBase,
       topicKey: "executive",
@@ -871,8 +988,9 @@ export function buildTruthPacketV1(payload, scope) {
       textSlots: {
         observation: intentSlots.observation,
         interpretation: intentSlots.interpretation,
-        action:
-          recommendationEligible && recommendationIntensityCap !== "RI0"
+        action: slotAction
+          ? slotAction
+          : recommendationEligible && recommendationIntensityCap !== "RI0"
             ? "אפשר לבחור צעד תמיכה אחד קצר לשבוע הקרוב ולבדוק מחדש אחרי עוד תרגול."
             : null,
         uncertainty: uncertaintyLine,
@@ -981,6 +1099,17 @@ export function buildTruthPacketV1(payload, scope) {
   const rawInterp = String(scope?.interpretationScope || scope?.scopeClass || "").trim();
   const interpretationScope = interpretationScopes.has(rawInterp) ? rawInterp : "executive";
 
+  let weakFocusSubjectLabelHe = subjectLabelHe(subjectId);
+  let weakFocusTopicDisplayNameHe = "";
+  if (scope.scopeType === "executive") {
+    const { rankedWorstFirst } = buildAnchoredMetasForExecutive(allAnchored);
+    const wf = rankedWorstFirst[0];
+    if (wf) {
+      weakFocusSubjectLabelHe = subjectLabelHe(wf.sid);
+      weakFocusTopicDisplayNameHe = String(wf.dn || "").trim();
+    }
+  }
+
   return {
     schemaVersion: "v1",
     audience: "parent",
@@ -1012,6 +1141,8 @@ export function buildTruthPacketV1(payload, scope) {
       accuracy: acc,
       displayName,
       subjectLabelHe: subjectLabelHe(subjectId),
+      weakFocusSubjectLabelHe,
+      weakFocusTopicDisplayNameHe,
       relevantSummaryLines: summaryLines,
     },
     allowedClaimEnvelope: {
