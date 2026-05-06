@@ -189,6 +189,24 @@ export function resolveScope(input) {
     };
   }
 
+  const canonIntent = String(stageA?.canonicalIntent || "").trim();
+  if (canonIntent === "clinical_boundary" || canonIntent === "sensitive_education_choice") {
+    return {
+      resolutionStatus: "resolved",
+      scope: attachScopeInterpretation(
+        {
+          scopeType: "executive",
+          scopeId: "executive",
+          scopeLabel: "הדוח בתקופה הנבחרה",
+        },
+        stageA,
+      ),
+      scopeConfidence: 0.96,
+      scopeReason: `canonical_intent_boundary:${canonIntent}`,
+      stageA,
+    };
+  }
+
   const aggregateClass = detectAggregateQuestionClass(normalizedUtterance);
   if (aggregateClass !== "none") {
     return {

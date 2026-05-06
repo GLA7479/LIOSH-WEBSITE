@@ -23,6 +23,8 @@ export function mapCanonicalIntentToPackGroup(intent) {
     is_intervention_needed: "uncertainty_boundary",
     strength_vs_weakness_summary: "understand_meaning",
     clarify_term: "understand_meaning",
+    clinical_boundary: "uncertainty_boundary",
+    sensitive_education_choice: "uncertainty_boundary",
     unclear: "understand_meaning",
   };
   return t[k] || "understand_meaning";

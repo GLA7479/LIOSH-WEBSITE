@@ -17,6 +17,14 @@ export const CLINICAL_BOUNDARY_LINE_2_HE =
 export const CLINICAL_BOUNDARY_LINE_3_HE =
   "אם יש חשש אמיתי, נכון לשתף מורה או איש מקצוע במה שנראה בפועל, בלי להסיק אבחנה מתוך הדוח בלבד.";
 
+/** School placement / non-clinical sensitive education decisions — no diagnosis, no “move/don’t move” from practice data alone. */
+export const SENSITIVE_EDUCATION_LINE_1_HE =
+  "שאלה על מעבר בית ספר נוגעת להחלטה משפחתית וחינוכית רחבה. נתוני התרגול בדוח עוזרים לראות דפוסי למידה בתקופה שנבחרה, אבל הם לא נועדו ולא מספיקים כדי להחליט על מעבר בית ספר.";
+export const SENSITIVE_EDUCATION_LINE_2_HE =
+  "מה שכן מומלץ הוא לשלב את מה שמופיע בדוח עם מה שאתם רואים בבית ובכיתה, ולשוחח עם המורה או עם גורם חינוכי/ייעוצי במוסד — שם נשקלת התאמה והמשך, לא מתוך הדוח לבד.";
+export const SENSITIVE_EDUCATION_LINE_3_HE =
+  "אם תרצו, אפשר להמשיך כאן בצעדי תרגול קטנים לשבוע הקרוב לפי הנושאים שבולטים בדוח, או לנסח נקודות קצרות לשאלה ממוקדת למורה.";
+
 /**
  * @returns {{ answerBlocks: Array<{ type: string; textHe: string; source: "composed" }> }}
  */
@@ -35,6 +43,24 @@ export function buildClinicalBoundaryAnswerDraft() {
  */
 export function clinicalBoundaryJoinedFingerprintHe() {
   return [CLINICAL_BOUNDARY_LINE_1_HE, CLINICAL_BOUNDARY_LINE_2_HE, CLINICAL_BOUNDARY_LINE_3_HE].join(" ");
+}
+
+/**
+ * @returns {{ answerBlocks: Array<{ type: string; textHe: string; source: "composed" }> }}
+ */
+export function buildSensitiveEducationChoiceAnswerDraft() {
+  return {
+    answerBlocks: [
+      { type: "observation", textHe: SENSITIVE_EDUCATION_LINE_1_HE, source: "composed" },
+      { type: "meaning", textHe: SENSITIVE_EDUCATION_LINE_2_HE, source: "composed" },
+      { type: "caution", textHe: SENSITIVE_EDUCATION_LINE_3_HE, source: "composed" },
+    ],
+  };
+}
+
+/** Normalized join for validator whitelist (fixed deterministic copy). */
+export function sensitiveEducationChoiceJoinedFingerprintHe() {
+  return [SENSITIVE_EDUCATION_LINE_1_HE, SENSITIVE_EDUCATION_LINE_2_HE, SENSITIVE_EDUCATION_LINE_3_HE].join(" ");
 }
 
 /**
@@ -125,6 +151,12 @@ export function composeAnswerDraft(plan, truthPacket, coachingCtx = null) {
   if (intentEarly === "clinical_boundary") {
     return {
       ...buildClinicalBoundaryAnswerDraft(),
+      debug: { intelligenceV1: intelligenceV1DebugSnapshot(truthPacket) },
+    };
+  }
+  if (intentEarly === "sensitive_education_choice") {
+    return {
+      ...buildSensitiveEducationChoiceAnswerDraft(),
       debug: { intelligenceV1: intelligenceV1DebugSnapshot(truthPacket) },
     };
   }

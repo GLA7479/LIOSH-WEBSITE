@@ -63,6 +63,7 @@ export function planConversation(intent, truthPacket, hints = null) {
 
   switch (intent) {
     case "clinical_boundary":
+    case "sensitive_education_choice":
       if (continuityRepeat) blocks.push("uncertainty_reason", "observation");
       else blocks.push("observation", "uncertainty_reason", "caution");
       break;

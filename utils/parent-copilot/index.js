@@ -10,6 +10,7 @@ import {
   composeAnswerDraft,
   buildClinicalBoundaryAnswerDraft,
   clinicalBoundaryJoinedFingerprintHe,
+  sensitiveEducationChoiceJoinedFingerprintHe,
 } from "./answer-composer.js";
 import { detectAggregateQuestionClass } from "./semantic-question-class.js";
 import { buildSemanticAggregateDraft } from "./semantic-aggregate-answers.js";
@@ -70,6 +71,13 @@ function isClinicalBoundaryDraft(draft) {
     .map((b) => String(b?.textHe || ""))
     .join(" ");
   return normalizeWsHeJoin(joined) === normalizeWsHeJoin(clinicalBoundaryJoinedFingerprintHe());
+}
+
+function isSensitiveEducationChoiceDraft(draft) {
+  const joined = (Array.isArray(draft?.answerBlocks) ? draft.answerBlocks : [])
+    .map((b) => String(b?.textHe || ""))
+    .join(" ");
+  return normalizeWsHeJoin(joined) === normalizeWsHeJoin(sensitiveEducationChoiceJoinedFingerprintHe());
 }
 
 function normalizeAnswerBlocksHe(answerBlocks) {
@@ -375,7 +383,11 @@ function runDeterministicCore(input) {
   const stageA = interpretFreeformStageA(String(input?.utterance || ""), input?.payload);
   const aggregateQuestionClass = detectAggregateQuestionClass(utteranceStr);
   let intent = stageA.canonicalIntent;
-  if (aggregateQuestionClass === "vague_summary_question" && intent !== "clinical_boundary") {
+  if (
+    aggregateQuestionClass === "vague_summary_question" &&
+    intent !== "clinical_boundary" &&
+    intent !== "sensitive_education_choice"
+  ) {
     intent = "explain_report";
   }
 
@@ -521,7 +533,8 @@ function runDeterministicCore(input) {
     aggregateQuestionClass !== "none" &&
     aggregateQuestionClass !== "vague_summary_question" &&
     !skipSemanticAggregateForIneligibleRec &&
-    intent !== "clinical_boundary"
+    intent !== "clinical_boundary" &&
+    intent !== "sensitive_education_choice"
   ) {
     const aggDraft = buildSemanticAggregateDraft({
       questionClass: aggregateQuestionClass,
@@ -614,7 +627,11 @@ function runDeterministicCore(input) {
     }
   }
 
-  const responseIntent = isClinicalBoundaryDraft(draft) ? "clinical_boundary" : plannerIntent;
+  const responseIntent = isClinicalBoundaryDraft(draft)
+    ? "clinical_boundary"
+    : isSensitiveEducationChoiceDraft(draft)
+      ? "sensitive_education_choice"
+      : plannerIntent;
 
   const answerBlockTypes = draft.answerBlocks.map((b) => b.type);
   const answerBodyTextHe = draft.answerBlocks.map((b) => b.textHe).join(" ").trim();
@@ -807,7 +824,7 @@ export async function runParentCopilotTurnAsync(input) {
     });
   }
 
-  if (core.intent === "clinical_boundary") {
+  if (core.intent === "clinical_boundary" || core.intent === "sensitive_education_choice") {
     return finalizeTurnResponse(baseResponse, {
       audience: core.audience,
       sessionId: core.sessionId,
@@ -815,7 +832,13 @@ export async function runParentCopilotTurnAsync(input) {
       intent: core.intent,
       utteranceLength: String(core.utteranceStr || "").trim().length,
       generationPath: "deterministic",
-      llmAttempt: { ok: false, reason: "llm_skipped_clinical_boundary" },
+      llmAttempt: {
+        ok: false,
+        reason:
+          core.intent === "sensitive_education_choice"
+            ? "llm_skipped_sensitive_education_boundary"
+            : "llm_skipped_clinical_boundary",
+      },
     });
   }
 

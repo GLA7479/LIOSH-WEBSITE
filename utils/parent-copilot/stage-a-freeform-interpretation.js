@@ -22,6 +22,7 @@ import { SUBJECT_ORDER, subjectLabelHe } from "./contract-reader.js";
  *   "strength_vs_weakness_summary" |
  *   "clarify_term" |
  *   "clinical_boundary" |
+ *   "sensitive_education_choice" |
  *   "unclear"
  * )} CanonicalParentIntent
  */
@@ -55,6 +56,7 @@ export const CANONICAL_PARENT_INTENTS = [
   "strength_vs_weakness_summary",
   "clarify_term",
   "clinical_boundary",
+  "sensitive_education_choice",
   "unclear",
 ];
 
@@ -329,6 +331,15 @@ const INTENT_PARAPHRASES = {
     /(?:יש\s*לילד|לילד\s*יש).{0,48}(?:דיסלקציה|דיסלקסיה|דיסקלקוליה|לקות\s*למידה|הפרעת\s*קשב|ADHD)/iu,
     /(?:דיסלקציה|דיסלקסיה|דיסקלקוליה|לקות\s*למידה|הפרעת\s*קשב|ADHD).{0,48}(?:יש\s*לילד|לילד\s*יש)/iu,
   ],
+  sensitive_education_choice: [
+    /האם\s*כדאי\s*להעביר\s*בית\s*ספר/u,
+    /מעבר\s*בית\s*ספר|להעביר\s*בית\s*ספר|להחליף\s*בית\s*ספר|לעבור\s*בית\s*ספר/u,
+    /כדאי\s*לעבור\s*בית\s*ספר|לעבור\s*לבית\s*ספר\s*אחר/u,
+    /האם\s*לעבור\s*בית\s*ספר/u,
+    /האם\s*הוא\s*מחונן|ילד\s*מחונן|מוכשרות\s*גבוהה\s*בצורה\s*קבועה/u,
+    /מורה\s*פרטי|שיעורים\s*פרטיים|שיעור\s*פרטי/u,
+    /האם\s*צריך\s*מורה\s*פרטי|כדאי\s*מורה\s*פרטי/u,
+  ],
   clarify_term: [
     /תסביר\s*לי\s*את\s*המושג\s*הזה|לא\s*הבנתי\s*את\s*הניסוח\s*הזה/u,
     /מהזה\s*אומר|מהזה|מה\s*זה\s*אומר/u,
@@ -482,6 +493,13 @@ export function interpretFreeformStageA(utteranceRaw, payload) {
     second = 0;
   }
 
+  if ((scores.sensitive_education_choice || 0) > 0 && best !== "clinical_boundary") {
+    best = "sensitive_education_choice";
+    bestScore = scores.sensitive_education_choice || 0;
+    topIntentCount = 1;
+    second = 0;
+  }
+
   if ((scores.what_not_to_do_now || 0) > 0 && best !== "clinical_boundary") {
     const n = scores.what_not_to_do_now || 0;
     const d = scores.what_is_still_difficult || 0;
@@ -507,7 +525,7 @@ export function interpretFreeformStageA(utteranceRaw, payload) {
             ? "recommendation"
             : "executive");
 
-  if (best === "clinical_boundary") {
+  if (best === "clinical_boundary" || best === "sensitive_education_choice") {
     scopeClass = "confidence_uncertainty";
   }
 

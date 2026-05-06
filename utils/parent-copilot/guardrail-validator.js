@@ -11,7 +11,7 @@
  * Deterministic and LLM paths both pass through `validateAnswerDraft` / `validateParentCopilotResponseV1` as appropriate.
  */
 
-import { clinicalBoundaryJoinedFingerprintHe } from "./answer-composer.js";
+import { clinicalBoundaryJoinedFingerprintHe, sensitiveEducationChoiceJoinedFingerprintHe } from "./answer-composer.js";
 
 /** Deterministic clinical / diagnostic labeling (joined parent copy + contract slots). Not the fixed boundary fingerprint. */
 const CLINICAL_DIAGNOSIS_SURFACE_RES = [
@@ -161,7 +161,10 @@ export function validateAnswerDraft(draft, truthPacket, hints = null) {
   const intent = String(hints?.intent || "").trim();
   const joinedNorm = normalizeWsHe(joined);
   const boundaryNorm = normalizeWsHe(clinicalBoundaryJoinedFingerprintHe());
+  const boundaryNormSensitive = normalizeWsHe(sensitiveEducationChoiceJoinedFingerprintHe());
   const isApprovedClinicalBoundaryCopy = joinedNorm === boundaryNorm;
+  const isApprovedSensitiveEducationCopy = joinedNorm === boundaryNormSensitive;
+  const isApprovedFixedBoundaryCopy = isApprovedClinicalBoundaryCopy || isApprovedSensitiveEducationCopy;
 
   if (/\bcontractsV1\b|validatorFailCodes|schemaVersion|fail_codes\b|telemetry\.trace\b/i.test(joined)) {
     failCodes.push("internal_surface_leak");
@@ -205,7 +208,7 @@ export function validateAnswerDraft(draft, truthPacket, hints = null) {
     if (joined.includes(ph)) failCodes.push("filler_blacklist");
   }
   const slotBundle = String(slotText + joined);
-  if (intent !== "clinical_boundary") {
+  if (intent !== "clinical_boundary" && intent !== "sensitive_education_choice") {
     for (const hedge of truthPacket?.allowedClaimEnvelope?.requiredHedges || []) {
       if (hedge && !slotBundle.includes(String(hedge))) failCodes.push("missing_required_hedge");
     }
@@ -260,7 +263,7 @@ export function validateAnswerDraft(draft, truthPacket, hints = null) {
     }
   }
 
-  if (!isApprovedClinicalBoundaryCopy) {
+  if (!isApprovedFixedBoundaryCopy) {
     for (const re of CLINICAL_DIAGNOSIS_SURFACE_RES) {
       if (re.test(joined)) {
         failCodes.push("clinical_diagnosis_language");
