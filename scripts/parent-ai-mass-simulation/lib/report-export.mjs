@@ -4,6 +4,27 @@ import { installBrowserGlobals } from "./browser-globals.mjs";
 import { applyMassStudentSeed, buildMassStudentStorageSnapshot } from "./seed-engine.mjs";
 import { exportProductParentReportPdfPack } from "./product-pdf-playwright.mjs";
 
+function htmlToParentFacingLines(html) {
+  const src = String(html || "");
+  if (!src.trim()) return [];
+  const noScripts = src
+    .replace(/<script[\s\S]*?<\/script>/gi, " ")
+    .replace(/<style[\s\S]*?<\/style>/gi, " ")
+    .replace(/<noscript[\s\S]*?<\/noscript>/gi, " ");
+  const withBreaks = noScripts.replace(/<\/(p|div|li|tr|h1|h2|h3|h4|section|article)>/gi, "\n");
+  const plain = withBreaks
+    .replace(/<[^>]+>/g, " ")
+    .replace(/&nbsp;/g, " ")
+    .replace(/&amp;/g, "&")
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .replace(/\r/g, "");
+  return plain
+    .split("\n")
+    .map((x) => x.replace(/\s+/g, " ").trim())
+    .filter((x) => x.length >= 2);
+}
+
 function execSummaryLines(detailed) {
   const es = detailed?.executiveSummary && typeof detailed.executiveSummary === "object" ? detailed.executiveSummary : {};
   const lines = [];
@@ -19,47 +40,58 @@ function execSummaryLines(detailed) {
   push("מוכנות דוח", es.reportReadinessHe);
   push("איזון ראיות", es.evidenceBalanceHe);
   push("אות מעורבב", es.mixedSignalNoticeHe);
-  return lines.length ? lines : ["(סיכום מנהלים — ראה detailed.json למבנה מלא)"];
+  return lines;
 }
 
-function shortReportPayload(student, detailed, lines, pdfMeta) {
+function buildSubjectCardsSnapshot(detailed) {
+  const cards = Array.isArray(detailed?.subjectCards) ? detailed.subjectCards : [];
+  return cards.map((c) => ({
+    subjectLabelHe: String(c?.subjectLabelHe || "").trim(),
+    questionCount: Number(c?.questionCount) || 0,
+    accuracy: Number(c?.accuracy) || 0,
+    timeMinutes: Number(c?.timeMinutes) || 0,
+  }));
+}
+
+function shortReportPayload(student, detailed, lines, shortHtmlLines, pdfMeta) {
+  const overall = detailed?.overallSnapshot && typeof detailed.overallSnapshot === "object" ? detailed.overallSnapshot : {};
+  const subjectCards = buildSubjectCardsSnapshot(detailed);
   return {
     studentId: student.studentId,
     grade: student.grade,
     profileType: student.profileType,
-    subjectsIncluded: student.subjects,
-    dataVolume: student.generatedAnswers?.length ?? 0,
-    strengths: student.strengths,
-    weaknesses: student.weaknesses,
-    executiveLines: lines,
-    evidenceSnippets: lines.slice(0, 6),
-    recommendations: lines.filter((l) => /תרגול|בית|שבוע|מיקוד/i.test(l)).slice(0, 5),
-    trend: student.trendOverTime,
-    cautionThinData: student.profileType === "thin_data",
+    reportDataAlignment: "product_payload_and_product_html",
+    overallSnapshot: {
+      totalQuestions: Number(overall.totalQuestions) || 0,
+      totalTime: Number(overall.totalTime) || 0,
+      overallAccuracy: Number(overall.overallAccuracy) || 0,
+      periodLabelHe: String(overall.periodLabelHe || "").trim(),
+    },
+    subjectCards,
+    executiveLines: shortHtmlLines.length ? shortHtmlLines.slice(0, 20) : lines,
+    textSnapshotFromShortHtml: shortHtmlLines.slice(0, 60),
+    evidenceSnippets: shortHtmlLines.slice(0, 20),
+    recommendations: lines.filter((l) => /תרגול|בית|שבוע|מיקוד|צעדי/i.test(l)).slice(0, 8),
+    cautionThinData: student.profileType === "thin_data" || (Number(overall.totalQuestions) || 0) <= 12,
     pdfExport: pdfMeta || null,
     generatedAt: new Date().toISOString(),
     detailedPayloadPresent: Boolean(detailed),
-    reportPipeline: "generateDetailedParentReport",
+    reportPipeline: "product_html_payload_aligned",
   };
 }
 
-function detailedMarkdown(student, detailed) {
-  const lines = execSummaryLines(detailed);
+function markdownFromProductLines(title, student, lines, maxLines = 180) {
+  const clipped = lines.slice(0, maxLines);
   return [
-    `# דוח מפורט — ${student.displayName}`,
+    `# ${title} — ${student.displayName}`,
     "",
     `- מזהה: \`${student.studentId}\``,
     `- פרופיל: ${student.profileType}`,
     "",
-    "## סיכום מנהלים (טקסטים עיקריים)",
+    "## תצלום טקסט מהתצוגה המוצרית",
     "",
-    ...lines.map((l) => `- ${l}`),
-    "",
-    "## מטא־דאטה",
-    "",
-    "```json",
-    JSON.stringify({ version: detailed?.version, narrativeContract: detailed?.narrativeContractVersion }, null, 2),
-    "```",
+    ...clipped.map((l) => `- ${l}`),
+    clipped.length < lines.length ? `- ... ועוד ${lines.length - clipped.length} שורות` : "",
     "",
   ].join("\n");
 }
@@ -87,25 +119,10 @@ export async function writeParentReportsAndProductPdfs(opts) {
     fs.mkdirSync(dir, { recursive: true });
 
     fs.writeFileSync(path.join(dir, "detailed.json"), JSON.stringify(detailed || { error: "null_detailed" }, null, 2), "utf8");
-    fs.writeFileSync(path.join(dir, "detailed.md"), detailedMarkdown(student, detailed), "utf8");
-
-    const shortMd = [
-      `# דוח קצר — ${student.displayName}`,
-      "",
-      ...summaryLines.map((l) => `- ${l}`),
-      "",
-      "## חוזקות",
-      ...student.strengths.map((x) => `- ${x}`),
-      "",
-      "## חולשות",
-      ...student.weaknesses.map((x) => `- ${x}`),
-      "",
-      `מגמה: ${student.trendOverTime}`,
-      "",
-    ].join("\n");
-    fs.writeFileSync(path.join(dir, "short.md"), shortMd, "utf8");
 
     let pdfBundle = { short: null, detailed: null, error: null };
+    let shortHtmlLines = [];
+    let detailedHtmlLines = [];
     if (i < opts.pdfLimit) {
       const snap = buildMassStudentStorageSnapshot(student);
       pdfBundle = await exportProductParentReportPdfPack({
@@ -121,9 +138,36 @@ export async function writeParentReportsAndProductPdfs(opts) {
         pdfOk += 1;
         pdfIndexEntries.push(pdfBundle.short, pdfBundle.detailed);
       }
+      const shortHtmlAbs = path.join(opts.outputRoot, String(pdfBundle?.short?.htmlPath || ""));
+      const detailedHtmlAbs = path.join(opts.outputRoot, String(pdfBundle?.detailed?.htmlPath || ""));
+      if (fs.existsSync(shortHtmlAbs)) {
+        shortHtmlLines = htmlToParentFacingLines(fs.readFileSync(shortHtmlAbs, "utf8"));
+      }
+      if (fs.existsSync(detailedHtmlAbs)) {
+        detailedHtmlLines = htmlToParentFacingLines(fs.readFileSync(detailedHtmlAbs, "utf8"));
+      }
     }
 
-    const shortPayload = shortReportPayload(student, detailed, summaryLines, {
+    if (!shortHtmlLines.length) {
+      const p = path.join(dir, "short.html");
+      if (fs.existsSync(p)) shortHtmlLines = htmlToParentFacingLines(fs.readFileSync(p, "utf8"));
+    }
+    if (!detailedHtmlLines.length) {
+      const p = path.join(dir, "detailed.html");
+      if (fs.existsSync(p)) detailedHtmlLines = htmlToParentFacingLines(fs.readFileSync(p, "utf8"));
+    }
+
+    const shortMd = markdownFromProductLines("דוח קצר", student, shortHtmlLines.length ? shortHtmlLines : summaryLines, 140);
+    fs.writeFileSync(path.join(dir, "short.md"), shortMd, "utf8");
+    const detailedMd = markdownFromProductLines(
+      "דוח מפורט",
+      student,
+      detailedHtmlLines.length ? detailedHtmlLines : summaryLines,
+      260,
+    );
+    fs.writeFileSync(path.join(dir, "detailed.md"), detailedMd, "utf8");
+
+    const shortPayload = shortReportPayload(student, detailed, summaryLines, shortHtmlLines, {
       short: student.pdfExportShortMeta,
       detailed: student.pdfExportDetailedMeta,
       error: student.pdfExportError,

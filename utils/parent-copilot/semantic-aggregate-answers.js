@@ -3,7 +3,7 @@
  * Uses only payload.subjectProfiles numeric fields + executiveSummary lines; no new contract facts.
  */
 
-import { SUBJECT_ORDER, subjectLabelHe } from "./contract-reader.js";
+import { SUBJECT_ORDER, normalizeSubjectId, subjectLabelHe } from "./contract-reader.js";
 
 /**
  * @param {string} s
@@ -34,7 +34,7 @@ function confidenceScore(v) {
  */
 function subjectRollups(payload) {
   const profiles = Array.isArray(payload?.subjectProfiles) ? payload.subjectProfiles : [];
-  const bySubject = Object.fromEntries(profiles.map((sp) => [String(sp?.subject || "").trim(), sp]));
+  const bySubject = Object.fromEntries(profiles.map((sp) => [normalizeSubjectId(sp?.subject), sp]));
   /** @type {Array<{
    *   sid: string; label: string; totalQ: number; avg: number | null; topicRows: number; dataTopics: number;
    *   lowConfidenceTopics: number; insufficientTopics: number; cannotConcludeTopics: number; accStdDev: number | null;
@@ -73,6 +73,15 @@ function subjectRollups(payload) {
         accList.push(acc);
       }
     }
+    if (totalQ <= 0) {
+      const qFromSubject = Math.max(0, Number(sp?.subjectQuestionCount) || 0);
+      const accFromSubject = Math.max(0, Math.min(100, Math.round(Number(sp?.subjectAccuracy) || 0)));
+      if (qFromSubject > 0) {
+        totalQ = qFromSubject;
+        wAcc = accFromSubject * qFromSubject;
+        dataTopics = Math.max(1, dataTopics);
+      }
+    }
     const avg = totalQ > 0 ? Math.round(wAcc / totalQ) : null;
     const mean = accList.length ? accList.reduce((a, b) => a + b, 0) / accList.length : null;
     const variance =
@@ -103,14 +112,15 @@ function subjectRollups(payload) {
  */
 function subjectsListedInReport(payload) {
   const profiles = Array.isArray(payload?.subjectProfiles) ? payload.subjectProfiles : [];
-  const present = new Set(profiles.map((p) => String(p?.subject || "").trim()).filter(Boolean));
+  const present = new Set(profiles.map((p) => normalizeSubjectId(p?.subject)).filter(Boolean));
   /** @type {string[]} */
   const out = [];
   for (const sid of SUBJECT_ORDER) {
     if (!present.has(sid)) continue;
-    const sp = profiles.find((p) => String(p?.subject || "") === sid);
+    const sp = profiles.find((p) => normalizeSubjectId(p?.subject) === sid);
     const list = Array.isArray(sp?.topicRecommendations) ? sp.topicRecommendations : [];
-    if (list.length > 0) out.push(sid);
+    const subjectQ = Math.max(0, Number(sp?.subjectQuestionCount) || 0);
+    if (list.length > 0 || subjectQ > 0) out.push(sid);
   }
   return out;
 }

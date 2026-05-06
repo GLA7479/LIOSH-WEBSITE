@@ -49,13 +49,32 @@ function answerCorrect(rng, profileType, difficulty) {
  */
 export function simulateQuestionRuns(opts) {
   const rows = [];
-  const perStudent = Math.max(1, Math.ceil(opts.questionTarget / opts.students.length));
+  const defaultPerStudent = Math.max(1, Math.ceil(opts.questionTarget / opts.students.length));
   const mode = opts.questionSourceMode || "synthetic";
+  const questionBudgetByStudent = new Map();
+  let allocated = 0;
+
+  for (const student of opts.students) {
+    const count = student.profileType === "thin_data" ? 8 : defaultPerStudent;
+    questionBudgetByStudent.set(student.studentId, count);
+    allocated += count;
+  }
+  if (allocated < opts.questionTarget) {
+    const nonThin = opts.students.filter((s) => s.profileType !== "thin_data");
+    let idx = 0;
+    while (allocated < opts.questionTarget && nonThin.length > 0) {
+      const s = nonThin[idx % nonThin.length];
+      questionBudgetByStudent.set(s.studentId, (questionBudgetByStudent.get(s.studentId) || 0) + 1);
+      allocated += 1;
+      idx += 1;
+    }
+  }
 
   for (const student of opts.students) {
     const rng = createRng((student.metadata?.rngSeedFragment ?? 1) ^ 0xdeadbeef);
     let si = 0;
-    for (let i = 0; i < perStudent; i++) {
+    const studentQuestionCount = Math.max(1, Number(questionBudgetByStudent.get(student.studentId) || defaultPerStudent));
+    for (let i = 0; i < studentQuestionCount; i++) {
       const subject = pick(rng, student.subjects);
       const topic = pick(rng, TOPICS_BY_SUBJECT[subject] || ["general"]);
       const difficulty =
@@ -108,7 +127,7 @@ export function simulateQuestionRuns(opts) {
       }
       student.generatedAnswers.push(row);
     }
-    student.generatedSessions = [{ note: "סימולציה: סשן לכל שאלה", approximateSessions: perStudent }];
+    student.generatedSessions = [{ note: "סימולציה: סשן לכל שאלה", approximateSessions: studentQuestionCount }];
   }
 
   const qDir = path.join(opts.outputRoot, "question-runs");
@@ -140,6 +159,7 @@ export function aggregateQuestionStats(rows) {
   const byTopic = {};
   const byDifficulty = {};
   const byQuestionSource = { real: 0, synthetic: 0, placeholder: 0 };
+  const bySubjectQuestionSource = {};
   let correct = 0;
   const mistakeCounts = {};
   for (const r of rows) {
@@ -149,6 +169,10 @@ export function aggregateQuestionStats(rows) {
     byDifficulty[r.difficulty] = (byDifficulty[r.difficulty] || 0) + 1;
     const qs = r.questionSource || "synthetic";
     byQuestionSource[qs] = (byQuestionSource[qs] || 0) + 1;
+    if (!bySubjectQuestionSource[r.subject]) {
+      bySubjectQuestionSource[r.subject] = { real: 0, synthetic: 0, placeholder: 0 };
+    }
+    bySubjectQuestionSource[r.subject][qs] = (bySubjectQuestionSource[r.subject][qs] || 0) + 1;
     if (r.isCorrect) correct += 1;
     if (r.mistakeType) mistakeCounts[r.mistakeType] = (mistakeCounts[r.mistakeType] || 0) + 1;
   }
@@ -164,5 +188,6 @@ export function aggregateQuestionStats(rows) {
     generatedQuestionCount: byQuestionSource.synthetic,
     placeholderQuestionCount: byQuestionSource.placeholder,
     byQuestionSource,
+    bySubjectQuestionSource,
   };
 }

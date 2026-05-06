@@ -20,6 +20,15 @@ async function extractPdfText(filePath) {
   return "";
 }
 
+function htmlVisibleText(html) {
+  const src = String(html || "");
+  const noScripts = src
+    .replace(/<script[\s\S]*?<\/script>/gi, " ")
+    .replace(/<style[\s\S]*?<\/style>/gi, " ")
+    .replace(/<noscript[\s\S]*?<\/noscript>/gi, " ");
+  return noScripts.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
+}
+
 function hebrewLetterCount(t) {
   return (String(t || "").match(/[\u0590-\u05FF]/g) || []).length;
 }
@@ -143,8 +152,12 @@ export async function runQualitySuite(ctx) {
 
     const shortMdPath = path.join(ctx.outputRoot, "parent-reports", student.studentId, "short.md");
     const detailedMdPath = path.join(ctx.outputRoot, "parent-reports", student.studentId, "detailed.md");
+    const shortHtmlPath = path.join(ctx.outputRoot, "parent-reports", student.studentId, "short.html");
+    const detailedHtmlPath = path.join(ctx.outputRoot, "parent-reports", student.studentId, "detailed.html");
     const shortMd = fs.existsSync(shortMdPath) ? fs.readFileSync(shortMdPath, "utf8") : "";
     const detailedMd = fs.existsSync(detailedMdPath) ? fs.readFileSync(detailedMdPath, "utf8") : "";
+    const shortHtml = fs.existsSync(shortHtmlPath) ? fs.readFileSync(shortHtmlPath, "utf8") : "";
+    const detailedHtml = fs.existsSync(detailedHtmlPath) ? fs.readFileSync(detailedHtmlPath, "utf8") : "";
 
     totalChecks += 2;
     if (!shortMd || shortMd.trim().length < 40) fail("report_short_empty", student.studentId, `parent-reports/${student.studentId}/short.md`);
@@ -152,6 +165,11 @@ export async function runQualitySuite(ctx) {
 
     if (scanInternalLeak(shortMd) || scanInternalLeak(detailedMd)) {
       fail("internal_terms_in_report_md", student.studentId, `parent-reports/${student.studentId}/`);
+    }
+    const shortHtmlVisible = htmlVisibleText(shortHtml);
+    const detailedHtmlVisible = htmlVisibleText(detailedHtml);
+    if (scanInternalLeak(shortHtmlVisible) || scanInternalLeak(detailedHtmlVisible)) {
+      fail("internal_terms_in_report_html", student.studentId, `parent-reports/${student.studentId}/`);
     }
 
     const profIssues = scanReportProfileConsistency(student, shortMd, detailedMd);
@@ -182,6 +200,35 @@ export async function runQualitySuite(ctx) {
     }
   }
 
+  const byStudent = new Map();
+  for (const row of ctx.globalInteractions || []) {
+    const sid = String(row.studentId || "");
+    if (!byStudent.has(sid)) byStudent.set(sid, []);
+    byStudent.get(sid).push(row);
+  }
+  for (const [sid, rows] of byStudent.entries()) {
+    const normalized = new Map();
+    for (const r of rows) {
+      const ans = String(r.aiAnswer || "")
+        .replace(/\s+/g, " ")
+        .trim();
+      if (!ans) continue;
+      const key = ans.toLowerCase();
+      if (!normalized.has(key)) normalized.set(key, new Set());
+      normalized.get(key).add(String(r.questionCategory || ""));
+    }
+    for (const [answerKey, cats] of normalized.entries()) {
+      totalChecks += 1;
+      if (cats.size >= 4) {
+        fail(
+          "repeated_answer_across_categories",
+          `${sid} · categories=${Array.from(cats).join(", ")}`,
+          `parent-ai-chats/${sid}.json`,
+        );
+      }
+    }
+  }
+
   if (ctx.categoryCoverage?.missing?.length) {
     warn("parent_ai_category_gap", `חסרות קטגוריות: ${ctx.categoryCoverage.missing.join(", ")}`, "PARENT_AI_QUESTIONS_INDEX.json");
   }
@@ -207,5 +254,7 @@ export async function runQualitySuite(ctx) {
 }
 
 function scanInternalLeak(text) {
-  return /mleo_|skilltag|skillTag|contractslots|debug\s*:|validatorfailcodes/i.test(String(text || ""));
+  return /mleo_|skilltag|skillTag|contractslots|debug\s*:|validatorfailcodes|\bhebrew\b|\bmath\b|\benglish\b|\bscience\b|\bgeometry\b|\bmoledet[_-]geography\b/i.test(
+    String(text || ""),
+  );
 }

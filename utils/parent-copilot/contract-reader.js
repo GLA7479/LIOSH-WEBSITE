@@ -12,6 +12,12 @@ export const SUBJECT_ORDER = [
   "moledet-geography",
 ];
 
+export function normalizeSubjectId(subjectId) {
+  const sid = String(subjectId || "").trim();
+  if (sid === "moledet_geography") return "moledet-geography";
+  return sid;
+}
+
 function shallowCopy(x) {
   if (x == null) return x;
   if (typeof x !== "object") return x;
@@ -39,7 +45,7 @@ export function contractsFromTopicRow(tr) {
  */
 export function findFirstAnchoredTopicRow(payload) {
   const profiles = Array.isArray(payload?.subjectProfiles) ? payload.subjectProfiles : [];
-  const bySubject = Object.fromEntries(profiles.map((sp) => [String(sp?.subject || ""), sp]));
+  const bySubject = Object.fromEntries(profiles.map((sp) => [normalizeSubjectId(sp?.subject), sp]));
   for (const sid of SUBJECT_ORDER) {
     const sp = bySubject[sid];
     const list = Array.isArray(sp?.topicRecommendations) ? sp.topicRecommendations : [];
@@ -61,7 +67,7 @@ export function listAllAnchoredTopicRows(payload) {
   /** @type {Array<{ subject: string, tr: object }>} */
   const out = [];
   const profiles = Array.isArray(payload?.subjectProfiles) ? payload.subjectProfiles : [];
-  const bySubject = Object.fromEntries(profiles.map((sp) => [String(sp?.subject || ""), sp]));
+  const bySubject = Object.fromEntries(profiles.map((sp) => [normalizeSubjectId(sp?.subject), sp]));
   for (const sid of SUBJECT_ORDER) {
     const sp = bySubject[sid];
     const list = Array.isArray(sp?.topicRecommendations) ? sp.topicRecommendations : [];
@@ -81,9 +87,9 @@ export function listAllAnchoredTopicRows(payload) {
  * @returns {{ subject: string, tr: object } | null}
  */
 export function findFirstAnchoredTopicRowForSubject(payload, subjectId) {
-  const sid = String(subjectId || "").trim();
+  const sid = normalizeSubjectId(subjectId);
   const profiles = Array.isArray(payload?.subjectProfiles) ? payload.subjectProfiles : [];
-  const sp = profiles.find((p) => String(p?.subject || "") === sid);
+  const sp = profiles.find((p) => normalizeSubjectId(p?.subject) === sid);
   const list = Array.isArray(sp?.topicRecommendations) ? sp.topicRecommendations : [];
   for (const tr of list) {
     const nar = tr?.contractsV1?.narrative;
@@ -103,7 +109,7 @@ export function findFirstAnchoredTopicRowForSubject(payload, subjectId) {
 export function findTopicRowByKey(payload, topicRowKey, subjectIdHint = "") {
   const key = String(topicRowKey || "").trim();
   if (!key) return null;
-  const hint = String(subjectIdHint || "").trim();
+  const hint = normalizeSubjectId(subjectIdHint);
   if (hint) {
     const hit = findFirstAnchoredTopicRowForSubject(payload, hint);
     if (hit) {
@@ -113,7 +119,7 @@ export function findTopicRowByKey(payload, topicRowKey, subjectIdHint = "") {
   }
   const profiles = Array.isArray(payload?.subjectProfiles) ? payload.subjectProfiles : [];
   for (const sp of profiles) {
-    const sid = String(sp?.subject || "");
+      const sid = normalizeSubjectId(sp?.subject);
     const list = Array.isArray(sp?.topicRecommendations) ? sp.topicRecommendations : [];
     for (const tr of list) {
       const k = String(tr?.topicRowKey || tr?.topicKey || "");
@@ -132,11 +138,12 @@ const SUBJECT_LABEL_HE = {
   english: "אנגלית",
   science: "מדעים",
   hebrew: "עברית",
-  "moledet-geography": "מולדת וגיאוגרפיה",
+  "moledet-geography": "מולדת וגאוגרפיה",
+  moledet_geography: "מולדת וגאוגרפיה",
 };
 
 export function subjectLabelHe(subjectId) {
-  return SUBJECT_LABEL_HE[String(subjectId || "")] || "מקצוע";
+  return SUBJECT_LABEL_HE[normalizeSubjectId(subjectId)] || "מקצוע";
 }
 
 /**
@@ -185,6 +192,7 @@ export function readContractsSliceForScope(scopeType, scopeId, subjectId, payloa
 export default {
   readContractsSliceForScope,
   subjectLabelHe,
+  normalizeSubjectId,
   SUBJECT_ORDER,
   listAllAnchoredTopicRows,
   findFirstAnchoredTopicRow,

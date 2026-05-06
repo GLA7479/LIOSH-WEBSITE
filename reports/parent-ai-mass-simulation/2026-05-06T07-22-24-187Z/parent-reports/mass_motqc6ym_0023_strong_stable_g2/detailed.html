@@ -1,0 +1,784 @@
+<!DOCTYPE html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="LEO K - Fun games and learning activities for kids. Play arcade games, solve puzzles, and practice math, geometry and English."><meta name="theme-color" content="#fbbf24"><meta name="apple-mobile-web-app-capable" content="yes"><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent"><meta name="apple-mobile-web-app-title" content="LEO K"><meta name="mobile-web-app-capable" content="yes"><meta name="msapplication-TileColor" content="#fbbf24"><meta name="msapplication-config" content="/browserconfig.xml"><link rel="icon" href="/images/leo-icons/icon-192.png" sizes="any"><link rel="icon" type="image/png" sizes="192x192" href="/images/leo-icons/icon-192.png"><link rel="icon" type="image/png" sizes="512x512" href="/images/leo-icons/icon-512.png"><link rel="apple-touch-icon" href="/images/leo-icons/icon-192.png"><link rel="apple-touch-icon" sizes="120x120" href="/images/leo-icons/icon-192.png"><link rel="apple-touch-icon" sizes="152x152" href="/images/leo-icons/icon-192.png"><link rel="apple-touch-icon" sizes="167x167" href="/images/leo-icons/icon-192.png"><link rel="apple-touch-icon" sizes="180x180" href="/images/leo-icons/icon-192.png"><link rel="manifest" href="/manifest.json"><title>דוח מקיף לתקופה — LIOSH</title><style>
+          .pr-detailed-page {
+            --pr-h1: 1.35rem;
+            --pr-h2: 1.05rem;
+            --pr-h3: 0.98rem;
+            --pr-h4: 0.78rem;
+            --pr-body: 0.875rem;
+            --pr-muted: 0.8rem;
+          }
+
+          .pr-detailed-subheading {
+            margin: 0 0 0.4rem 0;
+            padding: 0 0 0.2rem 0;
+            font-size: var(--pr-h4);
+            font-weight: 800;
+            letter-spacing: 0.03em;
+            text-transform: none;
+            border-bottom: 1px solid rgba(255,255,255,0.12);
+          }
+
+          .pr-detailed-body-text { line-height: 1.55; }
+          .pr-detailed-muted { color: rgba(255,255,255,0.58); line-height: 1.5; }
+          .pr-detailed-phase3-dl {
+            border-radius: 0.5rem;
+            border: 1px solid rgba(255,255,255,0.1);
+            padding: 0.65rem 0.75rem;
+            background: rgba(0,0,0,0.14);
+          }
+          .pr-detailed-mini-heading { letter-spacing: 0.02em; }
+
+          .pr-detailed-subject-stack {
+            min-width: 0;
+          }
+          .pr-detailed-summary-subject.pr-detailed-subject-stack,
+          .pr-detailed-subject-block.pr-detailed-subject-stack {
+            background: transparent;
+            border: none;
+            box-shadow: none;
+            border-radius: 0;
+            overflow: visible;
+          }
+          .pr-detailed-subject-heading {
+            margin: 0;
+            padding: 0;
+            background: transparent;
+            border: none;
+          }
+          .pr-detailed-subjects-region-title {
+            background: transparent;
+            box-shadow: none;
+          }
+
+          .pr-detailed-layout-summary .pr-detailed-section {
+            box-shadow: none;
+          }
+          .pr-detailed-layout-summary .pr-detailed-doc-header {
+            margin-bottom: 1rem;
+          }
+
+          .pr-detailed-section--compact .pr-detailed-section-inner { padding-top: 0.65rem; padding-bottom: 0.65rem; }
+          .pr-detailed-section--compact .pr-detailed-section-head { padding-top: 0.45rem; padding-bottom: 0.45rem; }
+
+          #parent-report-detailed-print[data-display-mode="summary"] .pr-detailed-section { margin-bottom: 0.85rem; }
+          #parent-report-detailed-print[data-display-mode="summary"] .pr-detailed-section-inner { padding: 0.75rem 0.9rem; }
+          #parent-report-detailed-print[data-display-mode="summary"] .pr-detailed-subject-summary { font-size: 0.9rem; }
+
+          .pr-detailed-tier-excellence {
+            border-radius: 0.55rem;
+            border: 1px solid rgba(167, 139, 250, 0.32);
+            background: linear-gradient(160deg, rgba(76, 29, 149, 0.2), rgba(30, 41, 59, 0.32));
+            padding: 0.65rem 0.85rem;
+            margin-top: 0.35rem;
+          }
+          .pr-detailed-tier-excellence .pr-detailed-subheading { color: #e9d5ff; border-bottom-color: rgba(196, 181, 253, 0.35); }
+
+          .pr-detailed-tier-strength {
+            border-radius: 0.55rem;
+            border: 1px solid rgba(52, 211, 153, 0.28);
+            background: linear-gradient(160deg, rgba(6, 78, 59, 0.22), rgba(30, 41, 59, 0.3));
+            padding: 0.65rem 0.85rem;
+            margin-top: 0.35rem;
+          }
+          .pr-detailed-tier-strength .pr-detailed-subheading { color: #a7f3d0; border-bottom-color: rgba(52, 211, 153, 0.25); }
+
+          .pr-detailed-tier-maintain {
+            border-radius: 0.55rem;
+            border: 1px solid rgba(56, 189, 248, 0.28);
+            background: linear-gradient(160deg, rgba(12, 74, 110, 0.22), rgba(30, 41, 59, 0.3));
+            padding: 0.65rem 0.85rem;
+            margin-top: 0.35rem;
+          }
+          .pr-detailed-tier-maintain .pr-detailed-subheading { color: #bae6fd; border-bottom-color: rgba(56, 189, 248, 0.25); }
+
+          .pr-detailed-tier-improving {
+            border-radius: 0.55rem;
+            border: 1px solid rgba(251, 191, 36, 0.3);
+            background: linear-gradient(160deg, rgba(120, 53, 15, 0.22), rgba(30, 41, 59, 0.32));
+            padding: 0.65rem 0.85rem;
+            margin-top: 0.35rem;
+          }
+          .pr-detailed-tier-improving .pr-detailed-subheading { color: #fde68a; border-bottom-color: rgba(251, 191, 36, 0.28); }
+
+          .pr-detailed-tier-attention {
+            border-radius: 0.55rem;
+            border: 1px solid rgba(248, 113, 113, 0.32);
+            background: linear-gradient(160deg, rgba(127, 29, 29, 0.22), rgba(30, 41, 59, 0.32));
+            padding: 0.65rem 0.85rem;
+            margin-top: 0.35rem;
+          }
+          .pr-detailed-tier-attention .pr-detailed-subheading { color: #fecaca; border-bottom-color: rgba(248, 113, 113, 0.3); }
+
+          .pr-detailed-tier-examples {
+            border-radius: 0.5rem;
+            border: 1px solid rgba(148, 163, 184, 0.22);
+            background: rgba(30, 41, 59, 0.28);
+            padding: 0.55rem 0.75rem;
+            margin-top: 0.35rem;
+          }
+          .pr-detailed-tier-examples .pr-detailed-subheading { color: rgba(226, 232, 240, 0.85); border-bottom-color: rgba(148, 163, 184, 0.2); }
+
+          .pr-detailed-callout-action {
+            border-color: rgba(250, 204, 21, 0.28);
+            background: rgba(66, 32, 6, 0.22);
+          }
+          .pr-detailed-callout-goal {
+            border-color: rgba(251, 191, 36, 0.24);
+            background: rgba(69, 26, 3, 0.18);
+          }
+          .pr-detailed-callout-label {
+            display: block;
+            font-size: 0.68rem;
+            font-weight: 800;
+            letter-spacing: 0.06em;
+            color: rgba(253, 230, 138, 0.95);
+            text-transform: uppercase;
+          }
+
+          .pr-detailed-topic-rec-block { margin-top: 0.75rem; padding-top: 0.75rem; border-top: 1px solid rgba(255,255,255,0.1); }
+          .pr-detailed-topic-rec-head {
+            font-size: 0.72rem;
+            font-weight: 800;
+            letter-spacing: 0.04em;
+            color: rgba(165, 243, 252, 0.95);
+            margin: 0 0 0.5rem 0;
+          }
+          .pr-detailed-topic-rec-item {
+            break-inside: avoid;
+            page-break-inside: avoid;
+          }
+          .pr-detailed-topic-first-card-wrap {
+            break-inside: avoid;
+            page-break-inside: avoid;
+          }
+
+          .pr-detailed-topic-nextstep-card {
+            border-radius: 0.55rem;
+            padding: 0.65rem 0.85rem;
+          }
+          .pr-detailed-topic-nextstep--advance {
+            border: 1px solid rgba(52, 211, 153, 0.42);
+            background: linear-gradient(165deg, rgba(6, 78, 59, 0.34), rgba(22, 101, 52, 0.22));
+          }
+          .pr-detailed-topic-nextstep--maintain {
+            border: 1px solid rgba(56, 189, 248, 0.36);
+            background: linear-gradient(165deg, rgba(12, 74, 110, 0.3), rgba(30, 58, 95, 0.26));
+          }
+          .pr-detailed-topic-nextstep--remediate {
+            border: 1px solid rgba(251, 191, 36, 0.4);
+            background: linear-gradient(165deg, rgba(120, 53, 15, 0.3), rgba(69, 26, 3, 0.22));
+          }
+          .pr-detailed-topic-nextstep--drop {
+            border: 1px solid rgba(248, 113, 113, 0.42);
+            background: linear-gradient(165deg, rgba(127, 29, 29, 0.3), rgba(69, 10, 10, 0.22));
+          }
+          .pr-detailed-topic-metrics {
+            font-size: 0.68rem;
+            line-height: 1.45;
+            color: rgba(207, 250, 254, 0.82);
+            margin: 0 0 0.45rem 0;
+          }
+          .pr-detailed-topic-reason { font-size: 0.84rem; line-height: 1.5; color: rgba(255,255,255,0.9); margin: 0 0 0.45rem 0; }
+          .pr-detailed-topic-parent {
+            font-size: 0.82rem;
+            line-height: 1.48;
+            color: rgba(224, 242, 254, 0.95);
+            margin: 0 0 0.35rem 0;
+            padding: 0.35rem 0.45rem;
+            border-radius: 0.35rem;
+            background: rgba(30, 41, 59, 0.28);
+            border-right: 3px solid rgba(56, 189, 248, 0.55);
+          }
+          .pr-detailed-topic-parent-label {
+            font-weight: 800;
+            color: rgba(125, 211, 252, 0.96);
+          }
+          .pr-detailed-topic-student-label {
+            font-weight: 800;
+            color: rgba(167, 243, 208, 0.96);
+          }
+          .pr-detailed-topic-student {
+            font-size: 0.82rem;
+            line-height: 1.48;
+            color: rgba(209, 250, 229, 0.95);
+            margin: 0;
+            padding: 0.35rem 0.45rem;
+            border-radius: 0.35rem;
+            background: rgba(30, 41, 59, 0.28);
+            border-right: 3px solid rgba(52, 211, 153, 0.5);
+          }
+          .pr-detailed-topic-badge {
+            font-size: 0.65rem;
+            font-weight: 800;
+            padding: 0.15rem 0.45rem;
+            border-radius: 0.35rem;
+            white-space: normal;
+            max-width: 11rem;
+            text-align: right;
+          }
+          .pr-detailed-topic-badge--advance {
+            border: 1px solid rgba(74, 222, 128, 0.5);
+            color: #d1fae5;
+            background: rgba(6, 78, 59, 0.5);
+          }
+          .pr-detailed-topic-badge--maintain {
+            border: 1px solid rgba(125, 211, 252, 0.45);
+            color: #e0f2fe;
+            background: rgba(12, 74, 110, 0.48);
+          }
+          .pr-detailed-topic-badge--remediate {
+            border: 1px solid rgba(251, 191, 36, 0.48);
+            color: #fef3c7;
+            background: rgba(120, 53, 15, 0.46);
+          }
+          .pr-detailed-topic-badge--drop {
+            border: 1px solid rgba(252, 165, 165, 0.5);
+            color: #fecaca;
+            background: rgba(127, 29, 29, 0.46);
+          }
+
+          .pr-detailed-bullet-li {
+            break-inside: avoid;
+            page-break-inside: avoid;
+          }
+
+          @media print {
+            @page {
+              size: A4;
+              margin: 10mm 8mm;
+            }
+            .pr-detailed-avoid-split {
+              break-inside: auto !important;
+              page-break-inside: auto !important;
+            }
+            .pr-detailed-subheading {
+              break-after: avoid !important;
+              page-break-after: avoid !important;
+            }
+
+            body {
+              background: white !important;
+              -webkit-print-color-adjust: exact !important;
+              print-color-adjust: exact !important;
+              color: #111827 !important;
+            }
+            .no-pdf {
+              display: none !important;
+            }
+            .pr-detailed-page {
+              background: #ffffff !important;
+              color: #111827 !important;
+              min-height: auto !important;
+              padding: 0 !important;
+            }
+            .pr-detailed-page .max-w-4xl {
+              max-width: none !important;
+              width: auto !important;
+              margin: 0 !important;
+            }
+            #parent-report-detailed-print {
+              position: static !important;
+              width: auto !important;
+              max-width: 100% !important;
+              margin: 0 auto !important;
+              padding: 0 !important;
+              background: #ffffff !important;
+              box-shadow: none !important;
+              font-size: 10pt;
+              line-height: 1.48;
+              color: #111827 !important;
+            }
+            #parent-report-detailed-print[data-display-mode="full"] {
+              font-size: 10pt;
+            }
+            #parent-report-detailed-print[data-display-mode="summary"] {
+              font-size: 10pt;
+            }
+            #parent-report-detailed-print,
+            #parent-report-detailed-print * {
+              color: #111827 !important;
+              opacity: 1 !important;
+              text-shadow: none !important;
+              filter: none !important;
+              mix-blend-mode: normal !important;
+              -webkit-text-fill-color: #111827 !important;
+            }
+            #parent-report-detailed-print *::before,
+            #parent-report-detailed-print *::after {
+              opacity: 1 !important;
+              filter: none !important;
+              mix-blend-mode: normal !important;
+            }
+
+            /* Ink-safe print reset: remove washed-out translucent styles from utility classes. */
+            #parent-report-detailed-print [class*="bg-"] {
+              background: #ffffff !important;
+              background-image: none !important;
+            }
+            #parent-report-detailed-print [class*="from-"],
+            #parent-report-detailed-print [class*="to-"],
+            #parent-report-detailed-print [class*="via-"] {
+              background-image: none !important;
+            }
+            #parent-report-detailed-print [class*="text-"] {
+              color: #111827 !important;
+            }
+
+            #parent-report-detailed-print h1 {
+              font-size: 16.5pt !important;
+              color: #020617 !important;
+              margin: 0 0 4px 0 !important;
+            }
+            #parent-report-detailed-print .pr-detailed-section-title {
+              font-size: 12pt !important;
+              font-weight: 900 !important;
+              color: #0f172a !important;
+            }
+            #parent-report-detailed-print .pr-detailed-subject-title {
+              font-size: 12pt !important;
+              font-weight: 900 !important;
+              color: #0f172a !important;
+            }
+            #parent-report-detailed-print .pr-detailed-subheading {
+              font-size: 9pt !important;
+              font-weight: 800 !important;
+              color: #1e293b !important;
+              border-bottom-color: #cbd5e1 !important;
+            }
+            #parent-report-detailed-print .pr-detailed-body-text,
+            #parent-report-detailed-print .pr-detailed-tier-inner li {
+              color: #1c1917 !important;
+            }
+            #parent-report-detailed-print .pr-detailed-muted {
+              color: #1f2937 !important;
+              opacity: 1 !important;
+            }
+            #parent-report-detailed-print .pr-detailed-muted * {
+              color: #1f2937 !important;
+              opacity: 1 !important;
+            }
+            #parent-report-detailed-print .pr-detailed-mode-hint {
+              color: #111827 !important;
+              font-weight: 800 !important;
+            }
+            #parent-report-detailed-print .pr-detailed-future-compare {
+              color: #44403c !important;
+              background: #f5f5f4 !important;
+              border: 1px solid #d6d3d1 !important;
+            }
+
+            #parent-report-detailed-print .pr-detailed-section {
+              background: #fff !important;
+              border: 1px solid #d4d4d8 !important;
+              margin-bottom: 10px !important;
+              box-shadow: 0 1px 0 rgba(0,0,0,0.04) !important;
+              break-inside: auto !important;
+              page-break-inside: auto !important;
+            }
+            #parent-report-detailed-print .pr-detailed-section-head {
+              background: #f8fafc !important;
+              border-bottom: 1px solid #d4d4d8 !important;
+            }
+            #parent-report-detailed-print .pr-detailed-section--compact .pr-detailed-section-inner {
+              padding: 6px 9px !important;
+            }
+            #parent-report-detailed-print .pr-detailed-section--compact .pr-detailed-section-head {
+              padding: 5px 9px !important;
+            }
+
+            #parent-report-detailed-print .pr-detailed-subjects-region {
+              background: transparent !important;
+              border: none !important;
+              box-shadow: none !important;
+              padding: 0 !important;
+              margin: 0 0 14px 0 !important;
+              break-inside: auto !important;
+              page-break-inside: auto !important;
+            }
+            #parent-report-detailed-print .pr-detailed-subjects-region-title {
+              background: transparent !important;
+              border: none !important;
+              box-shadow: none !important;
+              border-bottom: 1px solid #d4d4d8 !important;
+              padding-bottom: 6px !important;
+              margin: 0 0 10px 0 !important;
+            }
+
+            #parent-report-detailed-print .pr-detailed-subject-block {
+              background: transparent !important;
+              border: none !important;
+              box-shadow: none !important;
+              border-radius: 0 !important;
+              overflow: visible !important;
+              break-inside: auto !important;
+              page-break-inside: auto !important;
+              margin-bottom: 0 !important;
+            }
+            #parent-report-detailed-print .pr-detailed-subject-stack {
+              break-inside: auto !important;
+              page-break-inside: auto !important;
+            }
+            #parent-report-detailed-print .pr-detailed-subject-heading {
+              background: transparent !important;
+              border: none !important;
+              border-bottom: 2px solid #334155 !important;
+              padding: 0 0 6px 0 !important;
+              margin: 0 0 8px 0 !important;
+            }
+            #parent-report-detailed-print .pr-detailed-subject-heading .pr-detailed-subject-title {
+              border-bottom: none !important;
+              padding-bottom: 0 !important;
+            }
+            #parent-report-detailed-print .pr-detailed-subject-inner {
+              padding: 8px 0 0 0 !important;
+            }
+
+            #parent-report-detailed-print .pr-detailed-subject-summary,
+            #parent-report-detailed-print .pr-detailed-subject-letter,
+            #parent-report-detailed-print .pr-detailed-tier-excellence,
+            #parent-report-detailed-print .pr-detailed-tier-strength,
+            #parent-report-detailed-print .pr-detailed-tier-maintain,
+            #parent-report-detailed-print .pr-detailed-tier-improving,
+            #parent-report-detailed-print .pr-detailed-tier-attention,
+            #parent-report-detailed-print .pr-detailed-tier-examples,
+            #parent-report-detailed-print .pr-detailed-callout-action,
+            #parent-report-detailed-print .pr-detailed-callout-goal,
+            #parent-report-detailed-print .pr-detailed-topic-nextstep-card {
+              break-inside: avoid !important;
+              page-break-inside: avoid !important;
+              border-radius: 6px !important;
+              padding: 8px 10px !important;
+              margin-bottom: 8px !important;
+              box-shadow: none !important;
+            }
+
+            #parent-report-detailed-print .pr-detailed-subject-summary {
+              background: #ffffff !important;
+              border: 1px solid #d6d3d1 !important;
+              color: #1c1917 !important;
+            }
+
+            #parent-report-detailed-print .pr-detailed-tier-excellence {
+              background: #ffffff !important;
+              border: 1.5px solid #6d28d9 !important;
+              border-right: 4px solid #6d28d9 !important;
+            }
+            #parent-report-detailed-print .pr-detailed-tier-strength {
+              background: #ffffff !important;
+              border: 1.5px solid #047857 !important;
+              border-right: 4px solid #059669 !important;
+            }
+            #parent-report-detailed-print .pr-detailed-tier-maintain {
+              background: #ffffff !important;
+              border: 1.5px solid #0369a1 !important;
+              border-right: 4px solid #0284c7 !important;
+            }
+            #parent-report-detailed-print .pr-detailed-tier-improving {
+              background: #ffffff !important;
+              border: 1.5px solid #b45309 !important;
+              border-right: 4px solid #d97706 !important;
+            }
+            #parent-report-detailed-print .pr-detailed-tier-attention {
+              background: #ffffff !important;
+              border: 1.5px solid #b91c1c !important;
+              border-right: 4px solid #dc2626 !important;
+            }
+            #parent-report-detailed-print .pr-detailed-tier-examples {
+              background: #ffffff !important;
+              border: 1.5px solid #64748b !important;
+              border-right: 4px solid #94a3b8 !important;
+            }
+
+            #parent-report-detailed-print .pr-detailed-tier-excellence .pr-detailed-subheading { color: #5b21b6 !important; border-bottom-color: #ddd6fe !important; }
+            #parent-report-detailed-print .pr-detailed-tier-strength .pr-detailed-subheading { color: #047857 !important; border-bottom-color: #a7f3d0 !important; }
+            #parent-report-detailed-print .pr-detailed-tier-maintain .pr-detailed-subheading { color: #0369a1 !important; border-bottom-color: #bae6fd !important; }
+            #parent-report-detailed-print .pr-detailed-tier-improving .pr-detailed-subheading { color: #b45309 !important; border-bottom-color: #fde68a !important; }
+            #parent-report-detailed-print .pr-detailed-tier-attention .pr-detailed-subheading { color: #b91c1c !important; border-bottom-color: #fecaca !important; }
+            #parent-report-detailed-print .pr-detailed-tier-examples .pr-detailed-subheading { color: #334155 !important; }
+
+            #parent-report-detailed-print .pr-detailed-tier-inner .pr-detailed-muted {
+              color: #111827 !important;
+              opacity: 1 !important;
+            }
+            #parent-report-detailed-print .pr-detailed-tier-examples .pr-detailed-muted,
+            #parent-report-detailed-print .pr-detailed-tier-examples li {
+              color: #111827 !important;
+              opacity: 1 !important;
+            }
+            #parent-report-detailed-print .pr-detailed-tier-excellence *,
+            #parent-report-detailed-print .pr-detailed-tier-strength *,
+            #parent-report-detailed-print .pr-detailed-tier-maintain *,
+            #parent-report-detailed-print .pr-detailed-tier-improving *,
+            #parent-report-detailed-print .pr-detailed-tier-attention * {
+              opacity: 1 !important;
+            }
+
+            #parent-report-detailed-print .pr-detailed-callout-action {
+              background: #fffbeb !important;
+              border: 1.5px solid #ca8a04 !important;
+            }
+            #parent-report-detailed-print .pr-detailed-callout-goal {
+              background: #fff7ed !important;
+              border: 1.5px solid #ea580c !important;
+            }
+            #parent-report-detailed-print .pr-detailed-callout-action .pr-detailed-body-text,
+            #parent-report-detailed-print .pr-detailed-callout-goal .pr-detailed-body-text {
+              color: #1c1917 !important;
+              opacity: 1 !important;
+            }
+            #parent-report-detailed-print .pr-detailed-callout-label {
+              color: #111827 !important;
+              opacity: 1 !important;
+              font-weight: 800 !important;
+            }
+
+            #parent-report-detailed-print .pr-detailed-topic-rec-block {
+              margin-top: 6px !important;
+              padding-top: 0 !important;
+              border-top: none !important;
+              background: transparent !important;
+              break-inside: auto !important;
+              page-break-inside: auto !important;
+            }
+            #parent-report-detailed-print .pr-detailed-topic-rec-head {
+              color: #0f766e !important;
+              font-weight: 800 !important;
+              opacity: 1 !important;
+              break-after: avoid !important;
+              page-break-after: avoid !important;
+              margin: 0 0 6px 0 !important;
+            }
+            #parent-report-detailed-print .pr-detailed-topic-first-card-wrap {
+              break-inside: avoid !important;
+              page-break-inside: avoid !important;
+            }
+            #parent-report-detailed-print .pr-detailed-topic-rec-item {
+              break-inside: avoid !important;
+              page-break-inside: avoid !important;
+            }
+            #parent-report-detailed-print .pr-detailed-topic-nextstep--advance {
+              background: #ffffff !important;
+              border: 1.5px solid #059669 !important;
+              border-right: 4px solid #10b981 !important;
+            }
+            #parent-report-detailed-print .pr-detailed-topic-nextstep--maintain {
+              background: #ffffff !important;
+              border: 1.5px solid #0369a1 !important;
+              border-right: 4px solid #0ea5e9 !important;
+            }
+            #parent-report-detailed-print .pr-detailed-topic-nextstep--remediate {
+              background: #ffffff !important;
+              border: 1.5px solid #d97706 !important;
+              border-right: 4px solid #f59e0b !important;
+            }
+            #parent-report-detailed-print .pr-detailed-topic-nextstep--drop {
+              background: #ffffff !important;
+              border: 1.5px solid #b91c1c !important;
+              border-right: 4px solid #ef4444 !important;
+            }
+            #parent-report-detailed-print .pr-detailed-topic-nextstep-card .pr-detailed-body-text {
+              color: #111827 !important;
+              opacity: 1 !important;
+            }
+            #parent-report-detailed-print .pr-detailed-topic-nextstep-card .pr-detailed-body-text.font-bold {
+              font-weight: 800 !important;
+            }
+            #parent-report-detailed-print .pr-detailed-topic-metrics {
+              color: #111827 !important;
+              opacity: 1 !important;
+              font-weight: 700 !important;
+            }
+            #parent-report-detailed-print .pr-detailed-topic-reason {
+              color: #111827 !important;
+              opacity: 1 !important;
+              font-weight: 700 !important;
+            }
+            #parent-report-detailed-print .pr-detailed-topic-phase2 p,
+            #parent-report-detailed-print .pr-detailed-topic-phase2 span {
+              color: #111827 !important;
+              opacity: 1 !important;
+            }
+            #parent-report-detailed-print .pr-detailed-topic-parent,
+            #parent-report-detailed-print .pr-detailed-topic-parent * {
+              color: #0f172a !important;
+              opacity: 1 !important;
+            }
+            #parent-report-detailed-print .pr-detailed-topic-student,
+            #parent-report-detailed-print .pr-detailed-topic-student * {
+              color: #0f172a !important;
+              opacity: 1 !important;
+            }
+            #parent-report-detailed-print .pr-detailed-topic-parent-label {
+              color: #0369a1 !important;
+              font-weight: 800 !important;
+              opacity: 1 !important;
+            }
+            #parent-report-detailed-print .pr-detailed-topic-student-label {
+              color: #047857 !important;
+              font-weight: 800 !important;
+              opacity: 1 !important;
+            }
+            #parent-report-detailed-print .pr-detailed-topic-parent {
+              background: #ffffff !important;
+              border-right-color: #0284c7 !important;
+              border: 1px solid #bfdbfe !important;
+            }
+            #parent-report-detailed-print .pr-detailed-topic-student {
+              background: #ffffff !important;
+              border-right-color: #059669 !important;
+              border: 1px solid #bbf7d0 !important;
+            }
+            #parent-report-detailed-print .pr-detailed-topic-badge {
+              opacity: 1 !important;
+              font-weight: 800 !important;
+              max-width: 11rem !important;
+              text-align: right !important;
+            }
+            #parent-report-detailed-print .pr-detailed-topic-badge--advance {
+              background: #d1fae5 !important;
+              border: 1px solid #059669 !important;
+              color: #065f46 !important;
+            }
+            #parent-report-detailed-print .pr-detailed-topic-badge--maintain {
+              background: #dbeafe !important;
+              border: 1px solid #2563eb !important;
+              color: #1e3a8a !important;
+            }
+            #parent-report-detailed-print .pr-detailed-topic-badge--remediate {
+              background: #ffedd5 !important;
+              border: 1px solid #ea580c !important;
+              color: #9a3412 !important;
+            }
+            #parent-report-detailed-print .pr-detailed-topic-badge--drop {
+              background: #fee2e2 !important;
+              border: 1px solid #dc2626 !important;
+              color: #991b1b !important;
+            }
+            #parent-report-detailed-print .pr-detailed-subject-metrics {
+              color: #334155 !important;
+              opacity: 1 !important;
+              font-weight: 700 !important;
+            }
+
+            #parent-report-detailed-print .pr-detailed-summary-subject {
+              background: transparent !important;
+              border: none !important;
+              box-shadow: none !important;
+              border-radius: 0 !important;
+              overflow: visible !important;
+              break-inside: auto !important;
+              page-break-inside: auto !important;
+              margin-bottom: 12px !important;
+            }
+            #parent-report-detailed-print .pr-detailed-mini-heading {
+              color: #0f172a !important;
+              font-weight: 800 !important;
+              opacity: 1 !important;
+              break-after: avoid !important;
+              page-break-after: avoid !important;
+            }
+            #parent-report-detailed-print .pr-detailed-doc-title {
+              color: #020617 !important;
+            }
+
+            #parent-report-detailed-print table {
+              border-collapse: collapse !important;
+              break-inside: auto !important;
+              page-break-inside: auto !important;
+            }
+            #parent-report-detailed-print tr { break-inside: auto !important; page-break-inside: auto !important; }
+            #parent-report-detailed-print th,
+            #parent-report-detailed-print td {
+              border: 1px solid #a8a29e !important;
+              padding: 5px 7px !important;
+              color: #1c1917 !important;
+            }
+            #parent-report-detailed-print thead {
+              background: #e7e5e4 !important;
+            }
+
+            #parent-report-detailed-print[data-display-mode="summary"] .pr-detailed-section { margin-bottom: 7px !important; }
+            #parent-report-detailed-print[data-display-mode="summary"] .pr-detailed-summary-subject { margin-bottom: 8px !important; }
+
+            #parent-report-detailed-print .pr-detailed-exec-summary .pr-detailed-subheading {
+              color: #0f172a !important;
+              border-bottom-color: #cbd5e1 !important;
+            }
+            #parent-report-detailed-print .pr-detailed-phase3-dl {
+              border: 1px solid #e2e8f0 !important;
+              border-radius: 6px !important;
+              padding: 8px 10px !important;
+              background: #fafafa !important;
+            }
+            #parent-report-detailed-print .pr-detailed-topic-phase2 {
+              border-top-color: #d4d4d8 !important;
+            }
+
+            #parent-report-detailed-print .pr-detailed-plan-item,
+            #parent-report-detailed-print .pr-detailed-goal-item {
+              break-inside: auto !important;
+              page-break-inside: auto !important;
+              border-radius: 6px !important;
+              padding: 8px 10px !important;
+            }
+            #parent-report-detailed-print .pr-detailed-plan-item {
+              background: #ffffff !important;
+              border: 1px solid #64748b !important;
+              color: #111827 !important;
+            }
+            #parent-report-detailed-print .pr-detailed-goal-item {
+              background: #ffffff !important;
+              border: 1px solid #64748b !important;
+              color: #111827 !important;
+            }
+            #parent-report-detailed-print .pr-detailed-bullet-li {
+              break-inside: auto !important;
+              page-break-inside: auto !important;
+            }
+
+            #parent-report-detailed-print .parent-report-important-disclaimer {
+              break-inside: avoid !important;
+              page-break-inside: avoid !important;
+              margin-top: 12px !important;
+              margin-bottom: 4px !important;
+              padding: 10px 12px !important;
+              background: #f1f5f9 !important;
+              border: 1px solid #cbd5e1 !important;
+              border-radius: 6px !important;
+              box-shadow: none !important;
+              -webkit-print-color-adjust: exact !important;
+              print-color-adjust: exact !important;
+            }
+            #parent-report-detailed-print .parent-report-important-disclaimer-title {
+              color: #0f172a !important;
+              font-size: 10pt !important;
+              font-weight: 800 !important;
+              margin: 0 0 8px 0 !important;
+              opacity: 1 !important;
+            }
+            #parent-report-detailed-print .parent-report-important-disclaimer-body p,
+            #parent-report-detailed-print .parent-report-important-disclaimer-body strong {
+              color: #334155 !important;
+              opacity: 1 !important;
+              font-size: 9pt !important;
+              line-height: 1.52 !important;
+            }
+            #parent-report-detailed-print .parent-report-important-disclaimer-body strong {
+              font-weight: 700 !important;
+            }
+
+            /* Parent AI summary insight — ink-safe for print/PDF (outside #parent-report-detailed-print) */
+            .parent-report-parent-ai-insight {
+              break-inside: avoid;
+              page-break-inside: avoid;
+              border-color: #38bdf8 !important;
+              background: #f0f9ff !important;
+              -webkit-print-color-adjust: exact !important;
+              print-color-adjust: exact !important;
+            }
+            .parent-report-parent-ai-insight p {
+              color: #0f172a !important;
+            }
+
+          }
+        </style><meta name="next-head-count" content="21"><link rel="preload" href="/_next/static/css/10c83763ccc0edde.css" as="style" crossorigin=""><link rel="stylesheet" href="/_next/static/css/10c83763ccc0edde.css" crossorigin="" data-n-g=""><noscript data-n-css=""></noscript><script defer="" crossorigin="" nomodule="" src="/_next/static/chunks/polyfills-c67a75d1b6f99dc8.js"></script><script src="/_next/static/chunks/webpack-278adcb55da7aae5.js" defer="" crossorigin=""></script><script src="/_next/static/chunks/framework-314c182fa7e2bf37.js" defer="" crossorigin=""></script><script src="/_next/static/chunks/main-fc6cb5345c9e5beb.js" defer="" crossorigin=""></script><script src="/_next/static/chunks/pages/_app-aad647907fc51ece.js" defer="" crossorigin=""></script><script src="/_next/static/chunks/fec483df-d36bbaba38213b9c.js" defer="" crossorigin=""></script><script src="/_next/static/chunks/1876-1af9b0dd0ec7e978.js" defer="" crossorigin=""></script><script src="/_next/static/chunks/4969-be4b5d4fea64c76b.js" defer="" crossorigin=""></script><script src="/_next/static/chunks/2087-16419607692fb52b.js" defer="" crossorigin=""></script><script src="/_next/static/chunks/9973-61c50ef53366c7a1.js" defer="" crossorigin=""></script><script src="/_next/static/chunks/5412-28e8216c936d950d.js" defer="" crossorigin=""></script><script src="/_next/static/chunks/6988-bcc3cd235c00336d.js" defer="" crossorigin=""></script><script src="/_next/static/chunks/8894-4a1d308bde7baa47.js" defer="" crossorigin=""></script><script src="/_next/static/chunks/474-94357e3f4c11a00a.js" defer="" crossorigin=""></script><script src="/_next/static/chunks/pages/learning/parent-report-detailed-f27893c704a0c67d.js" defer="" crossorigin=""></script><script src="/_next/static/DrfILZWBxYB1sJCMUE7wv/_buildManifest.js" defer="" crossorigin=""></script><script src="/_next/static/DrfILZWBxYB1sJCMUE7wv/_ssgManifest.js" defer="" crossorigin=""></script><link as="script" rel="prefetch" href="/_next/static/chunks/7809-766fd41c1c8a5a33.js"><link as="script" rel="prefetch" href="/_next/static/chunks/pages/learning/parent-report-22a7a4cccd29a31f.js"></head><body><div id="__next"><div class="pr-detailed-page min-h-screen bg-[#141d32] text-white p-2.5 md:px-5 md:py-5 pr-detailed-layout-full" dir="rtl" style="padding-top: calc(var(--head-h, 56px) - 6px); padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 24px);"><div class="max-w-4xl mx-auto w-full min-w-0 overflow-x-hidden"><div class="no-pdf flex flex-col gap-3 mb-4"><div class="flex flex-wrap items-center justify-between gap-2"><a class="inline-flex px-4 py-2 rounded-lg text-sm font-bold bg-white/10 border border-white/20 hover:bg-white/20 text-white transition-all" href="/learning/parent-report?period=week">← חזרה לדוח המקוצר</a></div><div class="no-pdf flex flex-wrap items-center justify-center gap-2 " role="group" aria-label="מצב תצוגת דוח"><button type="button" class="inline-flex px-4 py-2 rounded-lg text-sm font-bold border transition-all bg-sky-600/80 border-sky-300/60 text-white">דוח מלא</button><button type="button" class="inline-flex px-4 py-2 rounded-lg text-sm font-bold border transition-all bg-white/5 border-white/20 text-white/80 hover:bg-white/10">תקציר להדפסה</button></div></div><div class="parent-report-parent-ai-insight mb-3 md:mb-5 avoid-break rounded-lg border border-sky-400/25 bg-sky-950/20 p-3 md:p-4 text-sm text-white/90 "><p class="font-bold text-sky-100/95 m-0 text-sm md:text-base mb-2">תובנה להורה</p><p class="m-0 leading-relaxed text-xs md:text-sm text-white/88">לגבי חשבון: נראה מהתרגולים האחרונים מגמה כללית שאפשר לשתף בהירות עם ההורה. מה שבולט לטובה: באנגלית התוצאות נראות די עקביות בתקופה הזו (81% דיוק, 64 שאלות) — יש עדיין נושאים שכדאי לחזק. · באנגלית התוצאות נראות די עקביות בתקופה הזו (81% דיוק, 64 שאלות) — יש עדיין נושאים שכדאי לחזק. המלצת המערכת להמשך התרגול: כדאי להמשיך לתרגל באותה רמה מהצד של ההורה כדאי לעודד המשך שגרה של תרגול קצר ולשמור על שיח רגוע סביב למידה.</p></div><div class="no-pdf mb-4 rounded-lg border border-cyan-500/20 bg-cyan-950/15 px-3 py-2"><div class="w-full min-h-0 flex flex-col"><div class="w-full flex flex-col rounded-xl border border-white/12 bg-black/25 p-3 text-right text-white/90" style="height: 420px; min-height: 420px;"><div class="text-xs font-extrabold tracking-wide text-white/70 shrink-0 mb-2">שאלו על הדוח</div><p class="text-[11px] leading-snug text-white/45 shrink-0 mb-2 pr-0.5">אפשר לשאול כאן בחופשיות על הדוח, למשל: מה הכי חשוב כרגע, במה להתמקד השבוע, מה הולך טוב, או איך להסביר את זה לילד.</p><div class="flex-1 min-h-0 overflow-y-auto space-y-2 text-sm leading-relaxed pr-0.5"></div><div class="shrink-0 mt-2 pt-2 border-t border-white/10 space-y-2"><form class="flex flex-col sm:flex-row gap-2"><label for=":r0:" class="sr-only">שאלה</label><input id=":r0:" class="flex-1 min-w-0 rounded-lg border border-white/15 bg-white/[0.06] px-3 py-2 text-sm text-white placeholder:text-white/35" placeholder="שאלה על הדוח…" value=""><button type="submit" disabled="" class="shrink-0 rounded-lg border border-sky-400/40 bg-sky-900/35 px-4 py-2 text-sm font-bold text-sky-50 disabled:opacity-40">שלח</button></form></div></div></div></div><div id="parent-report-detailed-print" data-display-mode="full" class="pr-detailed-print-root pr-detailed-print-root--full"><header class="pr-detailed-doc-header mb-6 text-center border-b border-white/15 pb-4"><h1 class="pr-detailed-doc-title text-2xl md:text-3xl font-black text-white mb-1 tracking-tight">דוח מקיף לתקופה</h1><p class="pr-detailed-mode-hint text-xs font-semibold text-amber-200/90 mb-1">דוח מלא</p><p class="pr-detailed-body-text text-white/85 text-sm md:text-base">דוח הורים מקיף — מבוסס על התאריכים הנבחרים</p><p class="pr-detailed-muted text-sm mt-2">טווח תאריכים: 28/04/2026 – 06/05/2026<span class="text-white/40 mx-1">|</span>מצב תקופה: שבוע</p></header><section class="pr-detailed-section rounded-xl border border-white/12 bg-white/[0.045] mb-5 md:mb-6 overflow-hidden  "><div class="pr-detailed-section-head px-3 md:px-4 py-2.5 md:py-3 border-b border-white/10 bg-white/[0.035]"><h2 class="pr-detailed-section-title text-base md:text-lg font-extrabold tracking-tight text-white m-0">סיכום להורה</h2></div><div class="pr-detailed-section-inner px-3 md:px-4 py-3 md:py-4"><div class="space-y-3 rounded-lg border border-amber-400/28 bg-amber-950/14 px-3 py-3"><div class="min-w-0"><p class="pr-detailed-mini-heading font-bold text-white/82 mb-1 text-xs">מצב</p><p class="pr-detailed-body-text text-sm leading-relaxed m-0 text-white/[0.9]">יש נתוני תרגול במקצוע, אך מה שנראה מהתרגולים עדיין זהיר — כדאי להמשיך לעקוב אחרי עוד תרגול.</p></div><div class="min-w-0"><p class="pr-detailed-mini-heading font-bold text-white/82 mb-1 text-xs">מה חשוב קודם</p><p class="pr-detailed-body-text text-sm leading-relaxed m-0 text-white/[0.9]">להמשיך תרגול קצר ומדויק עם משימה אחת ברורה.</p></div><div class="min-w-0"><p class="pr-detailed-mini-heading font-bold text-white/82 mb-1 text-xs">מה עושים עכשיו</p><p class="pr-detailed-body-text text-sm leading-relaxed m-0 text-white/[0.9]">לקבוע תרגול קצר וממוקד ולוודא הבנה לפני מעבר למשימה הבאה.</p></div><div class="min-w-0"><p class="pr-detailed-mini-heading font-bold text-white/82 mb-1 text-xs">למה</p><p class="pr-detailed-body-text text-sm leading-relaxed m-0 text-white/[0.9]">יש נתוני תרגול במקצוע, אך מה שנראה מהתרגולים עדיין זהיר — כדאי להמשיך לעקוב אחרי עוד תרגול.</p></div><div class="min-w-0"><p class="pr-detailed-mini-heading font-bold text-white/82 mb-1 text-xs">מה לא לעשות כרגע</p><p class="pr-detailed-body-text text-sm leading-relaxed m-0 text-white/[0.9]">לא להעלות קושי לפני שמתקבלת יציבות עקבית.</p></div><div class="min-w-0"><p class="pr-detailed-mini-heading font-bold text-white/82 mb-1 text-xs">כמה אפשר לסמוך על זה</p><p class="pr-detailed-body-text text-sm leading-relaxed m-0 text-white/[0.9]">כמה אפשר לסמוך על זה: עדיין לא גבוה — צריך עוד תרגול לפני שסוגרים תמונה ברורה.</p></div><div class="min-w-0"><p class="pr-detailed-mini-heading font-bold text-white/82 mb-1 text-xs">על מה זה נשען</p><p class="pr-detailed-body-text text-sm leading-relaxed m-0 text-white/[0.9]">נאספו 100 שאלות, דיוק 83%, זמן תרגול 0 דקות. אין כרגע נתון מגמה מספק.</p></div><div class="min-w-0"><p class="pr-detailed-mini-heading font-bold text-white/82 mb-1 text-xs">בדיקה הבאה</p><p class="pr-detailed-body-text text-sm leading-relaxed m-0 text-white/[0.9]">להמשיך לתרגל עוד קצת ולבדוק יציבות לפני שינוי משמעותי.</p></div></div></div></section><section class="pr-detailed-section rounded-xl border border-white/12 bg-white/[0.045] mb-5 md:mb-6 overflow-hidden  "><div class="pr-detailed-section-head px-3 md:px-4 py-2.5 md:py-3 border-b border-white/10 bg-white/[0.035]"><h2 class="pr-detailed-section-title text-base md:text-lg font-extrabold tracking-tight text-white m-0">סיכום לתקופה</h2></div><div class="pr-detailed-section-inner px-3 md:px-4 py-3 md:py-4"><div class="pr-detailed-exec-summary space-y-3 md:space-y-4"><div class="grid grid-cols-1 gap-3 md:gap-4"><div><h4 class="pr-detailed-subheading text-emerald-200/95">חוזקות בכל המקצועות</h4><ul class="pr-detailed-body-text list-disc pr-5 space-y-1.5 text-sm md:text-base text-white/[0.88] leading-relaxed"><li class="pr-detailed-bullet-li">באנגלית התוצאות נראות די עקביות בתקופה הזו (81% דיוק, 64 שאלות) — יש עדיין נושאים שכדאי לחזק.</li><li class="pr-detailed-bullet-li">עברית נראה כמו נושא שהילד מצליח בו יותר כרגע: דיוק גבוה (85%) לאורך 74 שאלות בתקופה.</li><li class="pr-detailed-bullet-li">מדעים נראה כמו נושא שהילד מצליח בו יותר כרגע: דיוק גבוה (88%) לאורך 64 שאלות בתקופה.</li><li class="pr-detailed-bullet-li">חשבון נראה כמו נושא שהילד מצליח בו יותר כרגע: דיוק גבוה (83%) לאורך 100 שאלות בתקופה.</li></ul></div></div><div class="rounded-lg border border-amber-400/28 bg-amber-950/14 px-3 py-2.5"><h4 class="pr-detailed-subheading text-amber-100/95 mb-1 border-0 pb-0">פעולת בית מרכזית לתקופה</h4><p class="pr-detailed-body-text text-sm m-0 leading-relaxed">כרגע אין המלצה ביתית אחת מרכזית, כי עדיין צריך עוד מידע.</p></div><div class="rounded-lg border border-sky-400/24 bg-sky-950/12 px-3 py-2.5 pr-detailed-avoid-split"><h4 class="pr-detailed-subheading text-sky-100/95 mb-1.5 border-0 pb-0">מה לעשות עכשיו — לפי סדר</h4><div class="space-y-1.5 text-[11px] md:text-sm text-white/[0.86] leading-snug"><p class="m-0 text-white/55">אין נושא דחוף השבוע — שגרת תרגול קצרה מספיקה.</p><div class="m-0"><span class="text-white/45 font-bold">לשמור על שגרה קצרה: </span><span class="text-white/[0.82]">חיבור (חשבון) · חיסור (חשבון) · סימטרייה (גאומטריה) · matching (אנגלית)</span></div></div></div><div class="rounded-lg border border-rose-400/28 bg-rose-950/12 px-3 py-2.5"><h4 class="pr-detailed-subheading text-rose-100/95 mb-1 border-0 pb-0">זהירות</h4><p class="pr-detailed-body-text text-sm m-0 leading-relaxed">בחלק מהנושאים עדיין אין מסקנה חדה — עוד קצת תרגול יבהיר את התמונה.</p></div><div><h4 class="pr-detailed-subheading text-sky-200/95">עד כמה אפשר לסמוך על המסקנות?</h4><p class="pr-detailed-body-text text-sm m-0 leading-relaxed">מבט כולל: ב־0 מתוך 7 נושאים שנבדקו יש בסיס ראשוני לשיחה בבית על כיוון ממוקד.</p></div><div class="rounded-lg border border-violet-400/25 bg-violet-950/12 px-3 py-2"><p class="pr-detailed-body-text text-sm m-0 text-violet-100/95 leading-relaxed">בכמה נושאים התוצאות עדיין לא יציבות — עוד קצת תרגול יעזור לפני מסקנה חדה.</p></div><div class="grid grid-cols-1 md:grid-cols-2 gap-2 text-sm text-white/78"><p class="m-0 leading-relaxed"><span class="text-white/45 font-bold block text-[11px] mb-0.5">מוכנות הדוח</span>התרגול בתקופה עדיין מצומצם — כדאי לקרוא את הסיכום בעיון ולהמשיך לאסוף תרגול.</p><p class="m-0 leading-relaxed"><span class="text-white/45 font-bold block text-[11px] mb-0.5">מה מחזק את התמונה ומה עדיין לא ברור</span>נקודות שממשיכות להישמר בצורה טובה: 0; נושאים שכדאי לחזק או ללמוד עליהם עוד לפני מסקנה חדה: 0.</p></div><div><h4 class="pr-detailed-subheading text-sky-200/95">מילה על הבית</h4><p class="pr-detailed-body-text whitespace-pre-line leading-relaxed m-0">עדיין אין מוקד ברור — השבוע כדאי לעשות סיבוב קצר בכמה נושאים ולראות מה נשמר.</p></div></div></div></section><section class="pr-detailed-section rounded-xl border border-white/12 bg-white/[0.045] mb-5 md:mb-6 overflow-hidden  "><div class="pr-detailed-section-head px-3 md:px-4 py-2.5 md:py-3 border-b border-white/10 bg-white/[0.035]"><h2 class="pr-detailed-section-title text-base md:text-lg font-extrabold tracking-tight text-white m-0">מה עשינו בתקופה הזאת</h2></div><div class="pr-detailed-section-inner px-3 md:px-4 py-3 md:py-4"><div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mb-4"><div class="rounded-lg bg-white/5 border border-white/10 p-3 text-center"><div class="text-xs text-white/55 mb-1">זמן כולל</div><div class="text-xl font-bold text-blue-300">227 דק׳</div></div><div class="rounded-lg bg-white/5 border border-white/10 p-3 text-center"><div class="text-xs text-white/55 mb-1">שאלות</div><div class="text-xl font-bold text-emerald-300">449</div></div><div class="rounded-lg bg-white/5 border border-white/10 p-3 text-center"><div class="text-xs text-white/55 mb-1">דיוק כללי</div><div class="text-xl font-bold text-amber-300">84%</div></div></div><p class="pr-detailed-mini-heading font-bold text-white/90 mb-2 text-sm mt-1">כיסוי לפי מקצוע</p><div class="overflow-x-auto rounded-lg border border-white/10"><table class="w-full text-sm text-right"><thead><tr class="border-b border-white/15 bg-white/5"><th class="p-2 font-semibold">מקצוע</th><th class="p-2 font-semibold">שאלות</th><th class="p-2 font-semibold">דיוק</th><th class="p-2 font-semibold">זמן (דק׳)</th></tr></thead><tbody><tr class="border-b border-white/10"><td class="p-2">חשבון</td><td class="p-2">100</td><td class="p-2">83%</td><td class="p-2">46</td></tr><tr class="border-b border-white/10"><td class="p-2">גאומטריה</td><td class="p-2">80</td><td class="p-2">85%</td><td class="p-2">32</td></tr><tr class="border-b border-white/10"><td class="p-2">אנגלית</td><td class="p-2">64</td><td class="p-2">81%</td><td class="p-2">37</td></tr><tr class="border-b border-white/10"><td class="p-2">מדעים</td><td class="p-2">64</td><td class="p-2">88%</td><td class="p-2">43</td></tr><tr class="border-b border-white/10"><td class="p-2">עברית</td><td class="p-2">74</td><td class="p-2">85%</td><td class="p-2">32</td></tr><tr class="border-b border-white/10"><td class="p-2">מולדת וגאוגרפיה</td><td class="p-2">67</td><td class="p-2">85%</td><td class="p-2">37</td></tr></tbody></table></div><div class="mt-3 grid md:grid-cols-2 gap-3 text-sm"><div><p class="pr-detailed-mini-heading font-semibold text-white/82 mb-1">מקצועות שלא נדגמו — אין מספיק נתונים</p><p class="pr-detailed-muted text-sm">יש נתוני תרגול בטווח, אך בניסוח המסונן אין כאן נקודות להצגה כרגע — המשך התרגול יעזרו להבהיר את התמונה.</p></div><div><p class="pr-detailed-mini-heading font-semibold text-white/82 mb-1">מקצועות בולטים</p><ul class="pr-detailed-body-text list-disc pr-5 space-y-1.5 text-sm md:text-base text-white/[0.88] leading-relaxed"><li class="pr-detailed-bullet-li">גאומטריה — נפח גבוה ודיוק טוב (85%, 80 שאלות)</li><li class="pr-detailed-bullet-li">מדעים — נפח גבוה ודיוק טוב (88%, 64 שאלות)</li><li class="pr-detailed-bullet-li">עברית — נפח גבוה ודיוק טוב (85%, 74 שאלות)</li><li class="pr-detailed-bullet-li">מולדת וגאוגרפיה — נפח גבוה ודיוק טוב (85%, 67 שאלות)</li></ul></div></div></div></section><section class="pr-detailed-subjects-region mb-5 md:mb-6 min-w-0" aria-labelledby="pr-detailed-subjects-heading-full"><h2 id="pr-detailed-subjects-heading-full" class="pr-detailed-subjects-region-title pr-detailed-section-title text-base md:text-lg font-extrabold tracking-tight text-white m-0 mb-3 md:mb-4 pb-2 border-b border-white/10">מקצועות הלימוד</h2><div class="space-y-6"><div class="pr-detailed-subject-block pr-detailed-subject-stack min-w-0"><div class="pr-detailed-subject-heading"><h3 class="pr-detailed-subject-title text-lg font-bold text-white m-0 tracking-tight pb-2 border-b border-white/12">חשבון</h3><p class="pr-detailed-subject-metrics text-xs md:text-sm m-0 mt-1 text-white/75">שאלות: 100 | דיוק: 83%</p></div><div class="pr-detailed-subject-inner space-y-4 pt-3"><div class="pr-detailed-phase3-dl space-y-2 m-0 mb-2"><div class="min-w-0"><div class="text-white/50 font-bold text-[11px] md:text-xs m-0 mb-0.5">מגמה</div><div class="m-0 text-white/[0.88] leading-relaxed text-[11px] md:text-sm">בטווח הנוכחי כ-91% דיוק על 46 שאלות · בחלון האחרון בטווח כ-91% דיוק. ההשוואה לתקופה קודמת עדיין עדינה — שווה לצבור עוד קצת נתון.</div></div><div class="min-w-0"><div class="text-white/50 font-bold text-[11px] md:text-xs m-0 mb-0.5">עד כמה המסקנה הזו מבוססת</div><div class="m-0 text-white/[0.88] leading-relaxed text-[11px] md:text-sm">יש כיוון ראשוני בנושא הזה, אבל צריך עוד תרגולים כדי לוודא שהוא יציב.</div></div><div class="min-w-0"><div class="text-white/50 font-bold text-[11px] md:text-xs m-0 mb-0.5">מה קורה בדרך כלל בזמן התרגול</div><div class="m-0 text-white/[0.88] leading-relaxed text-[11px] md:text-sm">שליטה טובה בנושא לאורך זמן</div></div><div class="min-w-0"><div class="text-white/50 font-bold text-[11px] md:text-xs m-0 mb-0.5">נקודות לתשומת לב</div><div class="m-0 text-white/[0.88] leading-relaxed text-[11px] md:text-sm">מידע חלקי בלבד</div></div><div class="min-w-0"><div class="text-white/50 font-bold text-[11px] md:text-xs m-0 mb-0.5">לפני שמעלים רמה</div><div class="m-0 text-white/[0.88] leading-relaxed text-[11px] md:text-sm">הפרדה בין פער יסוד לבעיית נושא</div></div><div class="min-w-0"><div class="text-white/50 font-bold text-[11px] md:text-xs m-0 mb-0.5">האם זה מצליח גם בשאלה חדשה</div><div class="m-0 text-white/[0.88] leading-relaxed text-[11px] md:text-sm">לא עכשיו</div></div><div class="min-w-0"><div class="text-white/50 font-bold text-[11px] md:text-xs m-0 mb-0.5">התאמה לשבוע הבא</div><div class="m-0 text-white/[0.88] leading-relaxed text-[11px] md:text-sm">לשמור על מה שעובד ולבדוק שוב.</div></div><div class="min-w-0"><div class="text-white/50 font-bold text-[11px] md:text-xs m-0 mb-0.5">האם כדאי לשנות כיוון</div><div class="m-0 text-white/[0.88] leading-relaxed text-[11px] md:text-sm">לפני שינוי מסקנה או רמת קושי — עוד סיבוב תרגול קצר.</div></div></div><div class="space-y-2.5 rounded-lg border border-sky-400/24 bg-sky-950/12 px-3 py-2.5"><div class="min-w-0"><p class="pr-detailed-mini-heading font-bold text-white/82 mb-1 text-xs">סיכום להורה</p><p class="pr-detailed-body-text text-sm leading-relaxed m-0 text-white/[0.9]">יש נתוני תרגול במקצוע, אך מה שנראה מהתרגולים עדיין זהיר — כדאי להמשיך לעקוב אחרי עוד תרגול.</p></div><div class="min-w-0"><p class="pr-detailed-mini-heading font-bold text-white/82 mb-1 text-xs">מה הכי חשוב כאן</p><p class="pr-detailed-body-text text-sm leading-relaxed m-0 text-white/[0.9]">להמשיך איסוף נתונים בסיסי.</p></div><div class="min-w-0"><p class="pr-detailed-mini-heading font-bold text-white/82 mb-1 text-xs">מה עושים עכשיו</p><p class="pr-detailed-body-text text-sm leading-relaxed m-0 text-white/[0.9]">תרגול קצר וממוקד בנושא אחד.</p></div><div class="min-w-0"><p class="pr-detailed-mini-heading font-bold text-white/82 mb-1 text-xs">מה לא לעשות כרגע</p><p class="pr-detailed-body-text text-sm leading-relaxed m-0 text-white/[0.9]">לא להסיק מסקנות חזקות ממספר קטן של שאלות.</p></div><div class="min-w-0"><p class="pr-detailed-mini-heading font-bold text-white/82 mb-1 text-xs">כמה אפשר לסמוך על זה</p><p class="pr-detailed-body-text text-sm leading-relaxed m-0 text-white/[0.9]">כמה אפשר לסמוך על זה: עדיין לא גבוה.</p></div></div></div></div><div class="pr-detailed-subject-block pr-detailed-subject-stack min-w-0"><div class="pr-detailed-subject-heading"><h3 class="pr-detailed-subject-title text-lg font-bold text-white m-0 tracking-tight pb-2 border-b border-white/12">גאומטריה</h3><p class="pr-detailed-subject-metrics text-xs md:text-sm m-0 mt-1 text-white/75">שאלות: 80 | דיוק: 85%</p></div><div class="pr-detailed-subject-inner space-y-4 pt-3"><div class="pr-detailed-phase3-dl space-y-2 m-0 mb-2"><div class="min-w-0"><div class="text-white/50 font-bold text-[11px] md:text-xs m-0 mb-0.5">אילו טעויות חוזרות כאן</div><div class="m-0 text-white/[0.88] leading-relaxed text-[11px] md:text-sm">ציר שגוי חוזר</div></div><div class="min-w-0"><div class="text-white/50 font-bold text-[11px] md:text-xs m-0 mb-0.5">מגמה</div><div class="m-0 text-white/[0.88] leading-relaxed text-[11px] md:text-sm">בטווח הנוכחי כ-82% דיוק על 56 שאלות · בחלון האחרון בטווח כ-82% דיוק. ההשוואה לתקופה קודמת עדיין עדינה — שווה לצבור עוד קצת נתון.</div></div><div class="min-w-0"><div class="text-white/50 font-bold text-[11px] md:text-xs m-0 mb-0.5">עד כמה המסקנה הזו מבוססת</div><div class="m-0 text-white/[0.88] leading-relaxed text-[11px] md:text-sm">יש כיוון ראשוני בנושא הזה, אבל צריך עוד תרגולים כדי לוודא שהוא יציב.</div></div><div class="min-w-0"><div class="text-white/50 font-bold text-[11px] md:text-xs m-0 mb-0.5">מה קורה בדרך כלל בזמן התרגול</div><div class="m-0 text-white/[0.88] leading-relaxed text-[11px] md:text-sm">פער ידע</div></div><div class="min-w-0"><div class="text-white/50 font-bold text-[11px] md:text-xs m-0 mb-0.5">נקודות לתשומת לב</div><div class="m-0 text-white/[0.88] leading-relaxed text-[11px] md:text-sm">מידע חלקי בלבד</div></div><div class="min-w-0"><div class="text-white/50 font-bold text-[11px] md:text-xs m-0 mb-0.5">מה כדאי לתרגל קודם</div><div class="m-0 text-white/[0.88] leading-relaxed text-[11px] md:text-sm">ציר שגוי חוזר</div></div><div class="min-w-0"><div class="text-white/50 font-bold text-[11px] md:text-xs m-0 mb-0.5">לפני שמעלים רמה</div><div class="m-0 text-white/[0.88] leading-relaxed text-[11px] md:text-sm">להבחין בין נראה שחסר בסיס בנושא לבין קושי שקשור לנושא הזה</div></div><div class="min-w-0"><div class="text-white/50 font-bold text-[11px] md:text-xs m-0 mb-0.5">האם זה מצליח גם בשאלה חדשה</div><div class="m-0 text-white/[0.88] leading-relaxed text-[11px] md:text-sm">לא עכשיו</div></div><div class="min-w-0"><div class="text-white/50 font-bold text-[11px] md:text-xs m-0 mb-0.5">התאמה לשבוע הבא</div><div class="m-0 text-white/[0.88] leading-relaxed text-[11px] md:text-sm">לשמור על מה שעובד ולבדוק שוב.</div></div><div class="min-w-0"><div class="text-white/50 font-bold text-[11px] md:text-xs m-0 mb-0.5">האם כדאי לשנות כיוון</div><div class="m-0 text-white/[0.88] leading-relaxed text-[11px] md:text-sm">לפני שינוי מסקנה או רמת קושי — עוד סיבוב תרגול קצר.</div></div><div class="min-w-0"><div class="text-white/50 font-bold text-[11px] md:text-xs m-0 mb-0.5">יסוד קודם או קושי מקומי?</div><div class="m-0 text-white/[0.88] leading-relaxed text-[11px] md:text-sm">יש לבדוק גם חלופה: רשלנות.</div></div></div><div class="space-y-2.5 rounded-lg border border-sky-400/24 bg-sky-950/12 px-3 py-2.5"><div class="min-w-0"><p class="pr-detailed-mini-heading font-bold text-white/82 mb-1 text-xs">סיכום להורה</p><p class="pr-detailed-body-text text-sm leading-relaxed m-0 text-white/[0.9]">יש נתוני תרגול במקצוע, אך מה שנראה מהתרגולים עדיין זהיר — כדאי להמשיך לעקוב אחרי עוד תרגול.</p></div><div class="min-w-0"><p class="pr-detailed-mini-heading font-bold text-white/82 mb-1 text-xs">מה הכי חשוב כאן</p><p class="pr-detailed-body-text text-sm leading-relaxed m-0 text-white/[0.9]">להמשיך איסוף נתונים בסיסי.</p></div><div class="min-w-0"><p class="pr-detailed-mini-heading font-bold text-white/82 mb-1 text-xs">מה עושים עכשיו</p><p class="pr-detailed-body-text text-sm leading-relaxed m-0 text-white/[0.9]">תרגול קצר וממוקד בנושא אחד.</p></div><div class="min-w-0"><p class="pr-detailed-mini-heading font-bold text-white/82 mb-1 text-xs">מה לא לעשות כרגע</p><p class="pr-detailed-body-text text-sm leading-relaxed m-0 text-white/[0.9]">לא להסיק מסקנות חזקות ממספר קטן של שאלות.</p></div><div class="min-w-0"><p class="pr-detailed-mini-heading font-bold text-white/82 mb-1 text-xs">כמה אפשר לסמוך על זה</p><p class="pr-detailed-body-text text-sm leading-relaxed m-0 text-white/[0.9]">כמה אפשר לסמוך על זה: עדיין לא גבוה.</p></div></div></div></div><div class="pr-detailed-subject-block pr-detailed-subject-stack min-w-0"><div class="pr-detailed-subject-heading"><h3 class="pr-detailed-subject-title text-lg font-bold text-white m-0 tracking-tight pb-2 border-b border-white/12">אנגלית</h3><p class="pr-detailed-subject-metrics text-xs md:text-sm m-0 mt-1 text-white/75">שאלות: 64 | דיוק: 81%</p></div><div class="pr-detailed-subject-inner space-y-4 pt-3"><div class="pr-detailed-phase3-dl space-y-2 m-0 mb-2"><div class="min-w-0"><div class="text-white/50 font-bold text-[11px] md:text-xs m-0 mb-0.5">מגמה</div><div class="m-0 text-white/[0.88] leading-relaxed text-[11px] md:text-sm">בטווח הנוכחי כ-82% דיוק על 49 שאלות · בחלון האחרון בטווח כ-82% דיוק. ההשוואה לתקופה קודמת עדיין עדינה — שווה לצבור עוד קצת נתון.</div></div><div class="min-w-0"><div class="text-white/50 font-bold text-[11px] md:text-xs m-0 mb-0.5">עד כמה המסקנה הזו מבוססת</div><div class="m-0 text-white/[0.88] leading-relaxed text-[11px] md:text-sm">יש כיוון ראשוני בנושא הזה, אבל צריך עוד תרגולים כדי לוודא שהוא יציב.</div></div><div class="min-w-0"><div class="text-white/50 font-bold text-[11px] md:text-xs m-0 mb-0.5">מה קורה בדרך כלל בזמן התרגול</div><div class="m-0 text-white/[0.88] leading-relaxed text-[11px] md:text-sm">פער ידע</div></div><div class="min-w-0"><div class="text-white/50 font-bold text-[11px] md:text-xs m-0 mb-0.5">נקודות לתשומת לב</div><div class="m-0 text-white/[0.88] leading-relaxed text-[11px] md:text-sm">מידע חלקי בלבד</div></div><div class="min-w-0"><div class="text-white/50 font-bold text-[11px] md:text-xs m-0 mb-0.5">לפני שמעלים רמה</div><div class="m-0 text-white/[0.88] leading-relaxed text-[11px] md:text-sm">הפרדה בין פער יסוד לבעיית נושא</div></div><div class="min-w-0"><div class="text-white/50 font-bold text-[11px] md:text-xs m-0 mb-0.5">האם זה מצליח גם בשאלה חדשה</div><div class="m-0 text-white/[0.88] leading-relaxed text-[11px] md:text-sm">לא עכשיו</div></div><div class="min-w-0"><div class="text-white/50 font-bold text-[11px] md:text-xs m-0 mb-0.5">התאמה לשבוע הבא</div><div class="m-0 text-white/[0.88] leading-relaxed text-[11px] md:text-sm">לשמור על מה שעובד ולבדוק שוב.</div></div><div class="min-w-0"><div class="text-white/50 font-bold text-[11px] md:text-xs m-0 mb-0.5">האם כדאי לשנות כיוון</div><div class="m-0 text-white/[0.88] leading-relaxed text-[11px] md:text-sm">לפני שינוי מסקנה או רמת קושי — עוד סיבוב תרגול קצר.</div></div></div><div class="space-y-2.5 rounded-lg border border-sky-400/24 bg-sky-950/12 px-3 py-2.5"><div class="min-w-0"><p class="pr-detailed-mini-heading font-bold text-white/82 mb-1 text-xs">סיכום להורה</p><p class="pr-detailed-body-text text-sm leading-relaxed m-0 text-white/[0.9]">יש נתוני תרגול במקצוע, אך מה שנראה מהתרגולים עדיין זהיר — כדאי להמשיך לעקוב אחרי עוד תרגול.</p></div><div class="min-w-0"><p class="pr-detailed-mini-heading font-bold text-white/82 mb-1 text-xs">מה הכי חשוב כאן</p><p class="pr-detailed-body-text text-sm leading-relaxed m-0 text-white/[0.9]">להמשיך איסוף נתונים בסיסי.</p></div><div class="min-w-0"><p class="pr-detailed-mini-heading font-bold text-white/82 mb-1 text-xs">מה עושים עכשיו</p><p class="pr-detailed-body-text text-sm leading-relaxed m-0 text-white/[0.9]">תרגול קצר וממוקד בנושא אחד.</p></div><div class="min-w-0"><p class="pr-detailed-mini-heading font-bold text-white/82 mb-1 text-xs">מה לא לעשות כרגע</p><p class="pr-detailed-body-text text-sm leading-relaxed m-0 text-white/[0.9]">לא להסיק מסקנות חזקות ממספר קטן של שאלות.</p></div><div class="min-w-0"><p class="pr-detailed-mini-heading font-bold text-white/82 mb-1 text-xs">כמה אפשר לסמוך על זה</p><p class="pr-detailed-body-text text-sm leading-relaxed m-0 text-white/[0.9]">כמה אפשר לסמוך על זה: עדיין לא גבוה.</p></div></div></div></div><div class="pr-detailed-subject-block pr-detailed-subject-stack min-w-0"><div class="pr-detailed-subject-heading"><h3 class="pr-detailed-subject-title text-lg font-bold text-white m-0 tracking-tight pb-2 border-b border-white/12">מדעים</h3><p class="pr-detailed-subject-metrics text-xs md:text-sm m-0 mt-1 text-white/75">שאלות: 64 | דיוק: 88%</p></div><div class="pr-detailed-subject-inner space-y-4 pt-3"><div class="pr-detailed-phase3-dl space-y-2 m-0 mb-2"><div class="min-w-0"><div class="text-white/50 font-bold text-[11px] md:text-xs m-0 mb-0.5">אילו טעויות חוזרות כאן</div><div class="m-0 text-white/[0.88] leading-relaxed text-[11px] md:text-sm">סדר/מיקום שגוי</div></div><div class="min-w-0"><div class="text-white/50 font-bold text-[11px] md:text-xs m-0 mb-0.5">מגמה</div><div class="m-0 text-white/[0.88] leading-relaxed text-[11px] md:text-sm">בטווח הנוכחי כ-86% דיוק על 43 שאלות · בחלון האחרון בטווח כ-86% דיוק. ההשוואה לתקופה קודמת עדיין עדינה — שווה לצבור עוד קצת נתון.</div></div><div class="min-w-0"><div class="text-white/50 font-bold text-[11px] md:text-xs m-0 mb-0.5">עד כמה המסקנה הזו מבוססת</div><div class="m-0 text-white/[0.88] leading-relaxed text-[11px] md:text-sm">יש כיוון ראשוני בנושא הזה, אבל צריך עוד תרגולים כדי לוודא שהוא יציב.</div></div><div class="min-w-0"><div class="text-white/50 font-bold text-[11px] md:text-xs m-0 mb-0.5">מה קורה בדרך כלל בזמן התרגול</div><div class="m-0 text-white/[0.88] leading-relaxed text-[11px] md:text-sm">שליטה טובה בנושא לאורך זמן</div></div><div class="min-w-0"><div class="text-white/50 font-bold text-[11px] md:text-xs m-0 mb-0.5">נקודות לתשומת לב</div><div class="m-0 text-white/[0.88] leading-relaxed text-[11px] md:text-sm">מידע חלקי בלבד</div></div><div class="min-w-0"><div class="text-white/50 font-bold text-[11px] md:text-xs m-0 mb-0.5">מה כדאי לתרגל קודם</div><div class="m-0 text-white/[0.88] leading-relaxed text-[11px] md:text-sm">סדר/מיקום שגוי</div></div><div class="min-w-0"><div class="text-white/50 font-bold text-[11px] md:text-xs m-0 mb-0.5">לפני שמעלים רמה</div><div class="m-0 text-white/[0.88] leading-relaxed text-[11px] md:text-sm">להבחין בין נראה שחסר בסיס בנושא לבין קושי שקשור לנושא הזה</div></div><div class="min-w-0"><div class="text-white/50 font-bold text-[11px] md:text-xs m-0 mb-0.5">האם זה מצליח גם בשאלה חדשה</div><div class="m-0 text-white/[0.88] leading-relaxed text-[11px] md:text-sm">לא עכשיו</div></div><div class="min-w-0"><div class="text-white/50 font-bold text-[11px] md:text-xs m-0 mb-0.5">התאמה לשבוע הבא</div><div class="m-0 text-white/[0.88] leading-relaxed text-[11px] md:text-sm">לשמור על מה שעובד ולבדוק שוב.</div></div><div class="min-w-0"><div class="text-white/50 font-bold text-[11px] md:text-xs m-0 mb-0.5">האם כדאי לשנות כיוון</div><div class="m-0 text-white/[0.88] leading-relaxed text-[11px] md:text-sm">לפני שינוי מסקנה או רמת קושי — עוד סיבוב תרגול קצר.</div></div><div class="min-w-0"><div class="text-white/50 font-bold text-[11px] md:text-xs m-0 mb-0.5">יסוד קודם או קושי מקומי?</div><div class="m-0 text-white/[0.88] leading-relaxed text-[11px] md:text-sm">יש לבדוק גם חלופה: שפה.</div></div></div><div class="space-y-2.5 rounded-lg border border-sky-400/24 bg-sky-950/12 px-3 py-2.5"><div class="min-w-0"><p class="pr-detailed-mini-heading font-bold text-white/82 mb-1 text-xs">סיכום להורה</p><p class="pr-detailed-body-text text-sm leading-relaxed m-0 text-white/[0.9]">יש נתוני תרגול במקצוע, אך מה שנראה מהתרגולים עדיין זהיר — כדאי להמשיך לעקוב אחרי עוד תרגול.</p></div><div class="min-w-0"><p class="pr-detailed-mini-heading font-bold text-white/82 mb-1 text-xs">מה הכי חשוב כאן</p><p class="pr-detailed-body-text text-sm leading-relaxed m-0 text-white/[0.9]">להמשיך איסוף נתונים בסיסי.</p></div><div class="min-w-0"><p class="pr-detailed-mini-heading font-bold text-white/82 mb-1 text-xs">מה עושים עכשיו</p><p class="pr-detailed-body-text text-sm leading-relaxed m-0 text-white/[0.9]">תרגול קצר וממוקד בנושא אחד.</p></div><div class="min-w-0"><p class="pr-detailed-mini-heading font-bold text-white/82 mb-1 text-xs">מה לא לעשות כרגע</p><p class="pr-detailed-body-text text-sm leading-relaxed m-0 text-white/[0.9]">לא להסיק מסקנות חזקות ממספר קטן של שאלות.</p></div><div class="min-w-0"><p class="pr-detailed-mini-heading font-bold text-white/82 mb-1 text-xs">כמה אפשר לסמוך על זה</p><p class="pr-detailed-body-text text-sm leading-relaxed m-0 text-white/[0.9]">כמה אפשר לסמוך על זה: עדיין לא גבוה.</p></div></div></div></div><div class="pr-detailed-subject-block pr-detailed-subject-stack min-w-0"><div class="pr-detailed-subject-heading"><h3 class="pr-detailed-subject-title text-lg font-bold text-white m-0 tracking-tight pb-2 border-b border-white/12">עברית</h3><p class="pr-detailed-subject-metrics text-xs md:text-sm m-0 mt-1 text-white/75">שאלות: 74 | דיוק: 85%</p></div><div class="pr-detailed-subject-inner space-y-4 pt-3"><div class="pr-detailed-phase3-dl space-y-2 m-0 mb-2"><div class="min-w-0"><div class="text-white/50 font-bold text-[11px] md:text-xs m-0 mb-0.5">אילו טעויות חוזרות כאן</div><div class="m-0 text-white/[0.88] leading-relaxed text-[11px] md:text-sm">מילה קרובה לא נכונה</div></div><div class="min-w-0"><div class="text-white/50 font-bold text-[11px] md:text-xs m-0 mb-0.5">מגמה</div><div class="m-0 text-white/[0.88] leading-relaxed text-[11px] md:text-sm">בטווח הנוכחי כ-84% דיוק על 51 שאלות · בחלון האחרון בטווח כ-84% דיוק. ההשוואה לתקופה קודמת עדיין עדינה — שווה לצבור עוד קצת נתון.</div></div><div class="min-w-0"><div class="text-white/50 font-bold text-[11px] md:text-xs m-0 mb-0.5">עד כמה המסקנה הזו מבוססת</div><div class="m-0 text-white/[0.88] leading-relaxed text-[11px] md:text-sm">יש כיוון ראשוני בנושא הזה, אבל צריך עוד תרגולים כדי לוודא שהוא יציב.</div></div><div class="min-w-0"><div class="text-white/50 font-bold text-[11px] md:text-xs m-0 mb-0.5">מה קורה בדרך כלל בזמן התרגול</div><div class="m-0 text-white/[0.88] leading-relaxed text-[11px] md:text-sm">פער ידע</div></div><div class="min-w-0"><div class="text-white/50 font-bold text-[11px] md:text-xs m-0 mb-0.5">נקודות לתשומת לב</div><div class="m-0 text-white/[0.88] leading-relaxed text-[11px] md:text-sm">מידע חלקי בלבד</div></div><div class="min-w-0"><div class="text-white/50 font-bold text-[11px] md:text-xs m-0 mb-0.5">מה כדאי לתרגל קודם</div><div class="m-0 text-white/[0.88] leading-relaxed text-[11px] md:text-sm">מילה קרובה לא נכונה</div></div><div class="min-w-0"><div class="text-white/50 font-bold text-[11px] md:text-xs m-0 mb-0.5">לפני שמעלים רמה</div><div class="m-0 text-white/[0.88] leading-relaxed text-[11px] md:text-sm">להבחין בין נראה שחסר בסיס בנושא לבין קושי שקשור לנושא הזה</div></div><div class="min-w-0"><div class="text-white/50 font-bold text-[11px] md:text-xs m-0 mb-0.5">האם זה מצליח גם בשאלה חדשה</div><div class="m-0 text-white/[0.88] leading-relaxed text-[11px] md:text-sm">לא עכשיו</div></div><div class="min-w-0"><div class="text-white/50 font-bold text-[11px] md:text-xs m-0 mb-0.5">התאמה לשבוע הבא</div><div class="m-0 text-white/[0.88] leading-relaxed text-[11px] md:text-sm">לשמור על מה שעובד ולבדוק שוב.</div></div><div class="min-w-0"><div class="text-white/50 font-bold text-[11px] md:text-xs m-0 mb-0.5">האם כדאי לשנות כיוון</div><div class="m-0 text-white/[0.88] leading-relaxed text-[11px] md:text-sm">לפני שינוי מסקנה או רמת קושי — עוד סיבוב תרגול קצר.</div></div><div class="min-w-0"><div class="text-white/50 font-bold text-[11px] md:text-xs m-0 mb-0.5">יסוד קודם או קושי מקומי?</div><div class="m-0 text-white/[0.88] leading-relaxed text-[11px] md:text-sm">יש לבדוק גם חלופה: קריאה.</div></div></div><div class="space-y-2.5 rounded-lg border border-sky-400/24 bg-sky-950/12 px-3 py-2.5"><div class="min-w-0"><p class="pr-detailed-mini-heading font-bold text-white/82 mb-1 text-xs">סיכום להורה</p><p class="pr-detailed-body-text text-sm leading-relaxed m-0 text-white/[0.9]">יש נתוני תרגול במקצוע, אך מה שנראה מהתרגולים עדיין זהיר — כדאי להמשיך לעקוב אחרי עוד תרגול.</p></div><div class="min-w-0"><p class="pr-detailed-mini-heading font-bold text-white/82 mb-1 text-xs">מה הכי חשוב כאן</p><p class="pr-detailed-body-text text-sm leading-relaxed m-0 text-white/[0.9]">להמשיך איסוף נתונים בסיסי.</p></div><div class="min-w-0"><p class="pr-detailed-mini-heading font-bold text-white/82 mb-1 text-xs">מה עושים עכשיו</p><p class="pr-detailed-body-text text-sm leading-relaxed m-0 text-white/[0.9]">תרגול קצר וממוקד בנושא אחד.</p></div><div class="min-w-0"><p class="pr-detailed-mini-heading font-bold text-white/82 mb-1 text-xs">מה לא לעשות כרגע</p><p class="pr-detailed-body-text text-sm leading-relaxed m-0 text-white/[0.9]">לא להסיק מסקנות חזקות ממספר קטן של שאלות.</p></div><div class="min-w-0"><p class="pr-detailed-mini-heading font-bold text-white/82 mb-1 text-xs">כמה אפשר לסמוך על זה</p><p class="pr-detailed-body-text text-sm leading-relaxed m-0 text-white/[0.9]">כמה אפשר לסמוך על זה: עדיין לא גבוה.</p></div></div></div></div><div class="pr-detailed-subject-block pr-detailed-subject-stack min-w-0"><div class="pr-detailed-subject-heading"><h3 class="pr-detailed-subject-title text-lg font-bold text-white m-0 tracking-tight pb-2 border-b border-white/12">מולדת וגאוגרפיה</h3><p class="pr-detailed-subject-metrics text-xs md:text-sm m-0 mt-1 text-white/75">שאלות: 67 | דיוק: 85%</p></div><div class="pr-detailed-subject-inner space-y-4 pt-3"><div class="pr-detailed-phase3-dl space-y-2 m-0 mb-2"><div class="min-w-0"><div class="text-white/50 font-bold text-[11px] md:text-xs m-0 mb-0.5">אילו טעויות חוזרות כאן</div><div class="m-0 text-white/[0.88] leading-relaxed text-[11px] md:text-sm">בלבול תפקידים</div></div><div class="min-w-0"><div class="text-white/50 font-bold text-[11px] md:text-xs m-0 mb-0.5">מגמה</div><div class="m-0 text-white/[0.88] leading-relaxed text-[11px] md:text-sm">בטווח הנוכחי כ-83% דיוק על 52 שאלות · בחלון האחרון בטווח כ-83% דיוק. ההשוואה לתקופה קודמת עדיין עדינה — שווה לצבור עוד קצת נתון.</div></div><div class="min-w-0"><div class="text-white/50 font-bold text-[11px] md:text-xs m-0 mb-0.5">עד כמה המסקנה הזו מבוססת</div><div class="m-0 text-white/[0.88] leading-relaxed text-[11px] md:text-sm">יש כיוון ראשוני בנושא הזה, אבל צריך עוד תרגולים כדי לוודא שהוא יציב.</div></div><div class="min-w-0"><div class="text-white/50 font-bold text-[11px] md:text-xs m-0 mb-0.5">מה קורה בדרך כלל בזמן התרגול</div><div class="m-0 text-white/[0.88] leading-relaxed text-[11px] md:text-sm">פער ידע</div></div><div class="min-w-0"><div class="text-white/50 font-bold text-[11px] md:text-xs m-0 mb-0.5">נקודות לתשומת לב</div><div class="m-0 text-white/[0.88] leading-relaxed text-[11px] md:text-sm">מידע חלקי בלבד</div></div><div class="min-w-0"><div class="text-white/50 font-bold text-[11px] md:text-xs m-0 mb-0.5">מה כדאי לתרגל קודם</div><div class="m-0 text-white/[0.88] leading-relaxed text-[11px] md:text-sm">בלבול תפקידים</div></div><div class="min-w-0"><div class="text-white/50 font-bold text-[11px] md:text-xs m-0 mb-0.5">לפני שמעלים רמה</div><div class="m-0 text-white/[0.88] leading-relaxed text-[11px] md:text-sm">להבחין בין נראה שחסר בסיס בנושא לבין קושי שקשור לנושא הזה</div></div><div class="min-w-0"><div class="text-white/50 font-bold text-[11px] md:text-xs m-0 mb-0.5">האם זה מצליח גם בשאלה חדשה</div><div class="m-0 text-white/[0.88] leading-relaxed text-[11px] md:text-sm">לא עכשיו</div></div><div class="min-w-0"><div class="text-white/50 font-bold text-[11px] md:text-xs m-0 mb-0.5">התאמה לשבוע הבא</div><div class="m-0 text-white/[0.88] leading-relaxed text-[11px] md:text-sm">לשמור על מה שעובד ולבדוק שוב.</div></div><div class="min-w-0"><div class="text-white/50 font-bold text-[11px] md:text-xs m-0 mb-0.5">האם כדאי לשנות כיוון</div><div class="m-0 text-white/[0.88] leading-relaxed text-[11px] md:text-sm">לפני שינוי מסקנה או רמת קושי — עוד סיבוב תרגול קצר.</div></div><div class="min-w-0"><div class="text-white/50 font-bold text-[11px] md:text-xs m-0 mb-0.5">יסוד קודם או קושי מקומי?</div><div class="m-0 text-white/[0.88] leading-relaxed text-[11px] md:text-sm">יש לבדוק גם חלופה: שמות.</div></div></div><div class="space-y-2.5 rounded-lg border border-sky-400/24 bg-sky-950/12 px-3 py-2.5"><div class="min-w-0"><p class="pr-detailed-mini-heading font-bold text-white/82 mb-1 text-xs">סיכום להורה</p><p class="pr-detailed-body-text text-sm leading-relaxed m-0 text-white/[0.9]">יש נתוני תרגול במקצוע, אך מה שנראה מהתרגולים עדיין זהיר — כדאי להמשיך לעקוב אחרי עוד תרגול.</p></div><div class="min-w-0"><p class="pr-detailed-mini-heading font-bold text-white/82 mb-1 text-xs">מה הכי חשוב כאן</p><p class="pr-detailed-body-text text-sm leading-relaxed m-0 text-white/[0.9]">להמשיך איסוף נתונים בסיסי.</p></div><div class="min-w-0"><p class="pr-detailed-mini-heading font-bold text-white/82 mb-1 text-xs">מה עושים עכשיו</p><p class="pr-detailed-body-text text-sm leading-relaxed m-0 text-white/[0.9]">תרגול קצר וממוקד בנושא אחד.</p></div><div class="min-w-0"><p class="pr-detailed-mini-heading font-bold text-white/82 mb-1 text-xs">מה לא לעשות כרגע</p><p class="pr-detailed-body-text text-sm leading-relaxed m-0 text-white/[0.9]">לא להסיק מסקנות חזקות ממספר קטן של שאלות.</p></div><div class="min-w-0"><p class="pr-detailed-mini-heading font-bold text-white/82 mb-1 text-xs">כמה אפשר לסמוך על זה</p><p class="pr-detailed-body-text text-sm leading-relaxed m-0 text-white/[0.9]">כמה אפשר לסמוך על זה: עדיין לא גבוה.</p></div></div></div></div></div></section><section class="pr-detailed-section rounded-xl border border-white/12 bg-white/[0.045] mb-5 md:mb-6 overflow-hidden  "><div class="pr-detailed-section-head px-3 md:px-4 py-2.5 md:py-3 border-b border-white/10 bg-white/[0.035]"><h2 class="pr-detailed-section-title text-base md:text-lg font-extrabold tracking-tight text-white m-0">מה שחוזר בכמה מקצועות</h2></div><div class="pr-detailed-section-inner px-3 md:px-4 py-3 md:py-4"><ul class="pr-detailed-body-text list-disc pr-5 space-y-1.5 text-sm md:text-base text-white/[0.88] leading-relaxed"><li class="pr-detailed-bullet-li">במבט על כל המקצועות יחד: 7 נושאים בטווח התקופה.</li><li class="pr-detailed-bullet-li">0 נושאים שכדאי לעקוב אחריהם השבוע מקרוב.</li></ul><p class="text-sm text-amber-200/90 mt-2">מספר הנושאים שנבדקו נמוך יחסית — ככל שיצטבר עוד תרגול התמונה תתבהר.</p></div></section><section class="pr-detailed-section rounded-xl border border-white/12 bg-white/[0.045] mb-5 md:mb-6 overflow-hidden  "><div class="pr-detailed-section-head px-3 md:px-4 py-2.5 md:py-3 border-b border-white/10 bg-white/[0.035]"><h2 class="pr-detailed-section-title text-base md:text-lg font-extrabold tracking-tight text-white m-0">רעיונות קצרים לבית</h2></div><div class="pr-detailed-section-inner px-3 md:px-4 py-3 md:py-4"><div class="pr-detailed-text-item-stack flex flex-col gap-2.5"><div class="pr-detailed-plan-item pr-detailed-body-text rounded-lg border border-sky-400/22 bg-sky-950/12 px-3 py-2.5 text-sm leading-relaxed text-white/[0.9]">אין כרגע פעולה ביתית חד-משמעית — השבוע כדאי תרגול קצר וממוקד כדי להבהיר את הכיוון.</div></div></div></section><section class="pr-detailed-section rounded-xl border border-white/12 bg-white/[0.045] mb-5 md:mb-6 overflow-hidden  "><div class="pr-detailed-section-head px-3 md:px-4 py-2.5 md:py-3 border-b border-white/10 bg-white/[0.035]"><h2 class="pr-detailed-section-title text-base md:text-lg font-extrabold tracking-tight text-white m-0">כיוון לימים הבאים</h2></div><div class="pr-detailed-section-inner px-3 md:px-4 py-3 md:py-4"><div class="pr-detailed-text-item-stack flex flex-col gap-2.5"><div class="pr-detailed-goal-item pr-detailed-body-text rounded-lg border border-violet-400/22 bg-violet-950/10 px-3 py-2.5 text-sm leading-relaxed text-white/[0.9]">בחשבון: הפרדה בין פער יסוד לבעיית נושא</div><div class="pr-detailed-goal-item pr-detailed-body-text rounded-lg border border-violet-400/22 bg-violet-950/10 px-3 py-2.5 text-sm leading-relaxed text-white/[0.9]">בחשבון: להבחין בין נראה שחסר בסיס בנושא לבין קושי שקשור לנושא הזה</div><div class="pr-detailed-goal-item pr-detailed-body-text rounded-lg border border-violet-400/22 bg-violet-950/10 px-3 py-2.5 text-sm leading-relaxed text-white/[0.9]">בגאומטריה: להבחין בין נראה שחסר בסיס בנושא לבין קושי שקשור לנושא הזה</div><div class="pr-detailed-goal-item pr-detailed-body-text rounded-lg border border-violet-400/22 bg-violet-950/10 px-3 py-2.5 text-sm leading-relaxed text-white/[0.9]">באנגלית: הפרדה בין פער יסוד לבעיית נושא</div><div class="pr-detailed-goal-item pr-detailed-body-text rounded-lg border border-violet-400/22 bg-violet-950/10 px-3 py-2.5 text-sm leading-relaxed text-white/[0.9]">במדעים: להבחין בין נראה שחסר בסיס בנושא לבין קושי שקשור לנושא הזה</div><div class="pr-detailed-goal-item pr-detailed-body-text rounded-lg border border-violet-400/22 bg-violet-950/10 px-3 py-2.5 text-sm leading-relaxed text-white/[0.9]">בעברית: להבחין בין נראה שחסר בסיס בנושא לבין קושי שקשור לנושא הזה</div></div></div></section><aside class="parent-report-important-disclaimer mt-5 md:mt-6 mb-1 rounded-lg border border-white/14 bg-white/[0.06] px-3 py-3 md:px-4 md:py-3.5 text-right shadow-none" dir="rtl" role="note"><h2 class="parent-report-important-disclaimer-title text-sm font-extrabold text-white/90 mb-2 tracking-tight m-0">הבהרה חשובה</h2><div class="parent-report-important-disclaimer-body space-y-2 text-[0.8125rem] md:text-sm leading-relaxed text-white/76"><p class="m-0">הדוח, ההמלצות והתובנות במסמך זה נגזרות מתוך נתוני התרגול והשימוש במערכת.</p><p class="m-0">הם נועדו לשמש <strong class="font-bold text-white/85">כלי עזר לימודי</strong> להורה ולתלמיד, ואינם מהווים אבחון חינוכי, דידקטי או מקצועי, ואינם מחליפים שיקול דעת של מורה, יועץ, איש חינוך או בעל מקצוע מוסמך.</p><p class="m-0">במקרה של קושי מתמשך, פער לימודי משמעותי או צורך בהכוונה אישית, מומלץ להיוועץ במורה או באיש מקצוע מתאים.</p></div></aside></div><div class="no-pdf mt-8 pt-5 border-t border-white/15 flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center sm:justify-center"><button type="button" class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-sm font-bold bg-sky-600/85 border border-sky-400/50 hover:bg-sky-600 text-white transition-all">🖨️ הדפס מלא</button><button type="button" class="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-sm font-bold bg-amber-600/85 border border-amber-400/50 hover:bg-amber-600 text-white transition-all">🖨️ הדפס תקציר</button><a class="inline-flex items-center justify-center px-4 py-2.5 rounded-lg text-sm font-bold bg-white/10 border border-white/20 hover:bg-white/20 text-white transition-all text-center" href="/learning/parent-report?period=week">חזרה לדוח המקוצר</a><a class="inline-flex items-center justify-center px-4 py-2.5 rounded-lg text-sm font-bold bg-violet-600/50 border border-violet-300/40 hover:bg-violet-600/65 text-white transition-all text-center" href="/learning">חזרה ללמידה</a></div></div></div></div><script id="__NEXT_DATA__" type="application/json" crossorigin="">{"props":{"pageProps":{}},"page":"/learning/parent-report-detailed","query":{},"buildId":"DrfILZWBxYB1sJCMUE7wv","nextExport":true,"autoExport":true,"isFallback":false,"scriptLoader":[]}</script><next-route-announcer><p aria-live="assertive" id="__next-route-announcer__" role="alert" style="border: 0px; clip: rect(0px, 0px, 0px, 0px); height: 1px; margin: -1px; overflow: hidden; padding: 0px; position: absolute; top: 0px; width: 1px; white-space: nowrap; overflow-wrap: normal;"></p></next-route-announcer></body></html>

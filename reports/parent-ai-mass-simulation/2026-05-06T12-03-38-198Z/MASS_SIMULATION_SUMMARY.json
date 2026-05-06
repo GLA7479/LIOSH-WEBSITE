@@ -1,0 +1,158 @@
+{
+  "generatedAt": "2026-05-06T12:04:38.780Z",
+  "outputDirectory": "reports\\parent-ai-mass-simulation\\2026-05-06T12-03-38-198Z",
+  "environment": {
+    "MASS_STUDENT_COUNT": 22,
+    "MASS_MIN_GRADE": "g1",
+    "MASS_MAX_GRADE": "g6",
+    "MASS_SEED": 1337,
+    "MASS_SUBJECTS": "(default all)",
+    "MASS_QUESTION_TARGET": 5000,
+    "MASS_QUESTION_SOURCE": "hybrid",
+    "MASS_REPORT_LIMIT": 22,
+    "MASS_PDF_LIMIT": 22,
+    "MASS_PARENT_AI_QUESTION_LIMIT": 220,
+    "MASS_PARENT_AI_CATEGORY_BALANCED": "1",
+    "MASS_PARENT_AI_CATEGORY_MIN": 1,
+    "QA_BASE_URL": "http://localhost:3001"
+  },
+  "subjectsResolved": [
+    "hebrew",
+    "math",
+    "english",
+    "science",
+    "geometry",
+    "moledet_geography"
+  ],
+  "supportedSubjectKeys": [
+    "hebrew",
+    "math",
+    "english",
+    "science",
+    "geometry",
+    "moledet_geography"
+  ],
+  "counts": {
+    "students": 22,
+    "questions": 5000,
+    "realQuestionCount": 1595,
+    "generatedQuestionCount": 0,
+    "placeholderQuestionCount": 3405,
+    "parentAiInteractions": 220,
+    "reportsWritten": 22,
+    "shortReports": 22,
+    "detailedReports": 22,
+    "pdfsWritten": 22,
+    "shortPdfCount": 22,
+    "detailedPdfCount": 22,
+    "totalPdfCount": 44,
+    "validReadablePdfCount": 44,
+    "invalidPdfCount": 0,
+    "productPdfCount": 44,
+    "simulationPdfCount": 0
+  },
+  "parentAiInteractionRollup": {
+    "byCategory": {
+      "data_grounded": 22,
+      "thin_data": 22,
+      "contradiction_challenge": 22,
+      "simple_explanation": 22,
+      "action_plan": 22,
+      "unrelated_off_topic": 22,
+      "education_adjacent_sensitive": 22,
+      "bad_unsupported_request": 22,
+      "prompt_injection": 22,
+      "missing_subject_data": 22
+    },
+    "groundedDataGroundedCount": 21,
+    "unrelatedRedirectCount": 22,
+    "promptInjectionPassCount": 22,
+    "badRequestRefusalPassCount": 22,
+    "missingSubjectPassCount": 22,
+    "educationAdjacentSensitivePassCount": 22,
+    "thinDataDataGroundedCount": 1,
+    "thinDataLimitedCautionPassCount": 1,
+    "thinDataLimitedCautionFailCount": 0,
+    "richStrongEvidencePassCount": 2,
+    "richStrongNoFallbackPassCount": 2
+  },
+  "coverage": {
+    "byGrade": {
+      "g5": 1428,
+      "g1": 949,
+      "g3": 722,
+      "g4": 714,
+      "g6": 950,
+      "g2": 237
+    },
+    "bySubject": {
+      "moledet_geography": 865,
+      "hebrew": 792,
+      "english": 842,
+      "science": 803,
+      "geometry": 867,
+      "math": 831
+    },
+    "byProfile": {
+      "strong_stable": 1,
+      "weak_all_subjects": 1,
+      "weak_math": 1,
+      "weak_hebrew": 1,
+      "weak_english": 1,
+      "improving_student": 1,
+      "declining_student": 1,
+      "inconsistent_student": 1,
+      "random_guessing": 1,
+      "fast_wrong": 1,
+      "slow_correct": 1,
+      "repeated_misconception": 1,
+      "prerequisite_gap": 1,
+      "thin_data": 1,
+      "rich_data": 1,
+      "mixed_strengths": 1,
+      "reading_comprehension_gap": 1,
+      "calculation_errors": 1,
+      "word_problem_gap": 1,
+      "topic_specific_gap": 1,
+      "external_question_flow": 1,
+      "six_subject_mixed_profile": 1
+    },
+    "parentAiByCategory": {
+      "data_grounded": 22,
+      "thin_data": 22,
+      "contradiction_challenge": 22,
+      "simple_explanation": 22,
+      "action_plan": 22,
+      "unrelated_off_topic": 22,
+      "education_adjacent_sensitive": 22,
+      "bad_unsupported_request": 22,
+      "prompt_injection": 22,
+      "missing_subject_data": 22
+    }
+  },
+  "quality": {
+    "totalChecks": 1285,
+    "failedChecks": 0,
+    "warningCount": 0,
+    "recurringIssueCodes": []
+  },
+  "launchGaps": {
+    "questionQualityValidatedSubjects": [
+      "hebrew",
+      "science"
+    ],
+    "placeholderOnlySubjects": [
+      "moledet_geography",
+      "english",
+      "geometry",
+      "math"
+    ],
+    "note": "Question quality was validated only for subjects with real questions. Placeholder-only subjects need real question-bank coverage before launch readiness claims."
+  },
+  "bottomLine": {
+    "status": "PASS (Harness)",
+    "detail": "אין כשלי איכות קריטיים — ניתן להמשיך לסקירה ידנית ואז ללילה ארוך."
+  },
+  "gradeSupportNote": "כל הכיתות g1, g2, g3, g4, g5, g6 מיוצגות לפחות בתלמיד אחד.",
+  "pdfMechanism": "product-html-playwright"
+}

@@ -1,0 +1,401 @@
+{
+  "reports": [
+    {
+      "studentId": "mass_motz0tsr_0001_strong_stable_g5",
+      "displayName": "אילי דגן",
+      "grade": "g5",
+      "profileType": "strong_stable",
+      "files": {
+        "shortJson": "parent-reports/mass_motz0tsr_0001_strong_stable_g5/short.json",
+        "shortMd": "parent-reports/mass_motz0tsr_0001_strong_stable_g5/short.md",
+        "shortHtml": "parent-reports/mass_motz0tsr_0001_strong_stable_g5/short.html",
+        "detailedJson": "parent-reports/mass_motz0tsr_0001_strong_stable_g5/detailed.json",
+        "detailedMd": "parent-reports/mass_motz0tsr_0001_strong_stable_g5/detailed.md",
+        "detailedHtml": "parent-reports/mass_motz0tsr_0001_strong_stable_g5/detailed.html"
+      },
+      "pdfFiles": {
+        "short": "pdfs/short/mass_motz0tsr_0001_strong_stable_g5.pdf",
+        "detailed": "pdfs/detailed/mass_motz0tsr_0001_strong_stable_g5.pdf"
+      }
+    },
+    {
+      "studentId": "mass_motz0tsr_0002_weak_all_subjects_g1",
+      "displayName": "שירה ביטון",
+      "grade": "g1",
+      "profileType": "weak_all_subjects",
+      "files": {
+        "shortJson": "parent-reports/mass_motz0tsr_0002_weak_all_subjects_g1/short.json",
+        "shortMd": "parent-reports/mass_motz0tsr_0002_weak_all_subjects_g1/short.md",
+        "shortHtml": "parent-reports/mass_motz0tsr_0002_weak_all_subjects_g1/short.html",
+        "detailedJson": "parent-reports/mass_motz0tsr_0002_weak_all_subjects_g1/detailed.json",
+        "detailedMd": "parent-reports/mass_motz0tsr_0002_weak_all_subjects_g1/detailed.md",
+        "detailedHtml": "parent-reports/mass_motz0tsr_0002_weak_all_subjects_g1/detailed.html"
+      },
+      "pdfFiles": {
+        "short": "pdfs/short/mass_motz0tsr_0002_weak_all_subjects_g1.pdf",
+        "detailed": "pdfs/detailed/mass_motz0tsr_0002_weak_all_subjects_g1.pdf"
+      }
+    },
+    {
+      "studentId": "mass_motz0tsr_0003_weak_math_g3",
+      "displayName": "יובל גולן",
+      "grade": "g3",
+      "profileType": "weak_math",
+      "files": {
+        "shortJson": "parent-reports/mass_motz0tsr_0003_weak_math_g3/short.json",
+        "shortMd": "parent-reports/mass_motz0tsr_0003_weak_math_g3/short.md",
+        "shortHtml": "parent-reports/mass_motz0tsr_0003_weak_math_g3/short.html",
+        "detailedJson": "parent-reports/mass_motz0tsr_0003_weak_math_g3/detailed.json",
+        "detailedMd": "parent-reports/mass_motz0tsr_0003_weak_math_g3/detailed.md",
+        "detailedHtml": "parent-reports/mass_motz0tsr_0003_weak_math_g3/detailed.html"
+      },
+      "pdfFiles": {
+        "short": "pdfs/short/mass_motz0tsr_0003_weak_math_g3.pdf",
+        "detailed": "pdfs/detailed/mass_motz0tsr_0003_weak_math_g3.pdf"
+      }
+    },
+    {
+      "studentId": "mass_motz0tsr_0004_weak_hebrew_g5",
+      "displayName": "יובל דגן",
+      "grade": "g5",
+      "profileType": "weak_hebrew",
+      "files": {
+        "shortJson": "parent-reports/mass_motz0tsr_0004_weak_hebrew_g5/short.json",
+        "shortMd": "parent-reports/mass_motz0tsr_0004_weak_hebrew_g5/short.md",
+        "shortHtml": "parent-reports/mass_motz0tsr_0004_weak_hebrew_g5/short.html",
+        "detailedJson": "parent-reports/mass_motz0tsr_0004_weak_hebrew_g5/detailed.json",
+        "detailedMd": "parent-reports/mass_motz0tsr_0004_weak_hebrew_g5/detailed.md",
+        "detailedHtml": "parent-reports/mass_motz0tsr_0004_weak_hebrew_g5/detailed.html"
+      },
+      "pdfFiles": {
+        "short": "pdfs/short/mass_motz0tsr_0004_weak_hebrew_g5.pdf",
+        "detailed": "pdfs/detailed/mass_motz0tsr_0004_weak_hebrew_g5.pdf"
+      }
+    },
+    {
+      "studentId": "mass_motz0tsr_0005_weak_english_g5",
+      "displayName": "מיכל ביטון",
+      "grade": "g5",
+      "profileType": "weak_english",
+      "files": {
+        "shortJson": "parent-reports/mass_motz0tsr_0005_weak_english_g5/short.json",
+        "shortMd": "parent-reports/mass_motz0tsr_0005_weak_english_g5/short.md",
+        "shortHtml": "parent-reports/mass_motz0tsr_0005_weak_english_g5/short.html",
+        "detailedJson": "parent-reports/mass_motz0tsr_0005_weak_english_g5/detailed.json",
+        "detailedMd": "parent-reports/mass_motz0tsr_0005_weak_english_g5/detailed.md",
+        "detailedHtml": "parent-reports/mass_motz0tsr_0005_weak_english_g5/detailed.html"
+      },
+      "pdfFiles": {
+        "short": "pdfs/short/mass_motz0tsr_0005_weak_english_g5.pdf",
+        "detailed": "pdfs/detailed/mass_motz0tsr_0005_weak_english_g5.pdf"
+      }
+    },
+    {
+      "studentId": "mass_motz0tsr_0006_improving_student_g4",
+      "displayName": "אילי שטרן",
+      "grade": "g4",
+      "profileType": "improving_student",
+      "files": {
+        "shortJson": "parent-reports/mass_motz0tsr_0006_improving_student_g4/short.json",
+        "shortMd": "parent-reports/mass_motz0tsr_0006_improving_student_g4/short.md",
+        "shortHtml": "parent-reports/mass_motz0tsr_0006_improving_student_g4/short.html",
+        "detailedJson": "parent-reports/mass_motz0tsr_0006_improving_student_g4/detailed.json",
+        "detailedMd": "parent-reports/mass_motz0tsr_0006_improving_student_g4/detailed.md",
+        "detailedHtml": "parent-reports/mass_motz0tsr_0006_improving_student_g4/detailed.html"
+      },
+      "pdfFiles": {
+        "short": "pdfs/short/mass_motz0tsr_0006_improving_student_g4.pdf",
+        "detailed": "pdfs/detailed/mass_motz0tsr_0006_improving_student_g4.pdf"
+      }
+    },
+    {
+      "studentId": "mass_motz0tsr_0007_declining_student_g6",
+      "displayName": "מיכל כהן",
+      "grade": "g6",
+      "profileType": "declining_student",
+      "files": {
+        "shortJson": "parent-reports/mass_motz0tsr_0007_declining_student_g6/short.json",
+        "shortMd": "parent-reports/mass_motz0tsr_0007_declining_student_g6/short.md",
+        "shortHtml": "parent-reports/mass_motz0tsr_0007_declining_student_g6/short.html",
+        "detailedJson": "parent-reports/mass_motz0tsr_0007_declining_student_g6/detailed.json",
+        "detailedMd": "parent-reports/mass_motz0tsr_0007_declining_student_g6/detailed.md",
+        "detailedHtml": "parent-reports/mass_motz0tsr_0007_declining_student_g6/detailed.html"
+      },
+      "pdfFiles": {
+        "short": "pdfs/short/mass_motz0tsr_0007_declining_student_g6.pdf",
+        "detailed": "pdfs/detailed/mass_motz0tsr_0007_declining_student_g6.pdf"
+      }
+    },
+    {
+      "studentId": "mass_motz0tsr_0008_inconsistent_student_g4",
+      "displayName": "הדר כהן",
+      "grade": "g4",
+      "profileType": "inconsistent_student",
+      "files": {
+        "shortJson": "parent-reports/mass_motz0tsr_0008_inconsistent_student_g4/short.json",
+        "shortMd": "parent-reports/mass_motz0tsr_0008_inconsistent_student_g4/short.md",
+        "shortHtml": "parent-reports/mass_motz0tsr_0008_inconsistent_student_g4/short.html",
+        "detailedJson": "parent-reports/mass_motz0tsr_0008_inconsistent_student_g4/detailed.json",
+        "detailedMd": "parent-reports/mass_motz0tsr_0008_inconsistent_student_g4/detailed.md",
+        "detailedHtml": "parent-reports/mass_motz0tsr_0008_inconsistent_student_g4/detailed.html"
+      },
+      "pdfFiles": {
+        "short": "pdfs/short/mass_motz0tsr_0008_inconsistent_student_g4.pdf",
+        "detailed": "pdfs/detailed/mass_motz0tsr_0008_inconsistent_student_g4.pdf"
+      }
+    },
+    {
+      "studentId": "mass_motz0tsr_0009_random_guessing_g4",
+      "displayName": "ליאור רוזן",
+      "grade": "g4",
+      "profileType": "random_guessing",
+      "files": {
+        "shortJson": "parent-reports/mass_motz0tsr_0009_random_guessing_g4/short.json",
+        "shortMd": "parent-reports/mass_motz0tsr_0009_random_guessing_g4/short.md",
+        "shortHtml": "parent-reports/mass_motz0tsr_0009_random_guessing_g4/short.html",
+        "detailedJson": "parent-reports/mass_motz0tsr_0009_random_guessing_g4/detailed.json",
+        "detailedMd": "parent-reports/mass_motz0tsr_0009_random_guessing_g4/detailed.md",
+        "detailedHtml": "parent-reports/mass_motz0tsr_0009_random_guessing_g4/detailed.html"
+      },
+      "pdfFiles": {
+        "short": "pdfs/short/mass_motz0tsr_0009_random_guessing_g4.pdf",
+        "detailed": "pdfs/detailed/mass_motz0tsr_0009_random_guessing_g4.pdf"
+      }
+    },
+    {
+      "studentId": "mass_motz0tsr_0010_fast_wrong_g3",
+      "displayName": "אורי גולן",
+      "grade": "g3",
+      "profileType": "fast_wrong",
+      "files": {
+        "shortJson": "parent-reports/mass_motz0tsr_0010_fast_wrong_g3/short.json",
+        "shortMd": "parent-reports/mass_motz0tsr_0010_fast_wrong_g3/short.md",
+        "shortHtml": "parent-reports/mass_motz0tsr_0010_fast_wrong_g3/short.html",
+        "detailedJson": "parent-reports/mass_motz0tsr_0010_fast_wrong_g3/detailed.json",
+        "detailedMd": "parent-reports/mass_motz0tsr_0010_fast_wrong_g3/detailed.md",
+        "detailedHtml": "parent-reports/mass_motz0tsr_0010_fast_wrong_g3/detailed.html"
+      },
+      "pdfFiles": {
+        "short": "pdfs/short/mass_motz0tsr_0010_fast_wrong_g3.pdf",
+        "detailed": "pdfs/detailed/mass_motz0tsr_0010_fast_wrong_g3.pdf"
+      }
+    },
+    {
+      "studentId": "mass_motz0tsr_0011_slow_correct_g3",
+      "displayName": "רועי פרץ",
+      "grade": "g3",
+      "profileType": "slow_correct",
+      "files": {
+        "shortJson": "parent-reports/mass_motz0tsr_0011_slow_correct_g3/short.json",
+        "shortMd": "parent-reports/mass_motz0tsr_0011_slow_correct_g3/short.md",
+        "shortHtml": "parent-reports/mass_motz0tsr_0011_slow_correct_g3/short.html",
+        "detailedJson": "parent-reports/mass_motz0tsr_0011_slow_correct_g3/detailed.json",
+        "detailedMd": "parent-reports/mass_motz0tsr_0011_slow_correct_g3/detailed.md",
+        "detailedHtml": "parent-reports/mass_motz0tsr_0011_slow_correct_g3/detailed.html"
+      },
+      "pdfFiles": {
+        "short": "pdfs/short/mass_motz0tsr_0011_slow_correct_g3.pdf",
+        "detailed": "pdfs/detailed/mass_motz0tsr_0011_slow_correct_g3.pdf"
+      }
+    },
+    {
+      "studentId": "mass_motz0tsr_0012_repeated_misconception_g5",
+      "displayName": "עומר פרץ",
+      "grade": "g5",
+      "profileType": "repeated_misconception",
+      "files": {
+        "shortJson": "parent-reports/mass_motz0tsr_0012_repeated_misconception_g5/short.json",
+        "shortMd": "parent-reports/mass_motz0tsr_0012_repeated_misconception_g5/short.md",
+        "shortHtml": "parent-reports/mass_motz0tsr_0012_repeated_misconception_g5/short.html",
+        "detailedJson": "parent-reports/mass_motz0tsr_0012_repeated_misconception_g5/detailed.json",
+        "detailedMd": "parent-reports/mass_motz0tsr_0012_repeated_misconception_g5/detailed.md",
+        "detailedHtml": "parent-reports/mass_motz0tsr_0012_repeated_misconception_g5/detailed.html"
+      },
+      "pdfFiles": {
+        "short": "pdfs/short/mass_motz0tsr_0012_repeated_misconception_g5.pdf",
+        "detailed": "pdfs/detailed/mass_motz0tsr_0012_repeated_misconception_g5.pdf"
+      }
+    },
+    {
+      "studentId": "mass_motz0tsr_0013_prerequisite_gap_g6",
+      "displayName": "הדר גולן",
+      "grade": "g6",
+      "profileType": "prerequisite_gap",
+      "files": {
+        "shortJson": "parent-reports/mass_motz0tsr_0013_prerequisite_gap_g6/short.json",
+        "shortMd": "parent-reports/mass_motz0tsr_0013_prerequisite_gap_g6/short.md",
+        "shortHtml": "parent-reports/mass_motz0tsr_0013_prerequisite_gap_g6/short.html",
+        "detailedJson": "parent-reports/mass_motz0tsr_0013_prerequisite_gap_g6/detailed.json",
+        "detailedMd": "parent-reports/mass_motz0tsr_0013_prerequisite_gap_g6/detailed.md",
+        "detailedHtml": "parent-reports/mass_motz0tsr_0013_prerequisite_gap_g6/detailed.html"
+      },
+      "pdfFiles": {
+        "short": "pdfs/short/mass_motz0tsr_0013_prerequisite_gap_g6.pdf",
+        "detailed": "pdfs/detailed/mass_motz0tsr_0013_prerequisite_gap_g6.pdf"
+      }
+    },
+    {
+      "studentId": "mass_motz0tsr_0014_thin_data_g3",
+      "displayName": "תמר רוזן",
+      "grade": "g3",
+      "profileType": "thin_data",
+      "files": {
+        "shortJson": "parent-reports/mass_motz0tsr_0014_thin_data_g3/short.json",
+        "shortMd": "parent-reports/mass_motz0tsr_0014_thin_data_g3/short.md",
+        "shortHtml": "parent-reports/mass_motz0tsr_0014_thin_data_g3/short.html",
+        "detailedJson": "parent-reports/mass_motz0tsr_0014_thin_data_g3/detailed.json",
+        "detailedMd": "parent-reports/mass_motz0tsr_0014_thin_data_g3/detailed.md",
+        "detailedHtml": "parent-reports/mass_motz0tsr_0014_thin_data_g3/detailed.html"
+      },
+      "pdfFiles": {
+        "short": "pdfs/short/mass_motz0tsr_0014_thin_data_g3.pdf",
+        "detailed": "pdfs/detailed/mass_motz0tsr_0014_thin_data_g3.pdf"
+      }
+    },
+    {
+      "studentId": "mass_motz0tsr_0015_rich_data_g5",
+      "displayName": "תמר ביטון",
+      "grade": "g5",
+      "profileType": "rich_data",
+      "files": {
+        "shortJson": "parent-reports/mass_motz0tsr_0015_rich_data_g5/short.json",
+        "shortMd": "parent-reports/mass_motz0tsr_0015_rich_data_g5/short.md",
+        "shortHtml": "parent-reports/mass_motz0tsr_0015_rich_data_g5/short.html",
+        "detailedJson": "parent-reports/mass_motz0tsr_0015_rich_data_g5/detailed.json",
+        "detailedMd": "parent-reports/mass_motz0tsr_0015_rich_data_g5/detailed.md",
+        "detailedHtml": "parent-reports/mass_motz0tsr_0015_rich_data_g5/detailed.html"
+      },
+      "pdfFiles": {
+        "short": "pdfs/short/mass_motz0tsr_0015_rich_data_g5.pdf",
+        "detailed": "pdfs/detailed/mass_motz0tsr_0015_rich_data_g5.pdf"
+      }
+    },
+    {
+      "studentId": "mass_motz0tsr_0016_mixed_strengths_g5",
+      "displayName": "אילי גולן",
+      "grade": "g5",
+      "profileType": "mixed_strengths",
+      "files": {
+        "shortJson": "parent-reports/mass_motz0tsr_0016_mixed_strengths_g5/short.json",
+        "shortMd": "parent-reports/mass_motz0tsr_0016_mixed_strengths_g5/short.md",
+        "shortHtml": "parent-reports/mass_motz0tsr_0016_mixed_strengths_g5/short.html",
+        "detailedJson": "parent-reports/mass_motz0tsr_0016_mixed_strengths_g5/detailed.json",
+        "detailedMd": "parent-reports/mass_motz0tsr_0016_mixed_strengths_g5/detailed.md",
+        "detailedHtml": "parent-reports/mass_motz0tsr_0016_mixed_strengths_g5/detailed.html"
+      },
+      "pdfFiles": {
+        "short": "pdfs/short/mass_motz0tsr_0016_mixed_strengths_g5.pdf",
+        "detailed": "pdfs/detailed/mass_motz0tsr_0016_mixed_strengths_g5.pdf"
+      }
+    },
+    {
+      "studentId": "mass_motz0tsr_0017_reading_comprehension_gap_g1",
+      "displayName": "יובל ביטון",
+      "grade": "g1",
+      "profileType": "reading_comprehension_gap",
+      "files": {
+        "shortJson": "parent-reports/mass_motz0tsr_0017_reading_comprehension_gap_g1/short.json",
+        "shortMd": "parent-reports/mass_motz0tsr_0017_reading_comprehension_gap_g1/short.md",
+        "shortHtml": "parent-reports/mass_motz0tsr_0017_reading_comprehension_gap_g1/short.html",
+        "detailedJson": "parent-reports/mass_motz0tsr_0017_reading_comprehension_gap_g1/detailed.json",
+        "detailedMd": "parent-reports/mass_motz0tsr_0017_reading_comprehension_gap_g1/detailed.md",
+        "detailedHtml": "parent-reports/mass_motz0tsr_0017_reading_comprehension_gap_g1/detailed.html"
+      },
+      "pdfFiles": {
+        "short": "pdfs/short/mass_motz0tsr_0017_reading_comprehension_gap_g1.pdf",
+        "detailed": "pdfs/detailed/mass_motz0tsr_0017_reading_comprehension_gap_g1.pdf"
+      }
+    },
+    {
+      "studentId": "mass_motz0tsr_0018_calculation_errors_g6",
+      "displayName": "הדר מזרחי",
+      "grade": "g6",
+      "profileType": "calculation_errors",
+      "files": {
+        "shortJson": "parent-reports/mass_motz0tsr_0018_calculation_errors_g6/short.json",
+        "shortMd": "parent-reports/mass_motz0tsr_0018_calculation_errors_g6/short.md",
+        "shortHtml": "parent-reports/mass_motz0tsr_0018_calculation_errors_g6/short.html",
+        "detailedJson": "parent-reports/mass_motz0tsr_0018_calculation_errors_g6/detailed.json",
+        "detailedMd": "parent-reports/mass_motz0tsr_0018_calculation_errors_g6/detailed.md",
+        "detailedHtml": "parent-reports/mass_motz0tsr_0018_calculation_errors_g6/detailed.html"
+      },
+      "pdfFiles": {
+        "short": "pdfs/short/mass_motz0tsr_0018_calculation_errors_g6.pdf",
+        "detailed": "pdfs/detailed/mass_motz0tsr_0018_calculation_errors_g6.pdf"
+      }
+    },
+    {
+      "studentId": "mass_motz0tsr_0019_word_problem_gap_g1",
+      "displayName": "שירה שטרן",
+      "grade": "g1",
+      "profileType": "word_problem_gap",
+      "files": {
+        "shortJson": "parent-reports/mass_motz0tsr_0019_word_problem_gap_g1/short.json",
+        "shortMd": "parent-reports/mass_motz0tsr_0019_word_problem_gap_g1/short.md",
+        "shortHtml": "parent-reports/mass_motz0tsr_0019_word_problem_gap_g1/short.html",
+        "detailedJson": "parent-reports/mass_motz0tsr_0019_word_problem_gap_g1/detailed.json",
+        "detailedMd": "parent-reports/mass_motz0tsr_0019_word_problem_gap_g1/detailed.md",
+        "detailedHtml": "parent-reports/mass_motz0tsr_0019_word_problem_gap_g1/detailed.html"
+      },
+      "pdfFiles": {
+        "short": "pdfs/short/mass_motz0tsr_0019_word_problem_gap_g1.pdf",
+        "detailed": "pdfs/detailed/mass_motz0tsr_0019_word_problem_gap_g1.pdf"
+      }
+    },
+    {
+      "studentId": "mass_motz0tsr_0020_topic_specific_gap_g6",
+      "displayName": "נועם מזרחי",
+      "grade": "g6",
+      "profileType": "topic_specific_gap",
+      "files": {
+        "shortJson": "parent-reports/mass_motz0tsr_0020_topic_specific_gap_g6/short.json",
+        "shortMd": "parent-reports/mass_motz0tsr_0020_topic_specific_gap_g6/short.md",
+        "shortHtml": "parent-reports/mass_motz0tsr_0020_topic_specific_gap_g6/short.html",
+        "detailedJson": "parent-reports/mass_motz0tsr_0020_topic_specific_gap_g6/detailed.json",
+        "detailedMd": "parent-reports/mass_motz0tsr_0020_topic_specific_gap_g6/detailed.md",
+        "detailedHtml": "parent-reports/mass_motz0tsr_0020_topic_specific_gap_g6/detailed.html"
+      },
+      "pdfFiles": {
+        "short": "pdfs/short/mass_motz0tsr_0020_topic_specific_gap_g6.pdf",
+        "detailed": "pdfs/detailed/mass_motz0tsr_0020_topic_specific_gap_g6.pdf"
+      }
+    },
+    {
+      "studentId": "mass_motz0tsr_0021_external_question_flow_g2",
+      "displayName": "מיה פרץ",
+      "grade": "g2",
+      "profileType": "external_question_flow",
+      "files": {
+        "shortJson": "parent-reports/mass_motz0tsr_0021_external_question_flow_g2/short.json",
+        "shortMd": "parent-reports/mass_motz0tsr_0021_external_question_flow_g2/short.md",
+        "shortHtml": "parent-reports/mass_motz0tsr_0021_external_question_flow_g2/short.html",
+        "detailedJson": "parent-reports/mass_motz0tsr_0021_external_question_flow_g2/detailed.json",
+        "detailedMd": "parent-reports/mass_motz0tsr_0021_external_question_flow_g2/detailed.md",
+        "detailedHtml": "parent-reports/mass_motz0tsr_0021_external_question_flow_g2/detailed.html"
+      },
+      "pdfFiles": {
+        "short": "pdfs/short/mass_motz0tsr_0021_external_question_flow_g2.pdf",
+        "detailed": "pdfs/detailed/mass_motz0tsr_0021_external_question_flow_g2.pdf"
+      }
+    },
+    {
+      "studentId": "mass_motz0tsr_0022_six_subject_mixed_profile_g1",
+      "displayName": "עדי דגן",
+      "grade": "g1",
+      "profileType": "six_subject_mixed_profile",
+      "files": {
+        "shortJson": "parent-reports/mass_motz0tsr_0022_six_subject_mixed_profile_g1/short.json",
+        "shortMd": "parent-reports/mass_motz0tsr_0022_six_subject_mixed_profile_g1/short.md",
+        "shortHtml": "parent-reports/mass_motz0tsr_0022_six_subject_mixed_profile_g1/short.html",
+        "detailedJson": "parent-reports/mass_motz0tsr_0022_six_subject_mixed_profile_g1/detailed.json",
+        "detailedMd": "parent-reports/mass_motz0tsr_0022_six_subject_mixed_profile_g1/detailed.md",
+        "detailedHtml": "parent-reports/mass_motz0tsr_0022_six_subject_mixed_profile_g1/detailed.html"
+      },
+      "pdfFiles": {
+        "short": "pdfs/short/mass_motz0tsr_0022_six_subject_mixed_profile_g1.pdf",
+        "detailed": "pdfs/detailed/mass_motz0tsr_0022_six_subject_mixed_profile_g1.pdf"
+      }
+    }
+  ],
+  "reportLimit": 22
+}

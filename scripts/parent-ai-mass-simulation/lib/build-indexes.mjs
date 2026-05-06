@@ -23,6 +23,9 @@ export function buildQuestionsIndex(questionStats, questionRows) {
     generatedQuestionCount: questionStats.generatedQuestionCount ?? 0,
     placeholderQuestionCount: questionStats.placeholderQuestionCount ?? 0,
     byQuestionSource: questionStats.byQuestionSource ?? {},
+    bySubjectQuestionSource: questionStats.bySubjectQuestionSource ?? {},
+    questionQualityValidationScopeNote:
+      "איכות שאלות נבחנת רק במקצועות עם שאלות real. מקצועות placeholder אינם מוכיחים איכות בנק שאלות.",
   };
 }
 

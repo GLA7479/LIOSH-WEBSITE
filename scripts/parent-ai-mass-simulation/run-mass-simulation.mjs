@@ -343,6 +343,13 @@ async function main() {
           ]
         : ["## מקור שאלות", "", "- מצב **synthetic**: כל השאלות נוצרות לסימולציה בלבד."];
 
+  const placeholderOnlySubjects = Object.entries(questionStats.bySubjectQuestionSource || {})
+    .filter(([, src]) => (Number(src?.real || 0) || 0) === 0 && (Number(src?.placeholder || 0) || 0) > 0)
+    .map(([sid]) => sid);
+  const realValidatedSubjects = Object.entries(questionStats.bySubjectQuestionSource || {})
+    .filter(([, src]) => (Number(src?.real || 0) || 0) > 0)
+    .map(([sid]) => sid);
+
   const parentAiRollup = [
     "## Parent AI — סיכום מהיר",
     "",
@@ -408,6 +415,12 @@ async function main() {
       failedChecks: quality.failedChecks,
       warningCount,
       recurringIssueCodes: quality.recurringIssueCodes,
+    },
+    launchGaps: {
+      questionQualityValidatedSubjects: realValidatedSubjects,
+      placeholderOnlySubjects,
+      note:
+        "Question quality was validated only for subjects with real questions. Placeholder-only subjects need real question-bank coverage before launch readiness claims.",
     },
     bottomLine,
     gradeSupportNote,

@@ -1,0 +1,88 @@
+# QUESTIONS_INDEX
+
+```json
+{
+  "totalQuestions": 50100,
+  "byGrade": {
+    "g5": 8016,
+    "g1": 10020,
+    "g3": 8684,
+    "g4": 8684,
+    "g6": 7348,
+    "g2": 7348
+  },
+  "bySubject": {
+    "moledet_geography": 8321,
+    "hebrew": 8394,
+    "english": 8360,
+    "science": 8258,
+    "geometry": 8360,
+    "math": 8407
+  },
+  "byTopic": {
+    "places": 1653,
+    "basic_geography": 1590,
+    "reading_comprehension": 3124,
+    "matching": 1642,
+    "directions": 1712,
+    "sentence_understanding": 1657,
+    "basic_experiments": 1689,
+    "perimeter": 1649,
+    "subtraction": 914,
+    "place_value": 961,
+    "area": 1645,
+    "symmetry": 1674,
+    "inference": 1419,
+    "main_idea": 1395,
+    "addition": 939,
+    "vocabulary": 3042,
+    "comparison": 956,
+    "materials": 1611,
+    "angles": 1690,
+    "word_problems": 930,
+    "community": 1665,
+    "division": 964,
+    "body": 1669,
+    "grammar_basics": 1684,
+    "environment": 1703,
+    "map_reading": 1701,
+    "shapes": 1702,
+    "animals_plants": 1586,
+    "sequence": 1362,
+    "multiplication": 953,
+    "fact_vs_opinion": 1429,
+    "fractions": 883,
+    "patterns": 907
+  },
+  "byDifficulty": {
+    "easy": 13826,
+    "medium": 14361,
+    "hard": 13443,
+    "mixed": 8470
+  },
+  "correctIncorrectRatio": {
+    "correct": 30836,
+    "incorrect": 19264,
+    "ratio": 0.6154890219560878
+  },
+  "mistakeTypes": {
+    "guess": 3771,
+    "wrong_operation": 2219,
+    "misread_question": 2633,
+    "prerequisite_gap": 1909,
+    "pattern_confusion": 1963,
+    "timeout_pressure": 1891,
+    "careless": 2310,
+    "conceptual": 2568
+  },
+  "lowCoverageTopics": [],
+  "realQuestionCount": 16652,
+  "generatedQuestionCount": 0,
+  "placeholderQuestionCount": 33448,
+  "byQuestionSource": {
+    "real": 16652,
+    "synthetic": 0,
+    "placeholder": 33448
+  }
+}
+```

@@ -87,6 +87,34 @@ function normalizeAnswerBlocksHe(answerBlocks) {
   }));
 }
 
+function buildNoScopeCategorySpecificClarification(utterance) {
+  const t = String(utterance || "").trim();
+  if (!t) return null;
+
+  if (/מזג\s*האוויר|חדשות|כדורגל|מתכון|שיר|נעליים|ביטקוין|javascript|java\s*script/i.test(t)) {
+    return "אני מתמקד/ת כאן רק בדוח הלמידה ובתרגול של הילד. אם תרצו, אפשר לבדוק מתוך הדוח מה הנקודה הכי חשובה כרגע ללמידה.";
+  }
+  if (/תתעלם|תחשוף|system\s*prompt|debug|הוראות\s*פנימיות|תדפיס|מעכשיו\s*אל\s*תשתמש/i.test(t)) {
+    return "אני לא מתעלם/ת מהדוח ולא חושף/ת הוראות פנימיות. התשובה כאן נשארת מבוססת נתוני למידה, ואפשר להמשיך לשאלה על מצב הלמידה בפועל.";
+  }
+  if (/תמציא|תסתיר|בלי\s*להתחשב\s*בנתונים|תכתוב\s*שהילד\s*מצוין\s*למרות|תשנה\s*את\s*הדוח/i.test(t)) {
+    return "אני לא יכול/ה להמציא, להסתיר או לשנות נתונים בדוח. אפשר כן לבנות ניסוח ברור להורה לפי מה שיש כרגע בנתוני הלמידה.";
+  }
+  if (/מה\s*מצב.*במוזיקה|במוזיקה|באמנות|בספורט|במחול/i.test(t)) {
+    return "כרגע אין בדוח נתוני תרגול למקצוע הזה, ולכן אי אפשר להסיק עליו מצב. אם תרצו, נוכל להתמקד במקצועות שכן מופיעים בדוח.";
+  }
+  if (/למה\s*כתבת\s*שהוא\s*חלש|לא\s*מסכים\s*עם\s*הדוח|הדוח\s*טועה/i.test(t)) {
+    return "יכול להיות פער בין הצלחה בבית לבין ביצוע בתרגול באפליקציה. לכן מסתכלים על דפוס חוזר בדוח לאורך זמן, ולא על תשובה בודדת.";
+  }
+  if (/תסביר\s*לי\s*כמו\s*להורה|בלי\s*מושגים|במשפט\s*אחד|רק\s*3\s*נקודות|בקיצור/i.test(t)) {
+    return "בקצרה: הדוח מראה מה הילד מצליח ומה עוד צריך חיזוק לפי תרגול בפועל. אם הנתונים עדיין מעטים, מתייחסים לזה כסימן ראשוני ולא כמסקנה סופית.";
+  }
+  if (/מה\s*לעשות\s*מחר|מה\s*לתרגל\s*השבוע|תוכנית\s*קצרה|איך\s*לעזור\s*בלי\s*לחץ/i.test(t)) {
+    return "אפשר להתחיל בתוכנית קצרה: 1) 10 דקות חזרה בנושא אחד, 2) 5-8 שאלות בנושא נוסף, 3) בדיקה חוזרת בעוד יומיים אם אותו דפוס נשמר.";
+  }
+  return null;
+}
+
 function ensureResponseTelemetry(response, context) {
   if (response?.telemetry && typeof response.telemetry === "object") return response;
   const metadata = response?.metadata && typeof response.metadata === "object" ? response.metadata : {};
@@ -444,6 +472,17 @@ function runDeterministicCore(input) {
   };
 
   if (scopeRes.resolutionStatus === "clarification_required") {
+    const categorySpecificClarification = buildNoScopeCategorySpecificClarification(utteranceStr);
+    if (categorySpecificClarification) {
+      const r = buildClarificationParentCopilotResponse({
+        clarificationQuestionHe: categorySpecificClarification,
+        intent,
+        priorRepeated,
+        metadata: scopeMeta,
+      });
+      validateParentCopilotResponseV1(r);
+      return { response: r, audience, sessionId, conv, truthPacket: null, intent, scopeMeta, utteranceStr };
+    }
     const phaseEBypass = tryBuildPhaseEClarificationBypassDraft({
       utteranceStr,
       payload: input?.payload,
