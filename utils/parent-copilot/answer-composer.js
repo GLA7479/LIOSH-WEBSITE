@@ -146,6 +146,8 @@ export function composeAnswerDraft(plan, truthPacket, coachingCtx = null) {
   const hasIntelligenceSignals = iv && typeof iv === "object";
   const ivWeak = hasIntelligenceSignals ? String(iv.weaknessLevel || "none") : "";
   const ivConf = hasIntelligenceSignals ? String(iv.confidenceBand || "low") : "";
+  const sfQ = Math.max(0, Number(truthPacket?.surfaceFacts?.questions ?? 0));
+  const sfA = Math.max(0, Number(truthPacket?.surfaceFacts?.accuracy ?? 0));
 
   const intentEarly = String(coachingCtx?.intent || plan.intent || "").trim();
   if (intentEarly === "clinical_boundary") {
@@ -157,6 +159,44 @@ export function composeAnswerDraft(plan, truthPacket, coachingCtx = null) {
   if (intentEarly === "sensitive_education_choice") {
     return {
       ...buildSensitiveEducationChoiceAnswerDraft(),
+      debug: { intelligenceV1: intelligenceV1DebugSnapshot(truthPacket) },
+    };
+  }
+  if (intentEarly === "parent_policy_refusal") {
+    return {
+      answerBlocks: [
+        {
+          type: "observation",
+          textHe:
+            "לא ניתן להתעלם מהדוח או להמציא/לשנות נתונים לפי בקשה — התשובה נשארת נאמנה למה שנספר מתוך התרגול בטווח שבדוח בלבד.",
+          source: "composed",
+        },
+        {
+          type: "meaning",
+          textHe:
+            "אני לא יכול להסתיר חולשות או לעקוף את הנתונים; אם משהו נראה לא מסתדר, נכון לבדוק יחד תאריכים ונושאים בדוח לפני מסקנה.",
+          source: "composed",
+        },
+      ],
+      debug: { intelligenceV1: intelligenceV1DebugSnapshot(truthPacket) },
+    };
+  }
+  if (intentEarly === "off_report_subject_clarification") {
+    return {
+      answerBlocks: [
+        {
+          type: "observation",
+          textHe:
+            "בדוח התרגול שהוצג כאן אין כרגע נתונים על הנושא ששאלת עליו — המערכת מתעדת רק את מקצועות הלימוד המופיעים בדוח.",
+          source: "composed",
+        },
+        {
+          type: "meaning",
+          textHe:
+            "לכן לא ניתן להעריך כאן מצב לפי דוח זה בנושא הזה; אם ייכנס תרגול רלוונטי לטווח, התמונה תתעדכן.",
+          source: "composed",
+        },
+      ],
       debug: { intelligenceV1: intelligenceV1DebugSnapshot(truthPacket) },
     };
   }
@@ -179,11 +219,27 @@ export function composeAnswerDraft(plan, truthPacket, coachingCtx = null) {
     if (b === "meaning" && interp) {
       answerBlocks.push({ type: "meaning", textHe: interp, source: "contract_slot" });
     }
-    if (b === "next_step" && act) {
-      if (hasIntelligenceSignals && ivWeak === "none") {
-        continue;
+    if (b === "next_step") {
+      if (act) {
+        const skipWhenIvSaysNoWeakTopic =
+          hasIntelligenceSignals &&
+          ivWeak === "none" &&
+          intent !== "what_to_do_today" &&
+          intent !== "what_to_do_this_week";
+        if (!skipWhenIvSaysNoWeakTopic) {
+          answerBlocks.push({ type: "next_step", textHe: act, source: "contract_slot" });
+        }
+      } else if (intent === "what_to_do_today" || intent === "what_to_do_this_week") {
+        const subj = String(truthPacket?.surfaceFacts?.subjectLabelHe || "").trim() || "מקצוע מהדוח";
+        answerBlocks.push({
+          type: "next_step",
+          textHe:
+            intent === "what_to_do_today"
+              ? `מחר: 1) 8–10 דקות תרגול קצר ב${subj} סביב הנושא שבולט כפער בדוח. 2) אחר כך 3–5 שאלות קצרות לבדיקה. 3) לסיים במשפט אחד לילד על מה ניסיתם יחד.`
+              : `לשבוע הקרוב: 1) לבחור נושא אחד מרכזי מהדוח. 2) לחלק לשלושה חלונות קצרים של תרגול. 3) בסוף השבוע לעשות סיכום של משפט אחד מה התקדם.`,
+          source: "composed",
+        });
       }
-      answerBlocks.push({ type: "next_step", textHe: act, source: "contract_slot" });
     }
     if (b === "caution" && lim) {
       answerBlocks.push({ type: "caution", textHe: lim, source: "contract_slot" });
@@ -197,10 +253,18 @@ export function composeAnswerDraft(plan, truthPacket, coachingCtx = null) {
         confidenceBand: String(dl.confidenceBand || "") === "low" || iv1Low ? "low" : dl.confidenceBand,
       };
       let reason = pickUncertaintyReasonScript(dlForUncertainty, intent, scriptIx);
-      if (hasIntelligenceSignals && ivConf === "low") {
+      if (
+        sfQ >= 120 &&
+        sfA >= 65 &&
+        /דקים מדי|לא ניתן לסגור מסקנה יציבה|מסקנה חד־משמעית|שאלות פתוחות|עדיין לא מאפשר לסגור/u.test(reason)
+      ) {
+        reason =
+          "יש כאן נפח תרגול משמעותי בדוח; עדיין יש הבדל טבעי בין מה שקורה בבית לבין מה שנספר בטווח — נעדכן שוב אחרי עוד תרגול.";
+      }
+      if (hasIntelligenceSignals && ivConf === "low" && sfQ < 90) {
         reason = "רמת הביטחון בתמונה נמוכה כרגע — " + reason;
       }
-      if (hasIntelligenceSignals && ivWeak === "tentative") {
+      if (hasIntelligenceSignals && ivWeak === "tentative" && sfQ < 100) {
         reason = "יש סימן ראשוני בלבד לחולשה — " + reason;
       }
       const hedges = Array.isArray(truthPacket.allowedClaimEnvelope?.requiredHedges)

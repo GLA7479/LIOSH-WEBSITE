@@ -146,6 +146,117 @@ export function subjectLabelHe(subjectId) {
   return SUBJECT_LABEL_HE[normalizeSubjectId(subjectId)] || "מקצוע";
 }
 
+/** Minimum answered questions in-window before we fabricate subject-level anchors from aggregates alone. */
+export const COPILOT_MIN_AGGREGATE_QUESTIONS_FOR_SYNTHETIC_ANCHORS = 20;
+
+/**
+ * True when the detailed payload has enough answered practice to ground executive Copilot turns
+ * without requiring narrative observation slots on every topic row.
+ * @param {unknown} payload
+ * @param {number} [minQuestions]
+ */
+export function hasAggregatePracticeEvidence(payload, minQuestions = COPILOT_MIN_AGGREGATE_QUESTIONS_FOR_SYNTHETIC_ANCHORS) {
+  const os = payload?.overallSnapshot && typeof payload.overallSnapshot === "object" ? payload.overallSnapshot : null;
+  const tq = Number(os?.totalQuestions ?? payload?.summary?.totalQuestions ?? 0);
+  if (tq >= minQuestions) return true;
+  let sum = 0;
+  for (const sp of Array.isArray(payload?.subjectProfiles) ? payload.subjectProfiles : []) {
+    sum += Math.max(0, Number(sp?.subjectQuestionCount ?? sp?.questionCount ?? 0));
+  }
+  return sum >= minQuestions;
+}
+
+/**
+ * When topic rows lack narrative observation text, still expose one row per subject with practice
+ * so TruthPacket / Parent AI can personalize from numbers + labels (deterministic).
+ * @param {unknown} payload
+ * @returns {Array<{ subject: string; tr: object }>}
+ */
+export function listSyntheticAggregateAnchoredTopicRows(payload) {
+  /** @type {Array<{ subject: string; tr: object }>} */
+  const out = [];
+  const profiles = Array.isArray(payload?.subjectProfiles) ? payload.subjectProfiles : [];
+  const bySubject = Object.fromEntries(profiles.map((sp) => [normalizeSubjectId(sp?.subject), sp]));
+  for (const sid of SUBJECT_ORDER) {
+    const sp = bySubject[sid];
+    if (!sp) continue;
+    const qc = Math.max(0, Number(sp.subjectQuestionCount ?? sp.questionCount ?? 0));
+    if (qc <= 0) continue;
+    const acc = Math.max(0, Math.min(100, Math.round(Number(sp.subjectAccuracy ?? sp.accuracy ?? 0))));
+    const topics = Array.isArray(sp.topicRecommendations) ? sp.topicRecommendations : [];
+    const baseTr = topics[0] && typeof topics[0] === "object" ? topics[0] : null;
+    const displayName =
+      String(baseTr?.displayName || "").trim() || `${subjectLabelHe(sid)} — סיכום תקופתי`;
+    const topicRowKey = String(baseTr?.topicRowKey || baseTr?.topicKey || `aggregate-${sid}`).trim() || `aggregate-${sid}`;
+    const cv0 = baseTr?.contractsV1 && typeof baseTr.contractsV1 === "object" ? baseTr.contractsV1 : {};
+    const nar0 = cv0.narrative && typeof cv0.narrative === "object" ? cv0.narrative : {};
+    const ts0 = nar0.textSlots && typeof nar0.textSlots === "object" ? nar0.textSlots : {};
+    const obs =
+      String(ts0.observation || "").trim() ||
+      `ב${subjectLabelHe(sid)} נספרו בטווח כ־${qc} שאלות, עם דיוק של כ־${acc}% — כך נראית התמונה התקופתית לפי נתוני הדוח.`;
+    const interp =
+      String(ts0.interpretation || "").trim() ||
+      `לפי המספרים ב${subjectLabelHe(sid)}, זה עוגן מספרי לנפח ולדיוק בתקופה שנבחרה.`;
+    const readinessRaw =
+      qc >= 28 ? "ready" : qc >= 12 ? "forming" : qc >= 6 ? "forming" : "insufficient";
+    const confRaw = acc >= 78 ? "high" : acc >= 58 ? "medium" : "low";
+    const cannotConcludeYet = qc < 10 || acc < 38;
+    const syntheticTr = {
+      ...(baseTr && typeof baseTr === "object" ? baseTr : {}),
+      topicRowKey,
+      topicKey: topicRowKey,
+      displayName,
+      questions: qc,
+      q: qc,
+      accuracy: acc,
+      contractsV1: {
+        ...cv0,
+        narrative: {
+          ...nar0,
+          contractVersion: nar0.contractVersion || "v1",
+          textSlots: {
+            ...ts0,
+            observation: obs,
+            interpretation: interp,
+            uncertainty:
+              String(ts0.uncertainty || "").trim() ||
+              (cannotConcludeYet
+                ? "עדיין יש מעט נקודות עם ניסוח זהיר ביחס לנפח — נבדוק שוב אחרי עוד תרגול בטווח."
+                : "עדיין יש פער טבעי בין מה שנראה בבית לבין מה שנספר בדוח; נמשיך לעקוב לאורך כמה ימי תרגול."),
+          },
+        },
+        readiness: {
+          ...(cv0.readiness && typeof cv0.readiness === "object" ? cv0.readiness : {}),
+          readiness: readinessRaw,
+        },
+        confidence: {
+          ...(cv0.confidence && typeof cv0.confidence === "object" ? cv0.confidence : {}),
+          confidenceBand: confRaw,
+        },
+        decision: {
+          ...(cv0.decision && typeof cv0.decision === "object" ? cv0.decision : {}),
+          cannotConcludeYet,
+        },
+      },
+      __copilotSyntheticAggregate: true,
+    };
+    out.push({ subject: sid, tr: syntheticTr });
+  }
+  return out;
+}
+
+/**
+ * Anchored topic rows for Copilot: prefer real narrative anchors; otherwise synthetic rows from subject aggregates
+ * when there is enough practice evidence in-window.
+ * @param {unknown} payload
+ */
+export function listCopilotAnchoredTopicRows(payload) {
+  const real = listAllAnchoredTopicRows(payload);
+  if (real.length) return real;
+  if (!hasAggregatePracticeEvidence(payload)) return [];
+  return listSyntheticAggregateAnchoredTopicRows(payload);
+}
+
 /**
  * @param {"topic"|"subject"|"executive"} scopeType
  * @param {string} scopeId
@@ -184,7 +295,11 @@ export function readContractsSliceForScope(scopeType, scopeId, subjectId, payloa
     if (!hit) return null;
     return { subjectId: hit.subject, topicRow: hit.tr, contracts: contractsFromTopicRow(hit.tr) };
   }
-  const hit = findFirstAnchoredTopicRow(payload);
+  let hit = findFirstAnchoredTopicRow(payload);
+  if (!hit) {
+    const rows = listCopilotAnchoredTopicRows(payload);
+    hit = rows[0] || null;
+  }
   if (!hit) return null;
   return { subjectId: hit.subject, topicRow: hit.tr, contracts: contractsFromTopicRow(hit.tr) };
 }
@@ -195,6 +310,10 @@ export default {
   normalizeSubjectId,
   SUBJECT_ORDER,
   listAllAnchoredTopicRows,
+  listCopilotAnchoredTopicRows,
+  listSyntheticAggregateAnchoredTopicRows,
+  hasAggregatePracticeEvidence,
+  COPILOT_MIN_AGGREGATE_QUESTIONS_FOR_SYNTHETIC_ANCHORS,
   findFirstAnchoredTopicRow,
   findFirstAnchoredTopicRowForSubject,
   findTopicRowByKey,

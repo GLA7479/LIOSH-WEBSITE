@@ -15,7 +15,8 @@
  */
 
 import {
-  listAllAnchoredTopicRows,
+  contractsFromTopicRow,
+  listCopilotAnchoredTopicRows,
   readContractsSliceForScope,
   subjectLabelHe,
   SUBJECT_ORDER,
@@ -408,6 +409,24 @@ function buildExecutiveIntentNarrativeSlots(x) {
           "אם המילה שמבלבלת לא מופיעה בשורה הזו, אפשר לשאול עליה במילים אחרות — ננסה לאחזר את אותו ניסוח מהדוח בלבד.",
       };
     }
+    case "report_trust_question": {
+      const w = rankedWorstFirst[0];
+      const b = rankedBestFirst[0];
+      const obs =
+        w && b && (w.dn !== b.dn || w.sid !== b.sid)
+          ? `בדוח כרגע רואים תמונה תקופתית מעוגנת במספרים: למשל ב${labelPair(w)} יש דיוק של כ־${w.acc}% על פני כ־${w.q} שאלות, לעומת ${labelPair(b)} עם כ־${b.acc}% על פני כ־${b.q} שאלות — זה משקף מה שנספר בתרגול בטווח, לא רגע בודד.`
+          : w
+            ? `בדוח כרגע רואים מה שנכתב כראיה מהתרגול ב${labelPair(w)} — בעיקר ניסוח מספרי על דיוק ועל נפח שאלות.`
+            : defaultObs;
+      const interp = appendDistinctSentence(
+        "יכול להיות שבבית רואים הצלחה ברגע מסוים או בתשובה בודדת, בעוד שהדוח מתאר תבניות לאורך זמן ולא משווה ישירות לסיטואציה בבית.",
+        "נבדוק שוב לפי עוד תרגול בטווח כדי לראות אם הקו נמשך או שהיה רגע חריג.",
+      );
+      return {
+        observation: appendDistinctSentence(obs, supportingNumericTail(x)),
+        interpretation: appendDistinctSentence(interp, supportingNumericTail(x)),
+      };
+    }
     case "explain_report": {
       let obs;
       if (sparseExecutive) {
@@ -673,7 +692,7 @@ function buildTruthPacketV1NoAnchoredFallback(scope) {
  * @returns {object|null}
  */
 export function buildTruthPacketV1(payload, scope) {
-  const allAnchored = listAllAnchoredTopicRows(payload);
+  const allAnchored = listCopilotAnchoredTopicRows(payload);
   if (!allAnchored.length) return buildTruthPacketV1NoAnchoredFallback(scope);
 
   const es = payload?.executiveSummary && typeof payload.executiveSummary === "object" ? payload.executiveSummary : {};
@@ -745,7 +764,22 @@ export function buildTruthPacketV1(payload, scope) {
   } else {
     const anchor = allAnchored[0];
     subjectId = String(anchor.subject || "");
-    const anchorContracts = readContractsSliceForScope("topic", String(anchor.tr?.topicRowKey || anchor.tr?.topicKey || ""), subjectId, payload);
+    /** Synthetic aggregate rows are not guaranteed to round-trip via payload lookup. */
+    let anchorContracts = null;
+    if (anchor.tr?.__copilotSyntheticAggregate) {
+      anchorContracts = {
+        subjectId,
+        topicRow: anchor.tr,
+        contracts: contractsFromTopicRow(anchor.tr),
+      };
+    } else {
+      anchorContracts = readContractsSliceForScope(
+        "topic",
+        String(anchor.tr?.topicRowKey || anchor.tr?.topicKey || ""),
+        subjectId,
+        payload,
+      );
+    }
     if (!anchorContracts) return buildTruthPacketV1NoAnchoredFallback(scope);
 
     let totalQ = 0;
@@ -803,10 +837,18 @@ export function buildTruthPacketV1(payload, scope) {
           `בדוח התקופתי נספרו כ־${totalQ} שאלות בכלל המקצועות.`,
           totalQ > 0 ? `הדיוק הממוצע המשוקלל בתקופה הוא כ־${avgAcc}%.` : "עדיין חסר תרגול מצטבר לתמונה יציבה.",
         ];
-    const uncertaintyLine =
-      cannotConcludeYet || uncertainRows > 0
-        ? "נכון לעכשיו עדיין יש תחומים בדוח שבהם מוקדם לקבוע תמונה ברורה מהתרגולים."
-        : "נכון לעכשיו התמונה התקופתית עקבית יחסית, תוך המשך תרגול רגיל ובדיקה חוזרת בהמשך.";
+    let uncertaintyLine;
+    if (totalQ >= 50 && avgAcc >= 65) {
+      uncertaintyLine =
+        uncertainRows > 2 || cannotConcludeYet
+          ? "בדוח מופיע נפח תרגול משמעותי; חלק מהניסוחים עדיין זהירים — ייתכן שבבית זה נראה אחרת, ולכן נבדוק שוב לפי עוד תרגול ולא נקבע חיפוז מהיר מדי."
+          : "לפי נפח השאלות והדיוק בטווח ניתן לדבר על כיוון כללי מהדוח; עדיין כדאי לעדכן שוב אחרי תרגול נוסף כי לפעמים בבית זה נראה שונה.";
+    } else {
+      uncertaintyLine =
+        cannotConcludeYet || uncertainRows > 0
+          ? "נכון לעכשיו עדיין יש תחומים בדוח שבהם מוקדם לקבוע תמונה ברורה מהתרגולים."
+          : "נכון לעכשיו התמונה התקופתית עקבית יחסית, תוך המשך תרגול רגיל ובדיקה חוזרת בהמשך.";
+    }
 
     const narBase = anchorContracts.contracts?.narrative && typeof anchorContracts.contracts.narrative === "object"
       ? anchorContracts.contracts.narrative

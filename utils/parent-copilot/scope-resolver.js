@@ -5,8 +5,8 @@
 
 import {
   findFirstAnchoredTopicRowForSubject,
-  findFirstAnchoredTopicRow,
   findTopicRowByKey,
+  listCopilotAnchoredTopicRows,
   subjectLabelHe,
   SUBJECT_ORDER,
 } from "./contract-reader.js";
@@ -335,8 +335,8 @@ export function resolveScope(input) {
    * After explicit topic/subject anchors: require at least one anchored row for any answer.
    * Clarification for missing data stays before broad-executive defaults.
    */
-  const anchor = findFirstAnchoredTopicRow(payload);
-  if (!anchor) {
+  const copilotAnchors = listCopilotAnchoredTopicRows(payload);
+  if (!copilotAnchors.length) {
     return {
       resolutionStatus: "clarification_required",
       clarificationQuestionHe: "אין כרגע מספיק תרגול בנושאים בדוח כדי לענות — כדאי לנסות שוב אחרי שמופיע תרגול בטווח התאריכים.",

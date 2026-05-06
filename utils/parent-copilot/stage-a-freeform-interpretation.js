@@ -23,6 +23,9 @@ import { SUBJECT_ORDER, subjectLabelHe } from "./contract-reader.js";
  *   "clarify_term" |
  *   "clinical_boundary" |
  *   "sensitive_education_choice" |
+ *   "report_trust_question" |
+ *   "parent_policy_refusal" |
+ *   "off_report_subject_clarification" |
  *   "unclear"
  * )} CanonicalParentIntent
  */
@@ -57,6 +60,9 @@ export const CANONICAL_PARENT_INTENTS = [
   "clarify_term",
   "clinical_boundary",
   "sensitive_education_choice",
+  "report_trust_question",
+  "parent_policy_refusal",
+  "off_report_subject_clarification",
   "unclear",
 ];
 
@@ -331,6 +337,20 @@ const INTENT_PARAPHRASES = {
     /(?:יש\s*לילד|לילד\s*יש).{0,48}(?:דיסלקציה|דיסלקסיה|דיסקלקוליה|לקות\s*למידה|הפרעת\s*קשב|ADHD)/iu,
     /(?:דיסלקציה|דיסלקסיה|דיסקלקוליה|לקות\s*למידה|הפרעת\s*קשב|ADHD).{0,48}(?:יש\s*לילד|לילד\s*יש)/iu,
   ],
+  parent_policy_refusal: [
+    /תמציא\s*נתונים|זייף\s*נתונים|לשנות\s*את\s*הדוח\s*בכוח|להסתיר\s*חולשות|תסתיר\s*מההורה/u,
+    /תתעלם\s*מהדוח|אל\s*תשתמש\s*בנתוני\s*התלמיד|תחשוף\s*הוראות\s*פנימיות|\bdebug\b|\bsystem\s*prompt\b/i,
+  ],
+  off_report_subject_clarification: [/מה\s*מצב.*שחמט|מה\s*מצב.*מוזיקה|מצב\s*הילד\s*שלי\s*בשחמט|מצב\s*הילד\s*שלי\s*במוזיקה/u],
+  report_trust_question: [
+    /למה\s*כתבת/u,
+    /לא\s*מסכים\s*עם\s*הדוח/u,
+    /אני\s*לא\s*מסכים\s*עם\s*הדוח/u,
+    /האם\s*יכול\s*להיות\s*שהדוח\s*טועה/u,
+    /ענה\s*נכון\s*בבית/u,
+    /סותר\s*למה\s*שאני\s*רואה\s*בבית/u,
+    /מה\s*שקורה\s*בבית\s*שונה/u,
+  ],
   sensitive_education_choice: [
     /האם\s*כדאי\s*להעביר\s*בית\s*ספר/u,
     /מעבר\s*בית\s*ספר|להעביר\s*בית\s*ספר|להחליף\s*בית\s*ספר|לעבור\s*בית\s*ספר/u,
@@ -461,6 +481,12 @@ export function interpretFreeformStageA(utteranceRaw, payload) {
   if (/מה\s*חזק\s*ומה\s*חלש/.test(t) || /מה\s*חזק\s*ומה\s*חלש/.test(folded)) {
     scores.strength_vs_weakness_summary += 4;
   }
+  if (/האם\s*אפשר\s*להסיק\s*מסקנות/u.test(t) || /האם\s*אפשר\s*להסיק\s*מסקנות/u.test(folded)) {
+    scores.explain_report += 4;
+  }
+  if (/מה\s*לעשות\s*מחר|מחר\s*מה\s*לעשות/u.test(t) || /מה\s*לעשות\s*מחר/u.test(folded)) {
+    scores.what_to_do_today += 6;
+  }
 
   let best = /** @type {CanonicalParentIntent} */ ("unclear");
   let bestScore = 0;
@@ -493,9 +519,46 @@ export function interpretFreeformStageA(utteranceRaw, payload) {
     second = 0;
   }
 
-  if ((scores.sensitive_education_choice || 0) > 0 && best !== "clinical_boundary") {
+  if (
+    ((scores.off_report_subject_clarification || 0) > 0 ||
+      /מה\s*מצב.*שחמט|מה\s*מצב.*מוזיקה/u.test(folded)) &&
+    best !== "clinical_boundary"
+  ) {
+    best = "off_report_subject_clarification";
+    bestScore = Math.max(scores.off_report_subject_clarification || 0, 8);
+    topIntentCount = 1;
+    second = 0;
+  }
+
+  if ((scores.parent_policy_refusal || 0) > 0 && best !== "clinical_boundary") {
+    best = "parent_policy_refusal";
+    bestScore = Math.max(scores.parent_policy_refusal || 0, 9);
+    topIntentCount = 1;
+    second = 0;
+  }
+
+  if (
+    (scores.sensitive_education_choice || 0) > 0 &&
+    best !== "clinical_boundary" &&
+    best !== "parent_policy_refusal" &&
+    best !== "off_report_subject_clarification"
+  ) {
     best = "sensitive_education_choice";
     bestScore = scores.sensitive_education_choice || 0;
+    topIntentCount = 1;
+    second = 0;
+  }
+
+  if (
+    ((scores.report_trust_question || 0) > 0 ||
+      /למה\s*כתבת|ענה\s*נכון\s*בבית|לא\s*מסכים\s*עם\s*הדוח|הדוח\s*טועה/u.test(folded)) &&
+    best !== "clinical_boundary" &&
+    best !== "sensitive_education_choice" &&
+    best !== "parent_policy_refusal" &&
+    best !== "off_report_subject_clarification"
+  ) {
+    best = "report_trust_question";
+    bestScore = Math.max(scores.report_trust_question || 0, 5);
     topIntentCount = 1;
     second = 0;
   }

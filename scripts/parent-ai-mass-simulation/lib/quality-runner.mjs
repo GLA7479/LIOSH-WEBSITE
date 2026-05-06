@@ -232,6 +232,40 @@ export async function runQualitySuite(ctx) {
     }
   }
 
+  const personalizationCategories = new Set([
+    "thin_data",
+    "simple_explanation",
+    "action_plan",
+    "contradiction_challenge",
+    "data_grounded",
+  ]);
+  const answersByCategory = new Map();
+  for (const row of ctx.globalInteractions || []) {
+    const cat = String(row.questionCategory || "");
+    if (!personalizationCategories.has(cat)) continue;
+    const ans = String(row.aiAnswer || "")
+      .replace(/\s+/g, " ")
+      .trim()
+      .toLowerCase();
+    if (!ans) continue;
+    if (!answersByCategory.has(cat)) answersByCategory.set(cat, []);
+    answersByCategory.get(cat).push(ans);
+  }
+  const nStudents = (ctx.students && ctx.students.length) || 0;
+  const minSamples = Math.max(8, Math.min(15, Math.ceil(nStudents * 0.35) || 8));
+  for (const [cat, answers] of answersByCategory.entries()) {
+    if (answers.length < minSamples) continue;
+    const uniq = new Set(answers);
+    totalChecks += 1;
+    if (uniq.size <= 1) {
+      fail(
+        "repeated_exact_answer_across_students_by_category",
+        `${cat} · identical_answers=${answers.length}`,
+        "parent-ai-chats/",
+      );
+    }
+  }
+
   if (ctx.categoryCoverage?.missing?.length) {
     warn("parent_ai_category_gap", `חסרות קטגוריות: ${ctx.categoryCoverage.missing.join(", ")}`, "PARENT_AI_QUESTIONS_INDEX.json");
   }

@@ -77,8 +77,16 @@ export function planConversation(intent, truthPacket, hints = null) {
       break;
     case "what_to_do_today":
     case "what_to_do_this_week":
-      if (interpretationScope === "recommendation") actionOrProbe();
-      else actionIntentWithoutRecScope();
+      if (interpretationScope === "recommendation" && eligible && cap !== "RI0") {
+        actionOrProbe();
+      } else if (eligible && cap !== "RI0") {
+        if (continuityRepeat || rot % 2 === 1) blocks.push("meaning", "next_step", "caution");
+        else blocks.push("observation", "next_step", "meaning");
+      } else if (continuityRepeat || rot % 2 === 1) {
+        blocks.push("observation", "next_step", "uncertainty_reason");
+      } else {
+        blocks.push("observation", "meaning", "next_step");
+      }
       break;
     case "why_not_advance":
       if (interpretationScope === "blocked_advance") {
@@ -119,6 +127,10 @@ export function planConversation(intent, truthPacket, hints = null) {
         else blocks.push("uncertainty_reason", "meaning");
       } else if (continuityRepeat || rot % 2 === 1) blocks.push("uncertainty_reason", "meaning");
       else blocks.push("meaning", "uncertainty_reason");
+      break;
+    case "report_trust_question":
+      if (continuityRepeat || rot % 2 === 1) blocks.push("meaning", "observation", "caution");
+      else blocks.push("observation", "meaning", "caution");
       break;
     case "is_intervention_needed":
       if (interpretationScope === "confidence_uncertainty") {

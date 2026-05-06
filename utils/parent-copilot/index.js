@@ -573,7 +573,9 @@ function runDeterministicCore(input) {
     aggregateQuestionClass !== "vague_summary_question" &&
     !skipSemanticAggregateForIneligibleRec &&
     intent !== "clinical_boundary" &&
-    intent !== "sensitive_education_choice"
+    intent !== "sensitive_education_choice" &&
+    intent !== "parent_policy_refusal" &&
+    intent !== "off_report_subject_clarification"
   ) {
     const aggDraft = buildSemanticAggregateDraft({
       questionClass: aggregateQuestionClass,
