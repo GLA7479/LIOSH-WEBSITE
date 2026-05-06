@@ -79,7 +79,7 @@ function extendedAssertions(entry, res, student, answerText, gScore) {
     if (weakRegex) {
       const evidencePointsToDifferentWeakArea =
         /המקצוע\s+הנמוך\s+ביותר/u.test(answerText) &&
-        /(בערך\s*\d+%|\d+\s*שאלות|לפי\s+אותו\s+ממוצע|ממוצע\s+משוקלל)/u.test(answerText);
+        /(בערך\s*\d+%|\d+\s*שאלות|לפי\s+אותו\s+ממוצע|ממוצע\s+דיוק\s+כללי)/u.test(answerText);
       base.push({
         id: "weak_profile_answer_mentions_expected_weak_area",
         pass: weakRegex.test(answerText) || evidencePointsToDifferentWeakArea,

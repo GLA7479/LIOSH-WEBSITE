@@ -113,7 +113,7 @@ export function buildPhase14RecommendationOverlay(p) {
       "אפשר להמתין עם הרחבת עומס, עם קפיצת רמה, ועם ליטוש עמוק של פרטים — עד שיש שני מפגשים קצרים עם אות עקבי.";
   } else if (ord.interventionOrdering === "local_support_first") {
     whyLocalSupportFirstHe =
-      "בשלב הזה נראה שהקושי נשאר מקומי יותר, ולכן נכון לטפל בו באופן ממוקד בלי לפתוח סיפור רחב מיותר.";
+      "בשלב הזה נראה שהקושי נשאר מקומי יותר, ולכן נכון לטפל בו באופן ממוקד בלי להרחיב לסיפור רחב מיותר.";
     whatCanWaitUntilFoundationStabilizesHe = "אין צורך לדחות הכל ל«בסיס גדול» אם הנתון כאן עדיין נקודתי.";
   } else if (ord.interventionOrdering === "parallel_light_support") {
     whyFoundationFirstHe = "שורה קלה על בסיס — בלי להחליף את כל התוכנית.";

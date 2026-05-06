@@ -529,7 +529,7 @@ export function buildSemanticAggregateDraft(input) {
     } else if (withAvg.length) {
       const sorted = [...withAvg].sort((a, b) => (b.avg || 0) - (a.avg || 0) || b.totalQ - a.totalQ);
       const top = sorted.slice(0, 2);
-      obs = `הכי גבוהים כרגע בממוצע דיוק משוקלל בדוח: ${top.map((r) => `${r.label} (כ־${r.avg}%)`).join(" · ")}.`;
+      obs = `הכי גבוהים כרגע בממוצע דירוג הדיוק הכללי בדוח: ${top.map((r) => `${r.label} (כ־${r.avg}%)`).join(" · ")}.`;
       meaning = "הדירוג מבוסס על ממוצעים על פני נושאים עם תרגול בכל מקצוע, לא על ניסוח נושא בודד.";
       aggregateContinuity = { questionClass: qc, subjectId: top[0]?.sid || "", role: "period_numeric" };
     } else {
@@ -548,12 +548,12 @@ export function buildSemanticAggregateDraft(input) {
       obs = `${lead} יש אזכור לשני מקצועות בשאלה, אבל בדוח חסרים מספיק נתוני תרגול מספריים לשניהם כדי להשוות בצורה יציבה.`;
       meaning = "כשמופיעים שאלות ודיוק לשני המקצועות, אפשר לשאול שוב ולקבל השוואה ישירה לפי הממוצעים בדוח.";
     } else if (a.avg === b.avg) {
-      obs = `${lead} לפי הממוצעים בדוח, ${a.label} ו־${b.label} נמצאים כרגע על אותו קו דיוק משוקלל (כ־${a.avg}%).`;
+      obs = `${lead} לפי הממוצעים בדוח, ${a.label} ו־${b.label} נמצאים כרגע על אותו קו מבחינת דיוק כללי (כ־${a.avg}%).`;
       meaning = "כדי להבדיל בין הכיוונים כדאי להסתכל גם על כמות השאלות בכל מקצוע ובניסוח הנושאים עצמם בדוח.";
     } else {
       const hi = a.avg > b.avg ? a : b;
       const lo = a.avg > b.avg ? b : a;
-      obs = `${hi.label} גבוה יותר כרגע מ־${lo.label} — לפי ממוצע הדיוק המשוקלל בדוח (בערך ${hi.avg}% לעומת ${lo.avg}%).`;
+      obs = `${hi.label} גבוה יותר כרגע מ־${lo.label} — לפי ממוצע הדיוק הכללי בדוח (בערך ${hi.avg}% לעומת ${lo.avg}%).`;
       meaning = "ההשוואה מבוססת על ממוצעים על פני הנושאים שיש להם תרגול בדוח, לא על ניסוח של נושא בודד.";
       aggregateContinuity = { questionClass: qc, subjectId: hi.sid, role: "comparison_hi" };
     }
@@ -666,15 +666,15 @@ export function buildSemanticAggregateDraft(input) {
       const strongest = sortedStrength[0];
       const weakest = sortedWeak[0];
       if (qc === "strongest_subject") {
-        obs = `המקצוע החזק ביותר כרגע הוא ${strongest.label} — לפי ממוצע הדיוק המשוקלל על פני הנושאים עם תרגול בדוח (בערך ${strongest.avg}%).`;
+        obs = `המקצוע החזק ביותר כרגע הוא ${strongest.label} — לפי ממוצע הדיוק הכללי על פני הנושאים עם תרגול בדוח (בערך ${strongest.avg}%).`;
         meaning = `המדד משקף ממוצע על כל שורות הנושא עם תרגול תחת ${strongest.label}, לא ניסוח של נושא בודד.`;
         aggregateContinuity = { questionClass: qc, subjectId: strongest.sid, role: "strongest" };
       } else if (qc === "weakest_subject") {
-        obs = `המקצוע הנמוך ביותר כרגע הוא ${weakest.label} — לפי אותו ממוצע משוקלל על פני נושאים עם תרגול (בערך ${weakest.avg}%).`;
+        obs = `המקצוע הנמוך ביותר כרגע הוא ${weakest.label} — לפי אותו ממוצע דיוק כללי על פני נושאים עם תרגול (בערך ${weakest.avg}%).`;
         meaning = "זה תיאור ברמת מקצוע מהדוח; לפרטים מדויקים לפי נושא צריך לפתוח את המקצוע בדוח.";
         aggregateContinuity = { questionClass: qc, subjectId: weakest.sid, role: "weakest" };
       } else {
-        obs = `המקצוע שבו הכי «קשה» כרגע מבחינת התוצאות הוא ${weakest.label} — לפי ממוצע הדיוק המשוקלל בדוח (בערך ${weakest.avg}%).`;
+        obs = `המקצוע שבו הכי «קשה» כרגע מבחינת התוצאות הוא ${weakest.label} — לפי ממוצע הדיוק הכללי בדוח (בערך ${weakest.avg}%).`;
         meaning = "כאן «קשה» מתורגם לפי הדיוק הממוצע בנושאים עם תרגול בדוח, לא לפי רושם בלי נתונים.";
         aggregateContinuity = { questionClass: qc, subjectId: weakest.sid, role: "hardest" };
       }

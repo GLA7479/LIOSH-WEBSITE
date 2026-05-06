@@ -196,7 +196,7 @@ export function listSyntheticAggregateAnchoredTopicRows(payload) {
       `ב${subjectLabelHe(sid)} נספרו בטווח כ־${qc} שאלות, עם דיוק של כ־${acc}% — כך נראית התמונה התקופתית לפי נתוני הדוח.`;
     const interp =
       String(ts0.interpretation || "").trim() ||
-      `לפי המספרים ב${subjectLabelHe(sid)}, זה עוגן מספרי לנפח ולדיוק בתקופה שנבחרה.`;
+      `לפי המספרים ב${subjectLabelHe(sid)}, זה משקף את נפח התרגול ואת רמת הדיוק בתקופה שנבחרה.`;
     const readinessRaw =
       qc >= 28 ? "ready" : qc >= 12 ? "forming" : qc >= 6 ? "forming" : "insufficient";
     const confRaw = acc >= 78 ? "high" : acc >= 58 ? "medium" : "low";

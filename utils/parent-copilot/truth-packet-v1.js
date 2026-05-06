@@ -153,7 +153,7 @@ function looksLikeNumericOrCountLead(line) {
   const t = String(line || "").trim();
   if (t.length < 10) return false;
   if (/^(בדוח\s+התקופתי\s+נספרו|כ־\s*\d|בסך\s+הכל\s+כ־?\d)/u.test(t)) return true;
-  if (/נספרו\s+כ|שאלות\s+בכלל\s+המקצועות|דיוק\s+הממוצע\s+המשוקלל|ממוצע\s+משוקלל/u.test(t)) return true;
+  if (/נספרו\s+כ|שאלות\s+בכלל\s+המקצועות|דיוק\s+הממוצע\s+הכללי|ממוצע\s+דיוק\s+כללי/u.test(t)) return true;
   return false;
 }
 
@@ -163,8 +163,8 @@ function looksLikeNumericOrCountLead(line) {
  */
 function supportingNumericTail(x) {
   const bits = [];
-  if (x.totalQ > 0) bits.push(`בסך הכל כ־${x.totalQ} שאלות במוקדים המעוגנים`);
-  if (x.avgAcc > 0) bits.push(`דיוק משוקלל של כ־${x.avgAcc}%`);
+  if (x.totalQ > 0) bits.push(`בסך הכל כ־${x.totalQ} שאלות בנושאים שנבדקו`);
+  if (x.avgAcc > 0) bits.push(`רמת דיוק כללית של כ־${x.avgAcc}%`);
   if (!bits.length) return "";
   return `ליד המידע המילולי: ${bits.join(", ")}.`;
 }
@@ -467,7 +467,7 @@ function buildExecutiveIntentNarrativeSlots(x) {
       const obs =
         fragile > 0
           ? `לפי ניסוחי הדוח, יש מוקדים עם ניסוח זהיר או שאינם סגורים לגמרי — זה מצמצם עד כמה אפשר לקבוע «סיפור אחד» חד מהדוח בלבד.`
-          : `לפי ניסוחי הדוח, רוב המוקדים המעוגנים נראים יחסית יציבים לתקופה — בלי ללחוץ על תיוג בעיה כללית.`;
+          : `לפי ניסוחי הדוח, רוב נושאי התרגול שנבדקו נראים יחסית יציבים לתקופה — בלי ללחוץ על תיוג בעיה כללית.`;
       const interpHead =
         x.anyCannotConclude || x.uncertainRows > 0
           ? `זה לא בהכרח אומר «בעיה חמורה», אלא בעיקר חוסר ודאות לגיטימי בניסוח — סביב: ${namedBits}.`
@@ -481,7 +481,7 @@ function buildExecutiveIntentNarrativeSlots(x) {
     case "clarify_term": {
       const m = metas[0];
       const obs = m
-        ? `כדי להבין מונח מהדוח, הנה שורת עוגן מ${parentFacingTopicTitleHe(m.dn)} ב${subjectLabelHe(m.sid)}: ${clipHe(m.obs, 200)}`
+        ? `כדי להבין מונח מהדוח, הנה משפט בסיס מ${parentFacingTopicTitleHe(m.dn)} ב${subjectLabelHe(m.sid)}: ${clipHe(m.obs, 200)}`
         : defaultObs;
       return {
         observation: obs,
@@ -494,7 +494,7 @@ function buildExecutiveIntentNarrativeSlots(x) {
       const b = rankedBestFirst[0];
       const obs =
         w && b && (w.dn !== b.dn || w.sid !== b.sid)
-          ? `בדוח כרגע רואים תמונה תקופתית מעוגנת במספרים: למשל ב${labelPair(w)} יש דיוק של כ־${w.acc}% על פני כ־${w.q} שאלות, לעומת ${labelPair(b)} עם כ־${b.acc}% על פני כ־${b.q} שאלות — זה משקף מה שנספר בתרגול בטווח, לא רגע בודד.`
+          ? `בדוח כרגע רואים תמונה תקופתית לפי הנתונים מהתרגול: למשל ב${labelPair(w)} יש דיוק של כ־${w.acc}% על פני כ־${w.q} שאלות, לעומת ${labelPair(b)} עם כ־${b.acc}% על פני כ־${b.q} שאלות — זה משקף מה שנספר בתרגול בטווח, לא רגע בודד.`
           : w
             ? `בדוח כרגע רואים מה שנכתב כראיה מהתרגול ב${labelPair(w)} — בעיקר ניסוח מספרי על דיוק ועל נפח שאלות.`
             : defaultObs;
@@ -548,7 +548,7 @@ function buildExecutiveIntentNarrativeSlots(x) {
         obs =
           "בדוח יש נתונים מהתרגול על כמה מקצועות — אפשר להסתכל על זה כמו על תמונה כללית של מה שנעשה בתקופה, לא כמו ציון אחד.";
       }
-      let interp = `במשפטים פשוטים: בסך הכל נספרו בערך ${x.totalQ} שאלות בטווח התקופה, והדיוק המשוקלל הוא בערך ${x.avgAcc}%.`;
+      let interp = `במשפטים פשוטים: בסך הכל נספרו בערך ${x.totalQ} שאלות בטווח התקופה, ורמת הדיוק הכללית היא בערך ${x.avgAcc}%.`;
       if (worst && worst.acc < 55) {
         interp += ` המקום שבו זה נראה פחות יציב הוא סביב ${subjectLabelHe(worst.sid)} — שם כדאי לחזק בקצב קצר וקבוע.`;
       } else if (best && best.acc >= 75) {
@@ -944,7 +944,7 @@ export function buildTruthPacketV1(payload, scope) {
       ? trendLines.slice(0, 4)
       : [
           `בדוח התקופתי נספרו כ־${totalQ} שאלות בכלל המקצועות.`,
-          totalQ > 0 ? `הדיוק הממוצע המשוקלל בתקופה הוא כ־${avgAcc}%.` : "עדיין חסר תרגול מצטבר לתמונה יציבה.",
+          totalQ > 0 ? `הדיוק הממוצע בתקופה הוא כ־${avgAcc}%.` : "עדיין חסר תרגול מצטבר לתמונה יציבה.",
         ];
     let uncertaintyLine;
     if (totalQ >= 50 && avgAcc >= 65) {

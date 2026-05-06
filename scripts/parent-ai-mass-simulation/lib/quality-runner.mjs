@@ -78,6 +78,14 @@ function collectDetailedParentFacingBlob(detailed) {
   return parts.join("\n");
 }
 
+/** Parent-facing copy must avoid internal/QA/meta phrasing (reports + PDF + JSON + Parent AI). */
+const PARENT_LANGUAGE_RULES = /** @type {const} */ ([
+  ["parent_facing_text_must_not_include_engine_word", /המנוע/u],
+  ["parent_facing_text_must_not_include_numeric_anchor_jargon", /עוגן מספרי|מוקדים המעוגנים/u],
+  ["parent_facing_text_must_not_include_weighted_jargon", /משוקלל/u],
+  ["parent_ai_must_not_include_meta_fix_language", /בלי לפתוח|אין עדיין בסיס/u],
+]);
+
 function scanReportProfileConsistency(student, shortMd, detailedMd, pdfExtractedText = "") {
   const combined = `${shortMd}\n${detailedMd}\n${pdfExtractedText}`;
   const issues = [];
@@ -270,6 +278,21 @@ export async function runQualitySuite(ctx) {
     const overallQ = Number(detailedObj?.overallSnapshot?.totalQuestions) || 0;
     const p = student.profileType;
 
+    for (const [code, re] of PARENT_LANGUAGE_RULES) {
+      totalChecks += 1;
+      if (re.test(megaBlob)) {
+        fail(code, student.studentId, `parent-reports/${student.studentId}/`);
+      }
+    }
+    totalChecks += 1;
+    if (PARENT_LANGUAGE_RULES.some(([, re]) => re.test(megaBlob))) {
+      fail(
+        "parent_facing_text_should_use_plain_parent_language",
+        student.studentId,
+        `parent-reports/${student.studentId}/`,
+      );
+    }
+
     totalChecks += 5;
     if ((p === "strong_stable" || p === "rich_data") && overallQ >= 80 && isGenericCautiousPracticeLineHe(megaBlob)) {
       fail(
@@ -380,6 +403,20 @@ export async function runQualitySuite(ctx) {
       }
     }
     const a = String(row.aiAnswer || "");
+    for (const [code, re] of PARENT_LANGUAGE_RULES) {
+      totalChecks += 1;
+      if (re.test(a)) {
+        fail(code, `${row.studentId} · ${row.questionCategory || "?"}`, `parent-ai-chats/${row.studentId}.json`);
+      }
+    }
+    totalChecks += 1;
+    if (PARENT_LANGUAGE_RULES.some(([, re]) => re.test(a))) {
+      fail(
+        "parent_facing_text_should_use_plain_parent_language",
+        `${row.studentId} · parent-ai`,
+        `parent-ai-chats/${row.studentId}.json`,
+      );
+    }
     if (scanInternalLeak(a)) {
       totalChecks += 1;
       fail("internal_terms_in_copilot", row.parentQuestionId, `parent-ai-chats/${row.studentId}.json`);

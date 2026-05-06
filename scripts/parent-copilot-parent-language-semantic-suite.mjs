@@ -151,7 +151,7 @@ for (const q of clarifyQs) {
   const body = r.answerBlocks.map((b) => b.textHe).join(" ");
   assert.ok(/במילים פשוטות/.test(body), `${q}: clarify path uses plain-language framing`);
   assert.ok(
-    /בדוח התקופתי נספרו|הדיוק הממוצע המשוקלל|יש כיוון עבודה סביר|שברים|נצפו\s+\d+\s+שאלות/.test(body),
+    /בדוח התקופתי נספרו|הדיוק הממוצע בתקופה|יש כיוון עבודה סביר|שברים|נצפו\s+\d+\s+שאלות/.test(body),
     `${q}: must anchor to narrative slots (executive or topic), not empty boilerplate`,
   );
 }

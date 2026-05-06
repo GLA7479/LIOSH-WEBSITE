@@ -543,7 +543,7 @@ export const RECOMMENDATION_CARRYOVER_LABEL_HE = {
 };
 
 export const MEMORY_OF_PRIOR_SUPPORT_CONFIDENCE_LABEL_HE = {
-  none: "אין עדיין בסיס חזק להשוואה לעבר",
+  none: "עדיין אין בסיס חזק מספיק להשוואה לעבר",
   low: "ההשוואה לעבר עדיין חלשה",
   medium: "מספיק רקע להשוואה זהירה לעבר",
   high: "יש די רקע להשוואה אמינה יחסית לעבר",
@@ -690,7 +690,7 @@ export const INTERVENTION_ORDERING_LABEL_HE = {
 /** Phase 14 — החלטת יסוד לסבב הבא */
 export const FOUNDATION_DECISION_LABEL_HE = {
   stabilize_foundation_first: "לייצב את הבסיס לפני הרחבה או ליטוש נקודתי",
-  treat_locally: "לטפל מקומית בנושא — בלי לפתוח סיפור רחב מיותר",
+  treat_locally: "לטפל מקומית בנושא — בלי להרחיב לסיפור רחב מיותר",
   run_parallel_light_support: "לשלב קלות: בסיס צר + טיפול מקומי בנושא",
   collect_dependency_evidence_first: "לאסוף מידע לפני שמשנים סדר עבודה",
 };

@@ -1893,7 +1893,7 @@ function synthesizeSubjectPhase3FromRows(subjectId, report) {
     (subjectDependencyState === "mixed_dependency_signal" && foundationHeavyRows >= 1);
   const subjectFoundationFirstPriorityHe = subjectFoundationFirstPriority
     ? "כדאי לפתוח קודם ייצוב בסיס קצר במקצוע הזה — ורק אז להרחיב."
-    : "אפשר להישאר עם מיקוד מקומי או קל במקביל — בלי לפתוח סיפור רחב מיותר.";
+    : "אפשר להישאר עם מיקוד מקומי או קל במקביל — בלי להרחיב לסיפור רחב מיותר.";
 
   const subjectDependencyStateLabelHe =
     DEPENDENCY_STATE_LABEL_HE[subjectDependencyState] || DEPENDENCY_STATE_LABEL_HE.insufficient_dependency_evidence;
