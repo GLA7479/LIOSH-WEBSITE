@@ -1,0 +1,129 @@
+{
+  "generatedAt": "2026-05-05T23:10:10.196Z",
+  "outputDirectory": "reports\\parent-ai-mass-simulation\\2026-05-05T23-10-08-875Z",
+  "environment": {
+    "MASS_STUDENT_COUNT": 12,
+    "MASS_MIN_GRADE": "g1",
+    "MASS_MAX_GRADE": "g6",
+    "MASS_SEED": 1337,
+    "MASS_SUBJECTS": "(default all)",
+    "MASS_QUESTION_TARGET": 1200,
+    "MASS_QUESTION_SOURCE": "hybrid",
+    "MASS_REPORT_LIMIT": 12,
+    "MASS_PDF_LIMIT": 0,
+    "MASS_PARENT_AI_QUESTION_LIMIT": 120,
+    "MASS_PARENT_AI_CATEGORY_BALANCED": "1",
+    "MASS_PARENT_AI_CATEGORY_MIN": 1,
+    "QA_BASE_URL": "http://localhost:3001"
+  },
+  "subjectsResolved": [
+    "hebrew",
+    "math",
+    "english",
+    "science",
+    "geometry",
+    "moledet_geography"
+  ],
+  "supportedSubjectKeys": [
+    "hebrew",
+    "math",
+    "english",
+    "science",
+    "geometry",
+    "moledet_geography"
+  ],
+  "counts": {
+    "students": 12,
+    "questions": 1200,
+    "realQuestionCount": 409,
+    "generatedQuestionCount": 0,
+    "placeholderQuestionCount": 791,
+    "parentAiInteractions": 120,
+    "reportsWritten": 12,
+    "shortReports": 12,
+    "detailedReports": 12,
+    "pdfsWritten": 0,
+    "shortPdfCount": 0,
+    "detailedPdfCount": 0,
+    "totalPdfCount": 0,
+    "validReadablePdfCount": 0,
+    "invalidPdfCount": 0,
+    "productPdfCount": 0,
+    "simulationPdfCount": 0
+  },
+  "parentAiInteractionRollup": {
+    "byCategory": {
+      "data_grounded": 12,
+      "thin_data": 12,
+      "contradiction_challenge": 12,
+      "simple_explanation": 12,
+      "action_plan": 12,
+      "unrelated_off_topic": 12,
+      "education_adjacent_sensitive": 12,
+      "bad_unsupported_request": 12,
+      "prompt_injection": 12,
+      "missing_subject_data": 12
+    },
+    "groundedDataGroundedCount": 12,
+    "unrelatedRedirectCount": 12,
+    "promptInjectionPassCount": 12,
+    "badRequestRefusalPassCount": 12,
+    "missingSubjectPassCount": 12,
+    "educationAdjacentSensitivePassCount": 12
+  },
+  "coverage": {
+    "byGrade": {
+      "g5": 400,
+      "g1": 100,
+      "g3": 300,
+      "g4": 300,
+      "g6": 100
+    },
+    "bySubject": {
+      "moledet_geography": 219,
+      "hebrew": 220,
+      "english": 200,
+      "science": 189,
+      "geometry": 188,
+      "math": 184
+    },
+    "byProfile": {
+      "strong_stable": 1,
+      "weak_all_subjects": 1,
+      "weak_math": 1,
+      "weak_hebrew": 1,
+      "weak_english": 1,
+      "improving_student": 1,
+      "declining_student": 1,
+      "inconsistent_student": 1,
+      "random_guessing": 1,
+      "fast_wrong": 1,
+      "slow_correct": 1,
+      "repeated_misconception": 1
+    },
+    "parentAiByCategory": {
+      "data_grounded": 12,
+      "thin_data": 12,
+      "contradiction_challenge": 12,
+      "simple_explanation": 12,
+      "action_plan": 12,
+      "unrelated_off_topic": 12,
+      "education_adjacent_sensitive": 12,
+      "bad_unsupported_request": 12,
+      "prompt_injection": 12,
+      "missing_subject_data": 12
+    }
+  },
+  "quality": {
+    "totalChecks": 360,
+    "failedChecks": 0,
+    "warningCount": 0,
+    "recurringIssueCodes": []
+  },
+  "bottomLine": {
+    "status": "PASS (Harness)",
+    "detail": "אין כשלי איכות קריטיים — ניתן להמשיך לסקירה ידנית ואז ללילה ארוך."
+  },
+  "gradeSupportNote": "כיתות ללא תלמידים בסימולציה (בהתאם לטווח/מקרה): g2. אם נדרש כיסוי מלא g1–g6 הגדר MASS_MIN_GRADE=g1 ו-MASS_MAX_GRADE=g6 ומספר מספיק תלמידים.",
+  "pdfMechanism": "product-html-playwright"
+}

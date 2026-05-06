@@ -1,0 +1,83 @@
+{
+  "generatedAt": "2026-05-05T22:23:23.153Z",
+  "outputDirectory": "reports\\parent-ai-mass-simulation\\2026-05-05T22-23-22-016Z",
+  "environment": {
+    "MASS_STUDENT_COUNT": 5,
+    "MASS_MIN_GRADE": "g1",
+    "MASS_MAX_GRADE": "g6",
+    "MASS_SEED": 1337,
+    "MASS_SUBJECTS": "(default all)",
+    "MASS_QUESTION_TARGET": 500,
+    "MASS_REPORT_LIMIT": 5,
+    "MASS_PDF_LIMIT": 5,
+    "MASS_PARENT_AI_QUESTION_LIMIT": 20
+  },
+  "subjectsResolved": [
+    "hebrew",
+    "math",
+    "english",
+    "science",
+    "geometry",
+    "moledet_geography"
+  ],
+  "supportedSubjectKeys": [
+    "hebrew",
+    "math",
+    "english",
+    "science",
+    "geometry",
+    "moledet_geography"
+  ],
+  "counts": {
+    "students": 5,
+    "questions": 500,
+    "parentAiInteractions": 20,
+    "reportsWritten": 5,
+    "pdfsWritten": 5
+  },
+  "coverage": {
+    "byGrade": {
+      "g5": 300,
+      "g1": 100,
+      "g3": 100
+    },
+    "bySubject": {
+      "moledet_geography": 86,
+      "hebrew": 95,
+      "math": 88,
+      "geometry": 81,
+      "english": 70,
+      "science": 80
+    },
+    "byProfile": {
+      "strong_stable": 1,
+      "weak_all_subjects": 1,
+      "weak_math": 1,
+      "weak_hebrew": 1,
+      "weak_english": 1
+    },
+    "parentAiByCategory": {
+      "data_grounded": 20,
+      "thin_data": 0,
+      "contradiction_challenge": 0,
+      "simple_explanation": 0,
+      "action_plan": 0,
+      "unrelated_off_topic": 0,
+      "education_adjacent_sensitive": 0,
+      "bad_unsupported_request": 0,
+      "prompt_injection": 0,
+      "missing_subject_data": 0
+    }
+  },
+  "quality": {
+    "totalChecks": 130,
+    "failedChecks": 0,
+    "warningCount": 5,
+    "recurringIssueCodes": []
+  },
+  "bottomLine": {
+    "status": "PASS (Harness)",
+    "detail": "אין כשלי איכות קריטיים מהבדיקות האוטומטיות — ממשיכים לסקירה ידנית של דוגמאות."
+  },
+  "gradeSupportNote": "כיתות ללא תלמידים בסימולציה (בהתאם לטווח/מקרה): g2, g4, g6. אם נדרש כיסוי מלא g1–g6 הגדר MASS_MIN_GRADE=g1 ו-MASS_MAX_GRADE=g6 ומספר מספיק תלמידים."
+}

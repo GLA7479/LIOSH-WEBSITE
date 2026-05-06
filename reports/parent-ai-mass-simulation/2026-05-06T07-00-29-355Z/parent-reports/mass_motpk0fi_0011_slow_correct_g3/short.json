@@ -1,0 +1,97 @@
+{
+  "studentId": "mass_motpk0fi_0011_slow_correct_g3",
+  "grade": "g3",
+  "profileType": "slow_correct",
+  "subjectsIncluded": [
+    "hebrew",
+    "math",
+    "english",
+    "science",
+    "geometry",
+    "moledet_geography"
+  ],
+  "dataVolume": 334,
+  "strengths": [
+    "דיוק כשיש זמן"
+  ],
+  "weaknesses": [
+    "מהירות נמוכה"
+  ],
+  "executiveLines": [
+    "מיקוד בית: עדיין אין מוקד ברור — השבוע כדאי לעשות סיבוב קצר בכמה נושאים ולראות מה נשמר.",
+    "מגמות: בטווח התקופה נבדקו 7 נושאים.",
+    "מגמות: נושאים שנשמרים טוב: 0 מתוך מה שנבדק. ב־0 נושאים יש בסיס לשיחה ממוקדת בבית. ב־7 נושאים עדיין אין תמונה ברורה.",
+    "זהירות: בחלק מהנושאים עדיין אין מסקנה חדה — עוד קצת תרגול יבהיר את התמונה.",
+    "ביטחון כולל: מבט כולל: ב־0 מתוך 7 נושאים שנבדקו יש בסיס ראשוני לשיחה בבית על כיוון ממוקד.",
+    "מוכנות דוח: התרגול בתקופה עדיין מצומצם — כדאי לקרוא את הסיכום בעיון ולהמשיך לאסוף תרגול.",
+    "איזון ראיות: נקודות שממשיכות להישמר בצורה טובה: 0; נושאים שכדאי לחזק או ללמוד עליהם עוד לפני מסקנה חדה: 0.",
+    "אות מעורבב: בכמה נושאים התוצאות עדיין לא יציבות — עוד קצת תרגול יעזור לפני מסקנה חדה."
+  ],
+  "evidenceSnippets": [
+    "מיקוד בית: עדיין אין מוקד ברור — השבוע כדאי לעשות סיבוב קצר בכמה נושאים ולראות מה נשמר.",
+    "מגמות: בטווח התקופה נבדקו 7 נושאים.",
+    "מגמות: נושאים שנשמרים טוב: 0 מתוך מה שנבדק. ב־0 נושאים יש בסיס לשיחה ממוקדת בבית. ב־7 נושאים עדיין אין תמונה ברורה.",
+    "זהירות: בחלק מהנושאים עדיין אין מסקנה חדה — עוד קצת תרגול יבהיר את התמונה.",
+    "ביטחון כולל: מבט כולל: ב־0 מתוך 7 נושאים שנבדקו יש בסיס ראשוני לשיחה בבית על כיוון ממוקד.",
+    "מוכנות דוח: התרגול בתקופה עדיין מצומצם — כדאי לקרוא את הסיכום בעיון ולהמשיך לאסוף תרגול."
+  ],
+  "recommendations": [
+    "מיקוד בית: עדיין אין מוקד ברור — השבוע כדאי לעשות סיבוב קצר בכמה נושאים ולראות מה נשמר.",
+    "מגמות: נושאים שנשמרים טוב: 0 מתוך מה שנבדק. ב־0 נושאים יש בסיס לשיחה ממוקדת בבית. ב־7 נושאים עדיין אין תמונה ברורה.",
+    "זהירות: בחלק מהנושאים עדיין אין מסקנה חדה — עוד קצת תרגול יבהיר את התמונה.",
+    "ביטחון כולל: מבט כולל: ב־0 מתוך 7 נושאים שנבדקו יש בסיס ראשוני לשיחה בבית על כיוון ממוקד.",
+    "מוכנות דוח: התרגול בתקופה עדיין מצומצם — כדאי לקרוא את הסיכום בעיון ולהמשיך לאסוף תרגול."
+  ],
+  "trend": "יציבות יחסית",
+  "cautionThinData": false,
+  "pdfExport": {
+    "short": {
+      "studentId": "mass_motpk0fi_0011_slow_correct_g3",
+      "reportType": "short",
+      "productPdf": true,
+      "simulationPdf": false,
+      "pdfRenderer": "product-html-playwright",
+      "readableHebrew": true,
+      "visualValidationPassed": true,
+      "textExtractionPassed": true,
+      "textExtractionWarning": false,
+      "fileSizeBytes": 1430092,
+      "pageCount": 10,
+      "pdfPath": "pdfs/short/mass_motpk0fi_0011_slow_correct_g3.pdf",
+      "htmlPath": "parent-reports/mass_motpk0fi_0011_slow_correct_g3/short.html",
+      "previewPngPath": "pdf-previews/short/mass_motpk0fi_0011_slow_correct_g3.png",
+      "extractedHebrewLetterCount": 5910,
+      "glyphMetrics": {
+        "replacement": 0,
+        "controls": 0,
+        "ratio": 0
+      }
+    },
+    "detailed": {
+      "studentId": "mass_motpk0fi_0011_slow_correct_g3",
+      "reportType": "detailed",
+      "productPdf": true,
+      "simulationPdf": false,
+      "pdfRenderer": "product-html-playwright",
+      "readableHebrew": true,
+      "visualValidationPassed": true,
+      "textExtractionPassed": true,
+      "textExtractionWarning": false,
+      "fileSizeBytes": 153405,
+      "pageCount": 8,
+      "pdfPath": "pdfs/detailed/mass_motpk0fi_0011_slow_correct_g3.pdf",
+      "htmlPath": "parent-reports/mass_motpk0fi_0011_slow_correct_g3/detailed.html",
+      "previewPngPath": "pdf-previews/detailed/mass_motpk0fi_0011_slow_correct_g3.png",
+      "extractedHebrewLetterCount": 6872,
+      "glyphMetrics": {
+        "replacement": 0,
+        "controls": 0,
+        "ratio": 0
+      }
+    },
+    "error": null
+  },
+  "generatedAt": "2026-05-06T07:01:04.461Z",
+  "detailedPayloadPresent": true,
+  "reportPipeline": "generateDetailedParentReport"
+}

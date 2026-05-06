@@ -1,0 +1,27 @@
+{
+  "totalChecks": 62,
+  "failedChecks": 2,
+  "warningCount": 0,
+  "issues": [
+    {
+      "level": "fail",
+      "code": "pdf_export_playwright_failed",
+      "detail": "page.waitForSelector: Timeout 240000ms exceeded.\nCall log:\n  - waiting for locator('.parent-report-parent-ai-insight')\n",
+      "file": "pdfs/mass_mota9z1n_0001_strong_stable_g5"
+    },
+    {
+      "level": "fail",
+      "code": "pdf_export_playwright_failed",
+      "detail": "page.waitForSelector: Timeout 240000ms exceeded.\nCall log:\n  - waiting for locator('.parent-report-parent-ai-insight')\n",
+      "file": "pdfs/mass_mota9z1n_0002_weak_all_subjects_g1"
+    }
+  ],
+  "warnings": [],
+  "topRecurring": [
+    {
+      "code": "pdf_export_playwright_failed",
+      "count": 2
+    }
+  ],
+  "note": "כולל בדיקות PDF מוצר (Playwright), דוחות, וקטגוריות Parent AI."
+}

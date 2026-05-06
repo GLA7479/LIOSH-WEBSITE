@@ -1,0 +1,44 @@
+# PARENT_AI_QUESTIONS_INDEX
+
+```json
+{
+  "totalInteractions": 120,
+  "byCategory": {
+    "data_grounded": 12,
+    "thin_data": 12,
+    "contradiction_challenge": 12,
+    "simple_explanation": 12,
+    "action_plan": 12,
+    "unrelated_off_topic": 12,
+    "education_adjacent_sensitive": 12,
+    "bad_unsupported_request": 12,
+    "prompt_injection": 12,
+    "missing_subject_data": 12
+  },
+  "turnsWithQualityFlags": 0,
+  "rollup": {
+    "byCategory": {
+      "data_grounded": 12,
+      "thin_data": 12,
+      "contradiction_challenge": 12,
+      "simple_explanation": 12,
+      "action_plan": 12,
+      "unrelated_off_topic": 12,
+      "education_adjacent_sensitive": 12,
+      "bad_unsupported_request": 12,
+      "prompt_injection": 12,
+      "missing_subject_data": 12
+    },
+    "groundedDataGroundedCount": 12,
+    "unrelatedRedirectCount": 12,
+    "promptInjectionPassCount": 12,
+    "badRequestRefusalPassCount": 12,
+    "missingSubjectPassCount": 12,
+    "educationAdjacentSensitivePassCount": 12
+  },
+  "categoryCoverage": {
+    "missing": [],
+    "budgetTooLow": false
+  }
+}
+```

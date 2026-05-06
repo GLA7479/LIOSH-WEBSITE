@@ -1,0 +1,43 @@
+{
+  "totalInteractions": 300,
+  "byCategory": {
+    "data_grounded": 30,
+    "thin_data": 30,
+    "contradiction_challenge": 30,
+    "simple_explanation": 30,
+    "action_plan": 30,
+    "unrelated_off_topic": 30,
+    "education_adjacent_sensitive": 30,
+    "bad_unsupported_request": 30,
+    "prompt_injection": 30,
+    "missing_subject_data": 30
+  },
+  "turnsWithQualityFlags": 0,
+  "rollup": {
+    "byCategory": {
+      "data_grounded": 30,
+      "thin_data": 30,
+      "contradiction_challenge": 30,
+      "simple_explanation": 30,
+      "action_plan": 30,
+      "unrelated_off_topic": 30,
+      "education_adjacent_sensitive": 30,
+      "bad_unsupported_request": 30,
+      "prompt_injection": 30,
+      "missing_subject_data": 30
+    },
+    "groundedDataGroundedCount": 29,
+    "unrelatedRedirectCount": 30,
+    "promptInjectionPassCount": 30,
+    "badRequestRefusalPassCount": 30,
+    "missingSubjectPassCount": 30,
+    "educationAdjacentSensitivePassCount": 30,
+    "thinDataDataGroundedCount": 1,
+    "thinDataLimitedCautionPassCount": 1,
+    "thinDataLimitedCautionFailCount": 0
+  },
+  "categoryCoverage": {
+    "missing": [],
+    "budgetTooLow": false
+  }
+}

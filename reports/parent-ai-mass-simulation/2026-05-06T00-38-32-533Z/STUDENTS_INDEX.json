@@ -1,0 +1,79 @@
+{
+  "totalStudents": 2,
+  "byGrade": {
+    "g5": 1,
+    "g1": 1
+  },
+  "byProfile": {
+    "strong_stable": 1,
+    "weak_all_subjects": 1
+  },
+  "students": [
+    {
+      "studentId": "mass_motbwtp4_0001_strong_stable_g5",
+      "displayName": "אילי דגן",
+      "grade": "g5",
+      "profileType": "strong_stable",
+      "subjects": [
+        "hebrew",
+        "math",
+        "english",
+        "science",
+        "geometry",
+        "moledet_geography"
+      ],
+      "questionRunFiles": {
+        "json": "question-runs/mass_motbwtp4_0001_strong_stable_g5.json",
+        "md": "question-runs/mass_motbwtp4_0001_strong_stable_g5.md"
+      },
+      "parentAiChatFiles": {
+        "json": "parent-ai-chats/mass_motbwtp4_0001_strong_stable_g5.json",
+        "md": "parent-ai-chats/mass_motbwtp4_0001_strong_stable_g5.md",
+        "turnCount": 10
+      },
+      "reportFiles": {
+        "shortJson": "parent-reports/mass_motbwtp4_0001_strong_stable_g5/short.json",
+        "shortMd": "parent-reports/mass_motbwtp4_0001_strong_stable_g5/short.md",
+        "shortHtml": "parent-reports/mass_motbwtp4_0001_strong_stable_g5/short.html",
+        "detailedJson": "parent-reports/mass_motbwtp4_0001_strong_stable_g5/detailed.json",
+        "detailedMd": "parent-reports/mass_motbwtp4_0001_strong_stable_g5/detailed.md",
+        "detailedHtml": "parent-reports/mass_motbwtp4_0001_strong_stable_g5/detailed.html"
+      },
+      "pdfFiles": {},
+      "simulatedAnswers": 25
+    },
+    {
+      "studentId": "mass_motbwtp4_0002_weak_all_subjects_g1",
+      "displayName": "שירה ביטון",
+      "grade": "g1",
+      "profileType": "weak_all_subjects",
+      "subjects": [
+        "hebrew",
+        "math",
+        "english",
+        "science",
+        "geometry",
+        "moledet_geography"
+      ],
+      "questionRunFiles": {
+        "json": "question-runs/mass_motbwtp4_0002_weak_all_subjects_g1.json",
+        "md": "question-runs/mass_motbwtp4_0002_weak_all_subjects_g1.md"
+      },
+      "parentAiChatFiles": {
+        "json": "parent-ai-chats/mass_motbwtp4_0002_weak_all_subjects_g1.json",
+        "md": "parent-ai-chats/mass_motbwtp4_0002_weak_all_subjects_g1.md",
+        "turnCount": 10
+      },
+      "reportFiles": {
+        "shortJson": "parent-reports/mass_motbwtp4_0002_weak_all_subjects_g1/short.json",
+        "shortMd": "parent-reports/mass_motbwtp4_0002_weak_all_subjects_g1/short.md",
+        "shortHtml": "parent-reports/mass_motbwtp4_0002_weak_all_subjects_g1/short.html",
+        "detailedJson": "parent-reports/mass_motbwtp4_0002_weak_all_subjects_g1/detailed.json",
+        "detailedMd": "parent-reports/mass_motbwtp4_0002_weak_all_subjects_g1/detailed.md",
+        "detailedHtml": "parent-reports/mass_motbwtp4_0002_weak_all_subjects_g1/detailed.html"
+      },
+      "pdfFiles": {},
+      "simulatedAnswers": 25
+    }
+  ]
+}

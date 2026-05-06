@@ -1,0 +1,94 @@
+{
+  "totalQuestions": 50,
+  "byGrade": {
+    "g5": 25,
+    "g1": 25
+  },
+  "bySubject": {
+    "moledet_geography": 11,
+    "hebrew": 6,
+    "english": 10,
+    "science": 6,
+    "geometry": 12,
+    "math": 5
+  },
+  "byTopic": {
+    "places": 5,
+    "basic_geography": 3,
+    "reading_comprehension": 3,
+    "matching": 3,
+    "directions": 1,
+    "sentence_understanding": 1,
+    "basic_experiments": 2,
+    "perimeter": 6,
+    "subtraction": 1,
+    "place_value": 1,
+    "area": 3,
+    "symmetry": 1,
+    "inference": 2,
+    "main_idea": 1,
+    "addition": 1,
+    "vocabulary": 3,
+    "fact_vs_opinion": 1,
+    "angles": 2,
+    "community": 1,
+    "grammar_basics": 2,
+    "division": 1,
+    "environment": 1,
+    "multiplication": 1,
+    "materials": 3,
+    "map_reading": 1
+  },
+  "byDifficulty": {
+    "easy": 18,
+    "medium": 14,
+    "hard": 14,
+    "mixed": 4
+  },
+  "correctIncorrectRatio": {
+    "correct": 39,
+    "incorrect": 11,
+    "ratio": 0.78
+  },
+  "mistakeTypes": {
+    "guess": 1,
+    "wrong_operation": 3,
+    "prerequisite_gap": 1,
+    "careless": 3,
+    "timeout_pressure": 2,
+    "misread_question": 1
+  },
+  "lowCoverageTopics": [
+    "basic_geography",
+    "reading_comprehension",
+    "matching",
+    "directions",
+    "sentence_understanding",
+    "basic_experiments",
+    "subtraction",
+    "place_value",
+    "area",
+    "symmetry",
+    "inference",
+    "main_idea",
+    "addition",
+    "vocabulary",
+    "fact_vs_opinion",
+    "angles",
+    "community",
+    "grammar_basics",
+    "division",
+    "environment",
+    "multiplication",
+    "materials",
+    "map_reading"
+  ],
+  "realQuestionCount": 12,
+  "generatedQuestionCount": 0,
+  "placeholderQuestionCount": 38,
+  "byQuestionSource": {
+    "real": 12,
+    "synthetic": 0,
+    "placeholder": 38
+  }
+}

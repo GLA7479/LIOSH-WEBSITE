@@ -1,0 +1,109 @@
+{
+  "entries": [],
+  "shortPdfs": [
+    {
+      "studentId": "mass_mot7ry5f_0001_strong_stable_g5",
+      "path": null
+    },
+    {
+      "studentId": "mass_mot7ry5f_0002_weak_all_subjects_g1",
+      "path": null
+    },
+    {
+      "studentId": "mass_mot7ry5f_0003_weak_math_g3",
+      "path": null
+    },
+    {
+      "studentId": "mass_mot7ry5f_0004_weak_hebrew_g5",
+      "path": null
+    },
+    {
+      "studentId": "mass_mot7ry5f_0005_weak_english_g5",
+      "path": null
+    },
+    {
+      "studentId": "mass_mot7ry5f_0006_improving_student_g4",
+      "path": null
+    },
+    {
+      "studentId": "mass_mot7ry5f_0007_declining_student_g6",
+      "path": null
+    },
+    {
+      "studentId": "mass_mot7ry5f_0008_inconsistent_student_g4",
+      "path": null
+    },
+    {
+      "studentId": "mass_mot7ry5f_0009_random_guessing_g4",
+      "path": null
+    },
+    {
+      "studentId": "mass_mot7ry5f_0010_fast_wrong_g3",
+      "path": null
+    },
+    {
+      "studentId": "mass_mot7ry5f_0011_slow_correct_g3",
+      "path": null
+    },
+    {
+      "studentId": "mass_mot7ry5f_0012_repeated_misconception_g5",
+      "path": null
+    }
+  ],
+  "detailedPdfs": [
+    {
+      "studentId": "mass_mot7ry5f_0001_strong_stable_g5",
+      "path": null
+    },
+    {
+      "studentId": "mass_mot7ry5f_0002_weak_all_subjects_g1",
+      "path": null
+    },
+    {
+      "studentId": "mass_mot7ry5f_0003_weak_math_g3",
+      "path": null
+    },
+    {
+      "studentId": "mass_mot7ry5f_0004_weak_hebrew_g5",
+      "path": null
+    },
+    {
+      "studentId": "mass_mot7ry5f_0005_weak_english_g5",
+      "path": null
+    },
+    {
+      "studentId": "mass_mot7ry5f_0006_improving_student_g4",
+      "path": null
+    },
+    {
+      "studentId": "mass_mot7ry5f_0007_declining_student_g6",
+      "path": null
+    },
+    {
+      "studentId": "mass_mot7ry5f_0008_inconsistent_student_g4",
+      "path": null
+    },
+    {
+      "studentId": "mass_mot7ry5f_0009_random_guessing_g4",
+      "path": null
+    },
+    {
+      "studentId": "mass_mot7ry5f_0010_fast_wrong_g3",
+      "path": null
+    },
+    {
+      "studentId": "mass_mot7ry5f_0011_slow_correct_g3",
+      "path": null
+    },
+    {
+      "studentId": "mass_mot7ry5f_0012_repeated_misconception_g5",
+      "path": null
+    }
+  ],
+  "problemCasePdfs": [],
+  "totalPdfCount": 0,
+  "validReadablePdfCount": 0,
+  "invalidPdfCount": 0,
+  "productPdfCount": 0,
+  "simulationPdfCount": 0
+}

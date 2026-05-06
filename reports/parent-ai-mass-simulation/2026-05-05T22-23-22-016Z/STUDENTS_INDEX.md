@@ -1,0 +1,191 @@
+# STUDENTS_INDEX
+
+```json
+{
+  "totalStudents": 5,
+  "byGrade": {
+    "g5": 3,
+    "g1": 1,
+    "g3": 1
+  },
+  "byProfile": {
+    "strong_stable": 1,
+    "weak_all_subjects": 1,
+    "weak_math": 1,
+    "weak_hebrew": 1,
+    "weak_english": 1
+  },
+  "students": [
+    {
+      "studentId": "mass_mot72zl1_0001_strong_stable_g5",
+      "displayName": "אילי דגן",
+      "grade": "g5",
+      "profileType": "strong_stable",
+      "subjects": [
+        "hebrew",
+        "math",
+        "english",
+        "science",
+        "geometry",
+        "moledet_geography"
+      ],
+      "questionRunFiles": {
+        "json": "question-runs/mass_mot72zl1_0001_strong_stable_g5.json",
+        "md": "question-runs/mass_mot72zl1_0001_strong_stable_g5.md"
+      },
+      "parentAiChatFiles": {
+        "json": "parent-ai-chats/mass_mot72zl1_0001_strong_stable_g5.json",
+        "md": "parent-ai-chats/mass_mot72zl1_0001_strong_stable_g5.md",
+        "turnCount": 4
+      },
+      "reportFiles": {
+        "shortJson": "parent-reports/mass_mot72zl1_0001_strong_stable_g5/short.json",
+        "shortMd": "parent-reports/mass_mot72zl1_0001_strong_stable_g5/short.md",
+        "detailedJson": "parent-reports/mass_mot72zl1_0001_strong_stable_g5/detailed.json",
+        "detailedMd": "parent-reports/mass_mot72zl1_0001_strong_stable_g5/detailed.md"
+      },
+      "pdfFiles": {
+        "short": "pdfs/short/mass_mot72zl1_0001_strong_stable_g5.pdf",
+        "detailed": "pdfs/detailed/mass_mot72zl1_0001_strong_stable_g5.pdf"
+      },
+      "simulatedAnswers": 100
+    },
+    {
+      "studentId": "mass_mot72zl1_0002_weak_all_subjects_g1",
+      "displayName": "שירה ביטון",
+      "grade": "g1",
+      "profileType": "weak_all_subjects",
+      "subjects": [
+        "hebrew",
+        "math",
+        "english",
+        "science",
+        "geometry",
+        "moledet_geography"
+      ],
+      "questionRunFiles": {
+        "json": "question-runs/mass_mot72zl1_0002_weak_all_subjects_g1.json",
+        "md": "question-runs/mass_mot72zl1_0002_weak_all_subjects_g1.md"
+      },
+      "parentAiChatFiles": {
+        "json": "parent-ai-chats/mass_mot72zl1_0002_weak_all_subjects_g1.json",
+        "md": "parent-ai-chats/mass_mot72zl1_0002_weak_all_subjects_g1.md",
+        "turnCount": 4
+      },
+      "reportFiles": {
+        "shortJson": "parent-reports/mass_mot72zl1_0002_weak_all_subjects_g1/short.json",
+        "shortMd": "parent-reports/mass_mot72zl1_0002_weak_all_subjects_g1/short.md",
+        "detailedJson": "parent-reports/mass_mot72zl1_0002_weak_all_subjects_g1/detailed.json",
+        "detailedMd": "parent-reports/mass_mot72zl1_0002_weak_all_subjects_g1/detailed.md"
+      },
+      "pdfFiles": {
+        "short": "pdfs/short/mass_mot72zl1_0002_weak_all_subjects_g1.pdf",
+        "detailed": "pdfs/detailed/mass_mot72zl1_0002_weak_all_subjects_g1.pdf"
+      },
+      "simulatedAnswers": 100
+    },
+    {
+      "studentId": "mass_mot72zl1_0003_weak_math_g3",
+      "displayName": "יובל גולן",
+      "grade": "g3",
+      "profileType": "weak_math",
+      "subjects": [
+        "hebrew",
+        "math",
+        "english",
+        "science",
+        "geometry",
+        "moledet_geography"
+      ],
+      "questionRunFiles": {
+        "json": "question-runs/mass_mot72zl1_0003_weak_math_g3.json",
+        "md": "question-runs/mass_mot72zl1_0003_weak_math_g3.md"
+      },
+      "parentAiChatFiles": {
+        "json": "parent-ai-chats/mass_mot72zl1_0003_weak_math_g3.json",
+        "md": "parent-ai-chats/mass_mot72zl1_0003_weak_math_g3.md",
+        "turnCount": 4
+      },
+      "reportFiles": {
+        "shortJson": "parent-reports/mass_mot72zl1_0003_weak_math_g3/short.json",
+        "shortMd": "parent-reports/mass_mot72zl1_0003_weak_math_g3/short.md",
+        "detailedJson": "parent-reports/mass_mot72zl1_0003_weak_math_g3/detailed.json",
+        "detailedMd": "parent-reports/mass_mot72zl1_0003_weak_math_g3/detailed.md"
+      },
+      "pdfFiles": {
+        "short": "pdfs/short/mass_mot72zl1_0003_weak_math_g3.pdf",
+        "detailed": "pdfs/detailed/mass_mot72zl1_0003_weak_math_g3.pdf"
+      },
+      "simulatedAnswers": 100
+    },
+    {
+      "studentId": "mass_mot72zl1_0004_weak_hebrew_g5",
+      "displayName": "יובל דגן",
+      "grade": "g5",
+      "profileType": "weak_hebrew",
+      "subjects": [
+        "hebrew",
+        "math",
+        "english",
+        "science",
+        "geometry",
+        "moledet_geography"
+      ],
+      "questionRunFiles": {
+        "json": "question-runs/mass_mot72zl1_0004_weak_hebrew_g5.json",
+        "md": "question-runs/mass_mot72zl1_0004_weak_hebrew_g5.md"
+      },
+      "parentAiChatFiles": {
+        "json": "parent-ai-chats/mass_mot72zl1_0004_weak_hebrew_g5.json",
+        "md": "parent-ai-chats/mass_mot72zl1_0004_weak_hebrew_g5.md",
+        "turnCount": 4
+      },
+      "reportFiles": {
+        "shortJson": "parent-reports/mass_mot72zl1_0004_weak_hebrew_g5/short.json",
+        "shortMd": "parent-reports/mass_mot72zl1_0004_weak_hebrew_g5/short.md",
+        "detailedJson": "parent-reports/mass_mot72zl1_0004_weak_hebrew_g5/detailed.json",
+        "detailedMd": "parent-reports/mass_mot72zl1_0004_weak_hebrew_g5/detailed.md"
+      },
+      "pdfFiles": {
+        "short": "pdfs/short/mass_mot72zl1_0004_weak_hebrew_g5.pdf",
+        "detailed": "pdfs/detailed/mass_mot72zl1_0004_weak_hebrew_g5.pdf"
+      },
+      "simulatedAnswers": 100
+    },
+    {
+      "studentId": "mass_mot72zl1_0005_weak_english_g5",
+      "displayName": "מיכל ביטון",
+      "grade": "g5",
+      "profileType": "weak_english",
+      "subjects": [
+        "hebrew",
+        "math",
+        "english",
+        "science",
+        "geometry",
+        "moledet_geography"
+      ],
+      "questionRunFiles": {
+        "json": "question-runs/mass_mot72zl1_0005_weak_english_g5.json",
+        "md": "question-runs/mass_mot72zl1_0005_weak_english_g5.md"
+      },
+      "parentAiChatFiles": {
+        "json": "parent-ai-chats/mass_mot72zl1_0005_weak_english_g5.json",
+        "md": "parent-ai-chats/mass_mot72zl1_0005_weak_english_g5.md",
+        "turnCount": 4
+      },
+      "reportFiles": {
+        "shortJson": "parent-reports/mass_mot72zl1_0005_weak_english_g5/short.json",
+        "shortMd": "parent-reports/mass_mot72zl1_0005_weak_english_g5/short.md",
+        "detailedJson": "parent-reports/mass_mot72zl1_0005_weak_english_g5/detailed.json",
+        "detailedMd": "parent-reports/mass_mot72zl1_0005_weak_english_g5/detailed.md"
+      },
+      "pdfFiles": {
+        "short": "pdfs/short/mass_mot72zl1_0005_weak_english_g5.pdf",
+        "detailed": "pdfs/detailed/mass_mot72zl1_0005_weak_english_g5.pdf"
+      },
+      "simulatedAnswers": 100
+    }
+  ]
+}
+```

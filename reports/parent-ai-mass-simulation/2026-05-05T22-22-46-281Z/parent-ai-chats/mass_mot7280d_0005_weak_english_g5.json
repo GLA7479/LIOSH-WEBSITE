@@ -1,0 +1,157 @@
+{
+  "studentId": "mass_mot7280d_0005_weak_english_g5",
+  "turns": [
+    {
+      "parentQuestionId": "dg_01_0",
+      "studentId": "mass_mot7280d_0005_weak_english_g5",
+      "grade": "g5",
+      "profileType": "weak_english",
+      "questionCategory": "data_grounded",
+      "parentQuestionText": "במה הילד שלי חלש?",
+      "utteranceNote": null,
+      "expectedBehavior": "Ground in tracked subjects/topics from payload.",
+      "resolutionStatus": "clarification_required",
+      "aiAnswer": "",
+      "answerBlocks": [],
+      "assertionResults": [
+        {
+          "id": "non_empty_answer",
+          "pass": false,
+          "detail": "תשובה קצרה מדי"
+        },
+        {
+          "id": "no_internal_storage_keys_in_text",
+          "pass": true
+        }
+      ],
+      "qualityFlags": [
+        "non_empty_answer"
+      ],
+      "telemetrySummary": {
+        "intent": "unclear",
+        "scopeType": null,
+        "scopeId": null,
+        "generationPath": "deterministic",
+        "groundednessScore": 0,
+        "genericnessScore": 100
+      },
+      "sourceEvidenceUsed": "deterministic_fallback_unknown",
+      "groundedInStudentData": false,
+      "refusedOrRedirectedOffTopic": false
+    },
+    {
+      "parentQuestionId": "dg_02_1",
+      "studentId": "mass_mot7280d_0005_weak_english_g5",
+      "grade": "g5",
+      "profileType": "weak_english",
+      "questionCategory": "data_grounded",
+      "parentQuestionText": "במה הילד שלי חזק?",
+      "utteranceNote": null,
+      "expectedBehavior": "Ground strengths from evidence.",
+      "resolutionStatus": "clarification_required",
+      "aiAnswer": "",
+      "answerBlocks": [],
+      "assertionResults": [
+        {
+          "id": "non_empty_answer",
+          "pass": false,
+          "detail": "תשובה קצרה מדי"
+        },
+        {
+          "id": "no_internal_storage_keys_in_text",
+          "pass": true
+        }
+      ],
+      "qualityFlags": [
+        "non_empty_answer"
+      ],
+      "telemetrySummary": {
+        "intent": "unclear",
+        "scopeType": null,
+        "scopeId": null,
+        "generationPath": "deterministic",
+        "groundednessScore": 0,
+        "genericnessScore": 100
+      },
+      "sourceEvidenceUsed": "deterministic_fallback_unknown",
+      "groundedInStudentData": false,
+      "refusedOrRedirectedOffTopic": false
+    },
+    {
+      "parentQuestionId": "dg_03_2",
+      "studentId": "mass_mot7280d_0005_weak_english_g5",
+      "grade": "g5",
+      "profileType": "weak_english",
+      "questionCategory": "data_grounded",
+      "parentQuestionText": "האם הוא משתפר?",
+      "utteranceNote": null,
+      "expectedBehavior": "Trend language tied to sessions.",
+      "resolutionStatus": "clarification_required",
+      "aiAnswer": "",
+      "answerBlocks": [],
+      "assertionResults": [
+        {
+          "id": "non_empty_answer",
+          "pass": false,
+          "detail": "תשובה קצרה מדי"
+        },
+        {
+          "id": "no_internal_storage_keys_in_text",
+          "pass": true
+        }
+      ],
+      "qualityFlags": [
+        "non_empty_answer"
+      ],
+      "telemetrySummary": {
+        "intent": "unclear",
+        "scopeType": null,
+        "scopeId": null,
+        "generationPath": "deterministic",
+        "groundednessScore": 0,
+        "genericnessScore": 100
+      },
+      "sourceEvidenceUsed": "deterministic_fallback_unknown",
+      "groundedInStudentData": false,
+      "refusedOrRedirectedOffTopic": false
+    },
+    {
+      "parentQuestionId": "dg_04_3",
+      "studentId": "mass_mot7280d_0005_weak_english_g5",
+      "grade": "g5",
+      "profileType": "weak_english",
+      "questionCategory": "data_grounded",
+      "parentQuestionText": "האם הוא בירידה?",
+      "utteranceNote": null,
+      "expectedBehavior": "Cautious trend if declining pattern.",
+      "resolutionStatus": "clarification_required",
+      "aiAnswer": "",
+      "answerBlocks": [],
+      "assertionResults": [
+        {
+          "id": "non_empty_answer",
+          "pass": false,
+          "detail": "תשובה קצרה מדי"
+        },
+        {
+          "id": "no_internal_storage_keys_in_text",
+          "pass": true
+        }
+      ],
+      "qualityFlags": [
+        "non_empty_answer"
+      ],
+      "telemetrySummary": {
+        "intent": "unclear",
+        "scopeType": null,
+        "scopeId": null,
+        "generationPath": "deterministic",
+        "groundednessScore": 0,
+        "genericnessScore": 100
+      },
+      "sourceEvidenceUsed": "deterministic_fallback_unknown",
+      "groundedInStudentData": false,
+      "refusedOrRedirectedOffTopic": false
+    }
+  ]
+}

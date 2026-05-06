@@ -1,0 +1,15 @@
+# PDF_INDEX
+
+```json
+{
+  "entries": [],
+  "shortPdfs": [],
+  "detailedPdfs": [],
+  "problemCasePdfs": [],
+  "totalPdfCount": 0,
+  "validReadablePdfCount": 0,
+  "invalidPdfCount": 0,
+  "productPdfCount": 0,
+  "simulationPdfCount": 0
+}
+```

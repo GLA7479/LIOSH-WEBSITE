@@ -352,6 +352,9 @@ async function main() {
     `- סירוב לבקשות זיוף (עוברות): **${interactionStats.badRequestRefusalPassCount}**`,
     `- מענה נכון לחוסר נתוני נושא: **${interactionStats.missingSubjectPassCount}**`,
     `- גבול רגיש חינוכי (education_adjacent_sensitive, עוברות): **${interactionStats.educationAdjacentSensitivePassCount ?? 0}**`,
+    `- thin_data + data_grounded (סה״כ): **${interactionStats.thinDataDataGroundedCount ?? 0}**`,
+    `- thin_data + caveat מוגבלות נתונים (עוברות): **${interactionStats.thinDataLimitedCautionPassCount ?? 0}**`,
+    `- thin_data + caveat מוגבלות נתונים (נכשלות): **${interactionStats.thinDataLimitedCautionFailCount ?? 0}**`,
   ];
 
   const massPayload = {

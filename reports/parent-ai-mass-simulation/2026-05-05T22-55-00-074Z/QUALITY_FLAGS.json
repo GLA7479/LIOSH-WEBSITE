@@ -1,0 +1,87 @@
+{
+  "totalChecks": 372,
+  "failedChecks": 12,
+  "warningCount": 0,
+  "issues": [
+    {
+      "level": "fail",
+      "code": "pdf_export_playwright_failed",
+      "detail": "page.waitForSelector: Timeout 240000ms exceeded.\nCall log:\n  - waiting for locator('#parent-report-detailed-print') to be visible\n",
+      "file": "pdfs/mass_mot87o4v_0001_strong_stable_g5"
+    },
+    {
+      "level": "fail",
+      "code": "pdf_export_playwright_failed",
+      "detail": "page.waitForSelector: Timeout 240000ms exceeded.\nCall log:\n  - waiting for locator('#parent-report-detailed-print') to be visible\n",
+      "file": "pdfs/mass_mot87o4v_0002_weak_all_subjects_g1"
+    },
+    {
+      "level": "fail",
+      "code": "pdf_export_playwright_failed",
+      "detail": "page.waitForSelector: Timeout 240000ms exceeded.\nCall log:\n  - waiting for locator('#parent-report-detailed-print') to be visible\n",
+      "file": "pdfs/mass_mot87o4v_0003_weak_math_g3"
+    },
+    {
+      "level": "fail",
+      "code": "pdf_export_playwright_failed",
+      "detail": "page.waitForSelector: Timeout 240000ms exceeded.\nCall log:\n  - waiting for locator('#parent-report-detailed-print') to be visible\n",
+      "file": "pdfs/mass_mot87o4v_0004_weak_hebrew_g5"
+    },
+    {
+      "level": "fail",
+      "code": "pdf_export_playwright_failed",
+      "detail": "page.waitForSelector: Timeout 240000ms exceeded.\nCall log:\n  - waiting for locator('#parent-report-detailed-print') to be visible\n",
+      "file": "pdfs/mass_mot87o4v_0005_weak_english_g5"
+    },
+    {
+      "level": "fail",
+      "code": "pdf_export_playwright_failed",
+      "detail": "page.waitForSelector: Timeout 240000ms exceeded.\nCall log:\n  - waiting for locator('#parent-report-detailed-print') to be visible\n",
+      "file": "pdfs/mass_mot87o4v_0006_improving_student_g4"
+    },
+    {
+      "level": "fail",
+      "code": "pdf_export_playwright_failed",
+      "detail": "page.waitForSelector: Timeout 240000ms exceeded.\nCall log:\n  - waiting for locator('#parent-report-detailed-print') to be visible\n",
+      "file": "pdfs/mass_mot87o4v_0007_declining_student_g6"
+    },
+    {
+      "level": "fail",
+      "code": "pdf_export_playwright_failed",
+      "detail": "page.waitForSelector: Timeout 240000ms exceeded.\nCall log:\n  - waiting for locator('#parent-report-detailed-print') to be visible\n",
+      "file": "pdfs/mass_mot87o4v_0008_inconsistent_student_g4"
+    },
+    {
+      "level": "fail",
+      "code": "pdf_export_playwright_failed",
+      "detail": "page.waitForSelector: Timeout 240000ms exceeded.\nCall log:\n  - waiting for locator('#parent-report-detailed-print') to be visible\n",
+      "file": "pdfs/mass_mot87o4v_0009_random_guessing_g4"
+    },
+    {
+      "level": "fail",
+      "code": "pdf_export_playwright_failed",
+      "detail": "page.waitForSelector: Timeout 240000ms exceeded.\nCall log:\n  - waiting for locator('#parent-report-detailed-print') to be visible\n",
+      "file": "pdfs/mass_mot87o4v_0010_fast_wrong_g3"
+    },
+    {
+      "level": "fail",
+      "code": "pdf_export_playwright_failed",
+      "detail": "page.waitForSelector: Timeout 240000ms exceeded.\nCall log:\n  - waiting for locator('#parent-report-detailed-print') to be visible\n",
+      "file": "pdfs/mass_mot87o4v_0011_slow_correct_g3"
+    },
+    {
+      "level": "fail",
+      "code": "pdf_export_playwright_failed",
+      "detail": "page.waitForSelector: Timeout 240000ms exceeded.\nCall log:\n  - waiting for locator('#parent-report-detailed-print') to be visible\n",
+      "file": "pdfs/mass_mot87o4v_0012_repeated_misconception_g5"
+    }
+  ],
+  "warnings": [],
+  "topRecurring": [
+    {
+      "code": "pdf_export_playwright_failed",
+      "count": 12
+    }
+  ],
+  "note": "כולל בדיקות PDF מוצר (Playwright), דוחות, וקטגוריות Parent AI."
+}

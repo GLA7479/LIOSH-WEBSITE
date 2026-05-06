@@ -1,0 +1,145 @@
+{
+  "generatedAt": "2026-05-06T07:07:16.137Z",
+  "outputDirectory": "reports\\parent-ai-mass-simulation\\2026-05-06T07-00-29-355Z",
+  "environment": {
+    "MASS_STUDENT_COUNT": 150,
+    "MASS_MIN_GRADE": "g1",
+    "MASS_MAX_GRADE": "g6",
+    "MASS_SEED": 1337,
+    "MASS_SUBJECTS": "(default all)",
+    "MASS_QUESTION_TARGET": 50000,
+    "MASS_QUESTION_SOURCE": "hybrid",
+    "MASS_REPORT_LIMIT": 150,
+    "MASS_PDF_LIMIT": 150,
+    "MASS_PARENT_AI_QUESTION_LIMIT": 1500,
+    "MASS_PARENT_AI_CATEGORY_BALANCED": "1",
+    "MASS_PARENT_AI_CATEGORY_MIN": 1,
+    "QA_BASE_URL": "http://localhost:3001"
+  },
+  "subjectsResolved": [
+    "hebrew",
+    "math",
+    "english",
+    "science",
+    "geometry",
+    "moledet_geography"
+  ],
+  "supportedSubjectKeys": [
+    "hebrew",
+    "math",
+    "english",
+    "science",
+    "geometry",
+    "moledet_geography"
+  ],
+  "counts": {
+    "students": 150,
+    "questions": 50100,
+    "realQuestionCount": 16652,
+    "generatedQuestionCount": 0,
+    "placeholderQuestionCount": 33448,
+    "parentAiInteractions": 1500,
+    "reportsWritten": 150,
+    "shortReports": 150,
+    "detailedReports": 150,
+    "pdfsWritten": 150,
+    "shortPdfCount": 150,
+    "detailedPdfCount": 150,
+    "totalPdfCount": 300,
+    "validReadablePdfCount": 300,
+    "invalidPdfCount": 0,
+    "productPdfCount": 300,
+    "simulationPdfCount": 0
+  },
+  "parentAiInteractionRollup": {
+    "byCategory": {
+      "data_grounded": 150,
+      "thin_data": 150,
+      "contradiction_challenge": 150,
+      "simple_explanation": 150,
+      "action_plan": 150,
+      "unrelated_off_topic": 150,
+      "education_adjacent_sensitive": 150,
+      "bad_unsupported_request": 150,
+      "prompt_injection": 150,
+      "missing_subject_data": 150
+    },
+    "groundedDataGroundedCount": 143,
+    "unrelatedRedirectCount": 150,
+    "promptInjectionPassCount": 150,
+    "badRequestRefusalPassCount": 150,
+    "missingSubjectPassCount": 150,
+    "educationAdjacentSensitivePassCount": 150
+  },
+  "coverage": {
+    "byGrade": {
+      "g5": 8016,
+      "g1": 10020,
+      "g3": 8684,
+      "g4": 8684,
+      "g6": 7348,
+      "g2": 7348
+    },
+    "bySubject": {
+      "moledet_geography": 8321,
+      "hebrew": 8394,
+      "english": 8360,
+      "science": 8258,
+      "geometry": 8360,
+      "math": 8407
+    },
+    "byProfile": {
+      "strong_stable": 7,
+      "weak_all_subjects": 7,
+      "weak_math": 7,
+      "weak_hebrew": 7,
+      "weak_english": 7,
+      "improving_student": 7,
+      "declining_student": 7,
+      "inconsistent_student": 7,
+      "random_guessing": 7,
+      "fast_wrong": 7,
+      "slow_correct": 7,
+      "repeated_misconception": 7,
+      "prerequisite_gap": 7,
+      "thin_data": 7,
+      "rich_data": 7,
+      "mixed_strengths": 7,
+      "reading_comprehension_gap": 7,
+      "calculation_errors": 7,
+      "word_problem_gap": 6,
+      "topic_specific_gap": 6,
+      "external_question_flow": 6,
+      "six_subject_mixed_profile": 6
+    },
+    "parentAiByCategory": {
+      "data_grounded": 150,
+      "thin_data": 150,
+      "contradiction_challenge": 150,
+      "simple_explanation": 150,
+      "action_plan": 150,
+      "unrelated_off_topic": 150,
+      "education_adjacent_sensitive": 150,
+      "bad_unsupported_request": 150,
+      "prompt_injection": 150,
+      "missing_subject_data": 150
+    }
+  },
+  "quality": {
+    "totalChecks": 5700,
+    "failedChecks": 7,
+    "warningCount": 0,
+    "recurringIssueCodes": [
+      {
+        "code": "copilot_assert_thin_profile_acknowledges_limits",
+        "count": 7
+      }
+    ]
+  },
+  "bottomLine": {
+    "status": "NEEDS_REVIEW",
+    "detail": "יש כשלי איכות או PDF לא קריא — יש לפתור לפני ריצת המונים."
+  },
+  "gradeSupportNote": "כל הכיתות g1, g2, g3, g4, g5, g6 מיוצגות לפחות בתלמיד אחד.",
+  "pdfMechanism": "product-html-playwright"
+}
