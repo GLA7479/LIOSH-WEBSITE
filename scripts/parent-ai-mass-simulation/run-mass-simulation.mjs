@@ -14,6 +14,9 @@
  *   MASS_PARENT_AI_CATEGORY_BALANCED=1
  *   MASS_PARENT_AI_CATEGORY_MIN (default 1)
  *   QA_BASE_URL / MASS_PDF_BASE_URL — required for PDF export (Next server), default http://localhost:3001 (Node fetch to 127.0.0.1 can be flaky on some Windows setups)
+ *   MASS_PDF_STUDENT_TIMEOUT_MS — wall-clock cap per student PDF pack (default 600000)
+ *   MASS_PDF_DOM_WAIT_MS — Playwright waitForFunction timeout per short/detailed shell (default 180000)
+ *   MASS_RUN_CHECKPOINT_EVERY — write RUN_PROGRESS.json every N students in report/PDF phase (default 5)
  */
 import fs from "node:fs";
 import path from "node:path";
@@ -270,6 +273,20 @@ async function main() {
     pdfLimit,
     categoryCoverage,
   });
+
+  if (pdfLimit > 0) {
+    const expectedReadable = pdfLimit * 2;
+    quality.totalChecks += 1;
+    if (pdfIndex.validReadablePdfCount !== expectedReadable) {
+      quality.failedChecks += 1;
+      quality.issues.push({
+        level: "fail",
+        code: "pdf_valid_readable_aggregate_mismatch",
+        detail: `צפוי ${expectedReadable} PDF קריאים (עברית) לפי pdfLimit, בפועל ${pdfIndex.validReadablePdfCount} — ראה PDF_INDEX.json`,
+        file: "PDF_INDEX.json",
+      });
+    }
+  }
 
   const auditResult = await runAiResponseQualityAudit({
     outputRoot,

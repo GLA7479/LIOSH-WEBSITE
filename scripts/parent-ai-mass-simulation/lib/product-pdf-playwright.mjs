@@ -1,6 +1,10 @@
 /**
  * Product-format parent report PDFs via Playwright page.pdf (same stack as qa-parent-pdf-export.mjs).
  * Requires a running Next server (QA_BASE_URL).
+ *
+ * Env (optional):
+ *   MASS_PDF_STUDENT_TIMEOUT_MS — wall-clock cap for the whole short+detailed pack per student (default 600000).
+ *   MASS_PDF_DOM_WAIT_MS — waitForFunction timeout for each report shell (default 180000).
  */
 import fs from "node:fs";
 import path from "node:path";
@@ -45,6 +49,40 @@ function glyphCorruptionScore(text) {
   return { replacement, controls, ratio };
 }
 
+function envPdfStudentTimeoutMs() {
+  const raw = process.env.MASS_PDF_STUDENT_TIMEOUT_MS;
+  if (raw === undefined || raw === "") return 600_000;
+  const n = parseInt(String(raw), 10);
+  return Number.isFinite(n) && n >= 60_000 ? n : 600_000;
+}
+
+function envPdfWaitMs() {
+  const raw = process.env.MASS_PDF_DOM_WAIT_MS;
+  if (raw === undefined || raw === "") return 180_000;
+  const n = parseInt(String(raw), 10);
+  return Number.isFinite(n) && n >= 10_000 ? n : 180_000;
+}
+
+/**
+ * @template T
+ * @param {Promise<T>} promise
+ * @param {number} ms
+ * @param {string} label
+ */
+async function withTimeout(promise, ms, label) {
+  let timer;
+  try {
+    return await Promise.race([
+      promise,
+      new Promise((_, rej) => {
+        timer = setTimeout(() => rej(new Error(`${label}: timeout ${ms}ms`)), ms);
+      }),
+    ]);
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
 async function mockStudentMe(page) {
   await page.route("**/api/student/me", async (route) => {
     await route.fulfill({
@@ -64,19 +102,19 @@ async function mockStudentMe(page) {
   });
 }
 
-async function waitDetailedReady(page, label) {
+async function waitDetailedReady(page, label, timeoutMs) {
   await page.waitForFunction(
     () => !!document.querySelector("#parent-report-detailed-print"),
     undefined,
-    { timeout: 240_000, polling: 250 },
+    { timeout: timeoutMs, polling: 250 },
   );
 }
 
-async function waitShortReady(page, label) {
+async function waitShortReady(page, label, timeoutMs) {
   await page.waitForFunction(
     () => !!document.querySelector("#parent-report-pdf"),
     undefined,
-    { timeout: 240_000, polling: 250 },
+    { timeout: timeoutMs, polling: 250 },
   );
 }
 
@@ -85,6 +123,8 @@ async function waitShortReady(page, label) {
  * @returns {Promise<{ short: object, detailed: object, error?: string }>}
  */
 export async function exportProductParentReportPdfPack(opts) {
+  const studentTimeoutMs = envPdfStudentTimeoutMs();
+  const domWaitMs = envPdfWaitMs();
   const base = String(opts.baseUrl || "").replace(/\/$/, "");
   const previewShortDir = path.join(opts.outputRoot, "pdf-previews", "short");
   const previewDetailedDir = path.join(opts.outputRoot, "pdf-previews", "detailed");
@@ -100,91 +140,95 @@ export async function exportProductParentReportPdfPack(opts) {
 
   const browser = await chromium.launch({ headless: true });
   try {
-    const context = await browser.newContext({ viewport: { width: 1366, height: 900 }, locale: "he-IL" });
-    await context.addInitScript((snap) => {
-      try {
-        localStorage.clear();
-        for (const [k, v] of Object.entries(snap || {})) {
-          localStorage.setItem(k, String(v));
+    const runPack = async () => {
+      const context = await browser.newContext({ viewport: { width: 1366, height: 900 }, locale: "he-IL" });
+      await context.addInitScript((snap) => {
+        try {
+          localStorage.clear();
+          for (const [k, v] of Object.entries(snap || {})) {
+            localStorage.setItem(k, String(v));
+          }
+        } catch {
+          /* ignore */
         }
-      } catch {
-        /* ignore */
-      }
-    }, opts.storageSnapshot);
+      }, opts.storageSnapshot);
 
-    const page = await context.newPage();
-    await mockStudentMe(page);
+      const page = await context.newPage();
+      await mockStudentMe(page);
 
-    await page.goto(`${base}/`, { waitUntil: "domcontentloaded", timeout: 120_000 });
-    await page.evaluate((snap) => {
-      try {
-        for (const [k, v] of Object.entries(snap || {})) localStorage.setItem(k, String(v));
-      } catch {
-        /* ignore */
-      }
-    }, opts.storageSnapshot);
+      await page.goto(`${base}/`, { waitUntil: "domcontentloaded", timeout: 120_000 });
+      await page.evaluate((snap) => {
+        try {
+          for (const [k, v] of Object.entries(snap || {})) localStorage.setItem(k, String(v));
+        } catch {
+          /* ignore */
+        }
+      }, opts.storageSnapshot);
 
-    await page.goto(`${base}/learning/parent-report-detailed`, { waitUntil: "domcontentloaded", timeout: 120_000 });
-    await waitDetailedReady(page, `${opts.studentId}-detailed`);
-    let htmlD = await page.content();
-    fs.mkdirSync(path.dirname(detailedHtmlPath), { recursive: true });
-    fs.writeFileSync(detailedHtmlPath, htmlD, "utf8");
+      await page.goto(`${base}/learning/parent-report-detailed`, { waitUntil: "domcontentloaded", timeout: 120_000 });
+      await waitDetailedReady(page, `${opts.studentId}-detailed`, domWaitMs);
+      let htmlD = await page.content();
+      fs.mkdirSync(path.dirname(detailedHtmlPath), { recursive: true });
+      fs.writeFileSync(detailedHtmlPath, htmlD, "utf8");
 
-    await page.emulateMedia({ media: "screen" });
-    await page.screenshot({ path: detailedPng, fullPage: false });
+      await page.emulateMedia({ media: "screen" });
+      await page.screenshot({ path: detailedPng, fullPage: false });
 
-    await page.emulateMedia({ media: "print" });
-    let bufD = await page.pdf({ ...pdfOpts });
-    fs.writeFileSync(detailedPdfPath, bufD);
+      await page.emulateMedia({ media: "print" });
+      let bufD = await page.pdf({ ...pdfOpts });
+      fs.writeFileSync(detailedPdfPath, bufD);
 
-    await page.goto(`${base}/learning/parent-report`, { waitUntil: "domcontentloaded", timeout: 120_000 });
-    await waitShortReady(page, `${opts.studentId}-short`);
-    let htmlS = await page.content();
-    fs.writeFileSync(shortHtmlPath, htmlS, "utf8");
+      await page.goto(`${base}/learning/parent-report`, { waitUntil: "domcontentloaded", timeout: 120_000 });
+      await waitShortReady(page, `${opts.studentId}-short`, domWaitMs);
+      let htmlS = await page.content();
+      fs.writeFileSync(shortHtmlPath, htmlS, "utf8");
 
-    await page.emulateMedia({ media: "screen" });
-    await page.screenshot({ path: shortPng, fullPage: false });
+      await page.emulateMedia({ media: "screen" });
+      await page.screenshot({ path: shortPng, fullPage: false });
 
-    await page.emulateMedia({ media: "print" });
-    let bufS = await page.pdf({ ...pdfOpts });
-    fs.writeFileSync(shortPdfPath, bufS);
+      await page.emulateMedia({ media: "print" });
+      let bufS = await page.pdf({ ...pdfOpts });
+      fs.writeFileSync(shortPdfPath, bufS);
 
-    await context.close();
+      await context.close();
 
-    const metaFor = async (kind, buf, pdfAbsPath, relPdf, relPng, relHtml) => {
-      const stat = fs.statSync(pdfAbsPath);
-      const text = await extractPdfText(buf);
-      const pages = estimatePageCount(buf);
-      const glyph = glyphCorruptionScore(text);
-      const hasSnippet = REQUIRED_HEBREW_SNIPPETS.some((s) => text.includes(s));
-      const hebrewLetters = (text.match(/[\u0590-\u05FF]/g) || []).length;
-      const readableHeuristic =
-        hebrewLetters >= 40 && glyph.replacement < 5 && glyph.controls < 40 && hasSnippet;
+      const metaFor = async (kind, buf, pdfAbsPath, relPdf, relPng, relHtml) => {
+        const stat = fs.statSync(pdfAbsPath);
+        const text = await extractPdfText(buf);
+        const pages = estimatePageCount(buf);
+        const glyph = glyphCorruptionScore(text);
+        const hasSnippet = REQUIRED_HEBREW_SNIPPETS.some((s) => text.includes(s));
+        const hebrewLetters = (text.match(/[\u0590-\u05FF]/g) || []).length;
+        const readableHeuristic =
+          hebrewLetters >= 40 && glyph.replacement < 5 && glyph.controls < 40 && hasSnippet;
 
-      return {
-        studentId: opts.studentId,
-        reportType: kind,
-        productPdf: true,
-        simulationPdf: false,
-        pdfRenderer: "product-html-playwright",
-        readableHebrew: readableHeuristic,
-        visualValidationPassed: readableHeuristic,
-        textExtractionPassed: hebrewLetters >= 20 && glyph.ratio < 0.02,
-        textExtractionWarning: hebrewLetters >= 20 && hebrewLetters < 40,
-        fileSizeBytes: stat.size,
-        pageCount: pages,
-        pdfPath: relPdf,
-        htmlPath: relHtml,
-        previewPngPath: relPng,
-        extractedHebrewLetterCount: hebrewLetters,
-        glyphMetrics: glyph,
+        return {
+          studentId: opts.studentId,
+          reportType: kind,
+          productPdf: true,
+          simulationPdf: false,
+          pdfRenderer: "product-html-playwright",
+          readableHebrew: readableHeuristic,
+          visualValidationPassed: readableHeuristic,
+          textExtractionPassed: hebrewLetters >= 20 && glyph.ratio < 0.02,
+          textExtractionWarning: hebrewLetters >= 20 && hebrewLetters < 40,
+          fileSizeBytes: stat.size,
+          pageCount: pages,
+          pdfPath: relPdf,
+          htmlPath: relHtml,
+          previewPngPath: relPng,
+          extractedHebrewLetterCount: hebrewLetters,
+          glyphMetrics: glyph,
+        };
       };
+
+      const shortMeta = await metaFor("short", bufS, shortPdfPath, `pdfs/short/${opts.studentId}.pdf`, `pdf-previews/short/${opts.studentId}.png`, `parent-reports/${opts.studentId}/short.html`);
+      const detailedMeta = await metaFor("detailed", bufD, detailedPdfPath, `pdfs/detailed/${opts.studentId}.pdf`, `pdf-previews/detailed/${opts.studentId}.png`, `parent-reports/${opts.studentId}/detailed.html`);
+
+      return { short: shortMeta, detailed: detailedMeta };
     };
 
-    const shortMeta = await metaFor("short", bufS, shortPdfPath, `pdfs/short/${opts.studentId}.pdf`, `pdf-previews/short/${opts.studentId}.png`, `parent-reports/${opts.studentId}/short.html`);
-    const detailedMeta = await metaFor("detailed", bufD, detailedPdfPath, `pdfs/detailed/${opts.studentId}.pdf`, `pdf-previews/detailed/${opts.studentId}.png`, `parent-reports/${opts.studentId}/detailed.html`);
-
-    return { short: shortMeta, detailed: detailedMeta };
+    return await withTimeout(runPack(), studentTimeoutMs, `pdf_pack:${opts.studentId}`);
   } catch (e) {
     return {
       short: null,
