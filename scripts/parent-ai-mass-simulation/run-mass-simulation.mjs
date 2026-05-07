@@ -322,6 +322,8 @@ async function main() {
       finalStatus: auditResult.auditPayload.summary.finalStatus,
       gateFailures: auditResult.gateFailureCount,
       totalAnswerFailures: auditResult.auditPayload.summary.totalFailures,
+      totalWarnings: auditResult.auditPayload.summary.totalWarnings,
+      nonBlockingFormatWarnings: auditResult.auditPayload.summary.nonBlockingFormatWarnings ?? 0,
     },
     note: "כולל בדיקות PDF מוצר (Playwright), דוחות, קטגוריות Parent AI, ו-AI_RESPONSE_QUALITY_AUDIT.",
   };
@@ -476,7 +478,9 @@ async function main() {
       finalStatus: auditResult.auditPayload.summary.finalStatus,
       totalAnswerIssueFailures: auditResult.auditPayload.summary.totalFailures,
       gateFailureRows: auditResult.gateFailureCount,
-      warningsExtra: auditResult.auditPayload.summary.warningsFromReportHtmlMd ?? 0,
+      totalWarnings: auditResult.auditPayload.summary.totalWarnings,
+      nonBlockingFormatWarnings: auditResult.auditPayload.summary.nonBlockingFormatWarnings ?? 0,
+      warningsFromReportGate: auditResult.auditPayload.summary.warningsFromReportGate ?? 0,
     },
     launchGaps: {
       questionQualityValidatedSubjects: realValidatedSubjects,

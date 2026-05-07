@@ -34,6 +34,25 @@ function htmlVisibleText(html) {
 }
 
 /** Mirrors quality-runner — parent-facing strings from detailed.json only (no raw schema keys). */
+function loadShortMdParentBlob(outputRoot, studentId) {
+  if (!outputRoot || !studentId) return "";
+  const p = path.join(outputRoot, "parent-reports", studentId, "short.md");
+  if (!fs.existsSync(p)) return "";
+  try {
+    return fs.readFileSync(p, "utf8");
+  } catch {
+    return "";
+  }
+}
+
+/** Hebrew/reading signals in parent-facing report exports (not raw JSON keys). */
+function reportExpectsHebrewMention(detailed, outputRoot, studentId) {
+  const primary = String(detailed?.parentProductContractV1?.primarySubjectId || "").trim();
+  if (primary === "hebrew") return true;
+  const blob = `${collectDetailedParentFacingBlob(detailed)}\n${loadShortMdParentBlob(outputRoot, studentId)}`;
+  return /עברית|הבנת\s+הנקרא|קריאה(?!\s+באנגלית)/u.test(blob);
+}
+
 function collectDetailedParentFacingBlob(detailed) {
   const parts = [];
   const push = (v) => {
@@ -409,7 +428,13 @@ function rubricForAnswer(row, detailed, ctx) {
       break;
     }
     case "missing_subject_data": {
-      if (!/אין\s+מספיק|לא\s+מופיע|חסר|לא\s+נראה/u.test(ans)) {
+      const hasMissingSubjectLanguage =
+        /אין\s+מספיק|לא\s+מופיע|חסר|לא\s+נראה/u.test(ans) ||
+        /אין\s+(כרגע\s+)?נתונים\s+על\s+הנושא/u.test(ans) ||
+        /אין\s+בדוח\s+מידע\s+על\s+הנושא/u.test(ans) ||
+        /הנושא\s+לא\s+מופיע\s+בדוח/u.test(ans) ||
+        /מתמקד(?:ת)?\s+רק?\s+במקצועות\s+.*מופיעים\s+בדוח/u.test(ans);
+      if (!hasMissingSubjectLanguage) {
         issues.push({
           severity: "warning",
           type: "category_mismatch",
@@ -460,9 +485,43 @@ function rubricForAnswer(row, detailed, ctx) {
     });
     failWeight += 2;
   }
-  if (profile === "weak_hebrew" && !skipWeakProfileSubject && !/עברית|קריאה|הבנת\s+הנקרא/u.test(ans)) {
-    issues.push({ severity: "fail", type: "profile_mismatch", code: "audit_weak_hebrew_missing", detail: "חסר עברית" });
-    failWeight += 2;
+  if (profile === "weak_hebrew" && !skipWeakProfileSubject) {
+    const sid = String(row.studentId || "");
+    const root = String(ctx?.outputRoot || "");
+    const detailedSnap = detailed || loadDetailedSnapshot(root, sid);
+    const shortExists = root && fs.existsSync(path.join(root, "parent-reports", sid, "short.md"));
+    const evidenceKnowable = !!(detailedSnap || shortExists);
+    const hasHebrewWords = /עברית|קריאה|הבנת\s+הנקרא/u.test(ans);
+    if (!evidenceKnowable) {
+      if (!hasHebrewWords) {
+        issues.push({
+          severity: "fail",
+          type: "profile_mismatch",
+          code: "audit_weak_hebrew_missing",
+          detail: "חסר עברית",
+        });
+        failWeight += 2;
+      }
+    } else {
+      const expectsHebrew = reportExpectsHebrewMention(detailedSnap, root, sid);
+      if (expectsHebrew && !hasHebrewWords) {
+        issues.push({
+          severity: "fail",
+          type: "profile_mismatch",
+          code: "audit_weak_hebrew_missing",
+          detail: "חסר עברית",
+        });
+        failWeight += 2;
+      } else if (!expectsHebrew && !hasHebrewWords) {
+        issues.push({
+          severity: "warning",
+          type: "data_mismatch",
+          code: "weak_hebrew_profile_missing_evidence",
+          detail: "פרופיל weak_hebrew ללא ראיות עברית בדוח — לבדוק זרימת נתונים",
+        });
+        failWeight += 1;
+      }
+    }
   }
   if (profile === "weak_english" && !skipWeakProfileSubject && !/אנגלית/u.test(ans)) {
     issues.push({ severity: "fail", type: "profile_mismatch", code: "audit_weak_english_missing", detail: "חסר אנגלית" });
@@ -558,7 +617,8 @@ export async function runAiResponseQualityAudit(ctx) {
   /** @type {any[]} */
   const reportScanSummaries = [];
 
-  const personalizationCats = new Set(["thin_data", "simple_explanation", "action_plan", "contradiction_challenge", "data_grounded"]);
+  /** Duplicate normalized answers: categories that require personalization (not fixed-policy templates like thin_data). */
+  const personalizationCats = new Set(["simple_explanation", "action_plan", "contradiction_challenge"]);
   const dupKeysByCat = new Map();
 
   for (const row of rows) {
@@ -700,7 +760,7 @@ export async function runAiResponseQualityAudit(ctx) {
         gateIssues.push({
           level: "warning",
           code: "audit_report_md_html_divergence",
-          detail: sid,
+          detail: `${sid} · hash differs — השוואה רגישה להבדלי markup/ריווח בין MD ל-HTML`,
           file: `parent-reports/${sid}/`,
           auditType: "report_ai_mismatch",
         });
@@ -807,17 +867,43 @@ export async function runAiResponseQualityAudit(ctx) {
     (n, r) => n + r.issues.filter((i) => i.severity === "fail").length,
     0,
   );
-  const totalWarnings = answerRecords.reduce(
+  const warningsFromAnswerRubric = answerRecords.reduce(
     (n, r) => n + r.issues.filter((i) => i.severity === "warning").length,
     0,
   );
-  const extraWarn = gateIssues.filter((g) => g.level === "warning").length;
+  const gateWarningCount = gateIssues.filter((g) => g.level === "warning").length;
+  const nonBlockingFormatWarnings = gateIssues.filter(
+    (g) => g.level === "warning" && g.code === "audit_report_md_html_divergence",
+  ).length;
+  /** Unified warning tally: rubric (per-answer) + harness gate warnings — matches QUALITY_FLAGS.warningCount intent. */
+  const totalWarnings = warningsFromAnswerRubric + gateWarningCount;
 
   const gateFailureCount = gateIssues.filter((g) => g.level === "fail").length;
 
+  const warningCodeCounts = new Map();
+  for (const r of answerRecords) {
+    for (const iss of r.issues) {
+      if (iss.severity === "warning") {
+        warningCodeCounts.set(iss.code, (warningCodeCounts.get(iss.code) || 0) + 1);
+      }
+    }
+  }
+  for (const g of gateIssues) {
+    if (g.level === "warning") {
+      warningCodeCounts.set(g.code, (warningCodeCounts.get(g.code) || 0) + 1);
+    }
+  }
+  const topWarnings = [...warningCodeCounts.entries()]
+    .sort((a, b) => b[1] - a[1])
+    .map(([code, count]) => ({
+      code,
+      count,
+      nonBlockingFormat: code === "audit_report_md_html_divergence",
+    }));
+
   let finalStatus = "PASS";
   if (gateFailureCount > 0) finalStatus = "FAIL";
-  else if (totalWarnings + extraWarn > 0) finalStatus = "NEEDS_REVIEW";
+  else if (totalWarnings > 0) finalStatus = "NEEDS_REVIEW";
 
   const worstExamples = [...answerRecords]
     .flatMap((r) =>
@@ -842,12 +928,19 @@ export async function runAiResponseQualityAudit(ctx) {
       totalReportsScanned: reportsScanned,
       totalFailures,
       totalWarnings,
-      warningsFromReportHtmlMd: extraWarn,
+      warningsFromAnswerRubric,
+      warningsFromReportGate: gateWarningCount,
+      /** @deprecated use warningsFromReportGate — kept for older readers; currently identical when MD/HTML is the only gate warning. */
+      warningsFromReportHtmlMd: gateWarningCount,
+      nonBlockingFormatWarnings,
+      formatMarkupWarningNote:
+        "אזהרות audit_report_md_html_divergence אינן חוסמות מוצר: השוואת hash בין MD ל-HTML רגישה ל-markup/ריווח ולא משקפת בהכרח פער תוכן.",
       gateFailuresAdded: gateFailureCount,
       finalStatus,
     },
     failuresByType,
     topFailures: worstExamples,
+    topWarnings,
     categoryTable,
     profileTable,
     forbiddenTermsTable: Object.values(forbiddenTable).sort((a, b) => b.count - a.count),
@@ -920,9 +1013,18 @@ export function writeAiResponseQualityAuditMarkdown(outputRoot, auditPayload) {
     `- total answers scanned: **${s.totalAnswersScanned}**`,
     `- total reports scanned: **${s.totalReportsScanned}**`,
     `- total failures (issues): **${s.totalFailures}**`,
-    `- total warnings: **${s.totalWarnings}**`,
+    `- total warnings: **${s.totalWarnings}** (מתוכם מרוביקת תשובות: **${s.warningsFromAnswerRubric}**, מ־gate דוחות: **${s.warningsFromReportGate}**)`,
+    `- non-blocking format/markup (MD↔HTML hash): **${s.nonBlockingFormatWarnings}** — ${s.formatMarkupWarningNote}`,
     `- gate failures (harness): **${s.gateFailuresAdded}**`,
     `- **Final status: ${s.finalStatus}**`,
+    "",
+    "## 1b. Top warnings (by code)",
+    "",
+    ...((auditPayload.topWarnings || []).length
+      ? (auditPayload.topWarnings || []).map((w) =>
+          `- **${w.code}**: ${w.count}${w.nonBlockingFormat ? " _(פורמט בלבד, לא חוסם)_" : ""}`,
+        )
+      : ["- —"]),
     "",
     "## 2. Failures by type",
     "",
@@ -965,6 +1067,10 @@ export function writeAiResponseQualityAuditMarkdown(outputRoot, auditPayload) {
     ...(auditPayload.phraseLeaderboard || [])
       .slice(0, 25)
       .map((r) => `| ${String(r.phrase).slice(0, 72)}… | ${r.count} | ${r.studentShareApprox} | ${r.suspicious ? "yes" : "no"} |`),
+    "",
+    "## 8. MD vs HTML hash warnings",
+    "",
+    "אזהרות `audit_report_md_html_divergence` אינן כשל מוצר בפני עצמן: גרסת MD וגרסת HTML נבנות ממקורות שונים, והשוואת hash על טקסט גלוי עדיין רגישה להבדלי תגיות, ניקוי HTML, וריווח.",
     "",
   ];
   fs.writeFileSync(path.join(outputRoot, "AI_RESPONSE_QUALITY_AUDIT.md"), lines.join("\n"), "utf8");

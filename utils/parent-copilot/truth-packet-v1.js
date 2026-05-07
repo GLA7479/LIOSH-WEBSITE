@@ -259,6 +259,30 @@ function buildAnchoredMetasForExecutive(allAnchored) {
 }
 
 /**
+ * For `explain_report`, surface worst-performing anchored rows first so parents see the priority gap
+ * (e.g. Hebrew weakness) before other subjects — insertion order of `metas` alone is not ranked.
+ */
+function pickExplainReportMetas(metas, rankedWorstFirst, limit) {
+  const out = [];
+  const seen = new Set();
+  const key = (m) => `${m.sid}::${m.dn}`;
+  const push = (m) => {
+    if (!m || out.length >= limit) return;
+    const k = key(m);
+    if (seen.has(k)) return;
+    seen.add(k);
+    out.push(m);
+  };
+  const wf = rankedWorstFirst[0];
+  if (wf) push(wf);
+  for (const m of metas) {
+    if (out.length >= limit) break;
+    push(m);
+  }
+  return out.slice(0, limit);
+}
+
+/**
  * Executive truth slots shaped by **canonical parent intent** (Stage A class), not the literal question string.
  * Uses only anchored rows + executive summary trends already in the payload.
  * @param {{
@@ -509,21 +533,28 @@ function buildExecutiveIntentNarrativeSlots(x) {
     }
     case "explain_report": {
       let obs;
+      const scarcityLead =
+        x.totalQ < 80
+          ? "יש כרגע מעט נתוני תרגול, כלומר נפח הנתונים עדיין מצומצם ואין עדיין מספיק מידע למסקנה חזקה."
+          : "";
       if (sparseExecutive) {
         const m0 = metas[0];
         obs = m0
-          ? `כרגע בדוח מופיע חומר מעוגן מצומצם: ב${labelPair(m0)}. ${m0.obs ? `מה שמנוסח שם: ${clipHe(m0.obs, 220)}` : "אין עדיין פסקת ניסוח ארוכה שמוצגת כאן."} התמונה הכוללת עדיין חלקית — עד שייאספו עוד נקודות עם ניסוח מעוגן.`
+          ? `${scarcityLead ? `${scarcityLead} ` : ""}כרגע בדוח מופיע חומר מעוגן מצומצם: ב${labelPair(m0)}. ${m0.obs ? `מה שמנוסח שם: ${clipHe(m0.obs, 220)}` : "אין עדיין פסקת ניסוח ארוכה שמוצגת כאן."} התמונה הכוללת עדיין חלקית — עד שייאספו עוד נקודות עם ניסוח מעוגן.`
           : defaultObs;
       } else {
-        const chunks = metas.slice(0, 4).map((m) => {
+        const explainPick = pickExplainReportMetas(metas, rankedWorstFirst, 4);
+        const chunks = explainPick.map((m) => {
           const core = m.obs ? clipHe(m.obs, 95) : "ניסוח מעוגן קיים בלי פירוט ארוך";
           return `${labelPair(m)} — ${core}`;
         });
-        obs = `לפי מה שמוצג עכשיו בדוח, אלה המקצועות והנושאים עם ניסוח מעוגן שאפשר להסתמך עליהם: ${chunks.join(" · ")}.`;
+        obs = `${scarcityLead ? `${scarcityLead} ` : ""}לפי מה שמוצג עכשיו בדוח, אלה המקצועות והנושאים עם ניסוח מעוגן שאפשר להסתמך עליהם: ${chunks.join(" · ")}.`;
       }
       const interpParts = [];
-      if (metas[0]?.interp) interpParts.push(clipHe(metas[0].interp, 200));
-      if (metas[1]?.interp) interpParts.push(`במקביל, ב${labelPair(metas[1])}: ${clipHe(metas[1].interp, 170)}`);
+      const explainInterpPick = sparseExecutive ? metas : pickExplainReportMetas(metas, rankedWorstFirst, 4);
+      if (explainInterpPick[0]?.interp) interpParts.push(clipHe(explainInterpPick[0].interp, 200));
+      if (explainInterpPick[1]?.interp)
+        interpParts.push(`במקביל, ב${labelPair(explainInterpPick[1])}: ${clipHe(explainInterpPick[1].interp, 170)}`);
       let interp = interpParts.join(" ");
       const narrTrend = trends.find(
         (line) => line && !looksLikeNumericOrCountLead(line) && shouldAttachExecutiveSecondTrendLine(line, x.totalQ),
