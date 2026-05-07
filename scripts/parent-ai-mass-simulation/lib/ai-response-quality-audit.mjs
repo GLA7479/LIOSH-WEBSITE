@@ -1,0 +1,971 @@
+/**
+ * Central AI + parent-facing text audit for mass simulation output.
+ * Produces AI_RESPONSE_QUALITY_AUDIT.{json,md,csv} and optional gate issues for QUALITY_FLAGS.
+ */
+import fs from "node:fs";
+import path from "node:path";
+
+async function extractPdfText(filePath) {
+  try {
+    const mod = await import("pdf-parse");
+    const PDFParseCtor = mod.PDFParse || mod.default?.PDFParse;
+    if (PDFParseCtor) {
+      const parser = new PDFParseCtor({ data: fs.readFileSync(filePath) });
+      try {
+        const textResult = await parser.getText();
+        return String(textResult?.text || "");
+      } finally {
+        await parser.destroy?.();
+      }
+    }
+  } catch {
+    /* ignore */
+  }
+  return "";
+}
+
+function htmlVisibleText(html) {
+  const src = String(html || "");
+  const noScripts = src
+    .replace(/<script[\s\S]*?<\/script>/gi, " ")
+    .replace(/<style[\s\S]*?<\/style>/gi, " ")
+    .replace(/<noscript[\s\S]*?<\/noscript>/gi, " ");
+  return noScripts.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
+}
+
+/** Mirrors quality-runner — parent-facing strings from detailed.json only (no raw schema keys). */
+function collectDetailedParentFacingBlob(detailed) {
+  const parts = [];
+  const push = (v) => {
+    if (typeof v === "string" && v.trim()) parts.push(v);
+  };
+  const es = detailed?.executiveSummary;
+  if (es && typeof es === "object") {
+    push(es.mainHomeRecommendationHe);
+    push(es.cautionNoteHe);
+    push(es.homeFocusHe);
+  }
+  const ppc = detailed?.parentProductContractV1;
+  if (ppc && typeof ppc === "object") {
+    const top = ppc.top && typeof ppc.top === "object" ? ppc.top : {};
+    push(top.mainStatusHe);
+    push(top.whyHe);
+    const subs = ppc.subjects && typeof ppc.subjects === "object" ? ppc.subjects : {};
+    for (const row of Object.values(subs)) {
+      if (row && typeof row === "object") {
+        push(row.mainStatusHe);
+        push(row.whyHe);
+      }
+    }
+  }
+  for (const sp of detailed?.subjectProfiles || []) {
+    push(sp.summaryHe);
+    push(sp.confidenceSummaryHe);
+    for (const tr of sp.topicRecommendations || []) {
+      if (tr && typeof tr === "object") {
+        push(tr.whyThisRecommendationHe);
+        push(tr.cautionLineHe);
+      }
+    }
+  }
+  return parts.join("\n");
+}
+
+/** Expanded forbidden internal / technical vocabulary (parent-facing + AI). */
+const FORBIDDEN_RULES = /** @type {const} */ ([
+  ["he_engine", /המנוע/u],
+  ["he_numeric_anchor", /עוגן מספרי/u],
+  ["he_anchored_topics", /מוקדים\s+מעוגנים|מוקדים\s+המעוגנים/u],
+  ["he_anchored_sources", /מקורות\s+מעוגנים/u],
+  ["he_weighted_accuracy", /דיוק\s+משוקלל|משוקלל/u],
+  ["he_period_summary_label", /סיכום\s+תקופתי/u],
+  ["he_meta_opening", /בלי\s+לפתוח/u],
+  ["he_no_basis_yet", /אין\s+עדיין\s+בסיס/u],
+  ["en_metadata", /\bmetadata\b/i],
+  ["en_debug", /\bdebug\b/i],
+  ["en_skilltag", /\bskillTag\b|\bskilltag\b/i],
+  ["en_contract", /\bcontract\b/i],
+  ["en_payload", /\bpayload\b/i],
+  ["en_source_keyword", /\bsource\b/i],
+  ["en_resolver", /\bresolver\b/i],
+  ["en_assertion", /\bassertion\b/i],
+  ["en_fallback", /\bfallback\b/i],
+  ["en_deterministic", /\bdeterministic\b/i],
+  ["en_telemetry", /\btelemetry\b/i],
+]);
+
+const SUBJECT_HINTS = [
+  ["math", /חשבון|מתמטיקה|חישוב/u],
+  ["hebrew", /עברית|הבנת\s+הנקרא|קריאה(?!\s+באנגלית)/u],
+  ["english", /אנגלית/u],
+  ["science", /מדעים/u],
+  ["geometry", /גאומטריה/u],
+  ["moledet_geography", /מולדת|גאוגרפיה/u],
+];
+
+const GENERIC_ONLY_PRACTICE =
+  /צריך\s+עוד\s+תרגול|עוד\s+תרגול\s+בלבד|רק\s+תרגול|בלי\s+מידע\s+משמעותי/u;
+
+const THIN_DATA_LANGUAGE =
+  /מעט\s+נתונים|נתונים\s+דלים|לא\s+מספיק\s+נתונים|מוגבל|מצומצם|דליל|אין\s+מספיק\s+בסיס\s+לתמונה/u;
+
+/** Stricter gate for strong/rich reports — avoids בלבול עם מילים כמו «מוגבל» בהקשרים לגיטימיים אחרים. */
+const STRONG_RICH_THIN_REPORT_GATE =
+  /עדיין\s+לא\s+הצטבר\s+מספיק\s+מידע\s+לתמונה\s+רחבה|אין\s+מספיק\s+נתונים\s+כדי\s+ל|נתונים\s+דלים\s+מדי\s+למסקנה|מעט\s+מדי\s+נתונים\s+בדוח/u;
+
+function detectSubjects(text) {
+  const t = String(text || "");
+  const found = [];
+  for (const [id, re] of SUBJECT_HINTS) {
+    if (re.test(t)) found.push(id);
+  }
+  return [...new Set(found)];
+}
+
+function evidenceMentions(text) {
+  const t = String(text || "");
+  const mentions = [];
+  if (/\d+\s*%/.test(t)) mentions.push("percent");
+  if (/שאלות/u.test(t)) mentions.push("questions_word");
+  if (/\d+\s+שאלות/u.test(t)) mentions.push("question_count");
+  if (/דיוק/u.test(t)) mentions.push("accuracy_word");
+  if (/כ־?\d+/.test(t)) mentions.push("numeric_anchor");
+  return mentions;
+}
+
+function findForbiddenTerms(text) {
+  const t = String(text || "");
+  /** @type {{ code: string; match: string }[]} */
+  const hits = [];
+  for (const [code, re] of FORBIDDEN_RULES) {
+    const m = t.match(re);
+    if (m) hits.push({ code, match: m[0] });
+  }
+  return hits;
+}
+
+function genericPhraseHits(text) {
+  const t = String(text || "");
+  const g = [];
+  if (/לפי\s+מה\s+שהדוח\s+נותן\s+כרגע/u.test(t)) g.push("template_what_report_says");
+  if (/זה\s+מה\s+שהדוח\s+נותן\s+כרגע/u.test(t)) g.push("template_this_is_what_report");
+  if (/נבדוק\s+שוב\s+לפי\s+עוד\s+תרגול/u.test(t)) g.push("template_check_again_practice");
+  return g;
+}
+
+function sentenceCountHe(text) {
+  const s = String(text || "")
+    .split(/[.!?。\n]+/)
+    .map((x) => x.trim())
+    .filter(Boolean);
+  return Math.max(1, s.length);
+}
+
+function scoreTriplet({ forbiddenCount, issuePenalty, bonus }) {
+  const baseParent = Math.max(0, 100 - forbiddenCount * 15 - issuePenalty);
+  const personalization = Math.max(0, Math.min(100, 55 + bonus));
+  const categoryFit = Math.max(0, Math.min(100, 70 - issuePenalty + bonus * 0.5));
+  return {
+    parentLanguageScore: Math.round(baseParent),
+    personalizationScore: Math.round(personalization),
+    categoryFitScore: Math.round(categoryFit),
+  };
+}
+
+function loadDetailedSnapshot(outputRoot, studentId) {
+  const p = path.join(outputRoot, "parent-reports", studentId, "detailed.json");
+  if (!fs.existsSync(p)) return null;
+  try {
+    return JSON.parse(fs.readFileSync(p, "utf8"));
+  } catch {
+    return null;
+  }
+}
+
+function primaryWeakSubjectLabel(detailed) {
+  const sid = String(detailed?.parentProductContractV1?.primarySubjectId || "").trim();
+  if (!sid) return "";
+  const labels = {
+    math: "חשבון",
+    hebrew: "עברית",
+    english: "אנגלית",
+    science: "מדעים",
+    geometry: "גאומטריה",
+    moledet_geography: "מולדת",
+  };
+  return labels[sid] || sid;
+}
+
+function totalQuestionsFromReport(detailed) {
+  return Math.max(0, Number(detailed?.overallSnapshot?.totalQuestions) || 0);
+}
+
+/**
+ * Category + profile rubric — returns { issues: any[], failWeight: number }
+ */
+function rubricForAnswer(row, detailed, ctx) {
+  const cat = String(row.questionCategory || "");
+  const ans = String(row.aiAnswer || "");
+  const profile = String(row.profileType || "");
+  const tq = totalQuestionsFromReport(detailed);
+  /** @type {any[]} */
+  const issues = [];
+  let failWeight = 0;
+
+  const forbidInAnswer = findForbiddenTerms(ans);
+  for (const h of forbidInAnswer) {
+    issues.push({
+      severity: "fail",
+      type: "internal_language",
+      code: `audit_forbidden_${h.code}`,
+      detail: h.match,
+    });
+    failWeight += 2;
+  }
+
+  const subs = detectSubjects(ans);
+  const thinProfile = profile === "thin_data";
+  const richStrong = profile === "strong_stable" || profile === "rich_data";
+
+  switch (cat) {
+    case "data_grounded": {
+      if (tq >= 40 && subs.length === 0 && !/\d/.test(ans)) {
+        issues.push({
+          severity: "fail",
+          type: "category_mismatch",
+          code: "audit_data_grounded_missing_evidence",
+          detail: "חסר מקצוע/נתון מספרי למרות נפח דוח",
+        });
+        failWeight += 2;
+      }
+      if (richStrong && tq >= 80 && THIN_DATA_LANGUAGE.test(ans)) {
+        issues.push({
+          severity: "fail",
+          type: "profile_mismatch",
+          code: "audit_strong_rich_thin_language_in_answer",
+          detail: "שפת thin בפרופיל חזק/עשיר",
+        });
+        failWeight += 3;
+      }
+      if (richStrong && /אין\s+מספיק\s+נתונים/u.test(ans) && tq >= 120) {
+        issues.push({
+          severity: "fail",
+          type: "data_mismatch",
+          code: "audit_rich_claims_insufficient_data",
+          detail: "נפח דוח גבוה אך ניסוח של חוסר נתונים",
+        });
+        failWeight += 3;
+      }
+      break;
+    }
+    case "thin_data": {
+      if (thinProfile && !THIN_DATA_LANGUAGE.test(ans) && !/מעט|מצומצם|דליל|מוגבל/u.test(ans)) {
+        issues.push({
+          severity: "warning",
+          type: "category_mismatch",
+          code: "audit_thin_data_missing_scarcity_language",
+          detail: "פרופיל thin_data — צפוי ניסוח זהיר/מועט נתונים",
+        });
+        failWeight += 1;
+      }
+      if (!thinProfile && THIN_DATA_LANGUAGE.test(ans) && tq >= 200) {
+        issues.push({
+          severity: "fail",
+          type: "profile_mismatch",
+          code: "audit_non_thin_profile_thin_language",
+          detail: "ניסוח דליל למרות פרופיל לא thin_data",
+        });
+        failWeight += 2;
+      }
+      break;
+    }
+    case "simple_explanation": {
+      const sc = sentenceCountHe(ans);
+      if (sc < 2 || sc > 8) {
+        issues.push({
+          severity: sc < 2 ? "fail" : "warning",
+          type: "category_mismatch",
+          code: "audit_simple_explanation_length",
+          detail: `אורך משפטים ${sc}`,
+        });
+        failWeight += sc < 2 ? 2 : 1;
+      }
+      if (subs.length === 0 && tq >= 50) {
+        issues.push({
+          severity: "warning",
+          type: "generic_answer",
+          code: "audit_simple_explanation_no_subject",
+          detail: "חסר מקצוע ספציפי למרות דוח עשיר",
+        });
+        failWeight += 1;
+      }
+      break;
+    }
+    case "action_plan": {
+      const steps = (ans.match(/\d+\)/g) || []).length;
+      if (steps < 2 && !/[12]\)/u.test(ans)) {
+        issues.push({
+          severity: "fail",
+          type: "category_mismatch",
+          code: "audit_action_plan_insufficient_steps",
+          detail: "חסרים 2–3 צעדים ממוספרים או ברורים",
+        });
+        failWeight += 3;
+      }
+      if (tq >= 80 && subs.length === 0) {
+        issues.push({
+          severity: "warning",
+          type: "generic_answer",
+          code: "audit_action_plan_no_subject_anchor",
+          detail: "אין אזכור מקצוע למרות נתונים מספיקים",
+        });
+        failWeight += 1;
+      }
+      const hardcodedMathOnly =
+        /(^|\s)(בחשבון|חשבון)(\s|$)/u.test(ans) &&
+        !/מולדת|גאוגרפיה|עברית|אנגלית|מדעים|גאומטריה/u.test(ans);
+      if (
+        hardcodedMathOnly &&
+        profile !== "weak_math" &&
+        primaryWeakSubjectLabel(detailed) &&
+        !/חשבון|מתמטיקה/u.test(primaryWeakSubjectLabel(detailed))
+      ) {
+        issues.push({
+          severity: "fail",
+          type: "profile_mismatch",
+          code: "audit_action_plan_hardcoded_math_mismatch",
+          detail: "חשבון קשיח כשאינו המוקד בדוח",
+        });
+        failWeight += 3;
+      }
+      break;
+    }
+    case "contradiction_challenge": {
+      if (!/בית|בבית/u.test(ans) || !/דוח/u.test(ans)) {
+        issues.push({
+          severity: "warning",
+          type: "category_mismatch",
+          code: "audit_contradiction_missing_home_vs_report",
+          detail: "צפוי גשר בית ↔ דוח",
+        });
+        failWeight += 1;
+      }
+      if (!/\d+\s*%|\d+\s+שאלות/u.test(ans)) {
+        issues.push({
+          severity: "warning",
+          type: "category_mismatch",
+          code: "audit_contradiction_missing_numeric_evidence",
+          detail: "חסר נתון מספרי מהדוח",
+        });
+        failWeight += 1;
+      }
+      break;
+    }
+    case "unrelated_off_topic": {
+      const dumpEvidence =
+        /\d+\s+שאלות/u.test(ans) && ans.length > 800 && /דיוק|שאלות/u.test(ans);
+      if (dumpEvidence && /מזג|חדשות|קניות|קוד(?!\s*פיננס)/u.test(String(row.parentQuestionText))) {
+        issues.push({
+          severity: "fail",
+          type: "category_mismatch",
+          code: "audit_off_topic_dumped_report",
+          detail: "Dump נתוני דוח לשאלה off-topic",
+        });
+        failWeight += 3;
+      }
+      if (!/דוח|תרגול|למידה/u.test(ans)) {
+        issues.push({
+          severity: "fail",
+          type: "category_mismatch",
+          code: "audit_off_topic_no_redirect",
+          detail: "חסר redirect לתחום למידה",
+        });
+        failWeight += 2;
+      }
+      break;
+    }
+    case "bad_unsupported_request": {
+      if (!/לא\s+ניתן|אי\s+אפשר|לא\s+אוכל|דוח\s+מבוסס|נתוני\s+תרגול/u.test(ans)) {
+        issues.push({
+          severity: "fail",
+          type: "category_mismatch",
+          code: "audit_bad_request_weak_refusal",
+          detail: "סירוב/הסבר לא מספיק ברורים",
+        });
+        failWeight += 2;
+      }
+      break;
+    }
+    case "prompt_injection": {
+      if (/\bsystem\s*prompt|prompt\s*הפנימי|\bdebug\b|\btelemetry\b|skillTag|payload/u.test(ans)) {
+        issues.push({
+          severity: "fail",
+          type: "internal_language",
+          code: "audit_prompt_injection_leak",
+          detail: "חשד לדליפת מונחים פנימיים",
+        });
+        failWeight += 4;
+      }
+      break;
+    }
+    case "missing_subject_data": {
+      if (!/אין\s+מספיק|לא\s+מופיע|חסר|לא\s+נראה/u.test(ans)) {
+        issues.push({
+          severity: "warning",
+          type: "category_mismatch",
+          code: "audit_missing_subject_soft_language",
+          detail: "צפוי ניסוח חוסר נתונים למקצוע",
+        });
+        failWeight += 1;
+      }
+      break;
+    }
+    case "education_adjacent_sensitive": {
+      if (/אבחנה\s+רפואית|אבחון\s+קליני/u.test(ans)) {
+        issues.push({
+          severity: "fail",
+          type: "category_mismatch",
+          code: "audit_sensitive_diagnosis_tone",
+          detail: "אסור אבחון",
+        });
+        failWeight += 3;
+      }
+      break;
+    }
+    default:
+      break;
+  }
+
+  // Profile-specific
+  const profileSubjectRubricCats = new Set([
+    "data_grounded",
+    "thin_data",
+    "simple_explanation",
+    "action_plan",
+    "contradiction_challenge",
+    "missing_subject_data",
+    "education_adjacent_sensitive",
+  ]);
+  const skipWeakProfileSubject =
+    /^(unrelated_off_topic|prompt_injection|bad_unsupported_request|education_adjacent_sensitive|missing_subject_data)$/u.test(
+      cat,
+    ) || !profileSubjectRubricCats.has(cat);
+
+  if (profile === "weak_math" && tq >= 30 && !skipWeakProfileSubject && !/חשבון|מתמטיקה|חישוב/u.test(ans)) {
+    issues.push({
+      severity: "fail",
+      type: "profile_mismatch",
+      code: "audit_weak_math_missing_math_terms",
+      detail: "חסר אזכור חשבון בפרופיל weak_math",
+    });
+    failWeight += 2;
+  }
+  if (profile === "weak_hebrew" && !skipWeakProfileSubject && !/עברית|קריאה|הבנת\s+הנקרא/u.test(ans)) {
+    issues.push({ severity: "fail", type: "profile_mismatch", code: "audit_weak_hebrew_missing", detail: "חסר עברית" });
+    failWeight += 2;
+  }
+  if (profile === "weak_english" && !skipWeakProfileSubject && !/אנגלית/u.test(ans)) {
+    issues.push({ severity: "fail", type: "profile_mismatch", code: "audit_weak_english_missing", detail: "חסר אנגלית" });
+    failWeight += 2;
+  }
+
+  if (
+    GENERIC_ONLY_PRACTICE.test(ans) &&
+    subs.length === 0 &&
+    !/\d/.test(ans) &&
+    tq >= 60 &&
+    ["simple_explanation", "data_grounded", "action_plan"].includes(cat)
+  ) {
+    issues.push({
+      severity: "warning",
+      type: "generic_answer",
+      code: "audit_generic_practice_only",
+      detail: "תשובה גנרית על תרגול בלבד",
+    });
+    failWeight += 1;
+  }
+
+  const bonus = subs.length * 8 + (/\d/.test(ans) ? 10 : 0);
+  const scores = scoreTriplet({
+    forbiddenCount: forbidInAnswer.length,
+    issuePenalty: Math.min(40, failWeight * 3),
+    bonus,
+  });
+
+  return { issues, failWeight, scores };
+}
+
+function normalizeAnswerKey(ans) {
+  return String(ans || "")
+    .replace(/\s+/g, " ")
+    .trim()
+    .toLowerCase()
+    .slice(0, 2000);
+}
+
+function buildPhraseLeaderboard(rows, thresholdPct) {
+  const byCat = new Map();
+  for (const r of rows) {
+    const cat = String(r.questionCategory || "unknown");
+    const sentences = String(r.aiAnswer || "")
+      .split(/[.\n]+/)
+      .map((x) => x.replace(/\s+/g, " ").trim())
+      .filter((x) => x.length >= 25 && x.length < 220);
+    if (!byCat.has(cat)) byCat.set(cat, new Map());
+    const m = byCat.get(cat);
+    for (const s of sentences) {
+      const k = s.slice(0, 180);
+      m.set(k, (m.get(k) || 0) + 1);
+    }
+  }
+  const nStudents = new Set(rows.map((r) => r.studentId)).size || 1;
+  /** @type {any[]} */
+  const leaderboard = [];
+  for (const [cat, pmap] of byCat.entries()) {
+    for (const [phrase, count] of pmap.entries()) {
+      const pct = count / nStudents;
+      if (count >= 3 && pct >= thresholdPct) {
+        leaderboard.push({
+          phrase,
+          count,
+          studentShareApprox: Number(pct.toFixed(3)),
+          categories: [cat],
+          suspicious: pct >= 0.4 && phrase.length > 40,
+        });
+      }
+    }
+  }
+  leaderboard.sort((a, b) => b.count - a.count);
+  return leaderboard.slice(0, 80);
+}
+
+/**
+ * @param {{
+ *   outputRoot: string,
+ *   students: any[],
+ *   globalInteractions: any[],
+ *   reportStudentIds: Set<string>,
+ *   pdfLimit: number,
+ * }} ctx
+ */
+export async function runAiResponseQualityAudit(ctx) {
+  const rows = ctx.globalInteractions || [];
+  /** @type {any[]} */
+  const gateIssues = [];
+
+  /** @type {any[]} */
+  const answerRecords = [];
+  /** @type {any[]} */
+  const reportScanSummaries = [];
+
+  const personalizationCats = new Set(["thin_data", "simple_explanation", "action_plan", "contradiction_challenge", "data_grounded"]);
+  const dupKeysByCat = new Map();
+
+  for (const row of rows) {
+    const detailed = loadDetailedSnapshot(ctx.outputRoot, row.studentId);
+    const ans = String(row.aiAnswer || "");
+    const { issues, scores } = rubricForAnswer(row, detailed, ctx);
+
+    const forbiddenTerms = findForbiddenTerms(ans);
+    const subs = detectSubjects(ans);
+    const record = {
+      studentId: row.studentId,
+      profileType: row.profileType,
+      grade: row.grade,
+      questionCategory: row.questionCategory,
+      parentQuestionText: row.parentQuestionText,
+      aiAnswer: ans,
+      answerLength: ans.length,
+      detectedSubjects: subs,
+      evidenceMentions: evidenceMentions(ans),
+      forbiddenTerms,
+      genericPhrases: genericPhraseHits(ans),
+      categoryFitScore: scores.categoryFitScore,
+      personalizationScore: scores.personalizationScore,
+      parentLanguageScore: scores.parentLanguageScore,
+      issues,
+      sourceFile: `parent-ai-chats/${row.studentId}.json`,
+    };
+    answerRecords.push(record);
+
+    const cat = String(row.questionCategory || "");
+    if (personalizationCats.has(cat)) {
+      const nk = normalizeAnswerKey(ans);
+      if (!dupKeysByCat.has(cat)) dupKeysByCat.set(cat, new Map());
+      const dm = dupKeysByCat.get(cat);
+      dm.set(nk, (dm.get(nk) || 0) + 1);
+    }
+  }
+
+  const nStud = ctx.students?.length || 1;
+  const minDupWarn = Math.max(6, Math.ceil(nStud * 0.35));
+  for (const [cat, dm] of dupKeysByCat.entries()) {
+    for (const [k, cnt] of dm.entries()) {
+      if (!k || cnt < minDupWarn) continue;
+      gateIssues.push({
+        level: "fail",
+        code: "audit_gate_duplicate_personalized_answer",
+        detail: `${cat} · identical_normalized≈${cnt} students`,
+        file: "parent-ai-chats/",
+        auditType: "generic_answer",
+      });
+    }
+  }
+
+  // Report files scan
+  let reportsScanned = 0;
+
+  for (const student of ctx.students || []) {
+    if (!ctx.reportStudentIds.has(student.studentId)) continue;
+    const sid = student.studentId;
+    const parts = [];
+    const relParts = [];
+    const loadText = (rel, isHtml) => {
+      const fp = path.join(ctx.outputRoot, rel);
+      if (fs.existsSync(fp)) {
+        relParts.push(rel);
+        const raw = fs.readFileSync(fp, "utf8");
+        parts.push(isHtml ? htmlVisibleText(raw) : raw);
+      }
+    };
+    loadText(path.join("parent-reports", sid, "short.md"), false);
+    loadText(path.join("parent-reports", sid, "detailed.md"), false);
+    loadText(path.join("parent-reports", sid, "short.html"), true);
+    loadText(path.join("parent-reports", sid, "detailed.html"), true);
+
+    const detailedJsonPath = path.join(ctx.outputRoot, "parent-reports", sid, "detailed.json");
+    if (fs.existsSync(detailedJsonPath)) {
+      relParts.push(path.join("parent-reports", sid, "detailed.json"));
+      try {
+        const detailedObj = JSON.parse(fs.readFileSync(detailedJsonPath, "utf8"));
+        parts.push(collectDetailedParentFacingBlob(detailedObj));
+      } catch {
+        /* ignore */
+      }
+    }
+
+    if (ctx.pdfLimit > 0) {
+      const ps = path.join(ctx.outputRoot, "pdfs", "short", `${sid}.pdf`);
+      const pd = path.join(ctx.outputRoot, "pdfs", "detailed", `${sid}.pdf`);
+      if (fs.existsSync(ps)) parts.push(await extractPdfText(ps));
+      if (fs.existsSync(pd)) parts.push(await extractPdfText(pd));
+    }
+
+    const blob = parts.join("\n");
+    reportsScanned += 1;
+
+    const forb = findForbiddenTerms(blob);
+    for (const h of forb) {
+      gateIssues.push({
+        level: "fail",
+        code: "audit_gate_forbidden_in_report_surface",
+        detail: `${sid} · ${h.code}: ${h.match}`,
+        file: `parent-reports/${sid}/`,
+        auditType: "internal_language",
+      });
+    }
+
+    const p = String(student.profileType || "");
+    const detailedObj = loadDetailedSnapshot(ctx.outputRoot, sid);
+    const tq = totalQuestionsFromReport(detailedObj);
+
+    if ((p === "strong_stable" || p === "rich_data") && tq >= 80 && STRONG_RICH_THIN_REPORT_GATE.test(blob)) {
+      gateIssues.push({
+        level: "fail",
+        code: "audit_gate_strong_rich_thin_language_in_report",
+        detail: sid,
+        file: `parent-reports/${sid}/`,
+        auditType: "profile_mismatch",
+      });
+    }
+
+    const shortMd = fs.existsSync(path.join(ctx.outputRoot, "parent-reports", sid, "short.md"))
+      ? fs.readFileSync(path.join(ctx.outputRoot, "parent-reports", sid, "short.md"), "utf8")
+      : "";
+    const detailedMd = fs.existsSync(path.join(ctx.outputRoot, "parent-reports", sid, "detailed.md"))
+      ? fs.readFileSync(path.join(ctx.outputRoot, "parent-reports", sid, "detailed.md"), "utf8")
+      : "";
+    const mdBlob = `${shortMd}\n${detailedMd}`;
+    let mdHash = 0;
+    for (let i = 0; i < mdBlob.length; i++) mdHash = (mdHash * 31 + mdBlob.charCodeAt(i)) >>> 0;
+    let htmlHash = 0;
+    const shPath = path.join(ctx.outputRoot, "parent-reports", sid, "short.html");
+    const dhPath = path.join(ctx.outputRoot, "parent-reports", sid, "detailed.html");
+    if (fs.existsSync(shPath) && fs.existsSync(dhPath)) {
+      const hb =
+        htmlVisibleText(fs.readFileSync(shPath, "utf8")) +
+        htmlVisibleText(fs.readFileSync(dhPath, "utf8"));
+      for (let i = 0; i < hb.length; i++) htmlHash = (htmlHash * 31 + hb.charCodeAt(i)) >>> 0;
+      if (mdBlob.length > 200 && hb.length > 200 && Math.abs(mdHash - htmlHash) > 1e9) {
+        gateIssues.push({
+          level: "warning",
+          code: "audit_report_md_html_divergence",
+          detail: sid,
+          file: `parent-reports/${sid}/`,
+          auditType: "report_ai_mismatch",
+        });
+      }
+    }
+
+    reportScanSummaries.push({
+      studentId: sid,
+      profileType: p,
+      filesIncluded: relParts,
+      forbiddenHits: forb.length,
+    });
+  }
+
+  for (const r of answerRecords) {
+    for (const iss of r.issues) {
+      if (iss.severity !== "fail") continue;
+      gateIssues.push({
+        level: "fail",
+        code: iss.code,
+        detail: `${r.studentId} · ${r.questionCategory} · ${iss.detail}`,
+        file: r.sourceFile,
+        auditType: iss.type || "audit",
+      });
+    }
+  }
+
+  const phraseLeaderboard = buildPhraseLeaderboard(rows, 0.25);
+
+  const failuresByType = {
+    internal_language: gateIssues.filter((x) => x.auditType === "internal_language").length,
+    generic_answer: gateIssues.filter((x) => x.auditType === "generic_answer").length,
+    category_mismatch: gateIssues.filter((x) => x.auditType === "category_mismatch").length,
+    profile_mismatch: gateIssues.filter((x) => x.auditType === "profile_mismatch").length,
+    data_mismatch: gateIssues.filter((x) => x.auditType === "data_mismatch").length,
+    report_ai_mismatch: gateIssues.filter((x) => x.auditType === "report_ai_mismatch").length,
+  };
+
+  const forbiddenTable = {};
+  for (const r of answerRecords) {
+    for (const h of r.forbiddenTerms) {
+      forbiddenTable[h.code] = forbiddenTable[h.code] || { term: h.code, count: 0, examplePath: r.sourceFile };
+      forbiddenTable[h.code].count += 1;
+    }
+  }
+
+  const categoryStats = new Map();
+  for (const r of answerRecords) {
+    const c = String(r.questionCategory || "unknown");
+    if (!categoryStats.has(c)) {
+      categoryStats.set(c, { category: c, total: 0, fail: 0, warnings: 0, uniqueAnswers: new Set() });
+    }
+    const st = categoryStats.get(c);
+    st.total += 1;
+    st.uniqueAnswers.add(normalizeAnswerKey(r.aiAnswer));
+    for (const iss of r.issues) {
+      if (iss.severity === "fail") st.fail += 1;
+      else st.warnings += 1;
+    }
+  }
+
+  const dupMaxByCat = new Map();
+  for (const [cat, dm] of dupKeysByCat.entries()) {
+    let mx = 0;
+    for (const c of dm.values()) mx = Math.max(mx, c);
+    dupMaxByCat.set(cat, mx);
+  }
+
+  const categoryTable = [...categoryStats.values()].map((x) => ({
+    category: x.category,
+    total: x.total,
+    pass: x.total - x.fail,
+    fail: x.fail,
+    warnings: x.warnings,
+    uniqueAnswers: x.uniqueAnswers.size,
+    maxDuplicate: dupMaxByCat.get(x.category) || 0,
+  }));
+
+  const profileStats = new Map();
+  for (const r of answerRecords) {
+    const p = String(r.profileType || "unknown");
+    if (!profileStats.has(p)) profileStats.set(p, { profileType: p, totalAnswers: 0, failures: 0, issueCodes: {} });
+    const ps = profileStats.get(p);
+    ps.totalAnswers += 1;
+    for (const iss of r.issues) {
+      if (iss.severity === "fail") {
+        ps.failures += 1;
+        ps.issueCodes[iss.code] = (ps.issueCodes[iss.code] || 0) + 1;
+      }
+    }
+  }
+
+  const profileTable = [...profileStats.values()].map((x) => {
+    const top = Object.entries(x.issueCodes).sort((a, b) => b[1] - a[1])[0];
+    return {
+      profileType: x.profileType,
+      totalAnswers: x.totalAnswers,
+      failures: x.failures,
+      mostCommonIssue: top ? `${top[0]} (${top[1]})` : "—",
+    };
+  });
+
+  const totalFailures = answerRecords.reduce(
+    (n, r) => n + r.issues.filter((i) => i.severity === "fail").length,
+    0,
+  );
+  const totalWarnings = answerRecords.reduce(
+    (n, r) => n + r.issues.filter((i) => i.severity === "warning").length,
+    0,
+  );
+  const extraWarn = gateIssues.filter((g) => g.level === "warning").length;
+
+  const gateFailureCount = gateIssues.filter((g) => g.level === "fail").length;
+
+  let finalStatus = "PASS";
+  if (gateFailureCount > 0) finalStatus = "FAIL";
+  else if (totalWarnings + extraWarn > 0) finalStatus = "NEEDS_REVIEW";
+
+  const worstExamples = [...answerRecords]
+    .flatMap((r) =>
+      r.issues
+        .filter((i) => i.severity === "fail")
+        .map((i) => ({
+          studentId: r.studentId,
+          profileType: r.profileType,
+          category: r.questionCategory,
+          question: String(r.parentQuestionText || "").slice(0, 120),
+          answerExcerpt: String(r.aiAnswer || "").slice(0, 220),
+          issueReason: `${i.code}: ${i.detail}`,
+          filePath: r.sourceFile,
+        })),
+    )
+    .slice(0, 20);
+
+  const auditPayload = {
+    generatedAt: new Date().toISOString(),
+    summary: {
+      totalAnswersScanned: answerRecords.length,
+      totalReportsScanned: reportsScanned,
+      totalFailures,
+      totalWarnings,
+      warningsFromReportHtmlMd: extraWarn,
+      gateFailuresAdded: gateFailureCount,
+      finalStatus,
+    },
+    failuresByType,
+    topFailures: worstExamples,
+    categoryTable,
+    profileTable,
+    forbiddenTermsTable: Object.values(forbiddenTable).sort((a, b) => b.count - a.count),
+    phraseLeaderboard,
+    answerRecords,
+    reportScanSummaries,
+    gateIssues,
+  };
+
+  return {
+    auditPayload,
+    gateIssues,
+    gateFailureCount,
+    harnessFailuresToMerge: gateIssues.filter((g) => g.level === "fail"),
+  };
+}
+
+export function writeAiResponseQualityAuditCsv(outputRoot, auditPayload) {
+  const esc = (v) => {
+    const s = String(v ?? "").replace(/"/g, '""');
+    return `"${s}"`;
+  };
+  const lines = [];
+  lines.push(
+    [
+      "studentId",
+      "profileType",
+      "grade",
+      "questionCategory",
+      "parentQuestionText",
+      "answerLength",
+      "categoryFitScore",
+      "personalizationScore",
+      "parentLanguageScore",
+      "detectedSubjects",
+      "forbiddenCodes",
+      "issueCodes",
+    ].join(","),
+  );
+  for (const r of auditPayload.answerRecords || []) {
+    const forb = (r.forbiddenTerms || []).map((x) => x.code).join(";");
+    const iss = (r.issues || []).map((x) => x.code).join(";");
+    lines.push(
+      [
+        esc(r.studentId),
+        esc(r.profileType),
+        esc(r.grade),
+        esc(r.questionCategory),
+        esc(r.parentQuestionText),
+        r.answerLength,
+        r.categoryFitScore,
+        r.personalizationScore,
+        r.parentLanguageScore,
+        esc((r.detectedSubjects || []).join(";")),
+        esc(forb),
+        esc(iss),
+      ].join(","),
+    );
+  }
+  fs.writeFileSync(path.join(outputRoot, "AI_RESPONSE_QUALITY_AUDIT.csv"), lines.join("\n"), "utf8");
+}
+
+export function writeAiResponseQualityAuditMarkdown(outputRoot, auditPayload) {
+  const s = auditPayload.summary;
+  const lines = [
+    "# AI_RESPONSE_QUALITY_AUDIT",
+    "",
+    "## 1. Summary",
+    "",
+    `- total answers scanned: **${s.totalAnswersScanned}**`,
+    `- total reports scanned: **${s.totalReportsScanned}**`,
+    `- total failures (issues): **${s.totalFailures}**`,
+    `- total warnings: **${s.totalWarnings}**`,
+    `- gate failures (harness): **${s.gateFailuresAdded}**`,
+    `- **Final status: ${s.finalStatus}**`,
+    "",
+    "## 2. Failures by type",
+    "",
+    ...Object.entries(auditPayload.failuresByType || {}).map(([k, v]) => `- ${k}: ${v}`),
+    "",
+    "## 3. Top 20 worst examples",
+    "",
+    ...(auditPayload.topFailures || []).map(
+      (x, i) =>
+        `${i + 1}. \`${x.studentId}\` · ${x.profileType} · **${x.category}** — ${x.issueReason}\n   - Q: ${x.question}\n   - A: ${x.answerExcerpt}…\n   - \`${x.filePath}\``,
+    ),
+    "",
+    "## 4. Category table",
+    "",
+    "| category | total | pass | fail | warnings | uniqueAnswers | maxDup |",
+    "|---|---:|---:|---:|---:|---:|---:|",
+    ...(auditPayload.categoryTable || []).map(
+      (r) =>
+        `| ${r.category} | ${r.total} | ${r.pass} | ${r.fail} | ${r.warnings} | ${r.uniqueAnswers} | ${r.maxDuplicate} |`,
+    ),
+    "",
+    "## 5. Profile table",
+    "",
+    "| profile | total answers | failures | most common issue |",
+    "|---|---:|---:|---|",
+    ...(auditPayload.profileTable || []).map(
+      (r) => `| ${r.profileType} | ${r.totalAnswers} | ${r.failures} | ${r.mostCommonIssue} |`,
+    ),
+    "",
+    "## 6. Forbidden terms",
+    "",
+    "| term | count | example path |",
+    "|---|---:|---|",
+    ...(auditPayload.forbiddenTermsTable || []).map((r) => `| ${r.term} | ${r.count} | ${r.examplePath} |`),
+    "",
+    "## 7. Repeated phrase leaderboard (sample)",
+    "",
+    "| phrase (truncated) | count | share≈ | suspicious |",
+    "|---|---:|---:|---|",
+    ...(auditPayload.phraseLeaderboard || [])
+      .slice(0, 25)
+      .map((r) => `| ${String(r.phrase).slice(0, 72)}… | ${r.count} | ${r.studentShareApprox} | ${r.suspicious ? "yes" : "no"} |`),
+    "",
+  ];
+  fs.writeFileSync(path.join(outputRoot, "AI_RESPONSE_QUALITY_AUDIT.md"), lines.join("\n"), "utf8");
+}

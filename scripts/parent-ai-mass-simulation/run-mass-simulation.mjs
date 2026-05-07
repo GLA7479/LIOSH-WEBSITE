@@ -33,6 +33,11 @@ import {
   writeIndexes,
 } from "./lib/build-indexes.mjs";
 import { runQualitySuite } from "./lib/quality-runner.mjs";
+import {
+  runAiResponseQualityAudit,
+  writeAiResponseQualityAuditCsv,
+  writeAiResponseQualityAuditMarkdown,
+} from "./lib/ai-response-quality-audit.mjs";
 import { buildManualReviewPack } from "./lib/manual-review-pack.mjs";
 import { writeEvidenceSourcesReadme, writeQuestionRunsReadme } from "./lib/report-evidence-export.mjs";
 import { GRADE_ORDER, SUBJECT_KEYS } from "./lib/constants.mjs";
@@ -131,7 +136,7 @@ function summaryHebrew(payload) {
     "## איפה הקבצים",
     "",
     `- תיקיית ריצה: \`${outputRelative}\``,
-    "- אינדקסים: `STUDENTS_INDEX`, `QUESTIONS_INDEX`, `PARENT_AI_QUESTIONS_INDEX`, `REPORTS_INDEX`, `PDF_INDEX`, `QUALITY_FLAGS`",
+    "- אינדקסים: `STUDENTS_INDEX`, `QUESTIONS_INDEX`, `PARENT_AI_QUESTIONS_INDEX`, `REPORTS_INDEX`, `PDF_INDEX`, `QUALITY_FLAGS`, `AI_RESPONSE_QUALITY_AUDIT`",
     "- תיקיות משנה: `students/`, `question-runs/`, `parent-ai-chats/`, `parent-reports/` (כולל `short.html` / `detailed.html` כשמוצלח), `pdfs/`, `pdf-previews/`, `samples-for-manual-review/`",
     "",
     "## תמיכה בכיתות",
@@ -256,7 +261,7 @@ async function main() {
 
   const reportIds = new Set(students.slice(0, reportLimit).map((s) => s.studentId));
 
-  const quality = await runQualitySuite({
+  let quality = await runQualitySuite({
     outputRoot,
     students,
     questionRows,
@@ -265,6 +270,44 @@ async function main() {
     pdfLimit,
     categoryCoverage,
   });
+
+  const auditResult = await runAiResponseQualityAudit({
+    outputRoot,
+    students,
+    globalInteractions,
+    reportStudentIds: reportIds,
+    pdfLimit,
+  });
+
+  fs.writeFileSync(
+    path.join(outputRoot, "AI_RESPONSE_QUALITY_AUDIT.json"),
+    JSON.stringify(auditResult.auditPayload, null, 2),
+    "utf8",
+  );
+  writeAiResponseQualityAuditMarkdown(outputRoot, auditResult.auditPayload);
+  writeAiResponseQualityAuditCsv(outputRoot, auditResult.auditPayload);
+
+  const auditAnswers = auditResult.auditPayload.summary.totalAnswersScanned || 0;
+  const auditReports = auditResult.auditPayload.summary.totalReportsScanned || 0;
+  quality.totalChecks += auditAnswers + auditReports;
+  quality.failedChecks += auditResult.gateFailureCount;
+
+  for (const gi of auditResult.gateIssues || []) {
+    if (gi.level === "fail") {
+      quality.issues.push({ level: "fail", code: gi.code, detail: gi.detail, file: gi.file });
+    } else {
+      quality.warnings.push({ code: gi.code, detail: gi.detail, file: gi.file });
+    }
+  }
+
+  const recurringMerged = {};
+  for (const x of quality.issues) {
+    recurringMerged[x.code] = (recurringMerged[x.code] || 0) + 1;
+  }
+  quality.recurringIssueCodes = Object.entries(recurringMerged)
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 20)
+    .map(([code, count]) => ({ code, count }));
 
   const warningCount = quality.warnings.length;
 
@@ -275,7 +318,12 @@ async function main() {
     issues: quality.issues.slice(0, 400),
     warnings: quality.warnings.slice(0, 400),
     topRecurring: quality.recurringIssueCodes,
-    note: "כולל בדיקות PDF מוצר (Playwright), דוחות, וקטגוריות Parent AI.",
+    aiResponseQualityAudit: {
+      finalStatus: auditResult.auditPayload.summary.finalStatus,
+      gateFailures: auditResult.gateFailureCount,
+      totalAnswerFailures: auditResult.auditPayload.summary.totalFailures,
+    },
+    note: "כולל בדיקות PDF מוצר (Playwright), דוחות, קטגוריות Parent AI, ו-AI_RESPONSE_QUALITY_AUDIT.",
   };
 
   fs.writeFileSync(path.join(outputRoot, "QUALITY_FLAGS.json"), JSON.stringify(qualityPayload, null, 2), "utf8");
@@ -310,15 +358,19 @@ async function main() {
       : `כל הכיתות ${GRADE_ORDER.join(", ")} מיוצגות לפחות בתלמיד אחד.`;
 
   const invalidPdf = pdfIndex.invalidPdfCount || 0;
+  const auditFail = auditResult.gateFailureCount > 0 || auditResult.auditPayload.summary.finalStatus === "FAIL";
   const bottomLine =
-    quality.failedChecks === 0 && invalidPdf === 0
+    quality.failedChecks === 0 && invalidPdf === 0 && !auditFail
       ? {
           status: "PASS (Harness)",
           detail: "אין כשלי איכות קריטיים — ניתן להמשיך לסקירה ידנית ואז ללילה ארוך.",
         }
       : {
           status: "NEEDS_REVIEW",
-          detail: "יש כשלי איכות או PDF לא קריא — יש לפתור לפני ריצת המונים.",
+          detail:
+            auditFail && invalidPdf === 0
+              ? "כשלים ב-AI_RESPONSE_QUALITY_AUDIT או ב-QUALITY_FLAGS — יש לפתור לפני ריצת המונים."
+              : "יש כשלי איכות או PDF לא קריא — יש לפתור לפני ריצת המונים.",
         };
 
   const relOut = path.relative(ROOT, outputRoot);
@@ -419,6 +471,12 @@ async function main() {
       failedChecks: quality.failedChecks,
       warningCount,
       recurringIssueCodes: quality.recurringIssueCodes,
+    },
+    aiResponseQualityAudit: {
+      finalStatus: auditResult.auditPayload.summary.finalStatus,
+      totalAnswerIssueFailures: auditResult.auditPayload.summary.totalFailures,
+      gateFailureRows: auditResult.gateFailureCount,
+      warningsExtra: auditResult.auditPayload.summary.warningsFromReportHtmlMd ?? 0,
     },
     launchGaps: {
       questionQualityValidatedSubjects: realValidatedSubjects,
