@@ -26,10 +26,13 @@ export function parentDirectOpenerHe(intent, truthPacket) {
     case "what_is_most_important":
       return fragile
         ? "יש כמה תחומים שעדיין לא יציבים — כדאי להתחיל מהם:"
-        : "הנה מה שכדאי לשים לב אליו קודם לפי הדוח:";
+        : exec
+          ? ""
+          : "הנה מה שכדאי לשים לב אליו קודם לפי הדוח:";
     case "what_to_do_today":
     case "what_to_do_this_week":
       if (recOk) {
+        if (exec) return "";
         return k === "what_to_do_today"
           ? "הנה מה שכדאי לעשות היום לפי הנתונים:"
           : "הנה הצעד המומלץ לשבוע הקרוב לפי הנתונים:";
@@ -48,7 +51,7 @@ export function parentDirectOpenerHe(intent, truthPacket) {
     case "why_not_advance":
       return "עצירת קידום ברמה קשורה בדרך כלל לניסוח שעדיין לא נסגר בדוח — לא בהכרח כישלון.";
     case "what_is_going_well":
-      return "הנה מה שנראה חזק יחסית בתרגול, לפי הדוח:";
+      return exec ? "" : "הנה מה שנראה חזק יחסית בתרגול, לפי הדוח:";
     case "what_is_still_difficult":
       return "הנה מה שעדיין דורש חיזוק ותרגול, לפי הדוח:";
     case "how_to_tell_child":
@@ -58,7 +61,9 @@ export function parentDirectOpenerHe(intent, truthPacket) {
     case "is_intervention_needed":
       return fragile
         ? "הדוח מציג כמה תחומים שעדיין לא מיושבים לגמרי. זה לא בהכרח «בעיה חמורה»:"
-        : "בשלב הזה אין סיבה לדאגה גדולה לפי הדוח. הנה מה שמופיע:";
+        : exec
+          ? ""
+          : "בשלב הזה אין סיבה לדאגה גדולה לפי הדוח. הנה מה שמופיע:";
     case "clarify_term":
       return "נשארים עם המילים שמופיעות בדוח עצמו:";
     case "strength_vs_weakness_summary":

@@ -164,15 +164,37 @@ function looksLikeNumericOrCountLead(line) {
 }
 
 /**
- * Compact numeric context appended after named/meaning content.
+ * Compact numeric context — avoid report-ish phrases ("מבחינת מספרים", "נושאים שנבדקו").
+ * For most parent intents the topic rows already carry counts; skip redundant rollups.
  * @param {{ totalQ: number; avgAcc: number }} x
+ * @param {string} [canonicalIntent]
  */
-function supportingNumericTail(x) {
+function supportingNumericTail(x, canonicalIntent = "") {
+  const intent = String(canonicalIntent || "").trim();
+  const tq = Math.max(0, Number(x?.totalQ) || 0);
+  const aa = Math.max(0, Number(x?.avgAcc) || 0);
+  const omitRollup = new Set([
+    "what_is_most_important",
+    "what_is_going_well",
+    "what_is_still_difficult",
+    "is_intervention_needed",
+    "what_to_do_today",
+    "what_to_do_this_week",
+    "strength_vs_weakness_summary",
+    "explain_report",
+    "report_trust_question",
+    "why_not_advance",
+    "how_to_tell_child",
+    "question_for_teacher",
+    "unclear",
+    "simple_parent_explanation",
+  ]);
+  if (omitRollup.has(intent)) return "";
+  if (tq <= 0 && aa <= 0) return "";
   const bits = [];
-  if (x.totalQ > 0) bits.push(`בסך הכל כ־${x.totalQ} שאלות בנושאים שנבדקו`);
-  if (x.avgAcc > 0) bits.push(`רמת דיוק כללית של כ־${x.avgAcc}%`);
-  if (!bits.length) return "";
-  return `מבחינת מספרים: ${bits.join(", ")}.`;
+  if (tq > 0) bits.push(`כ־${tq} שאלות בתקופה`);
+  if (aa > 0) bits.push(`דיוק כללי כ־${aa}%`);
+  return bits.length ? `${bits.join(", ")}.` : "";
 }
 
 /**
@@ -345,13 +367,13 @@ function buildExecutiveIntentNarrativeSlots(x) {
         ? `בדוח מופיעים כרגע מוקדים מרכזיים: ${namedBits}.`
         : "בדוח יש כרגע מידע חלקי; ככל שיצטבר תרגול נוסף, התמונה תתבהר.";
 
+  const intent = String(x.canonicalIntent || "unclear").trim() || "unclear";
+
   const defaultInterpBase =
     (metas[0]?.interp && clipHe(metas[0].interp, 200)) ||
     (trends[0] && !looksLikeNumericOrCountLead(trends[0]) ? trends[0] : "") ||
     "מה שחסר בדוח הוא בעיקר רוחב של ניסוחים מעוגנים — לא בהכרח מספרים בפני עצמם.";
-  const defaultInterp = appendDistinctSentence(defaultInterpBase, supportingNumericTail(x));
-
-  const intent = String(x.canonicalIntent || "unclear").trim() || "unclear";
+  const defaultInterp = appendDistinctSentence(defaultInterpBase, supportingNumericTail(x, intent));
 
   switch (intent) {
     case "what_is_most_important": {
@@ -370,12 +392,10 @@ function buildExecutiveIntentNarrativeSlots(x) {
         if (m.interp) interpParts.push(clipHe(m.interp, 130));
       }
       if (!interpParts.length && metas[0]?.interp) interpParts.push(clipHe(metas[0].interp, 180));
-      const trendExtra =
-        trends[1] && shouldAttachExecutiveSecondTrendLine(trends[1], x.totalQ)
-          ? `נוסף מהדוח: ${trends[1]}`
-          : "";
-      let interp = appendDistinctSentence(interpParts.join(" "), trendExtra);
-      interp = appendDistinctSentence(interp, supportingNumericTail(x));
+      const microPlan =
+        "מומלץ לתרגל בערך 10 דקות, 3 פעמים בשבוע, עם 5–8 שאלות קצרות בכל פעם.";
+      let interp = appendDistinctSentence(interpParts.join(" "), microPlan);
+      interp = appendDistinctSentence(interp, supportingNumericTail(x, intent));
       if (!interp.trim()) interp = defaultInterp;
       return { observation: obs, interpretation: interp };
     }
@@ -386,12 +406,18 @@ function buildExecutiveIntentNarrativeSlots(x) {
       );
       const top = (strongTopics.length > 0 ? strongTopics : rankedBestFirst).slice(0, 2);
       const obs =
-        top.length > 0
-          ? `החוזקה המרכזית שמופיעה בדוח: ${top.map((m) => `${labelPair(m)} — ${m.obs ? clipHe(m.obs, 95) : "ביצועים טובים יחסית"}`).join(" · ")}.`
-          : defaultObs;
+        top.length > 1
+          ? `החוזקה המרכזית היא ${labelPair(top[0])}; גם ${labelPair(top[1])} חזק יחסית.`
+          : top.length === 1
+            ? `החוזקה המרכזית היא ${labelPair(top[0])}.`
+            : defaultObs;
       // Accuracy numbers are already embedded in each topic's obs text — skip the redundant accNote.
       const interp0 = top[0]?.interp ? clipHe(top[0].interp, 180) : "";
-      let interp = appendDistinctSentence(interp0, supportingNumericTail(x));
+      let interp = appendDistinctSentence(
+        interp0,
+        top.length ? "כדאי להמשיך עם תרגול קצר כדי לשמר את ההתקדמות." : "",
+      );
+      interp = appendDistinctSentence(interp, supportingNumericTail(x, intent));
       if (!interp.trim()) interp = defaultInterp;
       return { observation: obs, interpretation: interp };
     }
@@ -401,13 +427,9 @@ function buildExecutiveIntentNarrativeSlots(x) {
         low.length > 0
           ? `מה שעדיין דורש תרגול ותשומת לב: ${low.map((m) => `${labelPair(m)} — ${m.obs ? clipHe(m.obs, 95) : "עדיין דורש חיזוק"}`).join(" · ")}.`
           : defaultObs;
-      const accNote =
-        low.length > 0
-          ? `מבחינת מספרים: ${low.map((m) => `ב${parentFacingTopicTitleHe(m.dn)} הדיוק הוא כ־${m.acc}%`).join("; ")}.`
-          : "";
       const interp0 = low[0]?.interp ? clipHe(low[0].interp, 190) : "";
-      let interp = appendDistinctSentence(interp0, accNote);
-      interp = appendDistinctSentence(interp, supportingNumericTail(x));
+      let interp = interp0;
+      interp = appendDistinctSentence(interp, supportingNumericTail(x, intent));
       if (!interp.trim()) interp = defaultInterp;
       return { observation: obs, interpretation: interp };
     }
@@ -427,9 +449,9 @@ function buildExecutiveIntentNarrativeSlots(x) {
       if (worst && worst !== best && worst.interp) interpParts.push(`בצד שדורש עבודה: ${clipHe(worst.interp, 125)}`);
       let interp = interpParts.join(" · ");
       if (trends[1] && shouldAttachExecutiveSecondTrendLine(trends[1], x.totalQ)) {
-        interp = appendDistinctSentence(interp, `נוסף מהדוח: ${trends[1]}`);
+        interp = appendDistinctSentence(interp, trends[1]);
       }
-      interp = appendDistinctSentence(interp, supportingNumericTail(x));
+      interp = appendDistinctSentence(interp, supportingNumericTail(x, intent));
       if (!interp.trim()) interp = defaultInterp;
       return { observation: obs, interpretation: interp };
     }
@@ -444,7 +466,7 @@ function buildExecutiveIntentNarrativeSlots(x) {
         : trends[0] && !looksLikeNumericOrCountLead(trends[0])
           ? trends[0]
           : `כשמסלול הקידום לא מתעדכן, זה בדרך כלל משקף שחלק מהניסוחים עדיין לא סוגרים מספיק — במיוחד סביב: ${namedBits}.`;
-      return { observation: obs, interpretation: appendDistinctSentence(interp, supportingNumericTail(x)) };
+      return { observation: obs, interpretation: appendDistinctSentence(interp, supportingNumericTail(x, intent)) };
     }
     case "what_to_do_today":
     case "what_to_do_this_week": {
@@ -456,14 +478,9 @@ function buildExecutiveIntentNarrativeSlots(x) {
           metas.find((m) => normalizeSubjectId(m.sid) === primarySid && m.q > 0);
         if (prefer) focus = prefer;
       }
-      const obs = focus
-        ? `הנושא שכדאי לתרגל עכשיו לפי הדוח: ${labelPair(focus)}.`
-        : defaultObs;
+      const obs = focus ? `כדאי להתמקד עכשיו ב${labelPair(focus)}.` : defaultObs;
       let interp = focus?.interp ? clipHe(focus.interp, 160) : defaultInterpBase;
-      if (trends[1] && shouldAttachExecutiveSecondTrendLine(trends[1], x.totalQ)) {
-        interp = appendDistinctSentence(interp, `נוסף מהדוח: ${trends[1]}`);
-      }
-      interp = appendDistinctSentence(interp, supportingNumericTail(x));
+      interp = appendDistinctSentence(interp, supportingNumericTail(x, intent));
       if (!interp.trim()) interp = defaultInterp;
       const week = intent === "what_to_do_this_week";
       const thinPlan = practiceVolume < 90 || sparseExecutive;
@@ -482,8 +499,8 @@ function buildExecutiveIntentNarrativeSlots(x) {
             ? subjName
             : `${subjName} · ${topicShort}`;
         stepsOnly = week
-          ? `1) לבחור את הנושא שדורש חיזוק ב${stepAnchor} ולחלק תרגול לשלושה חלונות קצרים בשבוע.\n2) בכל חלון לפתור 5–8 שאלות קצרות ולבדוק אם אותה טעות חוזרת.\n3) בסוף השבוע משפט אחד עם הילד — מה התקדם ומה עדיין צריך חיזוק.`
-          : `1) מחר 10 דקות תרגול ממוקד ב${stepAnchor}.\n2) אחר כך 5–8 שאלות קצרות ולבדוק אם אותה טעות חוזרת.\n3) לסיים במשפט אחד עם הילד על מה ניסיתם יחד.`;
+          ? `בבית כדאי להתחיל ב${stepAnchor}: 3 פעמים בשבוע, כ־10 דקות בכל פעם. בכל תרגול לפתור 5–8 שאלות קצרות, ואז לבקש מהילד להסביר בקול איך הגיע לתשובה.`
+          : `מחר: כ־10 דקות תרגול ממוקד ב${stepAnchor}, 5–8 שאלות קצרות, ואז בקשו מהילד להסביר בקול איך חישב.`;
       } else if (thinPlan) {
         stepsOnly = week
           ? `1) לעשות השבוע עוד מספר סשנים קצרים של תרגול כדי שהדוח ייצב תמונה.\n2) לבחור נושא אחד שחוזר כקשה ולאזן חיזוק קצר מול לא להעמיס.\n3) בסוף השבוע לסכם במשפט אחד מה התקדם.`
@@ -504,7 +521,7 @@ function buildExecutiveIntentNarrativeSlots(x) {
       const trendBack = trends[0] && !looksLikeNumericOrCountLead(trends[0]) ? `אם צריך הקשר רך: ${trends[0]}` : "";
       const obs = appendDistinctSentence(core, trendBack);
       let interp = m.interp ? `לצורך ניסוח להורה: ${clipHe(m.interp, 180)}` : "";
-      interp = appendDistinctSentence(interp, supportingNumericTail(x));
+      interp = appendDistinctSentence(interp, supportingNumericTail(x, intent));
       if (!interp.trim()) interp = defaultInterp;
       return { observation: obs, interpretation: interp };
     }
@@ -515,27 +532,28 @@ function buildExecutiveIntentNarrativeSlots(x) {
           ? `לפגישה או הודעה למורה, כדאי לשאול סביב המוקדים האלה מהדוח: ${ask.map(labelPair).join(" · ")}.`
           : `מהדוח כרגע אין מוקד שמחייב ניסוח «שאלה למורה» יוצא דופן — אפשר עדיין לשתף את ${namedBits || "הניסוחים המעוגנים"}.`;
       let interp = ask[0]?.unc || ask[0]?.interp ? clipHe(ask[0].unc || ask[0].interp, 200) : defaultInterpBase;
-      interp = appendDistinctSentence(interp, supportingNumericTail(x));
+      interp = appendDistinctSentence(interp, supportingNumericTail(x, intent));
       if (!interp.trim()) interp = defaultInterp;
       return { observation: obs, interpretation: interp };
     }
     case "is_intervention_needed": {
       const fragile = metas.filter((m) => m.cannot || m.confidenceBand === "low").length;
+      const watchTopics = rankedWorstFirst.filter((m) => m.q > 0).slice(0, 2);
+      const watchPhrase =
+        watchTopics.length === 2
+          ? `${labelPair(watchTopics[0])} ו${labelPair(watchTopics[1])}`
+          : watchTopics.length === 1
+            ? labelPair(watchTopics[0])
+            : "מה שבולט בדוח";
       const obs =
         fragile > 0
           ? `הדוח מציג כמה תחומים שעדיין לא מיושבים לגמרי.`
-          : `לפי הדוח, רוב הנושאים שנבדקו נראים יציבים יחסית בתרגול.`;
-      const interpHead =
-        x.anyCannotConclude || x.uncertainRows > 0
-          ? `חלק מהנושאים עדיין דורשים תרגול נוסף — בעיקר: ${namedBits}. כדאי להמשיך בתרגול שגרתי ולחזור לבדוק בהמשך.`
-          : `הכי טוב להמשיך בתרגול שגרתי ולעקוב אחרי ההתקדמות.`;
-      const interp = appendDistinctSentence(
-        interpHead,
+          : `לא נראה שיש סיבה לדאגה גדולה — רוב הנושאים נראים יציבים יחסית בתרגול.`;
+      const interp =
         fragile > 0
-          ? `בדוח יש ${metas.length} תחומים מעוגנים; ${fragile} מהם דורשים עדיין חיזוק.`
-          : `בדוח יש ${metas.length} תחומים מעוגנים — כולם בניסוח עקבי יחסית.`,
-      );
-      return { observation: obs, interpretation: appendDistinctSentence(interp, supportingNumericTail(x)) };
+          ? `כדאי להמשיך בתרגול ממוקד סביב ${watchPhrase}, בקצב קצר וקבוע, ולחזור לבדוק בהמשך.`
+          : `כדאי להמשיך לעקוב אחרי ${watchPhrase} ולתרגל בצורה קצרה וקבועה השבוע.`;
+      return { observation: obs, interpretation: appendDistinctSentence(interp, supportingNumericTail(x, intent)) };
     }
     case "clarify_term": {
       const m = metas[0];
@@ -562,8 +580,8 @@ function buildExecutiveIntentNarrativeSlots(x) {
         "נבדוק שוב לפי עוד תרגול בטווח כדי לראות אם הקו נמשך או שהיה רגע חריג.",
       );
       return {
-        observation: appendDistinctSentence(obs, supportingNumericTail(x)),
-        interpretation: appendDistinctSentence(interp, supportingNumericTail(x)),
+        observation: appendDistinctSentence(obs, supportingNumericTail(x, intent)),
+        interpretation: appendDistinctSentence(interp, supportingNumericTail(x, intent)),
       };
     }
     case "explain_report": {
@@ -594,8 +612,8 @@ function buildExecutiveIntentNarrativeSlots(x) {
       const narrTrend = trends.find(
         (line) => line && !looksLikeNumericOrCountLead(line) && shouldAttachExecutiveSecondTrendLine(line, x.totalQ),
       );
-      if (narrTrend) interp = appendDistinctSentence(interp, `נוסף מהדוח: ${narrTrend}`);
-      interp = appendDistinctSentence(interp, supportingNumericTail(x));
+      if (narrTrend) interp = appendDistinctSentence(interp, narrTrend);
+      interp = appendDistinctSentence(interp, supportingNumericTail(x, intent));
       if (!interp.trim()) interp = defaultInterp;
       return { observation: obs, interpretation: interp };
     }
@@ -638,12 +656,12 @@ function buildExecutiveIntentNarrativeSlots(x) {
         : metas.some((m) => m.cannot || m.readiness === "insufficient" || m.confidenceBand === "low")
           ? "חלק מהמוקדים עדיין עם ניסוח זהיר או מוקדם לסגירה — זה מגביל כמה ברורה התמונה הכוללת."
           : "רוב המוקדים עם ניסוח יציב יחסית, כך שניתן לקרוא את הדוח כהדרגה של נקודות קונקרטיות ולא כציון כללי אחד.";
-      interp = appendDistinctSentence(interp, supportingNumericTail(x));
+      interp = appendDistinctSentence(interp, supportingNumericTail(x, intent));
       const narrTrendLead = trends.find(
         (line) => line && !looksLikeNumericOrCountLead(line) && shouldAttachExecutiveSecondTrendLine(line, x.totalQ),
       );
       if (narrTrendLead) {
-        obs = appendDistinctSentence(obs, `נוסף מהדוח: ${narrTrendLead}`);
+        obs = appendDistinctSentence(obs, narrTrendLead);
       }
       return { observation: obs, interpretation: interp };
     }
@@ -1036,8 +1054,8 @@ export function buildTruthPacketV1(payload, scope) {
     if (totalQ >= 50 && avgAcc >= 65) {
       uncertaintyLine =
         uncertainRows > 2 || cannotConcludeYet
-          ? "בדוח מופיע נפח תרגול משמעותי; חלק מהניסוחים עדיין זהירים — ייתכן שבבית זה נראה אחרת, ולכן נבדוק שוב לפי עוד תרגול ולא נקבע חיפוז מהיר מדי."
-          : "לפי נפח השאלות והדיוק בטווח ניתן לדבר על כיוון כללי מהדוח; עדיין כדאי לעדכן שוב אחרי תרגול נוסף כי לפעמים בבית זה נראה שונה.";
+          ? "חלק מהניסוחים בדוח עדיין זהירים — לפעמים מה שרואים בבית נראה אחרת, וזה בסדר."
+          : "";
     } else {
       uncertaintyLine =
         cannotConcludeYet || uncertainRows > 0
