@@ -5,6 +5,7 @@
 
 import { getLlmGateDecision } from "./rollout-gates.js";
 import { clinicalBoundaryJoinedFingerprintHe } from "./answer-composer.js";
+import { callCopilotLlmJson, copilotLlmProviderLabel } from "./copilot-llm-client.js";
 
 const DEFAULT_TIMEOUT_MS = 9000;
 
@@ -41,17 +42,15 @@ function env(name, fallback = "") {
   return v || fallback;
 }
 
-function safeJsonParse(raw) {
-  try {
-    return { ok: true, value: JSON.parse(raw) };
-  } catch {
-    return { ok: false, value: null };
-  }
-}
-
 function buildGroundedPrompt(utterance, truthPacket) {
   const nar = truthPacket?.contracts?.narrative?.textSlots || {};
   const dl = truthPacket?.derivedLimits || {};
+  const globalQ =
+    Math.max(
+      0,
+      Number(truthPacket?.surfaceFacts?.reportQuestionTotalGlobal) || 0,
+      Number(truthPacket?.surfaceFacts?.questions) || 0,
+    ) || 0;
   const facts = {
     scopeType: truthPacket.scopeType,
     scopeLabel: truthPacket.scopeLabel,
@@ -70,53 +69,21 @@ function buildGroundedPrompt(utterance, truthPacket) {
     forbiddenPhrases: Array.isArray(truthPacket?.allowedClaimEnvelope?.forbiddenPhrases)
       ? truthPacket.allowedClaimEnvelope.forbiddenPhrases
       : [],
+    reportQuestionTotalGlobal: globalQ,
   };
   return [
     "אתה עוזר הורים מקצועי.",
     "השתמש רק בעובדות מה-JSON הבא. אסור להמציא עובדות.",
     "תענה בעברית בלבד, בטון מקצועי וחם, עם 2-3 בלוקים קצרים.",
+    "אסור לענות על מזג אוויר, שעה, חדשות, פוליטיקה, ספורט, בדיחות, קוד, קניות או כל נושא שלא נובע ישירות מהדוח — גם לא בשילוב עם תוכן הדוח.",
+    "אם השאלה אינה על הדוח או על התקדמות הלמידה בתוכו, אל תנסח סיכום דוח — סרב בקצרה והפנה רק לשאלות על הדוח.",
+    "אל תשתמש במילים 'ביטחון', 'בטחון' או confidence לגבי הילד; אל תניח מצב רגשי.",
+    `אם reportQuestionTotalGlobal גבוה (למשל מעל 100), אל תכתוב שהנתונים 'מועטים' או 'מוקדם לקבוע' ברמת כלל התקופה — התאם את הניסוח לנפח.`,
     "Clinical safety: never assign a diagnosis or a clinical label; never state or imply the child has dyslexia, ADHD, or a learning disability; never present the report as a diagnosis.",
     'החזר JSON בלבד בפורמט {"answerBlocks":[{"type":"observation|meaning|next_step|caution","textHe":"...","source":"composed"}]}',
     `שאלת הורה: ${String(utterance || "").trim()}`,
     `FACTS_JSON: ${JSON.stringify(facts)}`,
   ].join("\n");
-}
-
-/**
- * @param {AbortSignal} signal
- * @param {string} prompt
- */
-async function callOpenAiCompatible(signal, prompt) {
-  const url = env("PARENT_COPILOT_LLM_BASE_URL", "https://api.openai.com/v1/responses");
-  const apiKey = env("PARENT_COPILOT_LLM_API_KEY");
-  const model = env("PARENT_COPILOT_LLM_MODEL", "gpt-4.1-mini");
-  if (!apiKey) return { ok: false, reason: "missing_api_key" };
-
-  const res = await fetch(url, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${apiKey}`,
-    },
-    body: JSON.stringify({
-      model,
-      input: prompt,
-      temperature: 0.2,
-      max_output_tokens: 500,
-      text: { format: { type: "text" } },
-    }),
-    signal,
-  });
-  if (!res.ok) return { ok: false, reason: `http_${res.status}` };
-  const body = await res.json();
-  const maybeText =
-    body?.output_text ||
-    body?.output?.[0]?.content?.find?.((x) => x.type === "output_text")?.text ||
-    body?.choices?.[0]?.message?.content ||
-    "";
-  const parsed = safeJsonParse(String(maybeText || "").trim());
-  if (!parsed.ok) return { ok: false, reason: "invalid_json_output", raw: maybeText };
-  return { ok: true, payload: parsed.value };
 }
 
 /**
@@ -195,13 +162,13 @@ export async function maybeGenerateGroundedLlmDraft(input) {
   const timeoutMs = Number(env("PARENT_COPILOT_LLM_TIMEOUT_MS", String(DEFAULT_TIMEOUT_MS))) || DEFAULT_TIMEOUT_MS;
   const timer = setTimeout(() => controller.abort("timeout"), timeoutMs);
   try {
-    const response = await callOpenAiCompatible(controller.signal, prompt);
+    const response = await callCopilotLlmJson(controller.signal, prompt);
     if (!response.ok) return { ok: false, reason: response.reason || "llm_provider_error" };
     const validated = validateLlmDraft(response.payload, input.truthPacket, {
       intent: String(input?.parentIntent || "").trim(),
     });
     if (!validated.ok) return { ok: false, reason: validated.reason || "llm_validation_failed" };
-    return { ok: true, draft: validated.draft, provider: "openai_compatible" };
+    return { ok: true, draft: validated.draft, provider: copilotLlmProviderLabel() };
   } catch (error) {
     return { ok: false, reason: `llm_exception:${String(error?.message || error || "unknown")}` };
   } finally {

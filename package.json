@@ -137,6 +137,7 @@
     "test:parent-report-insights": "node scripts/parent-report-insights-selftest.mjs",
     "test:parent-report-ai-narrative": "node scripts/parent-report-ai-narrative-selftest.mjs",
     "test:parent-report-ai-narrative:live-smoke": "node scripts/parent-report-ai-narrative-live-smoke.mjs",
+    "test:parent-copilot-qa": "node scripts/parent-copilot-qa-selftest.mjs",
     "test:parent-report-narrative-safety-extractor": "node scripts/parent-report-narrative-safety-extractor-selftest.mjs",
     "test:parent-report-narrative-safety-artifacts": "node scripts/parent-report-narrative-safety-artifacts.mjs",
     "qa:question-metadata": "tsx scripts/question-metadata-qa.mjs",

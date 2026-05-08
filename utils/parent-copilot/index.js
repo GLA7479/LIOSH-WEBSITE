@@ -31,6 +31,7 @@ import { appendTurnTelemetryTrace } from "./telemetry-store.js";
 import { tryBuildParentShortFollowupDraft } from "./short-followup-composer.js";
 import { tryBuildComparisonPracticalFollowupDraft } from "./comparison-practical-continuity.js";
 import { compactParentAnswerBlocks } from "./answer-compaction.js";
+import { maxGlobalReportQuestionCount, STRONG_GLOBAL_QUESTION_FLOOR } from "./report-volume-context.js";
 import {
   tryBuildPhaseEClarificationBypassDraft,
   augmentPhaseEThinEvidenceDraft,
@@ -95,9 +96,14 @@ function shouldUseThinDataLead(truthPacket, intent, payload) {
   const tp = truthPacket && typeof truthPacket === "object" ? truthPacket : {};
   const sf = tp.surfaceFacts && typeof tp.surfaceFacts === "object" ? tp.surfaceFacts : {};
   const dl = tp.derivedLimits && typeof tp.derivedLimits === "object" ? tp.derivedLimits : {};
-  const q = Math.max(0, Number(sf.questions) || 0);
-  const snapshotQ = Math.max(0, Number(payload?.overallSnapshot?.totalQuestions) || 0);
-  const practiceVolume = snapshotQ > 0 && snapshotQ < q ? snapshotQ : q;
+  const scopedQ = Math.max(0, Number(sf.questions) || 0);
+  const globalQ = Math.max(
+    scopedQ,
+    Math.max(0, Number(sf.reportQuestionTotalGlobal) || 0),
+    maxGlobalReportQuestionCount(payload),
+  );
+  /** Never prepend global "מעט נתונים" when the report window has substantial answer volume. */
+  if (globalQ >= STRONG_GLOBAL_QUESTION_FLOOR) return false;
   const intentSet = new Set([
     "explain_report",
     "simple_parent_explanation",
@@ -106,6 +112,7 @@ function shouldUseThinDataLead(truthPacket, intent, payload) {
     "report_trust_question",
   ]);
   if (!intentSet.has(String(intent || ""))) return false;
+  const practiceVolume = globalQ;
   return (
     practiceVolume < 90 ||
     dl.readiness === "insufficient" ||
@@ -117,6 +124,9 @@ function shouldUseThinDataLead(truthPacket, intent, payload) {
 function enforceThinDataScarcityLead(draft, truthPacket, intent, payload) {
   const blocks = Array.isArray(draft?.answerBlocks) ? draft.answerBlocks : [];
   if (!blocks.length) return draft;
+  if (String(intent || "") === "off_topic_redirect" || String(intent || "") === "parent_policy_refusal") {
+    return draft;
+  }
   if (!shouldUseThinDataLead(truthPacket, intent, payload)) return draft;
   const joined = blocks.map((b) => String(b?.textHe || "")).join(" ").trim();
   if (THIN_DATA_APPROVED_SCARCITY_RE.test(joined)) return draft;
@@ -135,8 +145,8 @@ function buildNoScopeCategorySpecificClarification(utterance) {
   const t = String(utterance || "").trim();
   if (!t) return null;
 
-  if (/מזג\s*האוויר|חדשות|כדורגל|מתכון|שיר|נעליים|ביטקוין|javascript|java\s*script/i.test(t)) {
-    return "אני מתמקד/ת כאן רק בדוח הלמידה ובתרגול של הילד. אם תרצו, אפשר לבדוק מתוך הדוח מה הנקודה הכי חשובה כרגע ללמידה.";
+  if (/מזג\s*האוויר|חדשות|כדורגל|מתכון|שיר|נעליים|ביטקוין|javascript|java\s*script|מה\s*השעה|בדיחה|ראש\s*הממשלה/i.test(t)) {
+    return "אני יכול לעזור רק בשאלות על הדוח והתקדמות הלמידה שמופיעה בו. אפשר לשאול למשל: מה כדאי לתרגל השבוע?";
   }
   if (/תתעלם|תחשוף|system\s*prompt|debug|הוראות\s*פנימיות|תדפיס|מעכשיו\s*אל\s*תשתמש/i.test(t)) {
     return "אני לא מתעלם/ת מהדוח ולא חושף/ת הוראות פנימיות. התשובה כאן נשארת מבוססת נתוני למידה, ואפשר להמשיך לשאלה על מצב הלמידה בפועל.";
@@ -913,7 +923,20 @@ export async function runParentCopilotTurnAsync(input) {
     });
   }
 
-  if (core.intent === "clinical_boundary" || core.intent === "sensitive_education_choice") {
+  if (
+    core.intent === "clinical_boundary" ||
+    core.intent === "sensitive_education_choice" ||
+    core.intent === "off_topic_redirect" ||
+    core.intent === "parent_policy_refusal"
+  ) {
+    const skipReason =
+      core.intent === "sensitive_education_choice"
+        ? "llm_skipped_sensitive_education_boundary"
+        : core.intent === "clinical_boundary"
+          ? "llm_skipped_clinical_boundary"
+          : core.intent === "off_topic_redirect"
+            ? "llm_skipped_off_topic_boundary"
+            : "llm_skipped_policy_boundary";
     return finalizeTurnResponse(baseResponse, {
       audience: core.audience,
       sessionId: core.sessionId,
@@ -923,10 +946,7 @@ export async function runParentCopilotTurnAsync(input) {
       generationPath: "deterministic",
       llmAttempt: {
         ok: false,
-        reason:
-          core.intent === "sensitive_education_choice"
-            ? "llm_skipped_sensitive_education_boundary"
-            : "llm_skipped_clinical_boundary",
+        reason: skipReason,
       },
     });
   }

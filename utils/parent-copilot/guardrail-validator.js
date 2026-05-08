@@ -12,6 +12,7 @@
  */
 
 import { clinicalBoundaryJoinedFingerprintHe, sensitiveEducationChoiceJoinedFingerprintHe } from "./answer-composer.js";
+import { STRONG_GLOBAL_QUESTION_FLOOR } from "./report-volume-context.js";
 
 /** Deterministic clinical / diagnostic labeling (joined parent copy + contract slots). Not the fixed boundary fingerprint. */
 const CLINICAL_DIAGNOSIS_SURFACE_RES = [
@@ -99,6 +100,16 @@ const PARENT_META_INSTRUCTION_RE =
 
 /** Robotic / system phrasing. */
 const ROBOTIC_SYSTEM_RE = /(\[object\s+Object\]|TODO:|FIXME:|stack\s*trace|error\s*code\s*\d+)/i;
+
+/** Same family as parent-report narrative — emotional "confidence" framing is product-forbidden. */
+const EMOTIONAL_CONFIDENCE_TERMS_RE = /(ביטחו[ןנ]|בטחו[ןנ]|confidence)/iu;
+
+/**
+ * Global scarcity claims must not appear in composed glue when report volume is high.
+ * Contract slots may still carry nuanced uncertainty; we scan composed glue only.
+ */
+const GLOBAL_SCARCITY_CONTRADICTION_RE =
+  /(יש\s+כרגע\s+מעט\s+נתוני\s+תרגול|נפח\s+הנתונים\s+עדיין\s+מצומצם|אין\s+עדיין\s+מספיק\s+מידע\s+למסקנה\s+חזקה|אין\s+מספיק\s+נתונים\s+בכלל|נתונים\s+מועטים\s+בתקופה|מוקדם\s+לקבוע\s+תמונה\s+ברורה\s+מהתרגולים)/u;
 
 /**
  * @param {ReturnType<typeof import("./truth-packet-v1.js").buildTruthPacketV1>} truthPacket
@@ -192,6 +203,21 @@ export function validateAnswerDraft(draft, truthPacket, hints = null) {
 
   const latinRatio = latinToHebrewLetterRatio(joined);
   if (latinRatio > 0.34 && joined.length > 24) failCodes.push("excess_latin_in_parent_copy");
+
+  const globalQ = Math.max(
+    Number(truthPacket?.surfaceFacts?.reportQuestionTotalGlobal) || 0,
+    Number(truthPacket?.surfaceFacts?.questions) || 0,
+  );
+  if (
+    intent !== "off_topic_redirect" &&
+    intent !== "clinical_boundary" &&
+    intent !== "sensitive_education_choice"
+  ) {
+    if (EMOTIONAL_CONFIDENCE_TERMS_RE.test(joined)) failCodes.push("emotional_confidence_language");
+    if (globalQ >= STRONG_GLOBAL_QUESTION_FLOOR && GLOBAL_SCARCITY_CONTRADICTION_RE.test(composedJoined)) {
+      failCodes.push("truth_contradiction_global_thin_language_high_volume");
+    }
+  }
 
   const nar = truthPacket?.contracts?.narrative;
   const slotText = [

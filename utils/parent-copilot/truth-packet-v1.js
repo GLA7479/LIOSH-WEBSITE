@@ -26,6 +26,7 @@ import {
   hebrewFromEnglishSlug,
   rewriteEngineTaxonomySnippetForParentHe,
 } from "../diagnostic-labels-he.js";
+import { maxGlobalReportQuestionCount } from "./report-volume-context.js";
 
 /**
  * @param {unknown} payload
@@ -832,6 +833,7 @@ function buildTruthPacketV1NoAnchoredFallback(scope) {
     },
     surfaceFacts: {
       questions: q,
+      reportQuestionTotalGlobal: q,
       accuracy: acc,
       displayName,
       subjectLabelHe: subjectLabelHe(subjectId),
@@ -1189,6 +1191,8 @@ export function buildTruthPacketV1(payload, scope) {
     }
   }
 
+  const globalQCount = maxGlobalReportQuestionCount(payload);
+
   return {
     schemaVersion: "v1",
     audience: "parent",
@@ -1217,6 +1221,7 @@ export function buildTruthPacketV1(payload, scope) {
     },
     surfaceFacts: {
       questions: q,
+      reportQuestionTotalGlobal: Math.max(q, globalQCount),
       accuracy: acc,
       displayName,
       subjectLabelHe: subjectLabelHe(subjectId),
