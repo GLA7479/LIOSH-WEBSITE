@@ -39,6 +39,7 @@ const OPERATION_NAMES = {
 // שמות נושאים בעברית (גאומטריה)
 const TOPIC_NAMES = {
   shapes_basic: "צורות בסיסיות",
+  shapes: "צורות",
   area: "שטח",
   perimeter: "היקף",
   volume: "נפח",
@@ -84,12 +85,16 @@ export function getTopicName(topic) {
 }
 
 const ENGLISH_TOPIC_NAMES = {
-  vocabulary: "Vocabulary",
-  grammar: "Grammar",
-  translation: "Translation",
-  sentences: "Sentence Building",
-  writing: "Writing",
-  mixed: "Mixed Practice",
+  vocabulary: "אוצר מילים",
+  grammar: "דקדוק",
+  grammar_basics: "יסודות דקדוק",
+  translation: "תרגום",
+  sentences: "בניית משפטים",
+  writing: "כתיבה",
+  reading_comprehension: "הבנת הנקרא",
+  matching: "התאמה",
+  inference: "הסקה",
+  mixed: "תרגול משולב",
 };
 
 export function getEnglishTopicName(topic) {
@@ -114,11 +119,15 @@ export function getScienceTopicName(topic) {
 const HEBREW_TOPIC_NAMES = {
   reading: "קריאה",
   comprehension: "הבנת הנקרא",
+  reading_comprehension: "הבנת הנקרא",
   writing: "כתיבה והבעה",
   grammar: "דקדוק ולשון",
   vocabulary: "עושר שפתי",
   speaking: "דיבור ושיח",
   mixed: "ערבוב",
+  main_idea: "רעיון מרכזי",
+  sequence: "רצף",
+  inference: "הסקה",
 };
 
 export function getHebrewTopicName(topic) {
@@ -130,8 +139,12 @@ const MOLEDET_GEOGRAPHY_TOPIC_NAMES = {
   community: "קהילה",
   citizenship: "אזרחות",
   geography: "גאוגרפיה",
+  basic_geography: "יסודות גאוגרפיה",
   values: "ערכים",
   maps: "מפות",
+  map_reading: "קריאת מפה",
+  directions: "הוראות",
+  places: "מקומות",
   mixed: "ערבוב",
 };
 

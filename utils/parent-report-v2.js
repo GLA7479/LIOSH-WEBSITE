@@ -746,7 +746,7 @@ function sanitizeDecisionTraceDetailHeForParents(raw) {
   const s = String(raw || "").trim();
   if (!s) return "";
   if (/suppressAggressiveStep/i.test(s)) {
-    return "מסקנת רמת הראיות משפיעה על עוצמת ההמלצה הבאה.";
+    return "רמת הוודאות של הנתונים עוזרת לקבוע עד כמה להתקדם בצעד הבא.";
   }
   return s;
 }
@@ -823,7 +823,7 @@ function collectDiagnosticEvidenceLinesHe(unit, row) {
 
   const ec = r.contractsV1?.evidence;
   if (ec && typeof ec === "object" && EVIDENCE_STRENGTH_HE[ec.evidenceStrength]) {
-    push(`איכות הראיות מהאגרגציה: ${EVIDENCE_STRENGTH_HE[ec.evidenceStrength]}.`);
+    push(`עד כמה הנתונים מבוססים כרגע: ${EVIDENCE_STRENGTH_HE[ec.evidenceStrength]}.`);
   }
 
   if (r._feedback === "improved") push("מגמת דיוק: שיפור לעומת חלון קודם.");

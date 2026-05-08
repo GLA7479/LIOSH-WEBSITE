@@ -140,6 +140,26 @@ function subjectsMentionedInUtterance(utterance, payload) {
     const idx = u.indexOf(lab);
     if (idx >= 0) hits.push({ sid, idx, len: lab.length });
   }
+  /** Informal wording parents use (e.g. «קריאה» ≈ עברית / אוריינות). Longer needles first. */
+  const informalNeedles = [
+    ["hebrew", "קריאת מילים"],
+    ["hebrew", "קריאת משפטים"],
+    ["hebrew", "הבנת הנקרא"],
+    ["math", "מתמטיקה"],
+    ["hebrew", "עברית"],
+    ["english", "אנגלית"],
+    ["science", "מדעים"],
+    ["geometry", "גאומטריה"],
+    ["moledet-geography", "מולדת וגאוגרפיה"],
+    ["moledet-geography", "מולדת"],
+    ["math", "חשבון"],
+    ["hebrew", "קריאה"],
+  ];
+  for (const [sid, needle] of informalNeedles) {
+    if (!listed.includes(sid)) continue;
+    const idx = u.indexOf(needle);
+    if (idx >= 0) hits.push({ sid, idx, len: needle.length });
+  }
   hits.sort((a, b) => a.idx - b.idx || b.len - a.len);
   const seen = new Set();
   /** @type {string[]} */
@@ -544,19 +564,19 @@ export function buildSemanticAggregateDraft(input) {
     } else {
       const a = roll.find((r) => r.sid === mentioned[0]);
       const b = roll.find((r) => r.sid === mentioned[1]);
-    if (!a || !b || a.avg == null || b.avg == null) {
-      obs = `${lead} יש אזכור לשני מקצועות בשאלה, אבל בדוח חסרים מספיק נתוני תרגול מספריים לשניהם כדי להשוות בצורה יציבה.`;
-      meaning = "כשמופיעים שאלות ודיוק לשני המקצועות, אפשר לשאול שוב ולקבל השוואה ישירה לפי הממוצעים בדוח.";
-    } else if (a.avg === b.avg) {
-      obs = `${lead} לפי הממוצעים בדוח, ${a.label} ו־${b.label} נמצאים כרגע על אותו קו מבחינת דיוק כללי (כ־${a.avg}%).`;
-      meaning = "כדי להבדיל בין הכיוונים כדאי להסתכל גם על כמות השאלות בכל מקצוע ובניסוח הנושאים עצמם בדוח.";
-    } else {
-      const hi = a.avg > b.avg ? a : b;
-      const lo = a.avg > b.avg ? b : a;
-      obs = `${hi.label} גבוה יותר כרגע מ־${lo.label} — לפי ממוצע הדיוק הכללי בדוח (בערך ${hi.avg}% לעומת ${lo.avg}%).`;
-      meaning = "ההשוואה מבוססת על ממוצעים על פני הנושאים שיש להם תרגול בדוח, לא על ניסוח של נושא בודד.";
-      aggregateContinuity = { questionClass: qc, subjectId: hi.sid, role: "comparison_hi" };
-    }
+      if (!a || !b || a.avg == null || b.avg == null) {
+        obs = `${lead} יש אזכור לשני מקצועות בשאלה, אבל בדוח חסרים מספיק נתוני תרגול מספריים לשניהם כדי להשוות בצורה יציבה.`;
+        meaning = "כשמופיעים שאלות ודיוק לשני המקצועות, אפשר לשאול שוב ולקבל השוואה ישירה לפי הממוצעים בדוח.";
+      } else if (a.avg === b.avg) {
+        obs = `${lead} לפי הממוצעים בדוח, ${a.label} ו־${b.label} נמצאים כרגע על אותו קו מבחינת דיוק כללי (כ־${a.avg}%).`;
+        meaning = "כדי להבדיל בין הכיוונים כדאי להסתכל גם על כמות השאלות בכל מקצוע ובניסוח הנושאים עצמם בדוח.";
+      } else {
+        const hi = a.avg > b.avg ? a : b;
+        const lo = a.avg > b.avg ? b : a;
+        obs = `${hi.label} גבוה יותר כרגע מ־${lo.label} — לפי ממוצע הדיוק הכללי בדוח (בערך ${hi.avg}% לעומת ${lo.avg}%).`;
+        meaning = "ההשוואה מבוססת על ממוצעים על פני הנושאים שיש להם תרגול בדוח, לא על ניסוח של נושא בודד.";
+        aggregateContinuity = { questionClass: qc, subjectId: hi.sid, role: "comparison_hi" };
+      }
     }
   } else if (qc === "most_practice") {
     const listed = roll.filter((r) => r.topicRows > 0);
@@ -591,8 +611,16 @@ export function buildSemanticAggregateDraft(input) {
       meaning = "זו תשובה על בסיס שורות הסיכום בדוח בלבד, בלי להמציא מגמת זמן שלא הופיעה במפורש.";
       aggregateContinuity = { questionClass: qc, subjectId: "", role: "improved" };
     } else {
-      obs = `${lead}בדוח הנוכחי אין שורת מגמה מפורשת שמסמנת שיפור לאורך זמן.`;
-      meaning = "כדי לענות על «מה השתפר» באופן חד יותר צריך או מגמות מפורשות בסיכום התקופה או השוואת תקופות.";
+      const uImp = norm(utterance).toLowerCase();
+      const mathRow = roll.find((r) => r.sid === "math");
+      if (/מתמטיקה|חשבון/.test(uImp) && mathRow && mathRow.avg != null && mathRow.totalQ > 0) {
+        obs = `${lead}בחשבון נספרו בטווח כ־${mathRow.totalQ} שאלות, עם דיוק ממוצע של כ־${mathRow.avg}% לפי הדוח.`;
+        meaning =
+          "מגמת שיפור מפורשת לא תמיד מופיעה כשורה נפרדת בדוח — עדיין אפשר לעגן לנפח ולדיוק במקצוע מתוך הנתונים שמוצגים.";
+      } else {
+        obs = `${lead}בדוח הנוכחי אין שורת מגמה מפורשת שמסמנת שיפור לאורך זמן.`;
+        meaning = "כדי לענות על «מה השתפר» באופן חד יותר צריך או מגמות מפורשות בסיכום התקופה או השוואת תקופות.";
+      }
     }
   } else if (qc === "needs_attention") {
     const atRisk = [...roll].sort((a, b) => {

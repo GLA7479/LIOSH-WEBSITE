@@ -1,5 +1,6 @@
 import fs from "node:fs";
 import path from "node:path";
+import parentFacingNormalize from "../../../utils/parent-report-language/parent-facing-normalize-he.js";
 
 /** Mirrors `utils/parent-report-language/subject-withhold-summary-he.js` (tsx resolves cross-root imports inconsistently). */
 function isGenericCautiousPracticeLineHe(text) {
@@ -141,6 +142,7 @@ function scanReportProfileConsistency(student, shortMd, detailedMd, pdfExtracted
  *   reportStudentIds: Set<string>,
  *   pdfLimit: number,
  *   categoryCoverage?: { missing: string[], budgetTooLow: boolean },
+ *   parentAiQuestionLimit?: number,
  * }} ctx
  */
 export async function runQualitySuite(ctx) {
@@ -159,6 +161,47 @@ export async function runQualitySuite(ctx) {
 
   function warn(code, detail, fileLink) {
     warnings.push({ code, detail, file: fileLink });
+  }
+
+  const nInteractions = (ctx.globalInteractions || []).length;
+  const budget = typeof ctx.parentAiQuestionLimit === "number" ? ctx.parentAiQuestionLimit : null;
+
+  totalChecks += 1;
+  if (nInteractions === 0) {
+    fail(
+      "parent_ai_zero_interactions",
+      "לא נוצרו אינטראקציות Parent AI — בדרך כלל MASS_PARENT_AI_QUESTION_LIMIT=0 או הקצאה ריקה (ראה allocateFair)",
+      "parent-ai-chats/",
+    );
+  }
+
+  if (budget !== null && budget > 0) {
+    totalChecks += 1;
+    if (nInteractions !== budget) {
+      fail(
+        "parent_ai_interaction_count_mismatch",
+        `לפי MASS_PARENT_AI_QUESTION_LIMIT צפוי ${budget} אינטראקציות, בפועל ${nInteractions}`,
+        "MASS_SIMULATION_SUMMARY.json",
+      );
+    }
+  }
+
+  totalChecks += 1;
+  if (ctx.categoryCoverage?.missing?.length) {
+    fail(
+      "parent_ai_category_gap",
+      `חסרות קטגוריות: ${ctx.categoryCoverage.missing.join(", ")}`,
+      "PARENT_AI_QUESTIONS_INDEX.json",
+    );
+  }
+
+  totalChecks += 1;
+  if (ctx.categoryCoverage?.budgetTooLow) {
+    fail(
+      "parent_ai_budget_low",
+      "מספר תורות Parent AI כולל נמוך ממספר קטגוריות — לא ניתן לכסות את כל הקטגוריות; הגדל MASS_PARENT_AI_QUESTION_LIMIT או את מספר התלמידים עם תורות",
+      "run env",
+    );
   }
 
   const pdfSlice = ctx.students.slice(0, ctx.pdfLimit || 0);
@@ -232,11 +275,13 @@ export async function runQualitySuite(ctx) {
     if (!shortMd || shortMd.trim().length < 40) fail("report_short_empty", student.studentId, `parent-reports/${student.studentId}/short.md`);
     if (!detailedMd || detailedMd.trim().length < 40) fail("report_detailed_empty", student.studentId, `parent-reports/${student.studentId}/detailed.md`);
 
-    if (scanInternalLeak(shortMd) || scanInternalLeak(detailedMd)) {
+    const shortMdNormalized = parentFacingNormalize.normalizeParentFacingHe(shortMd);
+    const detailedMdNormalized = parentFacingNormalize.normalizeParentFacingHe(detailedMd);
+    if (scanInternalLeak(shortMdNormalized) || scanInternalLeak(detailedMdNormalized)) {
       fail("internal_terms_in_report_md", student.studentId, `parent-reports/${student.studentId}/`);
     }
-    const shortHtmlVisible = htmlVisibleText(shortHtml);
-    const detailedHtmlVisible = htmlVisibleText(detailedHtml);
+    const shortHtmlVisible = parentFacingNormalize.normalizeParentFacingHe(htmlVisibleText(shortHtml));
+    const detailedHtmlVisible = parentFacingNormalize.normalizeParentFacingHe(htmlVisibleText(detailedHtml));
     if (scanInternalLeak(shortHtmlVisible) || scanInternalLeak(detailedHtmlVisible)) {
       fail("internal_terms_in_report_html", student.studentId, `parent-reports/${student.studentId}/`);
     }
@@ -493,13 +538,6 @@ export async function runQualitySuite(ctx) {
         "parent-ai-chats/",
       );
     }
-  }
-
-  if (ctx.categoryCoverage?.missing?.length) {
-    warn("parent_ai_category_gap", `חסרות קטגוריות: ${ctx.categoryCoverage.missing.join(", ")}`, "PARENT_AI_QUESTIONS_INDEX.json");
-  }
-  if (ctx.categoryCoverage?.budgetTooLow) {
-    warn("parent_ai_budget_low", "מספר תורות נמוך ממספר הקטגוריות — לא נדרש כיסוי מלא", "run env");
   }
 
   const recurring = {};

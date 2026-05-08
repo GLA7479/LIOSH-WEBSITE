@@ -17,10 +17,15 @@
 import {
   contractsFromTopicRow,
   listCopilotAnchoredTopicRows,
+  normalizeSubjectId,
   readContractsSliceForScope,
   subjectLabelHe,
   SUBJECT_ORDER,
 } from "./contract-reader.js";
+import {
+  hebrewFromEnglishSlug,
+  rewriteEngineTaxonomySnippetForParentHe,
+} from "../diagnostic-labels-he.js";
 
 /**
  * @param {unknown} payload
@@ -166,7 +171,7 @@ function supportingNumericTail(x) {
   if (x.totalQ > 0) bits.push(`בסך הכל כ־${x.totalQ} שאלות בנושאים שנבדקו`);
   if (x.avgAcc > 0) bits.push(`רמת דיוק כללית של כ־${x.avgAcc}%`);
   if (!bits.length) return "";
-  return `ליד המידע המילולי: ${bits.join(", ")}.`;
+  return `מבחינת מספרים: ${bits.join(", ")}.`;
 }
 
 /**
@@ -182,9 +187,18 @@ function appendDistinctSentence(base, tail) {
 
 /** Topic title for parents — drops internal «— סיכום תקופתי» suffix when present. */
 function parentFacingTopicTitleHe(dn) {
-  return String(dn || "")
+  const raw = String(dn || "")
     .replace(/\s*—\s*סיכום תקופתי\s*$/iu, "")
     .trim();
+  if (!raw) return "";
+  const rewritten = rewriteEngineTaxonomySnippetForParentHe(raw);
+  if (rewritten && rewritten !== raw) return rewritten;
+  if (/^[a-z][a-z0-9_/-]*$/i.test(raw)) {
+    const fromSlug = hebrewFromEnglishSlug(raw.replace(/[/-]/g, "_"));
+    if (fromSlug) return fromSlug;
+    return raw.replace(/_/g, " ");
+  }
+  return raw;
 }
 
 function isMisleadingZeroStableTrendLine(line) {
@@ -296,6 +310,8 @@ function pickExplainReportMetas(metas, rankedWorstFirst, limit) {
  *   canonicalIntent: string;
  *   recommendationEligible?: boolean;
  *   recommendationIntensityCap?: string;
+ *   overallSnapshotTotalQuestions?: number;
+ *   primarySubjectId?: string;
  * }} x
  * @returns {{ observation: string; interpretation: string; action?: string|null }}
  */
@@ -316,13 +332,17 @@ function buildExecutiveIntentNarrativeSlots(x) {
   };
 
   const sparseExecutive = metas.length <= 1;
+  const rollupTq = Math.max(0, Number(x.totalQ) || 0);
+  const snapshotTq = Math.max(0, Number(x.overallSnapshotTotalQuestions) || 0);
+  /** When snapshot total is lower than contract rollup (e.g. thin practice seed), prefer snapshot for scarcity wording. */
+  const practiceVolume = snapshotTq > 0 && snapshotTq < rollupTq ? snapshotTq : rollupTq;
 
   const defaultObs =
     metas.length && metas[0].obs
-      ? `לפי הדוח, הניסוח המעוגן הראשון הוא ב${labelPair(metas[0])}: ${clipHe(metas[0].obs, 170)}.`
+      ? `לפי הדוח, הדבר הראשון שבולט ב${labelPair(metas[0])}: ${clipHe(metas[0].obs, 170)}.`
       : namedBits
-        ? `בדוח מופיעים ניסוחים מעוגנים: ${namedBits}.`
-        : "בדוח יש כרגע מידע מעוגן; ככל שיוצגו ניסוחים נוספים, התמונה תתעבה.";
+        ? `בדוח מופיעים כרגע מוקדים מרכזיים: ${namedBits}.`
+        : "בדוח יש כרגע מידע חלקי; ככל שיצטבר תרגול נוסף, התמונה תתבהר.";
 
   const defaultInterpBase =
     (metas[0]?.interp && clipHe(metas[0].interp, 200)) ||
@@ -337,7 +357,7 @@ function buildExecutiveIntentNarrativeSlots(x) {
       const hot = rankedWorstFirst.slice(0, 3);
       const obs =
         hot.length && hot.some((m) => m.cannot || m.readiness === "insufficient" || m.confidenceBand === "low")
-          ? `לפי מה שמופיע בדוח, כדאי לפתוח תשומת לב ראשונה סביב מה שמסמן חוסר סגירה או ניסוח זהיר: ${hot.map((m) => `${labelPair(m)} — ${m.obs ? clipHe(m.obs, 78) : "יש ניסוח מעוגן"}`).join(" · ")}.`
+          ? `לפי מה שמופיע בדוח, כדאי לפתוח תשומת לב ראשונה סביב מה שעוד לא יציב: ${hot.map((m) => `${labelPair(m)} — ${m.obs ? clipHe(m.obs, 78) : "יש סימן ראשוני"}`).join(" · ")}.`
           : `לפי הדוח אין כרגע מוקד «חריג» אחד חד — המקצועות והנושאים המעוגנים שמופיעים הם: ${namedBits || labelPair(metas[0])}.`;
       const interpParts = [];
       for (const m of hot.slice(0, 2)) {
@@ -357,7 +377,7 @@ function buildExecutiveIntentNarrativeSlots(x) {
       const top = rankedBestFirst.slice(0, 2);
       const obs =
         top.length > 0
-          ? `לפי הניסוחים המעוגנים בדוח, מה שנראה כרגע חזק יחסית: ${top.map((m) => `${labelPair(m)} — ${m.obs ? clipHe(m.obs, 95) : "ניסוח קצר מופיע בלי הרחבה"}`).join(" · ")}.`
+          ? `לפי הדוח, מה שנראה כרגע חזק יחסית: ${top.map((m) => `${labelPair(m)} — ${m.obs ? clipHe(m.obs, 95) : "יש סימן חיובי קצר"}`).join(" · ")}.`
           : defaultObs;
       const accNote =
         top.length > 0
@@ -373,7 +393,7 @@ function buildExecutiveIntentNarrativeSlots(x) {
       const low = rankedWorstFirst.slice(0, 2);
       const obs =
         low.length > 0
-          ? `מה שהדוח מתאר כרגע כדורש חיזוק או תשומת לב: ${low.map((m) => `${labelPair(m)} — ${m.obs ? clipHe(m.obs, 95) : "יש ניסוח מעוגן"}`).join(" · ")}.`
+          ? `מה שהדוח מתאר כרגע כדורש חיזוק או תשומת לב: ${low.map((m) => `${labelPair(m)} — ${m.obs ? clipHe(m.obs, 95) : "יש סימן ראשוני"}`).join(" · ")}.`
           : defaultObs;
       const accNote =
         low.length > 0
@@ -422,7 +442,14 @@ function buildExecutiveIntentNarrativeSlots(x) {
     }
     case "what_to_do_today":
     case "what_to_do_this_week": {
-      const focus = rankedWorstFirst[0] || metas[0];
+      const primarySid = x.primarySubjectId ? normalizeSubjectId(x.primarySubjectId) : "";
+      let focus = rankedWorstFirst[0] || metas[0];
+      if (primarySid) {
+        const prefer =
+          rankedWorstFirst.find((m) => normalizeSubjectId(m.sid) === primarySid && m.q > 0) ||
+          metas.find((m) => normalizeSubjectId(m.sid) === primarySid && m.q > 0);
+        if (prefer) focus = prefer;
+      }
       const obs = focus
         ? `כשבוחרים צעד מעשי מתוך הדוח, הגיוני להתייחס קודם למה שמצביע על פער: ${labelPair(focus)}.`
         : defaultObs;
@@ -433,7 +460,7 @@ function buildExecutiveIntentNarrativeSlots(x) {
       interp = appendDistinctSentence(interp, supportingNumericTail(x));
       if (!interp.trim()) interp = defaultInterp;
       const week = intent === "what_to_do_this_week";
-      const thinPlan = x.totalQ < 90 || sparseExecutive;
+      const thinPlan = practiceVolume < 90 || sparseExecutive;
       const allowRec =
         x.recommendationEligible === true && String(x.recommendationIntensityCap || "RI0") !== "RI0";
       /** @type {string|null} */
@@ -466,7 +493,7 @@ function buildExecutiveIntentNarrativeSlots(x) {
       const m = metas[0];
       if (!m) return { observation: defaultObs, interpretation: defaultInterp };
       const core = `אפשר לבחור משפט קצר שמתחיל ממה שממש מופיע בדוח ב${labelPair(m)}: ${
-        m.obs ? `«${clipHe(m.obs, 150)}»` : "יש ניסוח מעוגן שאפשר לשייך לילד בשפה רכה."
+        m.obs ? `«${clipHe(m.obs, 150)}»` : "יש כאן ניסוח שאפשר לשקף לילד בשפה רכה."
       }`;
       const trendBack = trends[0] && !looksLikeNumericOrCountLead(trends[0]) ? `אם צריך הקשר רך: ${trends[0]}` : "";
       const obs = appendDistinctSentence(core, trendBack);
@@ -534,27 +561,27 @@ function buildExecutiveIntentNarrativeSlots(x) {
     case "explain_report": {
       let obs;
       const scarcityLead =
-        x.totalQ < 80
+        practiceVolume < 80 || sparseExecutive
           ? "יש כרגע מעט נתוני תרגול, כלומר נפח הנתונים עדיין מצומצם ואין עדיין מספיק מידע למסקנה חזקה."
           : "";
       if (sparseExecutive) {
         const m0 = metas[0];
         obs = m0
-          ? `${scarcityLead ? `${scarcityLead} ` : ""}כרגע בדוח מופיע חומר מעוגן מצומצם: ב${labelPair(m0)}. ${m0.obs ? `מה שמנוסח שם: ${clipHe(m0.obs, 220)}` : "אין עדיין פסקת ניסוח ארוכה שמוצגת כאן."} התמונה הכוללת עדיין חלקית — עד שייאספו עוד נקודות עם ניסוח מעוגן.`
+          ? `${scarcityLead ? `${scarcityLead} ` : ""}כרגע בדוח מופיע מידע מצומצם: ב${labelPair(m0)}. ${m0.obs ? `מה שרואים שם: ${clipHe(m0.obs, 220)}` : "אין עדיין פירוט ארוך שמוצג כאן."} התמונה הכוללת עדיין חלקית — עד שייאספו עוד נקודות תרגול.`
           : defaultObs;
       } else {
         const explainPick = pickExplainReportMetas(metas, rankedWorstFirst, 4);
         const chunks = explainPick.map((m) => {
-          const core = m.obs ? clipHe(m.obs, 95) : "ניסוח מעוגן קיים בלי פירוט ארוך";
+          const core = m.obs ? clipHe(m.obs, 95) : "יש מידע קצר בלי פירוט ארוך";
           return `${labelPair(m)} — ${core}`;
         });
-        obs = `${scarcityLead ? `${scarcityLead} ` : ""}לפי מה שמוצג עכשיו בדוח, אלה המקצועות והנושאים עם ניסוח מעוגן שאפשר להסתמך עליהם: ${chunks.join(" · ")}.`;
+        obs = `${scarcityLead ? `${scarcityLead} ` : ""}לפי מה שמוצג עכשיו בדוח, אלה המקצועות והנושאים שאפשר להסתמך עליהם כרגע: ${chunks.join(" · ")}.`;
       }
       const interpParts = [];
       const explainInterpPick = sparseExecutive ? metas : pickExplainReportMetas(metas, rankedWorstFirst, 4);
       if (explainInterpPick[0]?.interp) interpParts.push(clipHe(explainInterpPick[0].interp, 200));
       if (explainInterpPick[1]?.interp)
-        interpParts.push(`במקביל, ב${labelPair(explainInterpPick[1])}: ${clipHe(explainInterpPick[1].interp, 170)}`);
+        interpParts.push(`בנוסף, ב${labelPair(explainInterpPick[1])}: ${clipHe(explainInterpPick[1].interp, 170)}`);
       let interp = interpParts.join(" ");
       const narrTrend = trends.find(
         (line) => line && !looksLikeNumericOrCountLead(line) && shouldAttachExecutiveSecondTrendLine(line, x.totalQ),
@@ -568,9 +595,9 @@ function buildExecutiveIntentNarrativeSlots(x) {
       const best = rankedBestFirst[0];
       const worst = rankedWorstFirst[0];
       let obs;
-      if (sparseExecutive || x.totalQ < 80) {
+      if (sparseExecutive || practiceVolume < 80) {
         obs =
-          "יש כרגע לא הרבה תרגול שמופיע בדוח אצל הילד — התמונה כללית עדיין חלקית, וכדאי לצבור עוד קצת תרגול לפני מסקנה חדה.";
+          "יש כרגע מעט נתוני תרגול בדוח — נפח הנתונים עדיין קטן יחסית, ולכן התמונה כללית עדיין חלקית; כדאי לצבור עוד קצת תרגול לפני מסקנה חדה.";
       } else if (best && worst && (best.sid !== worst.sid || best.dn !== worst.dn)) {
         obs = `בגדול: ב${subjectLabelHe(best.sid)} נראה יחסית יותר יציב לפי מה שנספר בדוח, וב${subjectLabelHe(worst.sid)} יש יותר מקום לחיזוק לפי אותו טווח.`;
       } else if (worst) {
@@ -593,10 +620,10 @@ function buildExecutiveIntentNarrativeSlots(x) {
       if (sparseExecutive) {
         const m0 = metas[0];
         obs = m0
-          ? `מה שמופיע בדוח כרגע הוא בעיקר ניסוח אחד מעוגן: ${labelPair(m0)}. ${m0.obs ? clipHe(m0.obs, 210) : "אין עדיין הרחבה נוספת מעבר לכותרת הנושא."} לכן התמונה מוגבלת למה שכבר הוכנס לטווח התקופה.`
+          ? `מה שמופיע בדוח כרגע הוא בעיקר מוקד אחד: ${labelPair(m0)}. ${m0.obs ? clipHe(m0.obs, 210) : "אין עדיין הרחבה נוספת מעבר לכותרת הנושא."} לכן התמונה מוגבלת למה שכבר הוכנס לטווח התקופה.`
           : defaultObs;
       } else {
-        obs = `לפי רשימת המקורות המעוגנים בדוח, כרגע מופיעים: ${namedBits}. זה אומר שהתמונה בנויה ממקצועות ונושאים שכבר הוכנסו לטווח התקופה.`;
+        obs = `לפי הדוח, כרגע מופיעים: ${namedBits}. זה אומר שהתמונה בנויה ממקצועות ונושאים שכבר הוכנסו לטווח התקופה.`;
       }
       let interp = sparseExecutive
         ? "הדוח עדיין מסכם תקופה חלקית: ככל שיופיעו ניסוחים נוספים, אפשר יהיה לרכז תמונה עשירה יותר — בלי להסיק מעבר לנתוני התצוגה."
@@ -902,23 +929,42 @@ export function buildTruthPacketV1(payload, scope) {
       findDiagnosticUnitForIntelligence(payload, subjectId, trkIv)
     );
   } else {
-    const anchor = allAnchored[0];
+    let anchor = allAnchored[0];
     subjectId = String(anchor.subject || "");
     /** Synthetic aggregate rows are not guaranteed to round-trip via payload lookup. */
     let anchorContracts = null;
-    if (anchor.tr?.__copilotSyntheticAggregate) {
-      anchorContracts = {
-        subjectId,
-        topicRow: anchor.tr,
-        contracts: contractsFromTopicRow(anchor.tr),
-      };
-    } else {
-      anchorContracts = readContractsSliceForScope(
+    function sliceFromRow(row) {
+      const sid = String(row.subject || "");
+      if (row.tr?.__copilotSyntheticAggregate) {
+        return {
+          subjectId: sid,
+          topicRow: row.tr,
+          contracts: contractsFromTopicRow(row.tr),
+        };
+      }
+      const byKey = readContractsSliceForScope(
         "topic",
-        String(anchor.tr?.topicRowKey || anchor.tr?.topicKey || ""),
-        subjectId,
+        String(row.tr?.topicRowKey || row.tr?.topicKey || ""),
+        sid,
         payload,
       );
+      if (byKey) return byKey;
+      if (row.tr?.contractsV1 && typeof row.tr.contractsV1 === "object") {
+        return { subjectId: sid, topicRow: row.tr, contracts: contractsFromTopicRow(row.tr) };
+      }
+      return null;
+    }
+    anchorContracts = sliceFromRow(anchor);
+    if (!anchorContracts) {
+      for (const row of allAnchored) {
+        const ac = sliceFromRow(row);
+        if (ac) {
+          anchorContracts = ac;
+          anchor = row;
+          subjectId = String(row.subject || "");
+          break;
+        }
+      }
     }
     if (!anchorContracts) return buildTruthPacketV1NoAnchoredFallback(scope);
 
@@ -1005,6 +1051,8 @@ export function buildTruthPacketV1(payload, scope) {
       canonicalIntent: canon,
       recommendationEligible,
       recommendationIntensityCap,
+      overallSnapshotTotalQuestions: Number(payload?.overallSnapshot?.totalQuestions) || 0,
+      primarySubjectId: String(payload?.parentProductContractV1?.primarySubjectId || "").trim(),
     });
     const slotAction =
       intentSlots &&

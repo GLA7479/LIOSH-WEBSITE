@@ -22,6 +22,7 @@ import {
   trendCompactLineHe,
   confidenceBadgeLabelHe,
 } from "../../utils/parent-report-ui-explain-he";
+import { normalizeParentFacingHe } from "../../utils/parent-report-language/parent-facing-normalize-he.js";
 import { diagnosticPrimarySourceParentLabelHe } from "../../utils/parent-report-language/index.js";
 import { deriveParentDataPresenceForDiagnosticsView } from "../../utils/parent-data-presence.js";
 import { useRouter } from "next/router";
@@ -44,44 +45,84 @@ import {
 import ParentReportShortContractPreview from "../../components/parent-report-short-contract-preview.jsx";
 
 function parentReportChartLabelFromAllItemKey(key, data) {
-  if (data?.displayName) return data.displayName;
+  const labelFrom = (subjectId, bucketLike) => {
+    const b = String(bucketLike ?? "").trim();
+    const mapped =
+      subjectId === "math"
+        ? getMathReportBucketDisplayName(b)
+        : subjectId === "geometry"
+          ? getTopicName(b)
+          : subjectId === "english"
+            ? getEnglishTopicName(b)
+            : subjectId === "science"
+              ? getScienceTopicName(b)
+              : subjectId === "hebrew"
+                ? getHebrewTopicName(b)
+                : subjectId === "moledet-geography"
+                  ? getMoledetGeographyTopicName(b)
+                  : b;
+    return normalizeParentFacingHe(String(mapped || b || "").trim());
+  };
+  const displayName = String(data?.displayName || "").trim();
+  const bucketKey = String(data?.bucketKey || "").trim();
   if (key.startsWith("math_")) {
     const rest = key.slice("math_".length);
     const sep = rest.indexOf("\u0001");
     const fallbackBucket = sep === -1 ? rest : rest.slice(0, sep);
-    return getMathReportBucketDisplayName(data.bucketKey ?? fallbackBucket);
+    return labelFrom("math", bucketKey || displayName || fallbackBucket);
   }
   if (key.startsWith("geometry_")) {
     const rest = key.slice("geometry_".length);
     const sep = rest.indexOf("\u0001");
     const fallbackBucket = sep === -1 ? rest : rest.slice(0, sep);
-    return getTopicName(data.bucketKey ?? fallbackBucket);
+    return labelFrom("geometry", bucketKey || displayName || fallbackBucket);
   }
   if (key.startsWith("english_")) {
     const rest = key.slice("english_".length);
     const sep = rest.indexOf("\u0001");
     const fallbackBucket = sep === -1 ? rest : rest.slice(0, sep);
-    return getEnglishTopicName(data.bucketKey ?? fallbackBucket);
+    return labelFrom("english", bucketKey || displayName || fallbackBucket);
   }
   if (key.startsWith("science_")) {
     const rest = key.slice("science_".length);
     const sep = rest.indexOf("\u0001");
     const fallbackBucket = sep === -1 ? rest : rest.slice(0, sep);
-    return getScienceTopicName(data.bucketKey ?? fallbackBucket);
+    return labelFrom("science", bucketKey || displayName || fallbackBucket);
   }
   if (key.startsWith("hebrew_")) {
     const rest = key.slice("hebrew_".length);
     const sep = rest.indexOf("\u0001");
     const fallbackBucket = sep === -1 ? rest : rest.slice(0, sep);
-    return getHebrewTopicName(data.bucketKey ?? fallbackBucket);
+    return labelFrom("hebrew", bucketKey || displayName || fallbackBucket);
   }
   if (key.startsWith("moledet-geography_")) {
     const rest = key.slice("moledet-geography_".length);
     const sep = rest.indexOf("\u0001");
     const fallbackBucket = sep === -1 ? rest : rest.slice(0, sep);
-    return getMoledetGeographyTopicName(data.bucketKey ?? fallbackBucket);
+    return labelFrom("moledet-geography", bucketKey || displayName || fallbackBucket);
   }
-  return key;
+  if (displayName) return normalizeParentFacingHe(displayName);
+  return normalizeParentFacingHe(key);
+}
+
+function subjectTopicLabelForParentHe(subjectId, data, fallbackTopic) {
+  const displayName = String(data?.displayName || "").trim();
+  const bucket = String(data?.bucketKey ?? fallbackTopic ?? "").trim();
+  const raw =
+    subjectId === "math"
+      ? getMathReportBucketDisplayName(bucket || displayName)
+      : subjectId === "geometry"
+        ? getTopicName(bucket || displayName)
+        : subjectId === "english"
+          ? getEnglishTopicName(bucket || displayName)
+          : subjectId === "science"
+            ? getScienceTopicName(bucket || displayName)
+            : subjectId === "hebrew"
+              ? getHebrewTopicName(bucket || displayName)
+              : subjectId === "moledet-geography"
+                ? getMoledetGeographyTopicName(bucket || displayName)
+                : displayName || bucket;
+  return normalizeParentFacingHe(String(raw || displayName || bucket || "").trim());
 }
 
 /** צבעי מקצוע עקביים בגרפים */
@@ -646,7 +687,7 @@ function sanitizeDiagnosticsFootnoteDetailHe(raw) {
   const s = String(raw || "").trim();
   if (!s) return "";
   if (/suppressAggressiveStep/i.test(s)) {
-    return "מסקנת רמת הראיות משפיעה על עוצמת ההמלצה הבאה.";
+    return "רמת הוודאות של הנתונים עוזרת לקבוע עד כמה להתקדם בצעד הבא.";
   }
   return s;
 }
@@ -1892,7 +1933,7 @@ export default function ParentReport() {
                         <tr key={op} className="border-b border-white/10">
                           <td className="text-right align-top py-1.5 px-1 min-w-0">
                             <span className="text-right break-words">
-                              {data.displayName || getMathReportBucketDisplayName(data.bucketKey ?? op)}
+                              {subjectTopicLabelForParentHe("math", data, op)}
                             </span>
                           </td>
                           <td className="py-1.5 px-0.5 text-center text-white/80 text-[11px] md:text-sm whitespace-nowrap">
@@ -1946,7 +1987,7 @@ export default function ParentReport() {
                   .sort(([_, a], [__, b]) => b.questions - a.questions)
                   .map(([op, data]) => (
                     <div key={op} className="bg-black/40 border border-white/20 rounded-lg p-3">
-                      <div className="font-semibold text-sm mb-2 text-blue-400">{data.displayName || getMathReportBucketDisplayName(data.bucketKey ?? op)}</div>
+                      <div className="font-semibold text-sm mb-2 text-blue-400">{subjectTopicLabelForParentHe("math", data, op)}</div>
                       <div className="grid grid-cols-2 gap-2 text-xs">
                         <div>
                           <span className="text-white/60">רמה:</span> <span className="text-white/90">{data.level || "לא זמין"}</span>
@@ -2033,7 +2074,7 @@ export default function ParentReport() {
                         <tr key={topic} className="border-b border-white/10">
                           <td className="text-right align-top py-1.5 px-1 min-w-0">
                             <span className="text-right break-words">
-                              {data.displayName || getTopicName(data.bucketKey ?? topic)}
+                              {subjectTopicLabelForParentHe("geometry", data, topic)}
                             </span>
                           </td>
                           <td className="py-1.5 px-0.5 text-center text-white/80 text-[11px] md:text-sm whitespace-nowrap">
@@ -2087,7 +2128,7 @@ export default function ParentReport() {
                   .sort(([_, a], [__, b]) => b.questions - a.questions)
                   .map(([topic, data]) => (
                     <div key={topic} className="bg-black/40 border border-white/20 rounded-lg p-3">
-                      <div className="font-semibold text-sm mb-2 text-emerald-400">{data.displayName || getTopicName(data.bucketKey ?? topic)}</div>
+                      <div className="font-semibold text-sm mb-2 text-emerald-400">{subjectTopicLabelForParentHe("geometry", data, topic)}</div>
                       <div className="grid grid-cols-2 gap-2 text-xs">
                         <div>
                           <span className="text-white/60">רמה:</span> <span className="text-white/90">{data.level || "לא זמין"}</span>
@@ -2175,7 +2216,7 @@ export default function ParentReport() {
                         <tr key={topic} className="border-b border-white/10">
                           <td className="text-right align-top py-1.5 px-1 min-w-0">
                             <span className="text-right break-words">
-                              {data.displayName || getEnglishTopicName(data.bucketKey ?? topic)}
+                              {subjectTopicLabelForParentHe("english", data, topic)}
                             </span>
                           </td>
                           <td className="py-1.5 px-0.5 text-center text-white/80 text-[11px] md:text-sm whitespace-nowrap">
@@ -2229,7 +2270,7 @@ export default function ParentReport() {
                   .sort(([_, a], [__, b]) => b.questions - a.questions)
                   .map(([topic, data]) => (
                     <div key={topic} className="bg-black/40 border border-white/20 rounded-lg p-3">
-                      <div className="font-semibold text-sm mb-2 text-purple-400">{data.displayName || getEnglishTopicName(data.bucketKey ?? topic)}</div>
+                      <div className="font-semibold text-sm mb-2 text-purple-400">{subjectTopicLabelForParentHe("english", data, topic)}</div>
                       <div className="grid grid-cols-2 gap-2 text-xs">
                         <div>
                           <span className="text-white/60">רמה:</span> <span className="text-white/90">{data.level || "לא זמין"}</span>
@@ -2317,7 +2358,7 @@ export default function ParentReport() {
                         <tr key={topic} className="border-b border-white/10">
                           <td className="text-right align-top py-1.5 px-1 min-w-0">
                             <span className="text-right break-words">
-                              {data.displayName || getScienceTopicName(data.bucketKey ?? topic)}
+                              {subjectTopicLabelForParentHe("science", data, topic)}
                             </span>
                           </td>
                           <td className="py-1.5 px-0.5 text-center text-white/80 text-[11px] md:text-sm whitespace-nowrap">
@@ -2375,7 +2416,7 @@ export default function ParentReport() {
                   .sort(([_, a], [__, b]) => b.questions - a.questions)
                   .map(([topic, data]) => (
                     <div key={topic} className="bg-black/40 border border-white/20 rounded-lg p-3">
-                      <div className="font-semibold text-sm mb-2 text-green-400">{data.displayName || getScienceTopicName(data.bucketKey ?? topic)}</div>
+                      <div className="font-semibold text-sm mb-2 text-green-400">{subjectTopicLabelForParentHe("science", data, topic)}</div>
                       <div className="grid grid-cols-2 gap-2 text-xs">
                         <div>
                           <span className="text-white/60">רמה:</span> <span className="text-white/90">{data.level || "לא זמין"}</span>
@@ -2463,7 +2504,7 @@ export default function ParentReport() {
                         <tr key={topic} className="border-b border-white/10">
                           <td className="text-right align-top py-1.5 px-1 min-w-0">
                             <span className="text-right break-words">
-                              {data.displayName || getHebrewTopicName(data.bucketKey ?? topic)}
+                              {subjectTopicLabelForParentHe("hebrew", data, topic)}
                             </span>
                           </td>
                           <td className="py-1.5 px-0.5 text-center text-white/80 text-[11px] md:text-sm whitespace-nowrap">
@@ -2521,7 +2562,7 @@ export default function ParentReport() {
                   .sort(([_, a], [__, b]) => b.questions - a.questions)
                   .map(([topic, data]) => (
                     <div key={topic} className="bg-black/40 border border-white/20 rounded-lg p-3">
-                      <div className="font-semibold text-sm mb-2 text-orange-400">{data.displayName || getHebrewTopicName(data.bucketKey ?? topic)}</div>
+                      <div className="font-semibold text-sm mb-2 text-orange-400">{subjectTopicLabelForParentHe("hebrew", data, topic)}</div>
                       <div className="grid grid-cols-2 gap-2 text-xs">
                         <div>
                           <span className="text-white/60">רמה:</span> <span className="text-white/90">{data.level || "לא זמין"}</span>
@@ -2609,7 +2650,7 @@ export default function ParentReport() {
                         <tr key={topic} className="border-b border-white/10">
                           <td className="text-right align-top py-1.5 px-1 min-w-0">
                             <span className="text-right break-words">
-                              {data.displayName || getMoledetGeographyTopicName(data.bucketKey ?? topic)}
+                              {subjectTopicLabelForParentHe("moledet-geography", data, topic)}
                             </span>
                           </td>
                           <td className="py-1.5 px-0.5 text-center text-white/80 text-[11px] md:text-sm whitespace-nowrap">
@@ -2667,7 +2708,7 @@ export default function ParentReport() {
                   .sort(([_, a], [__, b]) => b.questions - a.questions)
                   .map(([topic, data]) => (
                     <div key={topic} className="bg-black/40 border border-white/20 rounded-lg p-3">
-                      <div className="font-semibold text-sm mb-2 text-cyan-400">{data.displayName || getMoledetGeographyTopicName(data.bucketKey ?? topic)}</div>
+                      <div className="font-semibold text-sm mb-2 text-cyan-400">{subjectTopicLabelForParentHe("moledet-geography", data, topic)}</div>
                       <div className="grid grid-cols-2 gap-2 text-xs">
                         <div>
                           <span className="text-white/60">רמה:</span> <span className="text-white/90">{data.level || "לא זמין"}</span>

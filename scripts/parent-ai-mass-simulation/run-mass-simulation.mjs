@@ -10,7 +10,7 @@
  *   MASS_QUESTION_TARGET (default 20000)
  *   MASS_QUESTION_SOURCE — synthetic | hybrid | real (default hybrid)
  *   MASS_REPORT_LIMIT, MASS_PDF_LIMIT
- *   MASS_PARENT_AI_QUESTION_LIMIT — global budget distributed fairly across students
+ *   MASS_PARENT_AI_QUESTION_LIMIT — global budget distributed fairly across students (must be > 0 for Parent AI; 0 skips all turns and fails quality gates)
  *   MASS_PARENT_AI_CATEGORY_BALANCED=1
  *   MASS_PARENT_AI_CATEGORY_MIN (default 1)
  *   QA_BASE_URL / MASS_PDF_BASE_URL — required for PDF export (Next server), default http://localhost:3001 (Node fetch to 127.0.0.1 can be flaky on some Windows setups)
@@ -216,6 +216,11 @@ async function main() {
   writeQuestionRunsReadme(outputRoot);
 
   const questionStats = aggregateQuestionStats(questionRows);
+  if (parentAiGlobalLimit <= 0) {
+    console.warn(
+      "[mass-sim] MASS_PARENT_AI_QUESTION_LIMIT is 0 or unset — no Parent AI turns will run; quality gates will fail (parent_ai_zero_interactions).",
+    );
+  }
   const parentAiTurnsByStudent = allocateFair(parentAiGlobalLimit, students.length);
 
   const { generateDetailedParentReport } = await import(pathToFileURL(path.join(ROOT, "utils/detailed-parent-report.js")).href);
@@ -272,6 +277,7 @@ async function main() {
     reportStudentIds: reportIds,
     pdfLimit,
     categoryCoverage,
+    parentAiQuestionLimit: parentAiGlobalLimit,
   });
 
   if (pdfLimit > 0) {
@@ -295,6 +301,18 @@ async function main() {
     reportStudentIds: reportIds,
     pdfLimit,
   });
+
+  const scannedAnswers = auditResult.auditPayload.summary.totalAnswersScanned ?? 0;
+  quality.totalChecks += 1;
+  if (scannedAnswers !== globalInteractions.length) {
+    quality.failedChecks += 1;
+    quality.issues.push({
+      level: "fail",
+      code: "audit_totalAnswersScanned_mismatch",
+      detail: `צפוי totalAnswersScanned=${globalInteractions.length} (כמות אינטראקציות), בפועל ${scannedAnswers}`,
+      file: "AI_RESPONSE_QUALITY_AUDIT.json",
+    });
+  }
 
   fs.writeFileSync(
     path.join(outputRoot, "AI_RESPONSE_QUALITY_AUDIT.json"),

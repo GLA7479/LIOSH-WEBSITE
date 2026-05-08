@@ -189,7 +189,7 @@ export const PARENT_REPORT_STANDALONE_ZERO_LEAK_RE = /(?<![#0-9])00000(?![0-9])/
  * do not tell parents “אין נתונים” (contradicts tables).
  */
 export const PARENT_BULLETS_EMPTY_WITH_VOLUME_HE =
-  "יש נתוני תרגול בטווח, אך בניסוח המסונן אין כאן נקודות להצגה כרגע — המשך התרגול יעזרו להבהיר את התמונה.";
+  "יש נתוני תרגול בטווח, אך כרגע אין מספיק נקודות ברורות להצגה — המשך התרגול יעזור להבהיר את התמונה.";
 
 /**
  * Remove known internal/demo leakage from a string (defense in depth).

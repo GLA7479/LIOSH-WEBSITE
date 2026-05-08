@@ -87,6 +87,50 @@ function normalizeAnswerBlocksHe(answerBlocks) {
   }));
 }
 
+const THIN_DATA_APPROVED_SCARCITY_RE =
+  /(יש\s+כרגע\s+מעט\s+נתוני\s+תרגול|נפח\s+הנתונים\s+עדיין\s+מצומצם|אין\s+עדיין\s+מספיק\s+מידע\s+למסקנה\s+חזקה)/u;
+const THIN_DATA_DEFAULT_LEAD = "יש כרגע מעט נתוני תרגול, ולכן אין עדיין מספיק מידע למסקנה חזקה.";
+
+function shouldUseThinDataLead(truthPacket, intent, payload) {
+  const tp = truthPacket && typeof truthPacket === "object" ? truthPacket : {};
+  const sf = tp.surfaceFacts && typeof tp.surfaceFacts === "object" ? tp.surfaceFacts : {};
+  const dl = tp.derivedLimits && typeof tp.derivedLimits === "object" ? tp.derivedLimits : {};
+  const q = Math.max(0, Number(sf.questions) || 0);
+  const snapshotQ = Math.max(0, Number(payload?.overallSnapshot?.totalQuestions) || 0);
+  const practiceVolume = snapshotQ > 0 && snapshotQ < q ? snapshotQ : q;
+  const intentSet = new Set([
+    "explain_report",
+    "simple_parent_explanation",
+    "what_to_do_today",
+    "what_to_do_this_week",
+    "report_trust_question",
+  ]);
+  if (!intentSet.has(String(intent || ""))) return false;
+  return (
+    practiceVolume < 90 ||
+    dl.readiness === "insufficient" ||
+    dl.readiness === "forming" ||
+    (dl.cannotConcludeYet === true && practiceVolume < 120)
+  );
+}
+
+function enforceThinDataScarcityLead(draft, truthPacket, intent, payload) {
+  const blocks = Array.isArray(draft?.answerBlocks) ? draft.answerBlocks : [];
+  if (!blocks.length) return draft;
+  if (!shouldUseThinDataLead(truthPacket, intent, payload)) return draft;
+  const joined = blocks.map((b) => String(b?.textHe || "")).join(" ").trim();
+  if (THIN_DATA_APPROVED_SCARCITY_RE.test(joined)) return draft;
+  const firstIdx = blocks.findIndex((b) => String(b?.textHe || "").trim());
+  if (firstIdx < 0) return draft;
+  const next = blocks.slice();
+  const first = next[firstIdx];
+  next[firstIdx] = {
+    ...first,
+    textHe: `${THIN_DATA_DEFAULT_LEAD} ${String(first?.textHe || "").trim()}`.trim(),
+  };
+  return { ...draft, answerBlocks: normalizeAnswerBlocksHe(next) };
+}
+
 function buildNoScopeCategorySpecificClarification(utterance) {
   const t = String(utterance || "").trim();
   if (!t) return null;
@@ -246,6 +290,7 @@ function packageParentResolvedEarlyTurn(input, sessionId, priorRepeated, conv, u
     }
   }
 
+  draft = enforceThinDataScarcityLead(draft, truthPacket, plannerIntent, input?.payload);
   const responseIntentEarly = isClinicalBoundaryDraft(draft) ? "clinical_boundary" : plannerIntent;
 
   const answerBlockTypes = draft.answerBlocks.map((b) => b.type);
@@ -670,6 +715,7 @@ function runDeterministicCore(input) {
     }
   }
 
+  draft = enforceThinDataScarcityLead(draft, truthPacket, plannerIntent, input?.payload);
   const responseIntent = isClinicalBoundaryDraft(draft)
     ? "clinical_boundary"
     : isSensitiveEducationChoiceDraft(draft)

@@ -18,6 +18,30 @@ export function normalizeParentFacingHe(raw) {
   let s = normalizePedagogyForParentReportHe(String(raw ?? ""));
   if (!s) return "";
 
+  const topicKeyPairs = [
+    [/\bmain_idea\b/giu, "רעיון מרכזי"],
+    [/\breading_comprehension\b/giu, "הבנת הנקרא"],
+    [/\breading_comprehension_error\b/giu, "הבנת הנקרא"],
+    [/\bdirections\b/giu, "הוראות"],
+    [/\bplaces\b/giu, "מקומות"],
+    [/\bsequence\b/giu, "רצף"],
+    [/\bvocabulary\b/giu, "אוצר מילים"],
+    [/\bVocabulary\b/g, "אוצר מילים"],
+    [/\bgrammar_basics\b/giu, "יסודות דקדוק"],
+    [/\bsentence_understanding\b/giu, "הבנת משפט"],
+    [/\bfact_vs_opinion\b/giu, "עובדה מול דעה"],
+    [/\bmap_reading\b/giu, "קריאת מפה"],
+    [/\banimals_plants\b/giu, "בעלי חיים וצמחים"],
+    [/\bbasic_experiments\b/giu, "ניסויים בסיסיים"],
+    [/\bbasic_geography\b/giu, "יסודות גאוגרפיה"],
+    [/\bmatching\b/giu, "התאמה"],
+    [/\bshapes\b/giu, "צורות"],
+    [/\binference\b/giu, "הסקה"],
+  ];
+  for (const [re, rep] of topicKeyPairs) {
+    s = s.replace(re, rep);
+  }
+
   // ביטויים שמבלבלים הורים (מתמטיקה / מונחי מערכת)
   const phrasePairs = [
     [
@@ -96,10 +120,19 @@ export function normalizeParentFacingHe(raw) {
     [/נשארים\s+עם\s+תרגול\s+קצר\s+ו(?:ברור|בהיר)/giu, "כדאי להמשיך בתרגול קצר"],
     [/תרגול\s+קצר\s+ו(?:ברור|בהיר)/giu, "תרגול קצר"],
     [/לא\s+להעלות\s+קושי\s+לפני\s+שמתקבלת\s+יציבות\s+עקבית/giu, "לא להעלות רמת קושי לפני שרואים שההצלחה חוזרת בכמה תרגולים"],
+    [/יש\s+נפח\s+תרגול\s+במקצוע;\s*כדי\s+לצמצם\s+טעות\s+בפרשנות/giu, "יש נפח תרגול מסוים; כדי לצמצם טעות בפרשנות"],
+    [/יש\s+נפח\s+תרגול\s+במקצוע\s+—\s*/giu, "יש נפח תרגול מסוים — "],
+    [/יש\s+נתוני\s+תרגול\s+במקצוע/giu, "יש נתוני תרגול מסוימים"],
+    [/מסקנת\s+רמת\s+הראיות\s+משפיעה\s+על\s+עוצמת\s+ההמלצה\s+הבאה/giu, "רמת הוודאות של הנתונים עוזרת לקבוע עד כמה להתקדם בצעד הבא"],
+    [/איכות\s+הראיות\s+מהאגרגציה:\s*/giu, "עד כמה הנתונים מבוססים כרגע: "],
+    [/בניסוח\s+המסונן\s+אין\s+כאן\s+נקודות\s+להצגה\s+כרגע/giu, "כרגע אין מספיק נקודות ברורות להצגה"],
     [/דפוס\s+שגיאות:\s*/giu, ""],
     [/דפוס\s+טעות\b/giu, "סוג טעות"],
     [/דפוס\s+הצלחה\b/giu, "מה שנראה חזק"],
     [/דפוס\s+קושי\b/giu, "מה שדורש חיזוק"],
+    [/מוקדים\s+המעוגנים/giu, "הנושאים המרכזיים"],
+    [/עוגן\s+מספרי/giu, "נתון מספרי"],
+    [/משוקלל/giu, "כולל"],
   ];
   for (const [re, rep] of phrasePairs) {
     s = s.replace(re, rep);
@@ -153,6 +186,20 @@ export function normalizeParentFacingHe(raw) {
   if (/נשיאה/u.test(s)) {
     s = s.replace(/נשיאה/gu, "העברה בחיבור");
   }
+
+  // snake_case גולמי שנשאר בתצוגה הורה -> ניסוח עברי בטוח
+  s = s.replace(/\b[a-z]+(?:_[a-z0-9]+){1,}\b/g, (m) => {
+    const rewritten = rewriteEngineTaxonomySnippetForParentHe(m);
+    if (rewritten && rewritten !== m && rewritten !== PARENT_TOPIC_FALLBACK_HE) return rewritten;
+    return m.replace(/_/g, " ");
+  });
+
+  // ניקוי עיצוב כפול וניקוד כפול בתצוגה הורה
+  s = s.replace(/::+/g, ":");
+  s = s.replace(/\.{2,}/g, ".");
+  s = s.replace(/([!?])\1+/g, "$1");
+  s = s.replace(/\s*([:])\s*:/g, "$1");
+  s = s.replace(/([א-ת][א-ת\s]+):\s*:/g, "$1:");
 
   s = s.replace(/\s{2,}/g, " ").replace(/\s+([.,;:!?])/g, "$1").trim();
   return s;

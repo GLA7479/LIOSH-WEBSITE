@@ -4,6 +4,7 @@
  */
 import fs from "node:fs";
 import path from "node:path";
+import parentFacingNormalize from "../../../utils/parent-report-language/parent-facing-normalize-he.js";
 
 async function extractPdfText(filePath) {
   try {
@@ -56,7 +57,9 @@ function reportExpectsHebrewMention(detailed, outputRoot, studentId) {
 function collectDetailedParentFacingBlob(detailed) {
   const parts = [];
   const push = (v) => {
-    if (typeof v === "string" && v.trim()) parts.push(v);
+    if (typeof v === "string" && v.trim()) {
+      parts.push(parentFacingNormalize.normalizeParentFacingHe(v));
+    }
   };
   const es = detailed?.executiveSummary;
   if (es && typeof es === "object") {
@@ -128,6 +131,14 @@ const GENERIC_ONLY_PRACTICE =
 const THIN_DATA_LANGUAGE =
   /מעט\s+נתונים|נתונים\s+דלים|לא\s+מספיק\s+נתונים|מוגבל|מצומצם|דליל|אין\s+מספיק\s+בסיס\s+לתמונה/u;
 
+const RAW_TOPIC_KEY_PATTERN =
+  /\b(matching|shapes|directions|places|Vocabulary|vocabulary|main_idea|reading_comprehension(?:_error)?|grammar_basics|basic_geography|map_reading|sequence|inference)\b/u;
+const DOUBLE_COLON_PATTERN = /(^|[\s(])[^\s:()]{1,30}::/u;
+const GENERIC_SUBJECT_PHRASE_PATTERN = /יש\s+(?:נפח|נתוני)\s+תרגול\s+במקצוע/u;
+const DUPLICATE_PUNCTUATION_PATTERN = /\.{2,}/u;
+const SYSTEM_LIKE_PARENT_PHRASE_PATTERN =
+  /ניסוח\s+מעוגן|ליד\s+המידע\s+המילולי|מסקנת\s+רמת\s+הראיות|איכות\s+הראיות\s+מהאגרגציה|ניסוח\s+המסונן/u;
+
 /** Stricter gate for strong/rich reports — avoids בלבול עם מילים כמו «מוגבל» בהקשרים לגיטימיים אחרים. */
 const STRONG_RICH_THIN_REPORT_GATE =
   /עדיין\s+לא\s+הצטבר\s+מספיק\s+מידע\s+לתמונה\s+רחבה|אין\s+מספיק\s+נתונים\s+כדי\s+ל|נתונים\s+דלים\s+מדי\s+למסקנה|מעט\s+מדי\s+נתונים\s+בדוח/u;
@@ -170,6 +181,72 @@ function genericPhraseHits(text) {
   if (/זה\s+מה\s+שהדוח\s+נותן\s+כרגע/u.test(t)) g.push("template_this_is_what_report");
   if (/נבדוק\s+שוב\s+לפי\s+עוד\s+תרגול/u.test(t)) g.push("template_check_again_practice");
   return g;
+}
+
+function surfaceFormattingIssues(text) {
+  const t = String(text || "");
+  /** @type {Array<{ level: "warning" | "fail", code: string, detail: string, auditType: string }>} */
+  const hits = [];
+  if (RAW_TOPIC_KEY_PATTERN.test(t)) {
+    hits.push({
+      level: "fail",
+      code: "audit_raw_topic_key_in_parent_surface",
+      detail: "נמצא topic key גולמי באנגלית/ snake_case בתוכן הורה",
+      auditType: "internal_language",
+    });
+  }
+  if (DOUBLE_COLON_PATTERN.test(t)) {
+    hits.push({
+      level: "warning",
+      code: "audit_double_colon_label",
+      detail: "נמצא label עם :: במקום :",
+      auditType: "report_ai_mismatch",
+    });
+  }
+  if (GENERIC_SUBJECT_PHRASE_PATTERN.test(t)) {
+    hits.push({
+      level: "warning",
+      code: "audit_generic_subject_volume_phrase",
+      detail: "נמצא נוסח גנרי 'יש נפח תרגול במקצוע'",
+      auditType: "generic_answer",
+    });
+  }
+  if (DUPLICATE_PUNCTUATION_PATTERN.test(t)) {
+    hits.push({
+      level: "warning",
+      code: "audit_duplicate_punctuation",
+      detail: "נמצא ניקוד כפול '..' בתוכן הורה",
+      auditType: "report_ai_mismatch",
+    });
+  }
+  if (SYSTEM_LIKE_PARENT_PHRASE_PATTERN.test(t)) {
+    hits.push({
+      level: "warning",
+      code: "audit_system_like_parent_wording",
+      detail: "נמצא ניסוח מערכתי לא-הורי",
+      auditType: "generic_answer",
+    });
+  }
+  return hits;
+}
+
+function productSurfaceIssues(text) {
+  const t = String(text || "");
+  /** @type {Array<{ level: "warning" | "fail", code: string, detail: string, auditType: string }>} */
+  const hits = [];
+  if (RAW_TOPIC_KEY_PATTERN.test(t)) {
+    hits.push({ level: "fail", code: "product_raw_topic_key_leak", detail: "raw topic key leaked in product-facing text", auditType: "internal_language" });
+  }
+  if (DOUBLE_COLON_PATTERN.test(t)) {
+    hits.push({ level: "fail", code: "product_double_colon_label", detail: "label contains :: in product-facing text", auditType: "report_ai_mismatch" });
+  }
+  if (GENERIC_SUBJECT_PHRASE_PATTERN.test(t)) {
+    hits.push({ level: "fail", code: "product_generic_subject_wording", detail: "generic 'במקצוע' wording leaked", auditType: "generic_answer" });
+  }
+  if (SYSTEM_LIKE_PARENT_PHRASE_PATTERN.test(t)) {
+    hits.push({ level: "fail", code: "product_internal_evidence_language", detail: "internal evidence/system wording leaked", auditType: "internal_language" });
+  }
+  return hits;
 }
 
 function sentenceCountHe(text) {
@@ -219,6 +296,37 @@ function totalQuestionsFromReport(detailed) {
   return Math.max(0, Number(detailed?.overallSnapshot?.totalQuestions) || 0);
 }
 
+function sparseExecutiveFromDetailed(detailed) {
+  let active = 0;
+  for (const sp of Array.isArray(detailed?.subjectProfiles) ? detailed.subjectProfiles : []) {
+    for (const tr of Array.isArray(sp?.topicRecommendations) ? sp.topicRecommendations : []) {
+      const q = Math.max(0, Number(tr?.questions ?? tr?.q) || 0);
+      if (q > 0) active += 1;
+      if (active > 1) return false;
+    }
+  }
+  return active <= 1;
+}
+
+/** When weak_* profile rubrics should expect explicit weak-subject vocabulary in the answer text. */
+function questionImpliesWeakSubjectFocus(parentQuestionHe) {
+  const q = String(parentQuestionHe || "")
+    .replace(/\s+/g, " ")
+    .trim();
+  if (!q) return true;
+  if (/קריאה\s+או\s+חשבון|חשבון\s+או\s+קריאה/u.test(q)) return false;
+  const praisesStrengthOnly =
+    (/הכי\s+חזק|המקצוע\s+החזק|מקצוע\s+החזק|מה\s+המקצוע\s+החזק|איזה\s+מקצוע\s+הכי\s+חזק/u.test(q) ||
+      /מה\s+חזק|מה\s+טוב\s+בדוח|מה\s+מצוין/u.test(q)) &&
+    !/חלש|קושי|בעיה|חיזוק/u.test(q);
+  if (praisesStrengthOnly) return false;
+  return (
+    /חלש|חולש|קושי|בעיה|לחזק|חיזוק|לתרגל|מה\s+לתרגל|מה\s+כדאי\s+לתרגל|כדאי\s+לתרגל|תוכנית|צעדים|צעד\s+מעשי|איך\s+לעזור|בלי\s+לחץ|מה\s+לעשות\s+השבוע|מה\s+לעשות\s+היום|למה\s+מתקשה|דורש\s+עבודה|מקצוע\s+החלש|הכי\s+חלש|פער|מה\s+דורש\s+חיזוק/u.test(
+      q,
+    )
+  );
+}
+
 /**
  * Category + profile rubric — returns { issues: any[], failWeight: number }
  */
@@ -245,6 +353,15 @@ function rubricForAnswer(row, detailed, ctx) {
   const subs = detectSubjects(ans);
   const thinProfile = profile === "thin_data";
   const richStrong = profile === "strong_stable" || profile === "rich_data";
+  for (const fmt of surfaceFormattingIssues(ans)) {
+    issues.push({
+      severity: fmt.level === "fail" ? "fail" : "warning",
+      type: fmt.auditType,
+      code: fmt.code,
+      detail: fmt.detail,
+    });
+    failWeight += fmt.level === "fail" ? 2 : 1;
+  }
 
   switch (cat) {
     case "data_grounded": {
@@ -279,11 +396,14 @@ function rubricForAnswer(row, detailed, ctx) {
     }
     case "thin_data": {
       if (thinProfile && !THIN_DATA_LANGUAGE.test(ans) && !/מעט|מצומצם|דליל|מוגבל/u.test(ans)) {
+        const intent = String(row?.telemetrySummary?.intent || row?.intent || "");
+        const practiceVolume = tq;
+        const sparseExecutive = sparseExecutiveFromDetailed(detailed);
         issues.push({
           severity: "warning",
           type: "category_mismatch",
           code: "audit_thin_data_missing_scarcity_language",
-          detail: "פרופיל thin_data — צפוי ניסוח זהיר/מועט נתונים",
+          detail: `פרופיל thin_data — צפוי ניסוח זהיר/מועט נתונים (studentId=${row.studentId}; questionCategory=${cat}; detectedIntent=${intent || "unknown"}; practiceVolume=${practiceVolume}; sparseExecutive=${sparseExecutive}; totalQuestions=${tq}; snapshotQuestions=${Math.max(0, Number(detailed?.overallSnapshot?.totalQuestions) || 0)}; source=${`parent-ai-chats/${row.studentId}.json`}; answerExcerpt=${String(ans).slice(0, 180)})`,
         });
         failWeight += 1;
       }
@@ -404,7 +524,11 @@ function rubricForAnswer(row, detailed, ctx) {
       break;
     }
     case "bad_unsupported_request": {
-      if (!/לא\s+ניתן|אי\s+אפשר|לא\s+אוכל|דוח\s+מבוסס|נתוני\s+תרגול/u.test(ans)) {
+      if (
+        !/לא\s+ניתן|לא\s+יכול|אי\s+אפשר|לא\s+אוכל|דוח\s+מבוסס|נתוני\s+תרגול|נאמנה\s+ל|להמציא|להסתיר|לסתור\s+את\s+הנתונים/u.test(
+          ans,
+        )
+      ) {
         issues.push({
           severity: "fail",
           type: "category_mismatch",
@@ -476,7 +600,15 @@ function rubricForAnswer(row, detailed, ctx) {
       cat,
     ) || !profileSubjectRubricCats.has(cat);
 
-  if (profile === "weak_math" && tq >= 30 && !skipWeakProfileSubject && !/חשבון|מתמטיקה|חישוב/u.test(ans)) {
+  const weakFocusQuestion = questionImpliesWeakSubjectFocus(String(row.parentQuestionText || ""));
+
+  if (
+    profile === "weak_math" &&
+    tq >= 30 &&
+    !skipWeakProfileSubject &&
+    weakFocusQuestion &&
+    !/חשבון|מתמטיקה|חישוב/u.test(ans)
+  ) {
     issues.push({
       severity: "fail",
       type: "profile_mismatch",
@@ -485,7 +617,7 @@ function rubricForAnswer(row, detailed, ctx) {
     });
     failWeight += 2;
   }
-  if (profile === "weak_hebrew" && !skipWeakProfileSubject) {
+  if (profile === "weak_hebrew" && !skipWeakProfileSubject && weakFocusQuestion) {
     const sid = String(row.studentId || "");
     const root = String(ctx?.outputRoot || "");
     const detailedSnap = detailed || loadDetailedSnapshot(root, sid);
@@ -523,7 +655,7 @@ function rubricForAnswer(row, detailed, ctx) {
       }
     }
   }
-  if (profile === "weak_english" && !skipWeakProfileSubject && !/אנגלית/u.test(ans)) {
+  if (profile === "weak_english" && !skipWeakProfileSubject && weakFocusQuestion && !/אנגלית/u.test(ans)) {
     issues.push({ severity: "fail", type: "profile_mismatch", code: "audit_weak_english_missing", detail: "חסר אנגלית" });
     failWeight += 2;
   }
@@ -723,6 +855,66 @@ export async function runAiResponseQualityAudit(ctx) {
         file: `parent-reports/${sid}/`,
         auditType: "internal_language",
       });
+    }
+
+    for (const fmt of productSurfaceIssues(blob)) {
+      gateIssues.push({
+        level: fmt.level,
+        code: fmt.code,
+        detail: `${sid} · ${fmt.detail}`,
+        file: `parent-reports/${sid}/`,
+        auditType: fmt.auditType,
+      });
+    }
+
+    const chatMd = path.join(ctx.outputRoot, "parent-ai-chats", `${sid}.md`);
+    if (fs.existsSync(chatMd)) {
+      const chatRaw = fs.readFileSync(chatMd, "utf8");
+      for (const fmt of productSurfaceIssues(chatRaw)) {
+        gateIssues.push({
+          level: fmt.level,
+          code: fmt.code,
+          detail: `${sid} · ${fmt.detail}`,
+          file: `parent-ai-chats/${sid}.md`,
+          auditType: fmt.auditType,
+        });
+      }
+    }
+
+    const sampleBaseCandidates = [
+      "strong_stable",
+      "weak_all_subjects",
+      "thin_data",
+      "improving_student",
+      "declining_student",
+      "rich_data",
+      "random_guessing",
+      "six_subject_mixed_profile",
+    ];
+    for (const tag of sampleBaseCandidates) {
+      const reportShort = path.join(
+        ctx.outputRoot,
+        "samples-for-manual-review",
+        `${tag}__${sid}__report_short.md`,
+      );
+      const parentAi = path.join(
+        ctx.outputRoot,
+        "samples-for-manual-review",
+        `${tag}__${sid}__parent_ai.md`,
+      );
+      for (const fp of [reportShort, parentAi]) {
+        if (!fs.existsSync(fp)) continue;
+        const raw = fs.readFileSync(fp, "utf8");
+        for (const fmt of productSurfaceIssues(raw)) {
+          gateIssues.push({
+            level: fmt.level,
+            code: fmt.code,
+            detail: `${sid} · ${fmt.detail}`,
+            file: path.relative(ctx.outputRoot, fp).replace(/\\/g, "/"),
+            auditType: fmt.auditType,
+          });
+        }
+      }
     }
 
     const p = String(student.profileType || "");

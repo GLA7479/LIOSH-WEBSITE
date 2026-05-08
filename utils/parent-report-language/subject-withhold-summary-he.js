@@ -5,7 +5,7 @@
 
 /** Full generic cautious line for subject scope (parent-facing subject cards / detailed.json). */
 export const GENERIC_CAUTIOUS_SUBJECT_LINE_HE =
-  "יש נתוני תרגול במקצוע, אך מה שנראה מהתרגולים עדיין זהיר — כדאי להמשיך לעקוב אחרי עוד תרגול.";
+  "יש נתוני תרגול מסוימים, אך מה שנראה מהתרגולים עדיין זהיר — כדאי להמשיך לעקוב אחרי עוד תרגול.";
 
 /** Topic-level thin cautious line (short report / בנושא X prefix). */
 export const GENERIC_CAUTIOUS_TOPIC_LINE_HE =
@@ -19,7 +19,7 @@ const SUBJECT_COPY = {
   unstable:
     "במקצוע רואים תשובות פחות עקביות בין נושאים — כדאי לחזור על בסיס קצר ולבדוק יציבות לפני מסקנה חדה.",
   medium:
-    "יש נפח תרגול במקצוע; כדי לצמצם טעות בפרשנות — כדאי להמשיך בתרגול ממוקד ולעקוב אחרי מה שחוזר.",
+    "יש נפח תרגול מסוים; כדי לצמצם טעות בפרשנות — כדאי להמשיך בתרגול ממוקד ולעקוב אחרי מה שחוזר.",
   multiWeak:
     "רואים כמה כיוונים שונים בתרגול במקצוע — כדאי להתמקד בהדרגה במה שחוזר כקשה.",
   weakPattern: (p) =>
@@ -72,6 +72,9 @@ export function withholdSummaryCopyHe(mode, ctx) {
   const m = mode === "topic" ? "topic" : "subject";
   const C = m === "topic" ? TOPIC_COPY : SUBJECT_COPY;
   const subjectLabelHe = String(ctx.subjectLabelHe || "").trim();
+  const mediumSubjectAware = subjectLabelHe
+    ? `יש נפח תרגול ב${subjectLabelHe}; כדי לצמצם טעות בפרשנות — כדאי להמשיך בתרגול ממוקד ולעקוב אחרי מה שחוזר.`
+    : "יש נפח תרגול מסוים; כדי לצמצם טעות בפרשנות — כדאי להמשיך בתרגול ממוקד ולעקוב אחרי מה שחוזר.";
   const accMaybe =
     ctx.reportSubjectAccuracy == null ? null : Number(ctx.reportSubjectAccuracy);
   const reportAcc =
@@ -100,11 +103,11 @@ export function withholdSummaryCopyHe(mode, ctx) {
         if (m === "subject") {
           return subjectLabelHe
             ? `ב${subjectLabelHe} נראה קושי יחסי לפי הדיוק בסיכום התרגול — כדאי להתמקד בתרגול קצר וממוקד.`
-            : C.medium;
+            : mediumSubjectAware;
         }
         return TOPIC_COPY.medium;
       }
-      return volume >= 15 ? C.medium : C.richStable;
+      return volume >= 15 ? (m === "subject" ? mediumSubjectAware : C.medium) : C.richStable;
     }
     return thinLine;
   }
@@ -140,12 +143,12 @@ export function withholdSummaryCopyHe(mode, ctx) {
   }
 
   if (volume >= 40) {
-    return C.medium;
+    return m === "subject" ? mediumSubjectAware : C.medium;
   }
 
   if (volume >= 10) {
     if (globalVolumeSupportsRichCopy) {
-      return C.medium;
+      return m === "subject" ? mediumSubjectAware : C.medium;
     }
     return thinLine;
   }
@@ -164,6 +167,7 @@ export function withholdSummaryCopyHe(mode, ctx) {
  * }} ctx
  */
 export function withholdConfidenceSummaryFallbackHe(ctx) {
+  const subjectLabelHe = String(ctx.subjectLabelHe || "").trim();
   const volume = Math.max(
     Math.max(0, Number(ctx.subjectReportQuestions) || 0),
     Math.max(0, Number(ctx.sumUnitQuestions) || 0),
@@ -190,9 +194,13 @@ export function withholdConfidenceSummaryFallbackHe(ctx) {
     return "במקצוע רואים כמה דפוסים במקביל — כדאי להתמקד במה שחוזר כקשה, בתנועה קטנה וקבועה.";
   }
   if (volume >= 40) {
-    return "יש נפח תרגול במקצוע — כדאי להמשיך בתרגול ממוקד ולעקוב אחרי מה שחוזר.";
+    return subjectLabelHe
+      ? `יש נפח תרגול ב${subjectLabelHe} — כדאי להמשיך בתרגול ממוקד ולעקוב אחרי מה שחוזר.`
+      : "יש נפח תרגול מסוים — כדאי להמשיך בתרגול ממוקד ולעקוב אחרי מה שחוזר.";
   }
-  return "יש בסיס תרגול במקצוע — כדאי להמשיך בתרגול ממוקד ולעקוב אחרי התפתחות.";
+  return subjectLabelHe
+    ? `יש בסיס תרגול ב${subjectLabelHe} — כדאי להמשיך בתרגול ממוקד ולעקוב אחרי התפתחות.`
+    : "יש בסיס תרגול מסוים — כדאי להמשיך בתרגול ממוקד ולעקוב אחרי התפתחות.";
 }
 
 /**

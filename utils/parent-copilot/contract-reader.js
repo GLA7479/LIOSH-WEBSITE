@@ -193,10 +193,10 @@ export function listSyntheticAggregateAnchoredTopicRows(payload) {
     const ts0 = nar0.textSlots && typeof nar0.textSlots === "object" ? nar0.textSlots : {};
     const obs =
       String(ts0.observation || "").trim() ||
-      `ב${subjectLabelHe(sid)} נספרו בטווח כ־${qc} שאלות, עם דיוק של כ־${acc}% — כך נראית התמונה התקופתית לפי נתוני הדוח.`;
+      `ב${subjectLabelHe(sid)} נספרו בטווח כ־${qc} שאלות, עם דיוק של כ־${acc}% — זו התמונה שעולה מנתוני הדוח לתקופה הזו.`;
     const interp =
       String(ts0.interpretation || "").trim() ||
-      `לפי המספרים ב${subjectLabelHe(sid)}, זה משקף את נפח התרגול ואת רמת הדיוק בתקופה שנבחרה.`;
+      `לפי מה שמופיע בדוח תחת ${subjectLabelHe(sid)}, ניתן לראות את נפח התרגול ואת רמת הדיוק בתקופה שנבחרה (בלי להסיק מוקד חולשה מחוץ למה שמוצג שם).`;
     const readinessRaw =
       qc >= 28 ? "ready" : qc >= 12 ? "forming" : qc >= 6 ? "forming" : "insufficient";
     const confRaw = acc >= 78 ? "high" : acc >= 58 ? "medium" : "low";

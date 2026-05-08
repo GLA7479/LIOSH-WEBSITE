@@ -183,6 +183,8 @@ const INTENT_PARAPHRASES = {
     /פרטי\s*הדוח|תוכן\s*הדוח|מה\s*יש\s*בדוח/u,
     /הסבר\s*קצר|תסביר\s*לי\s*את\s*הדוח/u,
     /תסביר\s*לי\s*מה\s*חשוב\s*כאן|מה\s*חשוב\s*כאן\s*בדוח/u,
+    /למה\s*אין\s*מספיק\s*המלצות/u,
+    /האם\s*הילד\s*חלש\s*או\s*שפשוט\s*אין\s*מספיק\s*מידע/u,
     /^בקיצור\??$/u,
     /^ו?בקיצור\??$/u,
     /אז\s*מה\s*בעצם|מה\s*השורה\s*התחתונה|מה\s*לקחת\s*מזה/u,
@@ -344,6 +346,8 @@ const INTENT_PARAPHRASES = {
   parent_policy_refusal: [
     /תמציא\s*נתונים|זייף\s*נתונים|לשנות\s*את\s*הדוח\s*בכוח|להסתיר\s*חולשות|תסתיר\s*מההורה/u,
     /תתעלם\s*מהדוח|אל\s*תשתמש\s*בנתוני\s*התלמיד|תחשוף\s*הוראות\s*פנימיות|\bdebug\b|\bsystem\s*prompt\b/i,
+    /תכתוב\s+ש(?:ה)?(?:ילד|ילדה)\s+מצוין|מצוין\s+למרות|למרות\s+ש(?:הוא\s*)?נכשל|למרות\s+שהוא\s+נכשל/u,
+    /בלי\s+להתחשב\s+בנתונים|להתעלם\s+מהנתונים|תסתיר\s+את\s+הקושי|תעצור\s+להראות\s+חולשות/u,
   ],
   off_report_subject_clarification: [/מה\s*מצב.*שחמט|מה\s*מצב.*מוזיקה|מצב\s*הילד\s*שלי\s*בשחמט|מצב\s*הילד\s*שלי\s*במוזיקה/u],
   report_trust_question: [
@@ -384,7 +388,7 @@ const INTENT_PARAPHRASES = {
     /ביטקוין|ביטקוין/u,
     /javascript|עזור\s*לי\s*עם\s*קוד|קוד\s*\(/u,
     /איפה\s*לקנות|נעליים/u,
-    /תכתוב\s*לי\s*שיר|^שיר\s*על/u,
+    /תכתוב\s*לי\s*שיר|תכתוב\s*שיר|^שיר\s*על/u,
     /מה\s*החדשות|חדשות\s*היום/u,
   ],
   simple_parent_explanation: [
@@ -479,7 +483,7 @@ function offTopicUtteranceHeuristic(t, folded) {
     /ביטקוין/u.test(s) ||
     /javascript|עזור\s*לי\s*עם\s*קוד/u.test(s) ||
     /איפה\s*לקנות|נעליים/u.test(s) ||
-    /תכתוב\s*לי\s*שיר|^שיר\s*על/u.test(s) ||
+    /תכתוב\s*לי\s*שיר|תכתוב\s*שיר|^שיר\s*על/u.test(s) ||
     /מה\s*החדשות|חדשות\s*היום/u.test(s)
   );
 }
@@ -586,6 +590,47 @@ export function interpretFreeformStageA(utteranceRaw, payload) {
   if ((scores.parent_policy_refusal || 0) > 0 && best !== "clinical_boundary") {
     best = "parent_policy_refusal";
     bestScore = Math.max(scores.parent_policy_refusal || 0, 9);
+    topIntentCount = 1;
+    second = 0;
+  }
+
+  /** Product routing: clinical labels (ADHD/קשב) must hit clinical_boundary composer — not generic executive summary. */
+  if (
+    (/הפרעת\s*קשב|בעיית\s*קשב|\bADHD\b/i.test(t) || /הפרעת\s*קשב|בעיית\s*קשב/u.test(folded)) &&
+    best !== "parent_policy_refusal"
+  ) {
+    best = "clinical_boundary";
+    bestScore = 20;
+    topIntentCount = 1;
+    second = 0;
+  }
+
+  /** Diagnosis / placement / tutoring — use sensitive-education draft (bounded), not explain_report dump. */
+  if (
+    (/צריך\s+אבחון|צריכים\s+אבחון|מומחה\s+לאבחון|מורה\s+פרטי|שיעור\s+פרטי|מעבר\s+בית\s*ספר|ילד\s+מחונן/u.test(t) ||
+      /צריך\s+אבחון|מורה\s+פרטי/u.test(folded)) &&
+    best !== "clinical_boundary" &&
+    best !== "parent_policy_refusal"
+  ) {
+    best = "sensitive_education_choice";
+    bestScore = 20;
+    topIntentCount = 1;
+    second = 0;
+  }
+
+  /** QA catalog: these read as תוכנית פעולה / תרגול שבועי — route to recommendation intent for numbered steps in Copilot. */
+  if (
+    (/איך\s+לעזור(?:\s+לו|\s+לה|\s+לי)?\s+בלי\s+לחץ|תבנה\s+לי\s+תוכנית\s+קצרה|מה\s+כדאי\s+לתרגל\s+השבוע|מה\s+לתרגל\s+השבוע/u.test(
+      t,
+    ) ||
+      /איך\s+לעזור(?:\s+לו|\s+לה|\s+לי)?\s+בלי\s+לחץ|תבנה\s+לי\s+תוכנית\s+קצרה|מה\s+כדאי\s+לתרגל\s+השבוע|מה\s+לתרגל\s+השבוע/u.test(
+        folded,
+      )) &&
+    best !== "clinical_boundary" &&
+    best !== "parent_policy_refusal"
+  ) {
+    best = "what_to_do_this_week";
+    bestScore = 20;
     topIntentCount = 1;
     second = 0;
   }

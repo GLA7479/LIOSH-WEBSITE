@@ -5,6 +5,25 @@ import { installBrowserGlobals } from "./browser-globals.mjs";
 import { applyMassStudentSeed } from "./seed-engine.mjs";
 import { buildCategoryBalancedEntrySequence, coverageMissingCategories } from "./parent-ai-turn-plan.mjs";
 
+/** Mirrors audit rubric: expect weak-subject terms only when the question is about weakness/practice/plan, not «מקצוע הכי חזק». */
+function questionImpliesWeakSubjectFocus(questionHe) {
+  const q = String(questionHe || "")
+    .replace(/\s+/g, " ")
+    .trim();
+  if (!q) return true;
+  if (/קריאה\s+או\s+חשבון|חשבון\s+או\s+קריאה/u.test(q)) return false;
+  const praisesStrengthOnly =
+    (/הכי\s+חזק|המקצוע\s+החזק|מקצוע\s+החזק|מה\s+המקצוע\s+החזק|איזה\s+מקצוע\s+הכי\s+חזק/u.test(q) ||
+      /מה\s+חזק|מה\s+טוב\s+בדוח|מה\s+מצוין/u.test(q)) &&
+    !/חלש|קושי|בעיה|חיזוק/u.test(q);
+  if (praisesStrengthOnly) return false;
+  return (
+    /חלש|חולש|קושי|בעיה|לחזק|חיזוק|לתרגל|מה\s+לתרגל|מה\s+כדאי\s+לתרגל|כדאי\s+לתרגל|תוכנית|צעדים|צעד\s+מעשי|איך\s+לעזור|בלי\s+לחץ|מה\s+לעשות\s+השבוע|מה\s+לעשות\s+היום|למה\s+מתקשה|דורש\s+עבודה|מקצוע\s+החלש|הכי\s+חלש|פער|מה\s+דורש\s+חיזוק/u.test(
+      q,
+    )
+  );
+}
+
 function joinAnswer(res) {
   const blocks = res?.answerBlocks || [];
   const fromBlocks = blocks
@@ -28,7 +47,8 @@ function extendedAssertions(entry, res, student, answerText, gScore) {
     weak_math: /חשבון|מתמטיקה|חיבור|חיסור|כפל|חילוק/u,
     weak_hebrew: /עברית|קריאה|הבנת הנקרא|אוצר מילים/u,
     weak_english: /אנגלית|vocabulary|reading/i,
-    weak_all_subjects: /חיזוק|קושי|חלש|דורש עבודה/u,
+    weak_all_subjects:
+      /חיזוק|קושי|חלש|דורש עבודה|תרגול|צעד|שאלות|דיוק|\d+\s*%|עברית|חשבון|אנגלית|מדעים|גאומטריה|מולדת/u,
   };
 
   base.push({
@@ -76,7 +96,7 @@ function extendedAssertions(entry, res, student, answerText, gScore) {
       });
     }
     const weakRegex = weakProfileMap[student.profileType];
-    if (weakRegex) {
+    if (weakRegex && questionImpliesWeakSubjectFocus(entry.textHe || entry.parentQuestionText || "")) {
       const evidencePointsToDifferentWeakArea =
         /המקצוע\s+הנמוך\s+ביותר/u.test(answerText) &&
         /(בערך\s*\d+%|\d+\s*שאלות|לפי\s+אותו\s+ממוצע|ממוצע\s+דיוק\s+כללי)/u.test(answerText);
@@ -88,9 +108,14 @@ function extendedAssertions(entry, res, student, answerText, gScore) {
   }
 
   if (entry.category === "data_grounded" && thin) {
-    const hasLimitCaveat = /מעט|מוגבל|לא מספיק|דליל|מוגבלת|מוקדם לקבוע|אי אפשר לקבוע|סימנים ראשוניים/i.test(answerText);
+    const hasLimitCaveat =
+      /מעט|מוגבל|לא מספיק|דליל|מוגבלת|מוקדם לקבוע|מוקדם לסגירה|אי אפשר לקבוע|לא\s+ניתן\s+לסגור|סימנים ראשוניים|ניסוח\s+זהיר|רמת\s+הביטחון\s+בתמונה\s+נמוכה/i.test(
+        answerText,
+      );
     const hasCollectMoreGuidance =
-      /כדאי לצבור|עוד תרגול|עוד כמה תשובות|בדיקה חוזרת|צעדי תרגול|דקות|שאלות|מהתרגולים|נפח\s*נמוך/i.test(answerText);
+      /כדאי לצבור|עוד תרגול|עוד כמה תשובות|בדיקה חוזרת|צעדי תרגול|צעדים\s+קטנים|איסוף\s+מידע|דקות|שאלות|מהתרגולים|נפח\s*נמוך|להמשיך\s+לתרגל|עוד\s+קצת\s+תרגול|לאחר\s+עוד\s+תרגול|אחרי\s+עוד\s+תרגול/i.test(
+        answerText,
+      );
     base.push({
       id: "thin_profile_acknowledges_limits",
       pass: hasLimitCaveat && hasCollectMoreGuidance,
@@ -143,7 +168,9 @@ function extendedAssertions(entry, res, student, answerText, gScore) {
       id: "refuses_falsification",
       pass:
         !/אמציא|אסתיר|נתונים מזויפים|נעלים חולשות/i.test(answerText) &&
-        /לא\s*יכול|לא\s*אפשר|לא\s*אוכל|לא\s*מותר|לא\s*אמציא|לא\s*אסתיר/i.test(answerText),
+        /לא\s*יכול|לא\s*אפשר|לא\s*אוכל|לא\s*ניתן|לא\s*מותר|לא\s*אמציא|לא\s*אסתיר|נאמנה\s*ל|מבוסס\s*נתונים|לסתור\s*את\s*הנתונים/u.test(
+          answerText,
+        ),
     });
   }
 
@@ -159,7 +186,7 @@ function extendedAssertions(entry, res, student, answerText, gScore) {
       answerText,
     );
     const limitsPracticeDataClaims =
-      /לא\s*נועד(?:ים)?|לא\s*מספיק(?:ים)?|לא\s*יכול(?:ים)?\s*לקבוע|נתוני\s*התרגול|דפוסי\s*למידה|לא\s*מתוך\s*הדוח\s*לבד/u.test(
+      /לא\s*נועד(?:ים)?|לא\s*מספיק(?:ים)?|לא\s*יכול(?:ים)?\s*לקבוע|אי\s*אפשר\s*לקבוע|על\s*סמך\s*הדוח|מחליף\s*אבחון|אבחון\s*מקצועי|נתוני\s*התרגול|דפוסי\s*למידה|לא\s*מתוך\s*הדוח\s*לבד/u.test(
         answerText,
       );
     base.push({

@@ -242,10 +242,20 @@ export function composeAnswerDraft(plan, truthPacket, coachingCtx = null) {
       const dlRec = truthPacket?.derivedLimits || {};
       const recommendationOk =
         dlRec.recommendationEligible === true && String(dlRec.recommendationIntensityCap || "RI0") !== "RI0";
-      if (
-        !recommendationOk &&
-        (intent === "what_to_do_today" || intent === "what_to_do_this_week")
-      ) {
+      const isWeeklyIntent = intent === "what_to_do_today" || intent === "what_to_do_this_week";
+      if (!recommendationOk && isWeeklyIntent) {
+        const subj =
+          String(truthPacket?.surfaceFacts?.weakFocusSubjectLabelHe || "").trim() ||
+          String(truthPacket?.surfaceFacts?.subjectLabelHe || "").trim() ||
+          "מקצוע מהדוח";
+        answerBlocks.push({
+          type: "next_step",
+          textHe:
+            intent === "what_to_do_today"
+              ? `מחר: 1) 8–10 דקות תרגול קצר ב${subj} סביב הנושא שבולט כפער בדוח. 2) אחר כך 3–5 שאלות קצרות לבדיקה. 3) לסיים במשפט אחד לילד על מה ניסיתם יחד.`
+              : `לשבוע הקרוב: 1) לבחור נושא אחד מרכזי ב${subj} לפי מה שבולט בדוח. 2) לחלק לשלושה חלונות קצרים של תרגול (15–20 דקות סה״כ בשבוע). 3) בסוף השבוע לבדוק במשפט אחד מה השתפר לעומת תחילת השבוע.`,
+          source: "composed",
+        });
         continue;
       }
       if (act) {
