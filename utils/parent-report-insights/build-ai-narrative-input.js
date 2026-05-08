@@ -41,6 +41,36 @@ function trimText(value, max) {
   return s.length > max ? s.slice(0, max) : s;
 }
 
+/**
+ * Deterministic safe Hebrew caution sentence for the AI to copy verbatim into `cautionNote`
+ * when the packet has thin-data warnings. ALL branches contain "כיוון ראשוני" so the result
+ * is guaranteed to satisfy the validator's `SAFE_THIN_DATA_HINTS_RE` (step 7) regardless of
+ * the warning scope. Returning `null` when no thin-data warnings exist signals the prompt
+ * that the AI may leave `cautionNote` empty.
+ *
+ * Length: each branch ≤ 280 chars (cautionMaxChars).
+ */
+function deriveRequiredCautionNoteHe(thinDataWarnings) {
+  if (!Array.isArray(thinDataWarnings) || thinDataWarnings.length === 0) return null;
+  const hasOverall = thinDataWarnings.some((w) => w?.scope === "overall");
+  if (hasOverall) {
+    return "חשוב לזכור שהנתונים בתקופה זו מועטים — מדובר בכיוון ראשוני בלבד וכדאי להימנע ממסקנות חזקות.";
+  }
+  const subjects = thinDataWarnings
+    .filter(
+      (w) =>
+        w?.scope === "subject" &&
+        typeof w?.displayNameHe === "string" &&
+        w.displayNameHe.trim()
+    )
+    .map((w) => w.displayNameHe.trim())
+    .slice(0, 3);
+  if (subjects.length === 0) {
+    return "חשוב לזכור שהנתונים בחלק מהתחומים מצומצמים — מדובר בכיוון ראשוני בלבד.";
+  }
+  return `חשוב לזכור שבמקצועות ${subjects.join(", ")} הנתונים מצומצמים בתקופה זו — מדובר בכיוון ראשוני בלבד.`;
+}
+
 export function buildAiNarrativeInput(packet) {
   if (!packet || typeof packet !== "object") return null;
 
@@ -123,6 +153,7 @@ export function buildAiNarrativeInput(packet) {
       displayNameHe: trimText(w.displayNameHe, 60),
       questionCount: Math.max(0, Math.round(Number(w.questionCount) || 0)),
     })),
+    requiredCautionNoteHe: deriveRequiredCautionNoteHe(thinDataWarnings),
   };
 }
 

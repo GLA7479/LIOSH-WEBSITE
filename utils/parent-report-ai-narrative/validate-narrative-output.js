@@ -17,6 +17,22 @@ const RAW_KEY_RE = /[a-z][a-z0-9_]{2,}_[a-z0-9_]{2,}/i;
 const MARKDOWN_LEAD_RE = /^[\s]*[#>*\-`]/;
 const ABSOLUTE_TERMS_RE = /(תמיד|אף פעם|מצוין במיוחד|צריך טיפול|חייב טיפול|לעולם)/;
 
+/**
+ * Block emotional/confidence assumptions in parent-facing narrative text.
+ * Product rule: parent reports must NEVER frame children's progress in terms of
+ * "confidence" / "ביטחון" (positive or negative). Prefer wording like
+ * "שטף", "עצמאות בתרגול", "ביסוס ההבנה", "תרגול עקבי" — see prompt.js.
+ *
+ * Hebrew morphology note: `ביטחון` ends with the final-nun `ן`, but with possessive
+ * suffixes the same root uses the medial-nun `נ`: `ביטחונו` (his), `ביטחונה` (her),
+ * `ביטחונם` (their), `ביטחוני` (my). The regex matches `ביטחו` followed by EITHER
+ * final-nun `ן` OR medial-nun `נ` (so any suffix form is caught), plus the alternative
+ * spelling `בטחו…` and the English word `confidence` (case-insensitive). The Hebrew
+ * adjective `בטוח` ("sure/safe", spelled ב-ט-ו-ח without an inner het+vav-nun) is
+ * intentionally NOT matched — it has many legitimate uses.
+ */
+const EMOTIONAL_CONFIDENCE_TERMS_RE = /(ביטחו[ןנ]|בטחו[ןנ]|confidence)/iu;
+
 const SAFE_THIN_DATA_HINTS_RE = /(נתונים מועטים|נתונים מצומצמים|תרגול מועט|נתונים מצומצמים|תקופה קצרה|כיוון ראשוני|מעט נתונים)/;
 
 /**
@@ -187,6 +203,15 @@ export function validateNarrativeOutput(aiPayload, packet, options = {}) {
   // 9. No unsupported absolute claims in any visible text
   for (const text of allTexts) {
     if (ABSOLUTE_TERMS_RE.test(text)) return fail("absolute_unsupported_claim", { text });
+  }
+
+  // 10. No emotional/confidence assumptions ("ביטחון" / "בטחון" / "confidence").
+  //     Hardening: parent narrative must avoid framing progress in confidence terms,
+  //     positive or negative. The deterministic fallback never uses these words.
+  for (const text of allTexts) {
+    if (EMOTIONAL_CONFIDENCE_TERMS_RE.test(text)) {
+      return fail("emotional_confidence_language", { text });
+    }
   }
 
   return {

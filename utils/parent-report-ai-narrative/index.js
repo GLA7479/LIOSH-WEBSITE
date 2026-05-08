@@ -29,9 +29,16 @@ import { callNarrativeLlm, isNarrativeLlmEnabled } from "./llm-client.js";
 import { validateNarrativeOutput } from "./validate-narrative-output.js";
 import { buildDeterministicFallbackNarrative } from "./deterministic-fallback.js";
 
-function ensureFallback(packet, reason) {
+function ensureFallback(packet, reason, diag) {
   const structured = buildDeterministicFallbackNarrative(packet);
-  return { ok: true, source: "deterministic_fallback", reason: reason || "deterministic_default", structured };
+  const out = {
+    ok: true,
+    source: "deterministic_fallback",
+    reason: reason || "deterministic_default",
+    structured,
+  };
+  if (diag) out._diag = diag;
+  return out;
 }
 
 function isPacketReady(packet) {
@@ -91,13 +98,28 @@ export async function buildParentReportAINarrative(packet, options = {}) {
     signal: options?.signal,
     fetchImpl: options?.fetchImpl,
   });
-  if (!llmResult.ok) return ensureFallback(packet, `llm_call_failed:${llmResult.reason}`);
+  if (!llmResult.ok) {
+    return ensureFallback(packet, `llm_call_failed:${llmResult.reason}`, {
+      stage: "llm",
+      reason: llmResult.reason,
+      httpErrorBody: llmResult.httpErrorBody || "",
+      raw: llmResult.raw || "",
+    });
+  }
 
   const validation = validateNarrativeOutput(llmResult.payload, packet, {
     narrativeReportContext: { surface: "detailed" },
     engineSnapshot: buildEngineSnapshotForGuard(packet),
   });
-  if (!validation.ok) return ensureFallback(packet, `validation_failed:${validation.reason}`);
+  if (!validation.ok) {
+    return ensureFallback(packet, `validation_failed:${validation.reason}`, {
+      stage: "validation",
+      reason: validation.reason,
+      details: validation.details || null,
+      payload: llmResult.payload || null,
+      raw: llmResult.raw || "",
+    });
+  }
 
   return { ok: true, source: "ai", structured: validation.normalized };
 }
