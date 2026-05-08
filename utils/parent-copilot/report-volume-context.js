@@ -19,3 +19,5 @@ export function maxGlobalReportQuestionCount(payload) {
 
 /** Below this total we still allow global scarcity framing when contracts justify it. */
 export const STRONG_GLOBAL_QUESTION_FLOOR = 120;
+
+export default { maxGlobalReportQuestionCount, STRONG_GLOBAL_QUESTION_FLOOR };

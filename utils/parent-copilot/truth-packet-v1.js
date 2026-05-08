@@ -356,37 +356,42 @@ function buildExecutiveIntentNarrativeSlots(x) {
   switch (intent) {
     case "what_is_most_important": {
       const hot = rankedWorstFirst.slice(0, 3);
+      // Build a parent-friendly "focus on X and Y" opener — always name the worst 1-2 topics directly.
+      const focusTopics = hot.slice(0, 2);
       const obs =
-        hot.length && hot.some((m) => m.cannot || m.readiness === "insufficient" || m.confidenceBand === "low")
-          ? `לפי מה שמופיע בדוח, כדאי לפתוח תשומת לב ראשונה סביב מה שעוד לא יציב: ${hot.map((m) => `${labelPair(m)} — ${m.obs ? clipHe(m.obs, 78) : "יש סימן ראשוני"}`).join(" · ")}.`
-          : `לפי הדוח אין כרגע מוקד «חריג» אחד חד — המקצועות והנושאים המעוגנים שמופיעים הם: ${namedBits || labelPair(metas[0])}.`;
+        focusTopics.length > 0
+          ? focusTopics.length === 1
+            ? `השבוע כדאי להתמקד בעיקר ב${labelPair(focusTopics[0])}.`
+            : `השבוע כדאי להתמקד בעיקר ב${labelPair(focusTopics[0])} וב${labelPair(focusTopics[1])}.`
+          : defaultObs;
       const interpParts = [];
-      for (const m of hot.slice(0, 2)) {
-        if (m.interp) interpParts.push(`ב${labelPair(m)} הדוח מתאר: ${clipHe(m.interp, 130)}`);
+      for (const m of focusTopics) {
+        // Skip "הדוח מתאר:" prefix — just show the grounded reason directly.
+        if (m.interp) interpParts.push(clipHe(m.interp, 130));
       }
       if (!interpParts.length && metas[0]?.interp) interpParts.push(clipHe(metas[0].interp, 180));
       const trendExtra =
         trends[1] && shouldAttachExecutiveSecondTrendLine(trends[1], x.totalQ)
           ? `נוסף מהדוח: ${trends[1]}`
           : "";
-      let interp = appendDistinctSentence(interpParts.join(" · "), trendExtra);
+      let interp = appendDistinctSentence(interpParts.join(" "), trendExtra);
       interp = appendDistinctSentence(interp, supportingNumericTail(x));
       if (!interp.trim()) interp = defaultInterp;
       return { observation: obs, interpretation: interp };
     }
     case "what_is_going_well": {
-      const top = rankedBestFirst.slice(0, 2);
+      // Only include topics with genuinely strong performance (acc >= 75 or readiness=ready).
+      const strongTopics = rankedBestFirst.filter(
+        (m) => m.acc >= 75 || (m.readiness === "ready" && m.acc >= 70),
+      );
+      const top = (strongTopics.length > 0 ? strongTopics : rankedBestFirst).slice(0, 2);
       const obs =
         top.length > 0
-          ? `לפי הדוח, מה שנראה כרגע חזק יחסית: ${top.map((m) => `${labelPair(m)} — ${m.obs ? clipHe(m.obs, 95) : "יש סימן חיובי קצר"}`).join(" · ")}.`
+          ? `החוזקה המרכזית שמופיעה בדוח: ${top.map((m) => `${labelPair(m)} — ${m.obs ? clipHe(m.obs, 95) : "ביצועים טובים יחסית"}`).join(" · ")}.`
           : defaultObs;
-      const accNote =
-        top.length > 0
-          ? `ליד המספרים: ${top.map((m) => `ב${parentFacingTopicTitleHe(m.dn)} המדד מסתכם בכ־${m.acc}%`).join("; ")}.`
-          : "";
+      // Accuracy numbers are already embedded in each topic's obs text — skip the redundant accNote.
       const interp0 = top[0]?.interp ? clipHe(top[0].interp, 180) : "";
-      let interp = appendDistinctSentence(interp0, accNote);
-      interp = appendDistinctSentence(interp, supportingNumericTail(x));
+      let interp = appendDistinctSentence(interp0, supportingNumericTail(x));
       if (!interp.trim()) interp = defaultInterp;
       return { observation: obs, interpretation: interp };
     }
@@ -394,11 +399,11 @@ function buildExecutiveIntentNarrativeSlots(x) {
       const low = rankedWorstFirst.slice(0, 2);
       const obs =
         low.length > 0
-          ? `מה שהדוח מתאר כרגע כדורש חיזוק או תשומת לב: ${low.map((m) => `${labelPair(m)} — ${m.obs ? clipHe(m.obs, 95) : "יש סימן ראשוני"}`).join(" · ")}.`
+          ? `מה שעדיין דורש תרגול ותשומת לב: ${low.map((m) => `${labelPair(m)} — ${m.obs ? clipHe(m.obs, 95) : "עדיין דורש חיזוק"}`).join(" · ")}.`
           : defaultObs;
       const accNote =
         low.length > 0
-          ? `ליד המדדים: ${low.map((m) => `ב${parentFacingTopicTitleHe(m.dn)} כ־${m.acc}%`).join("; ")}.`
+          ? `מבחינת מספרים: ${low.map((m) => `ב${parentFacingTopicTitleHe(m.dn)} הדיוק הוא כ־${m.acc}%`).join("; ")}.`
           : "";
       const interp0 = low[0]?.interp ? clipHe(low[0].interp, 190) : "";
       let interp = appendDistinctSentence(interp0, accNote);
@@ -452,7 +457,7 @@ function buildExecutiveIntentNarrativeSlots(x) {
         if (prefer) focus = prefer;
       }
       const obs = focus
-        ? `כשבוחרים צעד מעשי מתוך הדוח, הגיוני להתייחס קודם למה שמצביע על פער: ${labelPair(focus)}.`
+        ? `הנושא שכדאי לתרגל עכשיו לפי הדוח: ${labelPair(focus)}.`
         : defaultObs;
       let interp = focus?.interp ? clipHe(focus.interp, 160) : defaultInterpBase;
       if (trends[1] && shouldAttachExecutiveSecondTrendLine(trends[1], x.totalQ)) {
@@ -518,15 +523,17 @@ function buildExecutiveIntentNarrativeSlots(x) {
       const fragile = metas.filter((m) => m.cannot || m.confidenceBand === "low").length;
       const obs =
         fragile > 0
-          ? `לפי ניסוחי הדוח, יש מוקדים עם ניסוח זהיר או שאינם סגורים לגמרי — זה מצמצם עד כמה אפשר לקבוע «סיפור אחד» חד מהדוח בלבד.`
-          : `לפי ניסוחי הדוח, רוב נושאי התרגול שנבדקו נראים יחסית יציבים לתקופה — בלי ללחוץ על תיוג בעיה כללית.`;
+          ? `הדוח מציג כמה תחומים שעדיין לא מיושבים לגמרי.`
+          : `לפי הדוח, רוב הנושאים שנבדקו נראים יציבים יחסית בתרגול.`;
       const interpHead =
         x.anyCannotConclude || x.uncertainRows > 0
-          ? `זה לא בהכרח אומר «בעיה חמורה», אלא בעיקר חוסר ודאות לגיטימי בניסוח — סביב: ${namedBits}.`
-          : `לפי התמונה הכוללת מהדוח, אין כאן אות לדאגה גורפת — עדיין נכון להמשיך בתרגול שגרתי ולבדוק שוב בהמשך.`;
+          ? `חלק מהנושאים עדיין דורשים תרגול נוסף — בעיקר: ${namedBits}. כדאי להמשיך בתרגול שגרתי ולחזור לבדוק בהמשך.`
+          : `הכי טוב להמשיך בתרגול שגרתי ולעקוב אחרי ההתקדמות.`;
       const interp = appendDistinctSentence(
         interpHead,
-        `לצד זה, בדוח יש ${metas.length} ניסוחים מעוגנים; ${fragile > 0 ? `${fragile} מהם במצב עדין.` : "כולם בניסוח עקבי יחסית."}`,
+        fragile > 0
+          ? `בדוח יש ${metas.length} תחומים מעוגנים; ${fragile} מהם דורשים עדיין חיזוק.`
+          : `בדוח יש ${metas.length} תחומים מעוגנים — כולם בניסוח עקבי יחסית.`,
       );
       return { observation: obs, interpretation: appendDistinctSentence(interp, supportingNumericTail(x)) };
     }

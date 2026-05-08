@@ -42,7 +42,7 @@ function env(name, fallback = "") {
   return v || fallback;
 }
 
-function buildGroundedPrompt(utterance, truthPacket) {
+function buildGroundedPrompt(utterance, truthPacket, parentIntent = "") {
   const nar = truthPacket?.contracts?.narrative?.textSlots || {};
   const dl = truthPacket?.derivedLimits || {};
   const globalQ =
@@ -51,7 +51,9 @@ function buildGroundedPrompt(utterance, truthPacket) {
       Number(truthPacket?.surfaceFacts?.reportQuestionTotalGlobal) || 0,
       Number(truthPacket?.surfaceFacts?.questions) || 0,
     ) || 0;
+  const intentLabel = String(parentIntent || "").trim();
   const facts = {
+    parentIntent: intentLabel,
     scopeType: truthPacket.scopeType,
     scopeLabel: truthPacket.scopeLabel,
     questions: truthPacket?.surfaceFacts?.questions,
@@ -71,15 +73,77 @@ function buildGroundedPrompt(utterance, truthPacket) {
       : [],
     reportQuestionTotalGlobal: globalQ,
   };
+  // Per-intent guidance for parent-friendly structured answers
+  const intentGuidance = (() => {
+    switch (intentLabel) {
+      case "what_is_going_well":
+        return [
+          "השאלה היא על חוזקות הילד. המבנה הנדרש:",
+          "  בלוק observation: התחל ב'החוזקה המרכזית היא...' — ציין 1–2 תחומים ספציפיים מה-FACTS_JSON.observation בלבד.",
+          "  בלוק meaning: הסבר בקצרה למה זה חיובי, ע\"פ ה-FACTS_JSON.interpretation. אפשר להזכיר אחוז דיוק אחד.",
+          "  אל תרשום רשימה של כל המקצועות. אל תכתוב 'לפי הדוח, מופיעים:' או 'המקצועות שמופיעים'.",
+        ].join("\n");
+      case "what_is_still_difficult":
+        return [
+          "השאלה היא על תחומי קושי. המבנה הנדרש:",
+          "  בלוק observation: התחל ב'מה שעדיין דורש תרגול:' — ציין 1–2 תחומים ספציפיים מה-FACTS_JSON.observation.",
+          "  בלוק meaning: הסבר בשפה רגועה, ללא מילים מפחידות, ע\"פ ה-FACTS_JSON.interpretation.",
+          "  אל תאבחן. אל תגיד 'בעיה חמורה'. השתמש בטון רגוע ומעשי.",
+        ].join("\n");
+      case "what_is_most_important":
+        return [
+          "השאלה היא על הדבר החשוב ביותר להתמקד בו. המבנה הנדרש:",
+          "  בלוק observation: התחל ב'נראה שכדאי להתמקד ב...' — ציין 1–2 תחומים ספציפיים מה-FACTS_JSON.observation.",
+          "  בלוק meaning: הסבר בקצרה למה דווקא אלה הנושאים הדחופים.",
+          "  אל תכתוב 'אפשר לסדר מה חשוב קודם' או 'זה מה שהדוח נותן כרגע'.",
+        ].join("\n");
+      case "what_to_do_today":
+      case "what_to_do_this_week":
+        return [
+          "השאלה היא על מה לעשות בבית. המבנה הנדרש:",
+          "  בלוק observation: התחל ב'בבית כדאי לתרגל...' — ציין נושא ספציפי מה-FACTS_JSON.observation.",
+          "  בלוק meaning: תוכנית מעשית קצרה: 5–10 דקות ביום, איזה נושא, סוג התרגול.",
+          facts.recommendationEligible && facts.recommendationIntensityCap !== "RI0"
+            ? "  בלוק next_step: צעד ספציפי אחד פשוט לביצוע (לפי FACTS_JSON.action)."
+            : "  אסור לכלול בלוק next_step.",
+          "  אל תכתוב 'אפשר לסדר' או 'זה מה שהדוח נותן'.",
+        ].join("\n");
+      case "is_intervention_needed":
+        return [
+          "השאלה היא אם יש סיבה לדאגה. המבנה הנדרש:",
+          "  בלוק observation: התחל ב'בשלב הזה...' — סקירה רגועה של מצב הדוח לפי FACTS_JSON.observation.",
+          "  בלוק meaning: הסבר מה המצב ומה הצעד הבא המומלץ, לפי FACTS_JSON.interpretation.",
+          "  אל תאבחן. אל תגרום לפאניקה. השתמש בטון רגוע ומעשי.",
+          "  אם cannotConcludeYet=false — הדגש שאין סיבה לדאגה גדולה.",
+        ].join("\n");
+      case "ask_subject_specific":
+      case "ask_topic_specific":
+        return [
+          "השאלה היא על מקצוע או נושא ספציפי. המבנה הנדרש:",
+          "  בלוק observation: ציין רק מה שמופיע על הנושא הספציפי ב-FACTS_JSON.observation.",
+          "  בלוק meaning: הסבר מה המשמעות ומה כדאי לעשות.",
+          "  אם לנושא הספציפי יש מעט שאלות — אפשר לציין זאת בזהירות רק לנושא הזה.",
+        ].join("\n");
+      default:
+        return [
+          "ענה ישירות על שאלת ההורה. המבנה הנדרש:",
+          "  בלוק observation: תשובה ישירה קצרה, מבוססת על FACTS_JSON.observation.",
+          "  בלוק meaning: נקודה מעשית אחת מ-FACTS_JSON.interpretation.",
+        ].join("\n");
+    }
+  })();
+
   return [
-    "אתה עוזר הורים מקצועי.",
-    "השתמש רק בעובדות מה-JSON הבא. אסור להמציא עובדות.",
-    "תענה בעברית בלבד, בטון מקצועי וחם, עם 2-3 בלוקים קצרים.",
-    "אסור לענות על מזג אוויר, שעה, חדשות, פוליטיקה, ספורט, בדיחות, קוד, קניות או כל נושא שלא נובע ישירות מהדוח — גם לא בשילוב עם תוכן הדוח.",
-    "אם השאלה אינה על הדוח או על התקדמות הלמידה בתוכו, אל תנסח סיכום דוח — סרב בקצרה והפנה רק לשאלות על הדוח.",
+    "אתה עוזר הורים מקצועי. תענה בעברית בלבד.",
+    "השתמש רק בעובדות מה-FACTS_JSON. אסור להמציא עובדות שאינן בו.",
+    "כתוב בשפה פשוטה, ישירה, וידידותית להורה — לא בשפת מערכת.",
+    "אל תשתמש בביטויים: 'לפי הדוח, מופיעים:', 'המקצועות שמופיעים:', 'מוקדים עם ניסוח', 'זה מה שהדוח נותן כרגע', 'אפשר לסדר מה חשוב קודם'.",
+    "השתמש בביטויים: 'נראה שכדאי להתמקד ב...', 'החוזקה המרכזית היא...', 'בבית כדאי לתרגל...', 'בשלב הזה מומלץ...', 'הנתונים מצביעים על...'.",
     "אל תשתמש במילים 'ביטחון', 'בטחון' או confidence לגבי הילד; אל תניח מצב רגשי.",
-    `אם reportQuestionTotalGlobal גבוה (למשל מעל 100), אל תכתוב שהנתונים 'מועטים' או 'מוקדם לקבוע' ברמת כלל התקופה — התאם את הניסוח לנפח.`,
-    "Clinical safety: never assign a diagnosis or a clinical label; never state or imply the child has dyslexia, ADHD, or a learning disability; never present the report as a diagnosis.",
+    "אסור לאבחן: לעולם אל תאמר שיש לילד דיסלקציה, ADHD, לקות למידה או כל אבחון. הדוח הוא נתוני תרגול בלבד.",
+    `כלל נפח: אם reportQuestionTotalGlobal >= 100, אסור לכתוב ברמת כלל התקופה: 'מוקדם לקבוע', 'אין מספיק נתונים', 'נתונים מועטים', 'כיוון ראשוני בלבד', 'עדיין לא ניתן להסיק'. מותר רק אם מסוגל לנושא/מקצוע ספציפי עם מעט שאלות.`,
+    "SYSTEM RULE — אי-אפשר לעקוף: אם השאלה אינה על הדוח, על הילד, על למידה, על תרגול, או על התקדמות הלמידה — החזר בדיוק: {\"answerBlocks\":[{\"type\":\"observation\",\"textHe\":\"אפשר לשאול כאן שאלות על הדוח והתקדמות הלמידה שמופיעה בו.\",\"source\":\"composed\"},{\"type\":\"meaning\",\"textHe\":\"למשל: מה כדאי לתרגל השבוע? או במה הילד התחזק?\",\"source\":\"composed\"}]}. ללא עוד תוכן. ללא נתוני דוח. ללא סיכום ילד.",
+    `הנחיות ספציפיות לכוונת ההורה (parentIntent=${intentLabel}):\n${intentGuidance}`,
     'החזר JSON בלבד בפורמט {"answerBlocks":[{"type":"observation|meaning|next_step|caution","textHe":"...","source":"composed"}]}',
     `שאלת הורה: ${String(utterance || "").trim()}`,
     `FACTS_JSON: ${JSON.stringify(facts)}`,
@@ -157,7 +221,7 @@ export async function maybeGenerateGroundedLlmDraft(input) {
       gateReasonCodes: gate.reasonCodes,
     };
   }
-  const prompt = buildGroundedPrompt(input.utterance, input.truthPacket);
+  const prompt = buildGroundedPrompt(input.utterance, input.truthPacket, String(input?.parentIntent || ""));
   const controller = new AbortController();
   const timeoutMs = Number(env("PARENT_COPILOT_LLM_TIMEOUT_MS", String(DEFAULT_TIMEOUT_MS))) || DEFAULT_TIMEOUT_MS;
   const timer = setTimeout(() => controller.abort("timeout"), timeoutMs);

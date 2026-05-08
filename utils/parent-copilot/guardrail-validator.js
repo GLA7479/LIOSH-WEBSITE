@@ -107,9 +107,20 @@ const EMOTIONAL_CONFIDENCE_TERMS_RE = /(ביטחו[ןנ]|בטחו[ןנ]|confiden
 /**
  * Global scarcity claims must not appear in composed glue when report volume is high.
  * Contract slots may still carry nuanced uncertainty; we scan composed glue only.
+ *
+ * These phrases are forbidden globally when totalAnswers >= STRONG_GLOBAL_QUESTION_FLOOR,
+ * UNLESS they are clearly scoped to a specific subject/topic with low question count.
+ * Scoping indicators: "ב[נושא] הזה", "ב[מקצוע] בלבד", "לגבי הנושא הזה"
  */
 const GLOBAL_SCARCITY_CONTRADICTION_RE =
-  /(יש\s+כרגע\s+מעט\s+נתוני\s+תרגול|נפח\s+הנתונים\s+עדיין\s+מצומצם|אין\s+עדיין\s+מספיק\s+מידע\s+למסקנה\s+חזקה|אין\s+מספיק\s+נתונים\s+בכלל|נתונים\s+מועטים\s+בתקופה|מוקדם\s+לקבוע\s+תמונה\s+ברורה\s+מהתרגולים)/u;
+  /(מוקדם\s+לקבוע(?!\s+(?:לגבי|ב))|אין\s+מספיק\s+נתונים(?!\s+(?:לגבי|ב|על))|נתונים\s+מועטים(?!\s+(?:ב|לגבי|על\s+(?:הנושא|המקצוע)))|כיוון\s+ראשוני\s+בלבד(?!\s+(?:לגבי|ב))|עדיין\s+לא\s+ניתן\s+להסיק(?!\s+(?:לגבי|ב))|יש\s+כרגע\s+מעט\s+נתוני\s+תרגול|נפח\s+הנתונים\s+עדיין\s+מצומצם|אין\s+עדיין\s+מספיק\s+מידע\s+למסקנה\s+חזקה|אין\s+מספיק\s+נתונים\s+בכלל|נתונים\s+מועטים\s+בתקופה|מוקדם\s+לקבוע\s+תמונה\s+ברורה\s+מהתרגולים)/u;
+
+/**
+ * Off-topic answers must not contain report-data commentary.
+ * Detects: answer counts, accuracy percentages, "according to the report", child summaries.
+ */
+const OFF_TOPIC_REPORT_DATA_CONTAMINATION_RE =
+  /(\d{2,}\s*שאלות|\d{2,}\s*תשובות|דיוק\s+של\s*\d|%\s*(דיוק|הצלחה)|בדוח\s+יש\s+\d|לפי\s+הדוח|על\s+פי\s+הדוח|ה?ילד\s+(מתרגל|הגיע|צבר|ענה|טעה|נכשל)|נושאים\s+בדוח|\d+\s*נושאים)/u;
 
 /**
  * @param {ReturnType<typeof import("./truth-packet-v1.js").buildTruthPacketV1>} truthPacket
@@ -217,6 +228,11 @@ export function validateAnswerDraft(draft, truthPacket, hints = null) {
     if (globalQ >= STRONG_GLOBAL_QUESTION_FLOOR && GLOBAL_SCARCITY_CONTRADICTION_RE.test(composedJoined)) {
       failCodes.push("truth_contradiction_global_thin_language_high_volume");
     }
+  }
+
+  // Off-topic answers must be clean boundary text — no report data, no child commentary
+  if (intent === "off_topic_redirect" && OFF_TOPIC_REPORT_DATA_CONTAMINATION_RE.test(joined)) {
+    failCodes.push("off_topic_report_data_contamination");
   }
 
   const nar = truthPacket?.contracts?.narrative;

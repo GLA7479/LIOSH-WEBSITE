@@ -168,13 +168,13 @@ export function composeAnswerDraft(plan, truthPacket, coachingCtx = null) {
         {
           type: "observation",
           textHe:
-            "אני יכול לעזור רק בשאלות על הדוח והתקדמות הלמידה שמופיעה בו — לא במזג אוויר, בשעה, בחדשות, בבדיחות או בידע כללי.",
+            "אפשר לשאול כאן שאלות על הדוח והתקדמות הלמידה שמופיעה בו.",
           source: "composed",
         },
         {
           type: "meaning",
           textHe:
-            "אפשר לשאול למשל: מה כדאי לתרגל השבוע? או: מה הכי בולט בדוח בתקופה?",
+            "למשל: מה כדאי לתרגל השבוע? או במה הילד התחזק?",
           source: "composed",
         },
       ],
@@ -218,6 +218,65 @@ export function composeAnswerDraft(plan, truthPacket, coachingCtx = null) {
       ],
       debug: { intelligenceV1: intelligenceV1DebugSnapshot(truthPacket) },
     };
+  }
+
+  const intentMain = String(coachingCtx?.intent || plan.intent || "");
+
+  // ── is_intervention_needed: build calm, reassuring answer in correct order ──
+  if (intentMain === "is_intervention_needed") {
+    const slotsIv = truthPacket?.contracts?.narrative?.textSlots || {};
+    const obsText = String(slotsIv.observation || "").trim();
+    const interpText = String(slotsIv.interpretation || "").trim();
+    const limText = String(slotsIv.uncertainty || "").trim();
+    const opener = parentDirectOpenerHe("is_intervention_needed", truthPacket);
+    const obsBlock = opener ? `${opener}\n\n${obsText}`.trim() : obsText;
+    const blocks = [];
+    if (obsBlock) blocks.push({ type: "observation", textHe: obsBlock, source: "composed" });
+    if (interpText) blocks.push({ type: "meaning", textHe: interpText, source: "composed" });
+    if (limText) blocks.push({ type: "caution", textHe: limText, source: "composed" });
+    if (blocks.length > 0) {
+      return {
+        answerBlocks: blocks,
+        debug: { intelligenceV1: intelligenceV1DebugSnapshot(truthPacket) },
+      };
+    }
+  }
+
+  // ── what_to_do_this_week / what_to_do_today: ensure concrete step plan is shown ──
+  if (intentMain === "what_to_do_this_week" || intentMain === "what_to_do_today") {
+    const slotsWk = truthPacket?.contracts?.narrative?.textSlots || {};
+    const obsWk = String(slotsWk.observation || "").trim();
+    const interpWk = String(slotsWk.interpretation || "").trim();
+    const actWk = String(slotsWk.action || "").trim();
+    const opener = parentDirectOpenerHe(intentMain, truthPacket);
+    const obsBlock = opener ? `${opener}\n\n${obsWk}`.trim() : obsWk;
+    const blocks = [];
+    if (obsBlock) blocks.push({ type: "observation", textHe: obsBlock, source: "composed" });
+    if (actWk) {
+      // Use "composed" not "contract_slot" — normalizeAnswerBlocksHe replaces \n with spaces,
+      // making the text diverge from the raw slot text, which would trigger contract_slot_mismatch.
+      blocks.push({ type: "next_step", textHe: actWk.replace(/\n/g, " "), source: "composed" });
+    } else if (interpWk) {
+      blocks.push({ type: "meaning", textHe: interpWk, source: "composed" });
+    }
+    if (!actWk && !interpWk) {
+      // fallback concrete plan based on surfaceFacts
+      const subj =
+        String(truthPacket?.surfaceFacts?.weakFocusSubjectLabelHe || "").trim() ||
+        String(truthPacket?.surfaceFacts?.subjectLabelHe || "").trim() ||
+        "מקצוע מהדוח";
+      const planText =
+        intentMain === "what_to_do_today"
+          ? `1) מחר 10 דקות תרגול ממוקד ב${subj}. 2) 5–8 שאלות קצרות ולבדוק מה חוזר. 3) לסיים במשפט אחד עם הילד על מה ניסיתם.`
+          : `1) לבחור נושא אחד מרכזי ב${subj} ולחלק תרגול לשלושה חלונות קצרים בשבוע. 2) בכל חלון 5–8 שאלות קצרות ולבדוק אם אותה טעות חוזרת. 3) בסוף השבוע: משפט אחד עם הילד — מה התקדם ומה עדיין צריך חיזוק.`;
+      blocks.push({ type: "next_step", textHe: planText, source: "composed" });
+    }
+    if (blocks.length > 0) {
+      return {
+        answerBlocks: blocks,
+        debug: { intelligenceV1: intelligenceV1DebugSnapshot(truthPacket) },
+      };
+    }
   }
 
   const intent = String(coachingCtx?.intent || plan.intent || "");

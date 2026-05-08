@@ -37,6 +37,7 @@ import {
   augmentPhaseEThinEvidenceDraft,
   tryBuildPhaseEResolvedShortcutDraft,
 } from "../parent-ai-topic-classifier/external-question-route.js";
+import { routeParentQuestion, OFF_TOPIC_RESPONSE_HE, DIAGNOSTIC_BOUNDARY_RESPONSE_HE } from "./question-router.js";
 
 const CLINICAL_GUARDRAIL_FAIL_CODES = new Set([
   "clinical_diagnosis_language",
@@ -463,13 +464,59 @@ function runDeterministicCore(input) {
   }
 
   const utteranceStr = normalizeFreeformParentUtteranceHe(String(input?.utterance || ""));
+
+  // ── FIRST PRODUCT GATE: deterministic router before ANY report data access ──
+  const qaRoute = routeParentQuestion(String(input?.utterance || ""));
+  if (qaRoute.exitEarly && qaRoute.deterministicResponse) {
+    const boundaryLine = String(qaRoute.deterministicResponse);
+    const routerIntent = qaRoute.routerIntent === "unsafe_or_diagnostic_request"
+      ? "clinical_boundary"
+      : "off_topic_redirect";
+    const boundaryDraft = {
+      answerBlocks: [
+        { type: "observation", textHe: boundaryLine, source: "composed" },
+      ],
+    };
+    // Build a minimal clarification response so no report data is included
+    const r = buildClarificationParentCopilotResponse({
+      clarificationQuestionHe: boundaryLine,
+      intent: routerIntent,
+      priorRepeated,
+      metadata: {
+        intentConfidence: 1,
+        intentReason: `router:${qaRoute.routerIntent}`,
+        scopeConfidence: 1,
+        scopeReason: "router_early_exit",
+      },
+    });
+    validateParentCopilotResponseV1(r);
+    return {
+      response: r,
+      audience,
+      sessionId,
+      conv,
+      truthPacket: null,
+      intent: routerIntent,
+      scopeMeta: {
+        intentConfidence: 1,
+        intentReason: `router:${qaRoute.routerIntent}`,
+        scopeConfidence: 1,
+        scopeReason: "router_early_exit",
+      },
+      utteranceStr,
+      routerExitEarly: true,
+    };
+  }
+  // ── END FIRST PRODUCT GATE ──
+
   const stageA = interpretFreeformStageA(String(input?.utterance || ""), input?.payload);
   const aggregateQuestionClass = detectAggregateQuestionClass(utteranceStr);
   let intent = stageA.canonicalIntent;
   if (
     aggregateQuestionClass === "vague_summary_question" &&
     intent !== "clinical_boundary" &&
-    intent !== "sensitive_education_choice"
+    intent !== "sensitive_education_choice" &&
+    intent !== "off_topic_redirect"
   ) {
     intent = "explain_report";
   }
@@ -677,8 +724,38 @@ function runDeterministicCore(input) {
   }
 
   draft = { ...draft, answerBlocks: normalizeAnswerBlocksHe(draft.answerBlocks) };
-  draft = augmentPhaseEThinEvidenceDraft(draft, truthPacket);
-  draft = { ...draft, answerBlocks: normalizeAnswerBlocksHe(draft.answerBlocks) };
+  // Do NOT augment boundary or off-topic drafts with report data.
+  // Do NOT add thin-evidence augmentation when global answer count is already high —
+  // adding scarcity framing to a high-volume report is a truth contradiction.
+  {
+    const augGlobalQ = maxGlobalReportQuestionCount(input?.payload);
+    const isBoundaryIntent =
+      plannerIntent === "off_topic_redirect" ||
+      plannerIntent === "parent_policy_refusal" ||
+      plannerIntent === "clinical_boundary" ||
+      plannerIntent === "sensitive_education_choice";
+    const isHighVolume = augGlobalQ >= STRONG_GLOBAL_QUESTION_FLOOR;
+    if (!isBoundaryIntent && !isHighVolume) {
+      draft = augmentPhaseEThinEvidenceDraft(draft, truthPacket);
+      draft = { ...draft, answerBlocks: normalizeAnswerBlocksHe(draft.answerBlocks) };
+    }
+    // Post-composition safety-net: strip global scarcity phrases injected by the
+    // truth-packet builder when global answer count is already high.
+    if (isHighVolume && !isBoundaryIntent) {
+      const SCARCITY_STRIP_RE =
+        /(יש\s+כרגע\s+מעט\s+נתוני\s+תרגול,?\s*כלומר[^.]*\.?\s*|נפח\s+הנתונים\s+עדיין\s+מצומצם[^.]*\.?\s*|אין\s+עדיין\s+מספיק\s+מידע\s+למסקנה\s+חזקה[^.]*\.?\s*)/gu;
+      draft = {
+        ...draft,
+        answerBlocks: draft.answerBlocks.map((b) => ({
+          ...b,
+          textHe: String(b?.textHe || "")
+            .replace(SCARCITY_STRIP_RE, " ")
+            .replace(/\s{2,}/g, " ")
+            .trim(),
+        })),
+      };
+    }
+  }
   let vDraft = validateAnswerDraft(draft, truthPacket, { intent: plannerIntent });
   let fallbackUsed = false;
   /** @type {string[]} */
