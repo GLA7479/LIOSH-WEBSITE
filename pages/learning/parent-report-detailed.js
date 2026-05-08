@@ -1248,7 +1248,6 @@ export default function ParentReportDetailedPage() {
           </div>
           {payload ? (
             <>
-              <ParentReportInsight explanation={parentAiExplanation} />
               <div className="no-pdf mb-4 rounded-lg border border-cyan-500/20 bg-cyan-950/15 px-3 py-2">
                 <ParentCopilotShell payload={payload} />
               </div>
@@ -1286,6 +1285,8 @@ export default function ParentReportDetailedPage() {
                     {pi.period === "custom" ? "תאריכים מותאמים" : pi.period === "month" ? "חודש" : "שבוע"}
                   </p>
                 </header>
+
+                <ParentReportInsight explanation={parentAiExplanation} />
 
                 {/* B — סיכום להורה לפי חוזה מוצר (עם fallback לזרימה קיימת) */}
                 {hasTopContract ? (

@@ -4,31 +4,31 @@ overview: Build a professional AI-powered Parent Report narrative layer that con
 todos:
   - id: audit_freeze_contracts
     content: "Audit & freeze data contracts: re-read aggregate, V2 engine, and AI adapter; document exact field map. No code changes."
-    status: pending
+    status: completed
   - id: extend_aggregation
     content: "Extend aggregateParentReportPayload additively: per-topic/per-subject avg time, avg hints, fluency buckets (correct-slow / correct-many-hints / wrong-fast), and hintsUsed/timeSpentMs on recentMistakes. Bump meta.version."
-    status: pending
+    status: completed
   - id: build_insight_packet
     content: Create utils/parent-report-insights/ with buildParentReportInsightPacket and all derive* helpers, label normalizer, and AI narrative input projection.
-    status: pending
+    status: completed
   - id: insight_packet_unit_tests
     content: Add scripts/parent-report-insights-selftest.mjs with golden fixtures (strong, weak, thin, declining, improving, mixed, fast-wrong, slow-correct, hint-heavy, empty).
-    status: pending
+    status: completed
   - id: build_ai_narrative_service
     content: Create utils/parent-report-ai-narrative/ with prompt builder, gpt-4.1-mini /v1/responses LLM client using structured outputs, and env-gated execution.
-    status: pending
+    status: completed
   - id: build_validator
     content: Create validate-narrative-output.js implementing all 9 validation steps including contradiction check vs Insight Packet and reuse of parent-narrative-safety guard.
-    status: pending
+    status: completed
   - id: build_fallback
     content: Create deterministic-fallback.js producing identical-shape JSON from the Insight Packet so the report never breaks when AI is off or invalid.
-    status: pending
+    status: completed
   - id: integrate_adapter_and_component
     content: Update parent-report-ai-adapter.js to call the new pipeline; extend ParentReportInsight.jsx to render structured fields with new heading 'סיכום חכם להורה' and legacy text fallback.
-    status: pending
+    status: completed
   - id: focused_render_pdf_checks
     content: "Run focused audits only: parent-report-ui-binding, readability, short-vs-detailed consistency, qa:parent-pdf-export. Fix any narrow regressions."
-    status: pending
+    status: completed
   - id: final_mass_simulation
     content: Run npm run qa:parent-ai:mass-simulation as the final acceptance gate; review AI_RESPONSE_QUALITY_AUDIT and QUALITY_FLAGS; manual review of samples-for-manual-review.
     status: pending
@@ -153,14 +153,19 @@ The Insight Packet is the **only** thing the AI ever receives. No raw answers, n
     "totalSessions": 0, "totalQuestions": 0, "correctQuestions": 0,
     "accuracyPct": 0, "totalTimeMinutes": 0,
     "avgTimePerQuestionSec": 0, "avgHintsPerQuestion": 0,
-    "dataConfidence": "thin|low|moderate|strong"
+    "dataConfidence": "thin|low|moderate|strong",
+    "modeCounts": { "learning": 0, "review": 0, "drill": 0 },
+    "levelCounts": { "easy": 0, "medium": 0, "hard": 0 },
+    "normalizedGradeLevel": "g4"
   },
   "subjects": [{
-    "key": "math", "displayNameHe": "חשבון",
+    "key": "math", "displayNameHe": "חשבון", "sourceId": "subject:math",
     "totalQuestions": 0, "accuracyPct": 0, "totalTimeMinutes": 0,
     "avgTimePerQuestionSec": 0, "avgHintsPerQuestion": 0,
     "trend": "improving|stable|declining|insufficient_data",
     "dataConfidence": "thin|low|moderate|strong",
+    "modeCounts": { "learning": 0, "review": 0, "drill": 0 },
+    "levelCounts": { "easy": 0, "medium": 0, "hard": 0 },
     "topicHighlights": { "strengthHe": [], "focusHe": [] }
   }],
   "topics": [{
@@ -185,12 +190,15 @@ The Insight Packet is the **only** thing the AI ever receives. No raw answers, n
     "subjectTrends": [{ "subjectKey": "math", "trend": "improving|stable|declining|insufficient_data" }]
   },
   "strengths": [
-    { "scope": "subject|topic", "displayNameHe": "string", "evidenceHe": "string" }
+    { "sourceId": "subject:math", "scope": "subject|topic",
+      "displayNameHe": "string", "evidenceHe": "string" }
   ],
   "focusAreas": [
-    { "scope": "subject|topic", "displayNameHe": "string",
-      "evidenceHe": "string", "thinData": false }
+    { "sourceId": "topic:math:multiplication_table", "scope": "subject|topic",
+      "displayNameHe": "string", "evidenceHe": "string", "thinData": false }
   ],
+  "availableStrengthSourceIds": ["subject:math", "topic:math:..."],
+  "availableFocusSourceIds": ["topic:math:multiplication_table", "subject:hebrew"],
   "deterministicRecommendationsHe": ["string"],
   "thinDataWarnings": [
     { "scope": "overall|subject|topic", "displayNameHe": "string", "questionCount": 0 }
@@ -206,7 +214,31 @@ The Insight Packet is the **only** thing the AI ever receives. No raw answers, n
 }
 ```
 
-Determinism rule: **same input ⇒ byte-identical packet** (no `Date.now()` outside `generatedAt`, no random sampling, sorted keys for arrays).
+### Stable `sourceId` format (binding)
+
+Every strength and focus item in the Insight Packet carries a stable, machine-readable `sourceId`:
+
+- Subject scope: `subject:<subjectKey>` — example `subject:math`, `subject:hebrew`, `subject:moledet-geography`.
+- Topic scope: `topic:<subjectKey>:<topicKey>` — example `topic:math:multiplication_table`, `topic:hebrew:reading_comprehension`.
+- `<subjectKey>` and `<topicKey>` are the **raw English keys** from the aggregator (snake_case). They appear **only** in `sourceId` strings and **never** in any user-visible Hebrew text. The renderer never displays `sourceId`.
+- The Insight Packet exposes `availableStrengthSourceIds[]` and `availableFocusSourceIds[]` as closed enums; the AI input projection reuses these for the LLM `enum` constraint in the JSON Schema.
+
+### Mode / level / grade summarization rules (binding)
+
+- Source priority for `mode` per answer row: `answer_payload.mode` → `answer_payload.clientMeta.mode` → linked `learning_sessions.metadata.mode` → `"unknown"`.
+- Source priority for `level` per answer row: `answer_payload.level` → `answer_payload.clientMeta.level` → `learning_sessions.metadata.level` → `"unknown"`.
+- Aggregator emits **count maps** only — never raw values, never the full `clientMeta` object. Only the small enum keys above are exposed (`learning`, `review`, `drill` for mode; `easy`, `medium`, `hard` for level; bucket label `"unknown"` is allowed but never sent to the AI).
+- `normalizedGradeLevel` derives from `student.grade_level` (already exposed) using a small whitelist regex `^g[1-9]$`; otherwise `"unknown"`.
+- `buildAiNarrativeInput(packet)` **drops the `"unknown"` bucket** before serialization and **never** forwards `modeCounts` / `levelCounts` keys whose total would identify a single session. (i.e. include the maps only if at least one bucket has count ≥ 2 across the period; else omit the maps.)
+- **Hard rule**: the strict `AiNarrativeInput` projection **must not contain** raw `clientMeta`, raw `prompt` / `expectedAnswer` / `userAnswer`, raw English topic keys, DB ids, or any field whose name is `clientMeta`. The packet builder is allowed to read `clientMeta`; the AI input projector explicitly strips it.
+
+### Determinism rules (binding)
+
+- The core builder `buildParentReportInsightPacket(args, options)` **must NOT call `Date.now()`, `Math.random()`, or any wall-clock / RNG source** internally.
+- `generatedAt` is injected by the caller via `options.now: string | Date` (ISO-8601). When the caller does not provide it, the builder writes `generatedAt: ""` (empty string) — never a fresh timestamp. The page-level adapter ([`utils/parent-report-ai/parent-report-ai-adapter.js`](utils/parent-report-ai/parent-report-ai-adapter.js)) is responsible for passing `options.now: new Date().toISOString()` from the request boundary.
+- All array fields are emitted in a **sorted, stable order**: subjects in fixed `REPORT_AGG_SUBJECTS` order, topics by `subjectKey` then `key`, daily totals by `date` ASC, mistake patterns by `occurrences DESC` then `topicDisplayHe ASC`.
+- The unit-test snapshot harness compares packets with `generatedAt` **excluded** from the diff (defense in depth even if a caller forgets to inject `options.now`).
+- `Object.keys` iteration order is guaranteed by emitting via explicit object literals in the builder, not by `for...in` over input maps.
 
 ---
 
@@ -214,17 +246,25 @@ Determinism rule: **same input ⇒ byte-identical packet** (no `Date.now()` outs
 
 New module: `utils/parent-report-ai-narrative/`. Receives `AiNarrativeInput` (a stripped projection of the Insight Packet — only Hebrew display names, bands, and counts; never raw English keys, never raw mistake text).
 
-### Output schema (matches your spec)
+### Output schema (extended with stable `sourceId` for grounding)
 
 ```json
 {
   "summary": "2–3 משפטים בעברית",
-  "strengths": ["...", "..."],
-  "focusAreas": ["...", "..."],
+  "strengths": [
+    { "textHe": "string", "sourceId": "subject:math" }
+  ],
+  "focusAreas": [
+    { "textHe": "string", "sourceId": "topic:math:multiplication_table" }
+  ],
   "homeTips": ["...", "...", "..."],
   "cautionNote": "string (required when thinDataWarnings non-empty, else may be \"\")"
 }
 ```
+
+The OpenAI structured-output JSON Schema constrains each `strengths[*].sourceId` to the closed enum `availableStrengthSourceIds` from the packet, and each `focusAreas[*].sourceId` to `availableFocusSourceIds`. The renderer extracts only `textHe` for display; `sourceId` is for grounding/validation only and is never shown to the parent.
+
+**UI rule (binding)**: `ParentReportInsight` reads `textHe` for visible bullets and ignores `sourceId`. `sourceId` is also stripped before any text passes through `validateParentNarrativeSafety`.
 
 ### Prompt rules (system message, Hebrew)
 - Audience: הורה. Voice: חמה, מקצועית, פשוטה.
@@ -261,7 +301,12 @@ New file: `utils/parent-report-ai-narrative/validate-narrative-output.js`. Layer
 5. **No Markdown only**: ban leading `#`, `*`, `-`, `>`, ``` ` ```.
 6. **No diagnostic language**: run **each text field** through `validateParentNarrativeSafety` from [`utils/parent-narrative-safety/parent-narrative-safety-guard.js`](utils/parent-narrative-safety/parent-narrative-safety-guard.js) using `deriveEngineSnapshotForGuard(packet)`.
 7. **Thin-data presence**: if `packet.thinDataWarnings.length > 0` → `cautionNote` must be non-empty AND match one of `SAFE_THIN_DATA_CAUTION_RES`.
-8. **Contradiction check (deterministic)**: every `strengths[i]` must contain a `displayNameHe` that appears in `packet.strengths` (case/whitespace-insensitive match); every `focusAreas[i]` must match `packet.focusAreas`. Block on mismatch.
+8. **Contradiction check (deterministic, sourceId-grounded)**:
+   - Every `strengths[i].sourceId` MUST be a member of `packet.availableStrengthSourceIds`. Hard block on miss.
+   - Every `focusAreas[i].sourceId` MUST be a member of `packet.availableFocusSourceIds`. Hard block on miss.
+   - Same `sourceId` may not appear in **both** `strengths` and `focusAreas` of the AI output.
+   - Defense-in-depth: `strengths[i].textHe` should reference the corresponding packet item's `displayNameHe` (substring or normalized-Hebrew match) — soft block; logs a `narrative_text_displayname_drift` warning but does not by itself fall back unless combined with another failure.
+   - This replaces the prior pure-substring matching approach.
 9. **No unsupported claims**: ban absolute words ("תמיד", "אף פעם", "מצוין במיוחד", "צריך טיפול") via small regex set.
 
 If any check fails → call `buildDeterministicFallbackNarrative(packet)` returning an identically-shaped object → **never break the report**.
@@ -277,8 +322,9 @@ If any check fails → call `buildDeterministicFallbackNarrative(packet)` return
   - `cautionNote` italic line at bottom (only if non-empty)
   - **Backward-compat shim**: if `structured` is missing but legacy `text` is present, fall back to current single-paragraph rendering. This protects any caller we miss.
 - **Short report** ([`pages/learning/parent-report.js`](pages/learning/parent-report.js)) and **detailed report** ([`pages/learning/parent-report-detailed.js`](pages/learning/parent-report-detailed.js)) already mount `<ParentReportInsight explanation={report.parentAiExplanation} />`. We keep the prop name; the adapter ([`utils/parent-report-ai/parent-report-ai-adapter.js`](utils/parent-report-ai/parent-report-ai-adapter.js)) gets the new `structured` field added to its return shape — no page rewrite needed.
-- **PDF**: short uses `exportReportToPDF` (`window.print`) and detailed uses `window.print()`. Both already include `.parent-report-parent-ai-insight` print CSS in the detailed page (`<Head>` block) — no print-CSS changes required as long as the new content sits inside the same `parent-report-parent-ai-insight` div.
-- **Print placement (detailed)**: today `ParentReportInsight` sits **above** `#parent-report-detailed-print`. Keep that. If print parity demands inclusion in PDF, an opt-in clone inside the print root is a separate, isolated change — out of scope for this task unless you say otherwise.
+- **PDF (short)**: `exportReportToPDF` targets `#parent-report-pdf`; the existing `<ParentReportInsight />` in [`pages/learning/parent-report.js`](pages/learning/parent-report.js) (around line 1786) already sits **inside** that print root, so the new structured block prints automatically. No move needed on the short page.
+- **PDF (detailed) — REQUIRED inclusion**: today `<ParentReportInsight />` is mounted at lines 1249–1255 of [`pages/learning/parent-report-detailed.js`](pages/learning/parent-report-detailed.js), which is **above** `#parent-report-detailed-print` and therefore **excluded from the printed PDF**. The integration must move that mount **inside** `#parent-report-detailed-print`, placed immediately after the report header (before `סיכום להורה` / `סיכום לתקופה` `SectionCard`s) so it appears in both the on-screen detailed UI and `window.print()` output. The existing `.parent-report-parent-ai-insight` print CSS in the page `<Head>` (lines 1211–1222) already handles this class inside the print root, so no print-CSS rewrites are required. The `.no-pdf` class is **not** added — the block is intentionally part of the PDF.
+- **Detailed page edit scope**: this is the **only** change to [`pages/learning/parent-report-detailed.js`](pages/learning/parent-report-detailed.js) — relocating one existing JSX mount. No layout, grid, copy, or section change.
 
 No changes to: existing report sections, executive summary, contract preview, copilot panel, disclaimer, or any deterministic Hebrew copy.
 
@@ -307,16 +353,16 @@ No changes to: existing report sections, executive summary, contract preview, co
 
 ## 9. Acceptance criteria (final)
 
-- Aggregate exposes `hintsUsed` and `timeSpentMs` averages (per topic + per subject) and a fluency-bucket count map.
-- Insight Packet is byte-stable for fixed inputs (snapshot tested).
-- AI receives only `AiNarrativeInput` (≤ 4 KB) — no raw rows, no DB ids, no raw English keys.
-- AI returns structured JSON validated against the schema.
-- Validation layer enforces all 9 checks in section 6.
-- Deterministic fallback returns identical shape; report **never** breaks if AI is off, errors, or hallucinates.
-- Short report, detailed report, and both PDFs render the new section without layout regressions.
-- No raw English topic keys leak into parent text (mass-sim audit zero).
+- Aggregate exposes `hintsUsed` and `timeSpentMs` averages (per topic + per subject), fluency-bucket count maps, and summarized `modeCounts` / `levelCounts` / `normalizedGradeLevel`.
+- Insight Packet is byte-stable for fixed inputs (snapshot test compares with `generatedAt` excluded; core builder never invokes `Date.now()` / RNG).
+- AI receives only `AiNarrativeInput` (≤ 4 KB) — no raw rows, no DB ids, no raw English keys in user-visible text, no `clientMeta`, no raw mistake text.
+- AI returns structured JSON validated against the schema, with each strength/focus carrying a stable `sourceId` drawn from a closed enum.
+- Validation layer enforces all 9 checks in section 6, including `sourceId` membership and no `sourceId` overlap between strengths and focusAreas.
+- Deterministic fallback returns identical shape (with `sourceId`s); report **never** breaks if AI is off, errors, or hallucinates.
+- Short report, detailed report, and both PDFs render the new section without layout regressions. **Detailed PDF includes the new block** (mount sits inside `#parent-report-detailed-print`).
+- No raw English topic keys leak into parent text (mass-sim audit zero); `sourceId` strings never appear in rendered DOM (`data-source-id` attribute is allowed for tests but is not visible).
 - Thin-data students get a `cautionNote`; strong students aren't overpraised; weak students aren't described in scary or diagnostic language (mass-sim audit thresholds met).
-- AI never contradicts deterministic strengths/focus/recommendations (contradiction check passes in mass sim).
+- AI never contradicts deterministic strengths/focus/recommendations (sourceId-grounded contradiction check passes in mass sim).
 - Final mass simulation green.
 
 ---
@@ -324,13 +370,13 @@ No changes to: existing report sections, executive summary, contract preview, co
 ## 10. Implementation batches (order to avoid rework)
 
 1. **Audit & freeze contracts** — re-read aggregate + V2 + adapter, write down field map. No code yet.
-2. **Extend aggregation** in [`lib/parent-server/report-data-aggregate.server.js`](lib/parent-server/report-data-aggregate.server.js) only: add `avgTimePerQuestionSec`, `avgHintsPerQuestion`, `correctSlow/correctManyHints/wrongFast` counts per topic+subject, and `recentMistakes` extra fields (`hintsUsed`, `timeSpentMs`). **Additive only**; bump `meta.version`.
+2. **Extend aggregation** in [`lib/parent-server/report-data-aggregate.server.js`](lib/parent-server/report-data-aggregate.server.js) only: add `avgTimePerQuestionSec`, `avgHintsPerQuestion`, `correctSlow/correctManyHints/wrongFast` counts per topic+subject, `modeCounts` / `levelCounts` per subject + overall, `recentMistakes` extra fields (`hintsUsed`, `timeSpentMs`), and read `mode`/`level` via the priority rules in §4. **Additive only**; bump `meta.version`. Raw `clientMeta` is consumed only in this layer and never re-emitted as-is.
 3. **Build Insight Packet module** under `utils/parent-report-insights/`, including all `derive*` helpers and the schema doc.
 4. **Add deterministic insight tests** (`scripts/parent-report-insights-selftest.mjs`) with golden fixtures.
 5. **Build AI narrative service** (`utils/parent-report-ai-narrative/`) with prompt + LLM client + structured-output schema. Wire env gates. Default OFF without API key.
 6. **Add validation/safety guard** (`validate-narrative-output.js`) reusing existing safety primitives.
 7. **Add deterministic fallback** (`deterministic-fallback.js`) producing identical JSON shape.
-8. **Integrate**: update [`utils/parent-report-ai/parent-report-ai-adapter.js`](utils/parent-report-ai/parent-report-ai-adapter.js) to call `buildParentReportInsightPacket` then `buildParentReportAINarrative`; expose `structured` in its return. Extend [`components/ParentReportInsight.jsx`](components/ParentReportInsight.jsx) to render structured fields with backward-compat for legacy `text`.
+8. **Integrate**: update [`utils/parent-report-ai/parent-report-ai-adapter.js`](utils/parent-report-ai/parent-report-ai-adapter.js) to call `buildParentReportInsightPacket` (passing `options.now`) then `buildParentReportAINarrative`; expose `structured` in its return. Extend [`components/ParentReportInsight.jsx`](components/ParentReportInsight.jsx) to render structured fields with backward-compat for legacy `text`. Move the `<ParentReportInsight />` mount in [`pages/learning/parent-report-detailed.js`](pages/learning/parent-report-detailed.js) **inside** `#parent-report-detailed-print` so the new block prints in the detailed PDF.
 9. **Focused render + PDF check**: run audit B-set above on a few representative profiles only.
 10. **Final heavy mass simulation + acceptance audit**.
 
@@ -373,7 +419,8 @@ No changes to: existing report sections, executive summary, contract preview, co
 - [`utils/parent-report-v2.js`](utils/parent-report-v2.js)
 - [`utils/parent-narrative-safety/*`](utils/parent-narrative-safety) (only consume)
 - [`utils/parent-copilot/*`](utils/parent-copilot)
-- [`pages/learning/parent-report.js`](pages/learning/parent-report.js), [`pages/learning/parent-report-detailed.js`](pages/learning/parent-report-detailed.js) (no API change required)
+- [`pages/learning/parent-report.js`](pages/learning/parent-report.js) — no change required (Insight already inside `#parent-report-pdf`).
+- [`pages/learning/parent-report-detailed.js`](pages/learning/parent-report-detailed.js) — **single, scoped change only**: relocate the existing `<ParentReportInsight />` mount inside `#parent-report-detailed-print`. No new sections, no copy changes, no grid/CSS changes.
 - [`components/parent-report-detailed-surface.jsx`](components/parent-report-detailed-surface.jsx)
 - Mass simulation scripts under `scripts/parent-ai-mass-simulation/`
 
@@ -381,7 +428,10 @@ No changes to: existing report sections, executive summary, contract preview, co
 
 ## 12. Risks (and mitigations)
 
-- **AI hallucination of topics/subjects** → contradiction check (validator step 8) blocks any text whose strengths/focus aren't a substring match against the Insight Packet.
+- **AI hallucination of topics/subjects** → contradiction check (validator step 8) blocks any AI output whose `strengths[*].sourceId` / `focusAreas[*].sourceId` is not a member of the closed `availableStrengthSourceIds` / `availableFocusSourceIds` enums published by the Insight Packet. OpenAI structured-output JSON Schema also constrains the model at generation time. Substring `displayNameHe` agreement is a defense-in-depth soft check.
+- **Non-determinism in Insight Packet** → core builder forbids `Date.now()` / RNG; `generatedAt` is caller-injected; snapshot tests exclude `generatedAt`; arrays sorted by stable keys.
+- **Privacy of `mode` / `level` / `clientMeta`** → only summarized count maps and `normalizedGradeLevel` reach the Insight Packet; `buildAiNarrativeInput` strips the maps when totals are too small to be safely anonymous, and `clientMeta` is never re-emitted at any layer.
+- **Detailed PDF missing the new block** → the integration explicitly moves `<ParentReportInsight />` inside `#parent-report-detailed-print`, and the focused PDF check (`npm run qa:parent-pdf-export`) verifies the printed output contains the new heading text.
 - **Hebrew/RTL issues in new UI block** → reuse existing `parent-report-parent-ai-insight` CSS class and existing `normalizeParentFacingHe`; no new CSS.
 - **PDF overflow on long bullets** → enforce per-bullet 160-char cap in validator and `text-overflow: ellipsis` is unnecessary because content is bounded; existing `avoid-break` class is preserved.
 - **Raw English keys leaking** → labels resolved only through `normalizeParentFacingLabels` before they reach the AI; validator regex blocks anything that slips through.

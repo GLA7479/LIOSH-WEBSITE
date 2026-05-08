@@ -134,6 +134,8 @@
     "test:parent-ai:manual-qa-matrix": "tsx scripts/parent-ai-manual-qa-matrix.mjs",
     "test:parent-report-hebrew-language": "tsx scripts/parent-report-hebrew-language-selftest.mjs",
     "test:parent-report-narrative-safety": "node scripts/parent-report-narrative-safety-selftest.mjs",
+    "test:parent-report-insights": "node scripts/parent-report-insights-selftest.mjs",
+    "test:parent-report-ai-narrative": "node scripts/parent-report-ai-narrative-selftest.mjs",
     "test:parent-report-narrative-safety-extractor": "node scripts/parent-report-narrative-safety-extractor-selftest.mjs",
     "test:parent-report-narrative-safety-artifacts": "node scripts/parent-report-narrative-safety-artifacts.mjs",
     "qa:question-metadata": "tsx scripts/question-metadata-qa.mjs",

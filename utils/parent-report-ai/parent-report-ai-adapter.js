@@ -16,6 +16,11 @@ import {
   getDeterministicParentReportExplanation,
 } from "./parent-report-ai-explainer.js";
 import { buildParentAiContext } from "../parent-ai-context/build-parent-ai-context.js";
+import { buildInsightPacketFromV2Snapshot } from "../parent-report-insights/build-packet-from-v2-snapshot.js";
+import {
+  buildParentReportAINarrative,
+  buildDeterministicFallbackNarrative,
+} from "../parent-report-ai-narrative/index.js";
 
 const SUBJECT_KEYS = ["math", "geometry", "english", "science", "hebrew", "moledet-geography"];
 
@@ -170,9 +175,13 @@ export function parentReportV2SnapshotFromDetailedPayload(detailedPayload) {
  * Same Parent AI summary pipeline as the short report, fed by a synthetic V2 snapshot derived from the
  * detailed-report payload (Phase C — detailed + print parity).
  *
+ * Returns the same enriched shape as `enrichParentReportWithParentAi`: the legacy `text` (single
+ * paragraph) is preserved for back-compat and a richer `structured` object (the new AI narrative
+ * output: summary + strengths + focusAreas + homeTips + cautionNote) is added alongside it.
+ *
  * @param {Record<string, unknown>|null|undefined} detailedPayload
- * @param {{ env?: Record<string, string | undefined>; preferDeterministicOnly?: boolean; scope?: unknown; canonicalIntent?: string }} [options]
- * @returns {Promise<{ parentAiExplanation: { ok: true, text: string, source: "deterministic_fallback"|"ai" } | null }>}
+ * @param {{ env?: Record<string, string | undefined>; preferDeterministicOnly?: boolean; scope?: unknown; canonicalIntent?: string; now?: string }} [options]
+ * @returns {Promise<{ parentAiExplanation: { ok: true, text: string, source: "deterministic_fallback"|"ai", structured?: object | null } | null }>}
  */
 export async function enrichDetailedParentReportWithParentAi(detailedPayload, options = {}) {
   try {
@@ -369,6 +378,32 @@ export function buildStrictParentReportAIInputFromParentReportV2(report) {
 }
 
 /**
+ * Builds the new structured AI narrative ("סיכום חכם להורה") from a V2 parent-report snapshot.
+ * Internal helper used by both short and detailed enrichment paths. Always returns either a valid
+ * structured object (AI or deterministic fallback) or `null` when the snapshot is unusable.
+ *
+ * @param {Record<string, unknown>|null|undefined} v2Snapshot
+ * @param {{ env?: Record<string,string|undefined>; preferDeterministicOnly?: boolean; now?: string }} [options]
+ * @returns {Promise<{ source: "ai" | "deterministic_fallback"; structured: object } | null>}
+ */
+async function buildStructuredNarrativeFromV2Snapshot(v2Snapshot, options = {}) {
+  try {
+    const packet = buildInsightPacketFromV2Snapshot(v2Snapshot, {
+      now: typeof options?.now === "string" ? options.now : "",
+    });
+    if (!packet || packet.ok === false) return null;
+    const result = await buildParentReportAINarrative(packet, {
+      env: options?.env || (typeof process !== "undefined" ? process.env : {}),
+      preferDeterministicOnly: options?.preferDeterministicOnly === true,
+    });
+    if (!result?.ok || !result.structured) return null;
+    return { source: result.source, structured: result.structured };
+  } catch {
+    return null;
+  }
+}
+
+/**
  * Produces validated parent-facing explanation for attachment to the V2 report object.
  *
  * Phase B: routes through `buildParentAiContext` so the strict explainer input is derived alongside
@@ -376,14 +411,21 @@ export function buildStrictParentReportAIInputFromParentReportV2(report) {
  * deterministic / LLM explainer in this phase (the explainer reads only `strictExplainerInput`),
  * but its presence in the context object guarantees both Parent AI surfaces share one grounding source.
  *
+ * Insight Packet phase: in addition to the legacy `text` (single Hebrew paragraph), this function
+ * also builds the structured narrative ("סיכום חכם להורה") via the Insight Packet pipeline. The
+ * structured object is attached as `parentAiExplanation.structured`. The renderer prefers the
+ * structured object when present; the legacy `text` remains as a back-compat field so any external
+ * consumer that still reads it keeps working.
+ *
  * @param {Record<string, unknown>} report
  * @param {{
  *   env?: Record<string, string | undefined>;
  *   preferDeterministicOnly?: boolean;
  *   scope?: unknown;
  *   canonicalIntent?: string;
+ *   now?: string;
  * }} [options]
- * @returns {Promise<{ parentAiExplanation: { ok: true, text: string, source: "deterministic_fallback"|"ai" } | null }>}
+ * @returns {Promise<{ parentAiExplanation: { ok: true, text: string, source: "deterministic_fallback"|"ai", structured?: object | null } | null }>}
  */
 export async function enrichParentReportWithParentAi(report, options = {}) {
   try {
@@ -401,9 +443,34 @@ export async function enrichParentReportWithParentAi(report, options = {}) {
       preferDeterministicOnly: options.preferDeterministicOnly === true,
     });
     if (!out.ok || !out.text) return { parentAiExplanation: null };
-    return { parentAiExplanation: { ok: true, text: out.text, source: out.source } };
+
+    const structuredResult = await buildStructuredNarrativeFromV2Snapshot(report, {
+      env: options.env,
+      preferDeterministicOnly: options.preferDeterministicOnly === true,
+      now: typeof options?.now === "string" ? options.now : "",
+    });
+
+    return {
+      parentAiExplanation: {
+        ok: true,
+        text: out.text,
+        source: out.source,
+        structured: structuredResult?.structured || null,
+        structuredSource: structuredResult?.source || null,
+      },
+    };
   } catch {
     return { parentAiExplanation: null };
+  }
+}
+
+function buildSynchronousStructuredFallback(v2Snapshot) {
+  try {
+    const packet = buildInsightPacketFromV2Snapshot(v2Snapshot);
+    if (!packet || packet.ok === false) return null;
+    return buildDeterministicFallbackNarrative(packet);
+  } catch {
+    return null;
   }
 }
 
@@ -413,7 +480,7 @@ export async function enrichParentReportWithParentAi(report, options = {}) {
  * `enrichDetailedParentReportWithParentAi` resolves (PDF / print snapshots).
  *
  * @param {Record<string, unknown>|null|undefined} detailedPayload
- * @returns {{ ok: true; text: string; source: "deterministic_fallback" } | null}
+ * @returns {{ ok: true; text: string; source: "deterministic_fallback"; structured?: object | null; structuredSource?: "deterministic_fallback" | null } | null}
  */
 export function getDeterministicDetailedParentAiExplanation(detailedPayload) {
   try {
@@ -422,7 +489,14 @@ export function getDeterministicDetailedParentAiExplanation(detailedPayload) {
     const strict = buildStrictParentReportAIInputFromParentReportV2(snapshot);
     if (!strict) return null;
     const text = getDeterministicParentReportExplanation(strict);
-    return { ok: true, text, source: "deterministic_fallback" };
+    const structured = buildSynchronousStructuredFallback(snapshot);
+    return {
+      ok: true,
+      text,
+      source: "deterministic_fallback",
+      structured: structured || null,
+      structuredSource: structured ? "deterministic_fallback" : null,
+    };
   } catch {
     return null;
   }
@@ -431,6 +505,9 @@ export function getDeterministicDetailedParentAiExplanation(detailedPayload) {
 /**
  * Same deterministic baseline as detailed, for the short parent report object (`generateParentReportV2`).
  * Ensures first paint / PDF / Playwright sees תובנה להורה before async enrich resolves.
+ *
+ * @param {Record<string, unknown>|null|undefined} report
+ * @returns {{ ok: true; text: string; source: "deterministic_fallback"; structured?: object | null; structuredSource?: "deterministic_fallback" | null } | null}
  */
 export function getDeterministicParentAiExplanationFromParentReportV2(report) {
   try {
@@ -438,7 +515,14 @@ export function getDeterministicParentAiExplanationFromParentReportV2(report) {
     const strict = buildStrictParentReportAIInputFromParentReportV2(report);
     if (!strict) return null;
     const text = getDeterministicParentReportExplanation(strict);
-    return { ok: true, text, source: "deterministic_fallback" };
+    const structured = buildSynchronousStructuredFallback(report);
+    return {
+      ok: true,
+      text,
+      source: "deterministic_fallback",
+      structured: structured || null,
+      structuredSource: structured ? "deterministic_fallback" : null,
+    };
   } catch {
     return null;
   }
