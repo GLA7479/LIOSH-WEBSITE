@@ -12,12 +12,16 @@
  *
  * Fallback env (only used after transient primary failure — see isTransientCopilotLlmFailure):
  *   PARENT_COPILOT_LLM_FALLBACK_PROVIDER   "openrouter" | "groq"
- *   PARENT_COPILOT_LLM_FALLBACK_MODEL
+ *   PARENT_COPILOT_LLM_FALLBACK_MODEL       single model (required if FALLBACK_MODELS unset)
+ *   PARENT_COPILOT_LLM_FALLBACK_MODELS      OpenRouter only: comma-separated list — app tries each model in order (single `model` per request; no OpenRouter multi-model routing)
  *   PARENT_COPILOT_LLM_FALLBACK_API_KEY     (trimmed; Bearer auth — never logged)
  *   PARENT_COPILOT_LLM_FALLBACK_BASE_URL    full URL to chat/completions (optional; sensible defaults)
  * OpenRouter-only optional attribution (see openrouter.ai docs):
  *   PARENT_COPILOT_OPENROUTER_HTTP_REFERER  default https://localhost
  *   PARENT_COPILOT_OPENROUTER_X_TITLE       default LIOSH Parent Copilot
+ *   PARENT_COPILOT_OPENROUTER_REQUIRE_PARAMETERS  true|false — route only to endpoints that
+ *     support all request params (e.g. response_format). Default false (free tiers often 404
+ *     when true). When false, `provider` is omitted from the request body.
  *
  * Test / dev (forces primary to fail without calling the network):
  *   PARENT_COPILOT_LLM_SIMULATE_PRIMARY_TRANSIENT_FAILURE=http_429 | timeout | network
@@ -30,6 +34,16 @@ function envStr(name, fallback = "") {
   } catch {
     return fallback;
   }
+}
+
+/** Parses booleans from env; unrecognized / empty → defaultValue. */
+function envBool(name, defaultValue = false) {
+  const v = envStr(name);
+  if (!v) return defaultValue;
+  const l = v.toLowerCase();
+  if (["1", "true", "yes", "on"].includes(l)) return true;
+  if (["0", "false", "no", "off"].includes(l)) return false;
+  return defaultValue;
 }
 
 /** Trim/BOM-strip for bearer tokens (never log the raw value). */
@@ -48,6 +62,15 @@ function readParentCopilotFallbackApiKeyFromEnv() {
   } catch {
     return "";
   }
+}
+
+/** Comma-separated OpenRouter model IDs → ordered list (trim, drop empties). */
+function parseFallbackModelsCsv(raw) {
+  if (!raw || typeof raw !== "string") return [];
+  return raw
+    .split(",")
+    .map((s) => s.trim())
+    .filter(Boolean);
 }
 
 function getProvider() {
@@ -125,9 +148,42 @@ function extractOpenAiText(body) {
   const choice = Array.isArray(body.choices) ? body.choices[0] : null;
   const mc = choice?.message?.content;
   if (typeof mc === "string") return mc;
+  if (mc === null || mc === undefined) return "";
   if (Array.isArray(mc)) {
-    const t = mc.map((p) => (typeof p?.text === "string" ? p.text : "")).join("");
+    const t = mc
+      .filter((p) => p && p.type !== "reasoning" && p.type !== "thinking")
+      .map((p) => (typeof p?.text === "string" ? p.text : ""))
+      .join("");
     if (t) return t;
+  }
+  return "";
+}
+
+/** OpenRouter / chat.completions: reasoning may appear without `message.content` (JSON mode unusable). */
+function extractOpenRouterAssistantReasoning(body) {
+  if (!body || typeof body !== "object") return "";
+  const choice = Array.isArray(body.choices) ? body.choices[0] : null;
+  const msg = choice?.message;
+  if (!msg || typeof msg !== "object") return "";
+  if (typeof msg.reasoning === "string") return msg.reasoning;
+  if (typeof msg.reasoning_content === "string") return msg.reasoning_content;
+  const mc = msg.content;
+  if (Array.isArray(mc)) {
+    const fromParts = mc
+      .filter((p) => p && (p.type === "reasoning" || p.type === "thinking"))
+      .map((p) => (typeof p?.text === "string" ? p.text : ""))
+      .join("");
+    if (fromParts) return fromParts;
+  }
+  const rd = msg.reasoning_details;
+  if (Array.isArray(rd)) {
+    return rd
+      .map((x) => {
+        if (typeof x === "string") return x;
+        if (x && typeof x === "object" && typeof x.text === "string") return x.text;
+        return "";
+      })
+      .join("");
   }
   return "";
 }
@@ -188,14 +244,36 @@ export function isTransientCopilotLlmFailure(res) {
 }
 
 /**
- * @returns {null | { kind: string; baseUrl: string; apiKey: string; model: string; telemetryLabel: string }}
+ * @returns {null | {
+ *   kind: string;
+ *   baseUrl: string;
+ *   apiKey: string;
+ *   model: string;
+ *   fallbackModels: string[];
+ *   telemetryFallbackProvider: string;
+ * }}
  */
 export function getCopilotLlmFallbackConfig() {
   const kind = envStr("PARENT_COPILOT_LLM_FALLBACK_PROVIDER").toLowerCase();
   if (!kind || kind === "none" || kind === "off" || kind === "false" || kind === "0") return null;
   const apiKey = readParentCopilotFallbackApiKeyFromEnv();
-  const model = envStr("PARENT_COPILOT_LLM_FALLBACK_MODEL");
-  if (!apiKey || !model) return null;
+  if (!apiKey) return null;
+
+  const modelsFromEnv = kind === "openrouter" ? parseFallbackModelsCsv(envStr("PARENT_COPILOT_LLM_FALLBACK_MODELS")) : [];
+  const singleModel = envStr("PARENT_COPILOT_LLM_FALLBACK_MODEL");
+
+  /** @type {string | undefined} */
+  let model;
+  /** @type {string[] | undefined} */
+  let models;
+  if (modelsFromEnv.length > 0) {
+    models = modelsFromEnv;
+    model = modelsFromEnv[0];
+  } else if (singleModel) {
+    model = singleModel;
+  } else {
+    return null;
+  }
 
   let baseUrl = envStr("PARENT_COPILOT_LLM_FALLBACK_BASE_URL");
   if (kind === "openrouter") {
@@ -206,13 +284,25 @@ export function getCopilotLlmFallbackConfig() {
     return null;
   }
 
+  const fallbackModels = models && models.length ? [...models] : [model];
+
+  const telemetryFallbackProvider =
+    kind === "openrouter" ? "openrouter" : `${kind}_chat:${model}`;
+
   return {
     kind,
     baseUrl: baseUrl.replace(/\/$/, ""),
     apiKey,
     model,
-    telemetryLabel: `${kind}_chat:${model}`,
+    fallbackModels,
+    telemetryFallbackProvider,
   };
+}
+
+function extractChatCompletionsResponseModel(body) {
+  if (!body || typeof body !== "object") return undefined;
+  if (typeof body.model === "string" && body.model.trim()) return body.model.trim();
+  return undefined;
 }
 
 /**
@@ -234,23 +324,29 @@ export async function callCopilotLlmOpenAiChatCompletionsJson(signal, prompt, cf
   }
   try {
     const payloadBody = (() => {
-      const base = {
-        model: cfg.model,
+      const baseTemp = {
         temperature: 0.2,
         max_tokens: 900,
       };
       if (isOpenRouter) {
-        return {
-          ...base,
+        const strictParams = envBool("PARENT_COPILOT_OPENROUTER_REQUIRE_PARAMETERS", false);
+        const msgPart = {
           messages: [
             { role: "system", content: OPENROUTER_JSON_SYSTEM_INSTRUCTION },
             { role: "user", content: prompt },
           ],
           response_format: { type: "json_object" },
+          ...(strictParams ? { provider: { require_parameters: true } } : {}),
+        };
+        return {
+          ...baseTemp,
+          ...msgPart,
+          model: cfg.model,
         };
       }
       return {
-        ...base,
+        ...baseTemp,
+        model: cfg.model,
         messages: [{ role: "user", content: prompt }],
       };
     })();
@@ -285,10 +381,37 @@ export async function callCopilotLlmOpenAiChatCompletionsJson(signal, prompt, cf
         httpStatus: res.status,
         geminiErrorBody: rawText,
         geminiErrorSummary: `fallback_chat HTTP ${res.status}`,
+        actualModel: extractChatCompletionsResponseModel(body || {}),
       };
     }
     const maybeText = extractOpenAiText(body || {});
+    const reasoningText = isOpenRouter ? extractOpenRouterAssistantReasoning(body || {}) : "";
     const trimmed = String(maybeText || "").trim();
+    const actualModel = extractChatCompletionsResponseModel(body || {});
+
+    if (!trimmed) {
+      const reasoningTrim = String(reasoningText || "").trim();
+      const previewBits = [];
+      if (reasoningTrim) previewBits.push(`reasoning:${reasoningTrim}`);
+      if (body && typeof body === "object") {
+        try {
+          previewBits.push(JSON.stringify(body).slice(0, 4000));
+        } catch {
+          previewBits.push("[unserializable body]");
+        }
+      }
+      if (!previewBits.length && rawText) previewBits.push(rawText);
+      const invalidJsonRawPreview = previewForTelemetry(previewBits.filter(Boolean).join("\n---\n"));
+      return {
+        ok: false,
+        reason: reasoningTrim ? "reasoning_only_no_json_content" : "empty_assistant_content",
+        raw: "",
+        invalidJsonRawPreview,
+        httpStatus: res.status,
+        actualModel,
+      };
+    }
+
     const parsed = safeJsonParse(trimmed);
     if (!parsed.ok) {
       const previewBits = [trimmed];
@@ -307,9 +430,10 @@ export async function callCopilotLlmOpenAiChatCompletionsJson(signal, prompt, cf
         raw: trimmed,
         invalidJsonRawPreview,
         httpStatus: res.status,
+        actualModel,
       };
     }
-    return { ok: true, payload: parsed.value, raw: trimmed };
+    return { ok: true, payload: parsed.value, raw: trimmed, actualModel };
   } catch (e) {
     return { ok: false, reason: `network_or_abort:${String(e?.message || e)}` };
   }

@@ -4,14 +4,20 @@
  * Usage:
  *   npm run qa:parent-copilot:mass
  *   npm run qa:parent-copilot:live-sample
+ *   npm run qa:parent-copilot:live-stress
  *
  * Flags:
- *   --live              Use async path + Gemini (small suite only; respects quota)
- *   --delay-ms N        Delay between live calls (default 3500)
+ *   --live                   Use async path + Gemini (respects quota; concurrency = 1)
+ *   --stress                 Larger live matrix (use with --max-live-turns)
+ *   --max-live-turns N       Cap live turns after building matrix (stress / rate-limit safety)
+ *   --delay-ms N             Delay between live LLM calls (default 3500)
+ *   --include-fallback-stress  Some turns force primary 429 (env sim) to exercise OpenRouter when configured
  *
  * Env (live): loads .env.local when vars unset; sets flash-lite + 30s timeout inside script.
+ * Stops early after several consecutive HTTP 429 signals in telemetry (provider exhaustion).
  *
- * Outputs under reports/parent-copilot-qa-mass-simulation/<timestamp>/ plus latest.md
+ * Outputs under reports/parent-copilot-qa-mass-simulation/<timestamp>/:
+ *   summary.json, summary.md, failures.json, provider-events.json, accepted-answers.md, latest.md
  */
 
 import { mkdirSync, writeFileSync, copyFileSync, existsSync, readFileSync } from "fs";
@@ -59,17 +65,28 @@ function sleepMs(ms) {
 function parseArgs(argv) {
   const rest = argv.slice(2);
   let live = false;
+  let stress = false;
+  /** @type {number|null} */
+  let maxLiveTurns = null;
+  let includeFallbackStress = false;
   let delayMs = Number(process.env.PARENT_COPILOT_MASS_LIVE_DELAY_MS);
   if (!Number.isFinite(delayMs) || delayMs < 0) delayMs = 3500;
   for (let i = 0; i < rest.length; i++) {
     if (rest[i] === "--live") live = true;
+    if (rest[i] === "--stress") stress = true;
+    if (rest[i] === "--include-fallback-stress") includeFallbackStress = true;
+    if (rest[i] === "--max-live-turns") {
+      const n = Number(rest[++i]);
+      if (Number.isFinite(n) && n > 0) maxLiveTurns = Math.floor(n);
+    }
     if (rest[i] === "--delay-ms") {
       const n = Number(rest[++i]);
       if (Number.isFinite(n) && n >= 0) delayMs = n;
     }
   }
   if (process.env.npm_config_live === "true") live = true;
-  return { live, delayMs };
+  if (process.env.npm_config_stress === "true") stress = true;
+  return { live, stress, maxLiveTurns, includeFallbackStress, delayMs };
 }
 
 // ─── Payload builders ───────────────────────────────────────────────────────
@@ -499,6 +516,20 @@ function extractRecord(res, scenarioName, group, question, mode) {
     classifierBucket: classifierBucket || "report_related",
     canonicalIntent: intentCanon,
   });
+  const llmSnap =
+    llm && typeof llm === "object"
+      ? {
+          ok: !!llm.ok,
+          reason: typeof llm.reason === "string" ? llm.reason : "",
+          ...(typeof llm.provider === "string" ? { provider: llm.provider } : {}),
+          ...(llm.httpStatus != null ? { httpStatus: Number(llm.httpStatus) } : {}),
+          ...(typeof llm.primaryProvider === "string" ? { primaryProvider: llm.primaryProvider } : {}),
+          ...(typeof llm.primaryReason === "string" ? { primaryReason: llm.primaryReason } : {}),
+          ...(typeof llm.fallbackProvider === "string" ? { fallbackProvider: llm.fallbackProvider } : {}),
+          ...(typeof llm.fallbackReason === "string" ? { fallbackReason: llm.fallbackReason } : {}),
+          ...(typeof llm.finalProvider === "string" ? { finalProvider: llm.finalProvider } : {}),
+        }
+      : null;
   return {
     scenarioName,
     group,
@@ -512,6 +543,7 @@ function extractRecord(res, scenarioName, group, question, mode) {
     generationPath: tel.generationPath || "unknown",
     answerLlmUsed: (tel.generationPath || "") === "llm_grounded",
     llmAttempt: { reason: typeof llm.reason === "string" ? llm.reason : "" },
+    llmAttemptDetail: llmSnap,
     llmAttemptReason: typeof llm.reason === "string" ? llm.reason : "",
     fallbackUsed: !!res.fallbackUsed || !!tel.fallbackUsed,
     validatorStatus: res.validatorStatus || tel?.validator?.status || null,
@@ -520,6 +552,20 @@ function extractRecord(res, scenarioName, group, question, mode) {
     intent: res.intent || null,
     finalVisibleAnswer: text,
   };
+}
+
+/** Live-only: detect consecutive provider rate limits / overload from telemetry (QA harness). */
+function turnShowsRateLimitOrOverload(res) {
+  const t = res?.telemetry?.llmAttempt;
+  if (!t || typeof t !== "object") return false;
+  const hs = Number(t.httpStatus);
+  if (hs === 429) return true;
+  if (Number.isFinite(hs) && hs >= 500 && hs < 600) return true;
+  const pr = String(t.primaryReason || "");
+  const fr = String(t.fallbackReason || "");
+  if (pr === "http_429" || fr === "http_429") return true;
+  if (/^http_50[234]$/.test(pr) || /^http_50[234]$/.test(fr)) return true;
+  return false;
 }
 
 function strengthMislabelsWeakest(text, weakestHe) {
@@ -700,8 +746,59 @@ function minimalDiagnosticPayload() {
   };
 }
 
-function buildRunMatrix(live) {
-  /** @type {{ scenario: string; group: string; question: string }[]} */
+/**
+ * Live stress: diverse scenarios × question groups, capped by maxTurns (concurrency stays 1).
+ * @param {number} maxTurns
+ * @param {boolean} includeFallbackStress
+ */
+function buildStressLiveMatrix(maxTurns, includeFallbackStress) {
+  /** @type {{ scenario: string; group: string; question: string; stressFallback?: boolean }[]} */
+  const rows = [];
+  const reportGroups = ["explain_report", "strength_good", "weakness_focus", "home_practice", "subject_topic"];
+
+  for (const q of QUESTIONS.off_topic.slice(0, 8)) {
+    if (rows.length >= maxTurns) return rows;
+    rows.push({ scenario: "A_high_data", group: "off_topic", question: q });
+  }
+  for (const q of QUESTIONS.ambiguous.slice(0, 5)) {
+    if (rows.length >= maxTurns) return rows;
+    rows.push({ scenario: "A_high_data", group: "ambiguous", question: q });
+  }
+
+  let round = 0;
+  let fallbackSlotsUsed = 0;
+  const maxFallbackSlots = 5;
+
+  while (rows.length < maxTurns) {
+    for (const sk of SCENARIO_KEYS_FULL) {
+      for (const g of reportGroups) {
+        if (rows.length >= maxTurns) return rows;
+        const qs = QUESTIONS[g];
+        const q = qs[round % qs.length];
+        let stressFallback = false;
+        if (
+          includeFallbackStress &&
+          fallbackSlotsUsed < maxFallbackSlots &&
+          rows.length >= 12 &&
+          rows.length % 13 === 0
+        ) {
+          stressFallback = true;
+          fallbackSlotsUsed += 1;
+        }
+        rows.push({ scenario: sk, group: g, question: q, ...(stressFallback ? { stressFallback: true } : {}) });
+      }
+    }
+    round += 1;
+  }
+  return rows;
+}
+
+/**
+ * @param {boolean} live
+ * @param {{ stress?: boolean; maxLiveTurns?: number | null; includeFallbackStress?: boolean }} opts
+ */
+function buildRunMatrix(live, opts = {}) {
+  /** @type {{ scenario: string; group: string; question: string; stressFallback?: boolean }[]} */
   const rows = [];
   const scenarios = buildScenarios();
 
@@ -719,6 +816,10 @@ function buildRunMatrix(live) {
       addRows(g, SCENARIO_KEYS_FULL, QUESTIONS[g]);
     }
     addRows("diagnostic", SCENARIO_KEYS_FULL, QUESTIONS.diagnostic);
+  } else if (opts.stress) {
+    const cap =
+      opts.maxLiveTurns != null && opts.maxLiveTurns > 0 ? opts.maxLiveTurns : 80;
+    return buildStressLiveMatrix(cap, !!opts.includeFallbackStress);
   } else {
     addRows("off_topic", SCENARIO_KEYS_BOUNDARY, QUESTIONS.off_topic.slice(0, 3));
     addRows("ambiguous", SCENARIO_KEYS_BOUNDARY, QUESTIONS.ambiguous.slice(0, 2));
@@ -728,6 +829,9 @@ function buildRunMatrix(live) {
       }
     }
     addRows("diagnostic", SCENARIO_KEYS_BOUNDARY, QUESTIONS.diagnostic.slice(0, 2));
+    if (opts.maxLiveTurns != null && opts.maxLiveTurns > 0 && rows.length > opts.maxLiveTurns) {
+      return rows.slice(0, opts.maxLiveTurns);
+    }
   }
 
   return rows;
@@ -752,7 +856,7 @@ function configureEnvLive() {
 
 async function main() {
   loadEnvLocalBestEffort();
-  const { live, delayMs } = parseArgs(process.argv);
+  const { live, stress, maxLiveTurns, includeFallbackStress, delayMs } = parseArgs(process.argv);
 
   if (live) configureEnvLive();
   else configureEnvDeterministic();
@@ -762,7 +866,8 @@ async function main() {
   const runAsync = parentCopilot.runParentCopilotTurnAsync;
 
   const scenarios = buildScenarios();
-  const matrix = buildRunMatrix(live);
+  const matrix = buildRunMatrix(live, { stress, maxLiveTurns, includeFallbackStress });
+  const plannedTurns = matrix.length;
 
   const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
   const outDir = join(ROOT, "reports", "parent-copilot-qa-mass-simulation", timestamp);
@@ -772,6 +877,15 @@ async function main() {
   const results = [];
   /** @type {object[]} */
   const failureRows = [];
+  /** @type {object[]} */
+  const providerEvents = [];
+
+  /** Live QA: single-threaded runner (concurrency = 1). */
+  const MAX_CONSEC_RATE_OR_OVERLOAD = 4;
+  let consecutiveRateOrOverload = 0;
+  let abortedEarly = false;
+  /** @type {string|null} */
+  let abortReason = null;
 
   let runIndex = 0;
   for (const row of matrix) {
@@ -782,13 +896,22 @@ async function main() {
 
     let res;
     if (live) {
-      res = await runAsync({
-        audience: "parent",
-        payload,
-        utterance: row.question,
-        sessionId,
-        selectedContextRef: null,
-      });
+      if (row.stressFallback) {
+        process.env.PARENT_COPILOT_LLM_SIMULATE_PRIMARY_TRANSIENT_FAILURE = "http_429";
+      } else {
+        delete process.env.PARENT_COPILOT_LLM_SIMULATE_PRIMARY_TRANSIENT_FAILURE;
+      }
+      try {
+        res = await runAsync({
+          audience: "parent",
+          payload,
+          utterance: row.question,
+          sessionId,
+          selectedContextRef: null,
+        });
+      } finally {
+        delete process.env.PARENT_COPILOT_LLM_SIMULATE_PRIMARY_TRANSIENT_FAILURE;
+      }
       await sleepMs(delayMs);
     } else {
       res = runSync({
@@ -818,6 +941,19 @@ async function main() {
       failureReasons: failures.map((f) => f.code).join("; ") || null,
     });
 
+    providerEvents.push({
+      sessionId,
+      turnIndex: runIndex,
+      scenario: row.scenario,
+      group: row.group,
+      question: row.question,
+      stressFallback: !!row.stressFallback,
+      generationPath: record.generationPath,
+      llmAttempt: record.llmAttemptDetail,
+      validatorStatus: record.validatorStatus,
+      resolutionStatus: record.resolutionStatus,
+    });
+
     if (!pass) {
       failureRows.push({
         scenario: row.scenario,
@@ -827,15 +963,35 @@ async function main() {
         record,
       });
     }
+
+    if (live && turnShowsRateLimitOrOverload(res)) {
+      consecutiveRateOrOverload += 1;
+      if (consecutiveRateOrOverload >= MAX_CONSEC_RATE_OR_OVERLOAD) {
+        abortedEarly = true;
+        abortReason = "consecutive_rate_limit_or_overload";
+        break;
+      }
+    } else {
+      consecutiveRateOrOverload = 0;
+    }
   }
 
   const passed = results.filter((r) => r.pass).length;
   const failed = results.length - passed;
 
   const scenarioKeysUsed = [...new Set(matrix.map((r) => r.scenario))];
+  const modeLabel = !live ? "deterministic_mass" : stress ? "live_stress" : "live_sample";
   const summaryJson = {
     timestamp,
-    mode: live ? "live_sample" : "deterministic_mass",
+    mode: modeLabel,
+    liveConcurrency: 1,
+    stress: !!stress,
+    includeFallbackStress: !!includeFallbackStress,
+    delayMs,
+    plannedTurns,
+    completedTurns: results.length,
+    abortedEarly,
+    abortReason,
     totalScenarios: scenarioKeysUsed.length,
     totalQuestions: results.length,
     passed,
@@ -846,6 +1002,19 @@ async function main() {
 
   writeFileSync(join(outDir, "summary.json"), JSON.stringify(summaryJson, null, 2), "utf8");
   writeFileSync(join(outDir, "failures.json"), JSON.stringify(failureRows, null, 2), "utf8");
+  writeFileSync(join(outDir, "provider-events.json"), JSON.stringify(providerEvents, null, 2), "utf8");
+
+  let acceptedMd = `# Accepted turns (validator pass)\n\n`;
+  acceptedMd += `- **Run:** ${timestamp}\n`;
+  acceptedMd += `- **Completed turns:** ${results.length}${abortedEarly ? ` (stopped early: ${abortReason})` : ""}\n\n`;
+  results
+    .filter((r) => r.pass)
+    .forEach((r, i) => {
+      acceptedMd += `## ${i + 1}. ${r.group} — ${r.question}\n`;
+      acceptedMd += `- Scenario: ${r.scenarioName}\n\n`;
+      acceptedMd += `${String(r.finalVisibleAnswer || "").slice(0, 3500)}${String(r.finalVisibleAnswer || "").length > 3500 ? "\n\n…" : ""}\n\n`;
+    });
+  writeFileSync(join(outDir, "accepted-answers.md"), acceptedMd, "utf8");
 
   const byCat = {};
   for (const fr of failureRows) {
@@ -856,7 +1025,15 @@ async function main() {
 
   let md = `# Parent Copilot Q&A mass simulation\n\n`;
   md += `- **Timestamp:** ${timestamp}\n`;
-  md += `- **Mode:** ${live ? "live_sample (Gemini)" : "deterministic (no LLM)"}\n`;
+  md += `- **Mode:** ${
+    !live ? "deterministic (no LLM)" : stress ? "live_stress (Gemini primary, concurrency 1)" : "live_sample (Gemini)"
+  }\n`;
+  md += `- **Concurrency:** 1 (sequential)\n`;
+  if (live) {
+    md += `- **Delay between turns:** ${delayMs} ms\n`;
+    md += `- **Planned / completed turns:** ${plannedTurns} / ${results.length}${abortedEarly ? ` — **aborted early:** ${abortReason}` : ""}\n`;
+    if (stress) md += `- **Stress options:** includeFallbackStress=${includeFallbackStress}\n`;
+  }
   md += `- **Scenario keys (this run):** ${scenarioKeysUsed.length}\n`;
   md += `- **Total turns:** ${results.length}\n`;
   md += `- **Passed:** ${passed}\n`;
@@ -898,9 +1075,12 @@ async function main() {
 
   process.stdout.write(md);
   process.stdout.write(`\nWritten: ${outDir}\n`);
+  process.stdout.write(
+    `Artifacts: summary.json, summary.md, failures.json, provider-events.json, accepted-answers.md, latest.md\n`,
+  );
   process.stdout.write(`Latest: ${latestPath}\n`);
 
-  if (failed > 0) {
+  if (failed > 0 || abortedEarly) {
     process.exitCode = 1;
   }
 }

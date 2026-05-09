@@ -72,6 +72,12 @@ function mergeLlmFailureDiagnostics(base, llmResult) {
   for (const k of ["primaryProvider", "primaryReason", "fallbackProvider", "fallbackReason", "finalProvider"]) {
     if (typeof r[k] === "string" && String(r[k]).trim()) out[k] = String(r[k]).trim();
   }
+  if (Array.isArray(r.fallbackModels) && r.fallbackModels.length) {
+    out.fallbackModels = [...r.fallbackModels];
+  }
+  if (Array.isArray(r.fallbackAttempts) && r.fallbackAttempts.length) {
+    out.fallbackAttempts = r.fallbackAttempts.map((a) => (a && typeof a === "object" ? { ...a } : a));
+  }
   return out;
 }
 
@@ -240,6 +246,14 @@ function normalizeMergedLlmAttempt(raw) {
     ...(typeof raw.invalidJsonRawPreview === "string" && String(raw.invalidJsonRawPreview).trim()
       ? { invalidJsonRawPreview: String(raw.invalidJsonRawPreview).slice(0, 3000) }
       : {}),
+    ...(Array.isArray(raw.fallbackModels) && raw.fallbackModels.length ? { fallbackModels: [...raw.fallbackModels] } : {}),
+    ...(Array.isArray(raw.fallbackAttempts) && raw.fallbackAttempts.length
+      ? {
+          fallbackAttempts: raw.fallbackAttempts.map((a) =>
+            a && typeof a === "object" ? { ...a } : a,
+          ),
+        }
+      : {}),
   };
   return base;
 }
@@ -335,6 +349,14 @@ function persistTelemetryBestEffort(response, context) {
             if (typeof llmAttempt.llmRetryCount === "number") base.llmRetryCount = llmAttempt.llmRetryCount;
             for (const k of ["primaryProvider", "primaryReason", "fallbackProvider", "fallbackReason", "finalProvider"]) {
               if (typeof llmAttempt[k] === "string" && llmAttempt[k].trim()) base[k] = String(llmAttempt[k]).trim();
+            }
+            if (Array.isArray(llmAttempt.fallbackModels) && llmAttempt.fallbackModels.length) {
+              base.fallbackModels = [...llmAttempt.fallbackModels];
+            }
+            if (Array.isArray(llmAttempt.fallbackAttempts) && llmAttempt.fallbackAttempts.length) {
+              base.fallbackAttempts = llmAttempt.fallbackAttempts.map((a) =>
+                a && typeof a === "object" ? { ...a } : a,
+              );
             }
             if (typeof llmAttempt.invalidJsonRawPreview === "string" && llmAttempt.invalidJsonRawPreview.trim()) {
               base.invalidJsonRawPreview = String(llmAttempt.invalidJsonRawPreview).slice(0, 3000);
@@ -1516,6 +1538,12 @@ export async function runParentCopilotTurnAsync(input) {
         ...(typeof llmResult.fallbackProvider === "string" ? { fallbackProvider: llmResult.fallbackProvider } : {}),
         ...(typeof llmResult.fallbackReason === "string" ? { fallbackReason: llmResult.fallbackReason } : {}),
         ...(typeof llmResult.finalProvider === "string" ? { finalProvider: llmResult.finalProvider } : {}),
+        ...(Array.isArray(llmResult.fallbackModels) && llmResult.fallbackModels.length
+          ? { fallbackModels: [...llmResult.fallbackModels] }
+          : {}),
+        ...(Array.isArray(llmResult.fallbackAttempts) && llmResult.fallbackAttempts.length
+          ? { fallbackAttempts: llmResult.fallbackAttempts.map((a) => (a && typeof a === "object" ? { ...a } : a)) }
+          : {}),
       },
     }),
   };
@@ -1528,6 +1556,12 @@ export async function runParentCopilotTurnAsync(input) {
     ...(typeof llmResult.primaryReason === "string" ? { primaryReason: llmResult.primaryReason } : {}),
     ...(typeof llmResult.fallbackProvider === "string" ? { fallbackProvider: llmResult.fallbackProvider } : {}),
     ...(typeof llmResult.fallbackReason === "string" ? { fallbackReason: llmResult.fallbackReason } : {}),
+    ...(Array.isArray(llmResult.fallbackModels) && llmResult.fallbackModels.length
+      ? { fallbackModels: [...llmResult.fallbackModels] }
+      : {}),
+    ...(Array.isArray(llmResult.fallbackAttempts) && llmResult.fallbackAttempts.length
+      ? { fallbackAttempts: llmResult.fallbackAttempts.map((a) => (a && typeof a === "object" ? { ...a } : a)) }
+      : {}),
     ...(typeof llmResult.llmRetryCount === "number" ? { llmRetryCount: llmResult.llmRetryCount } : {}),
   };
   llmResponse.telemetry.llmAttempt = llmOkAttempt;

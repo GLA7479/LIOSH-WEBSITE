@@ -14,6 +14,22 @@ import {
 } from "./copilot-llm-client.js";
 import { collectParentFacingOutputQualityIssues } from "./guardrail-validator.js";
 
+/**
+ * Try next OpenRouter candidate after unusable output / transient HTTP / model-not-found.
+ * Does not apply after validateLlmDraft rejects a successfully parsed draft.
+ */
+function shouldTryNextFallbackCandidate(res) {
+  if (!res || res.ok) return false;
+  const r = String(res.reason || "");
+  if (r === "invalid_json_output") return true;
+  if (r === "empty_assistant_content") return true;
+  if (r === "reasoning_only_no_json_content") return true;
+  if (isTransientCopilotLlmFailure(res)) return true;
+  const st = Number(res.httpStatus);
+  if (st === 404) return true;
+  return false;
+}
+
 const DEFAULT_TIMEOUT_MS = 9000;
 
 const LLM_CLINICAL_DIAGNOSIS_RES = [
@@ -275,6 +291,12 @@ function pickLlmFailureFields(response) {
     ...(typeof response.invalidJsonRawPreview === "string" && String(response.invalidJsonRawPreview).trim()
       ? { invalidJsonRawPreview: String(response.invalidJsonRawPreview).slice(0, 3000) }
       : {}),
+    ...(typeof response.actualModel === "string" && String(response.actualModel).trim()
+      ? { actualModel: String(response.actualModel).trim() }
+      : {}),
+    ...(Array.isArray(response.fallbackAttempts) && response.fallbackAttempts.length
+      ? { fallbackAttempts: response.fallbackAttempts.map((a) => ({ ...a })) }
+      : {}),
   };
 }
 
@@ -355,53 +377,85 @@ export async function maybeGenerateGroundedLlmDraft(input) {
       };
     }
 
-    const fallbackProvider = fbCfg.telemetryLabel;
-    const fallbackRes = await withAbortTimeout(timeoutMs, (sig) =>
-      callCopilotLlmOpenAiChatCompletionsJson(sig, prompt, {
-        baseUrl: fbCfg.baseUrl,
-        apiKey: fbCfg.apiKey,
-        model: fbCfg.model,
-        providerKind: fbCfg.kind,
-      }),
-    );
-    const fallbackReason = fallbackRes.ok ? "ok" : String(fallbackRes.reason || "llm_provider_error");
+    const fallbackProvider = fbCfg.telemetryFallbackProvider;
+    const fallbackModels = fbCfg.fallbackModels;
+    /** @type {{ model: string; reason: string; httpStatus?: number; actualModel?: string; invalidJsonRawPreview?: string }[]} */
+    const fallbackAttempts = [];
 
-    if (!fallbackRes.ok) {
-      return {
-        ok: false,
-        reason: fallbackRes.reason || "llm_fallback_provider_error",
-        primaryProvider,
-        primaryReason,
-        fallbackProvider,
-        fallbackReason,
-        finalProvider: fallbackProvider,
-        ...pickLlmFailureFields(fallbackRes),
-      };
+    const candidates =
+      Array.isArray(fallbackModels) && fallbackModels.length ? fallbackModels : [fbCfg.model];
+
+    for (let i = 0; i < candidates.length; i++) {
+      const candidateModel = candidates[i];
+      const fallbackRes = await withAbortTimeout(timeoutMs, (sig) =>
+        callCopilotLlmOpenAiChatCompletionsJson(sig, prompt, {
+          baseUrl: fbCfg.baseUrl,
+          apiKey: fbCfg.apiKey,
+          model: candidateModel,
+          providerKind: fbCfg.kind,
+        }),
+      );
+
+      const resolvedRouteModel =
+        typeof fallbackRes.actualModel === "string" && fallbackRes.actualModel.trim()
+          ? fallbackRes.actualModel.trim()
+          : candidateModel;
+
+      fallbackAttempts.push({
+        model: candidateModel,
+        reason: fallbackRes.ok ? "ok" : String(fallbackRes.reason || "error"),
+        ...(fallbackRes.httpStatus != null ? { httpStatus: Number(fallbackRes.httpStatus) } : {}),
+        ...(resolvedRouteModel ? { actualModel: resolvedRouteModel } : {}),
+        ...(typeof fallbackRes.invalidJsonRawPreview === "string" && fallbackRes.invalidJsonRawPreview.trim()
+          ? { invalidJsonRawPreview: String(fallbackRes.invalidJsonRawPreview).slice(0, 3000) }
+          : {}),
+      });
+
+      if (fallbackRes.ok) {
+        const validatedFb = validateLlmDraft(fallbackRes.payload, input.truthPacket, { intent: intentHint });
+        if (validatedFb.ok) {
+          return {
+            ok: true,
+            draft: validatedFb.draft,
+            provider: resolvedRouteModel,
+            finalProvider: resolvedRouteModel,
+            primaryProvider,
+            primaryReason,
+            fallbackProvider,
+            fallbackModels,
+            fallbackAttempts,
+            fallbackReason: "ok",
+          };
+        }
+        return {
+          ok: false,
+          reason: validatedFb.reason || "llm_validation_failed",
+          primaryProvider,
+          primaryReason,
+          fallbackProvider,
+          fallbackModels,
+          fallbackAttempts,
+          fallbackReason: "ok",
+          finalProvider: resolvedRouteModel,
+        };
+      }
+
+      const tryNext = shouldTryNextFallbackCandidate(fallbackRes) && i < candidates.length - 1;
+      if (!tryNext) {
+        return {
+          ok: false,
+          reason: fallbackRes.reason || "llm_fallback_provider_error",
+          primaryProvider,
+          primaryReason,
+          fallbackProvider,
+          fallbackModels,
+          fallbackAttempts,
+          fallbackReason: String(fallbackRes.reason || "llm_fallback_provider_error"),
+          finalProvider: fallbackProvider,
+          ...pickLlmFailureFields(fallbackRes),
+        };
+      }
     }
-
-    const validatedFb = validateLlmDraft(fallbackRes.payload, input.truthPacket, { intent: intentHint });
-    if (!validatedFb.ok) {
-      return {
-        ok: false,
-        reason: validatedFb.reason || "llm_validation_failed",
-        primaryProvider,
-        primaryReason,
-        fallbackProvider,
-        fallbackReason: "ok",
-        finalProvider: fallbackProvider,
-      };
-    }
-
-    return {
-      ok: true,
-      draft: validatedFb.draft,
-      provider: fallbackProvider,
-      finalProvider: fallbackProvider,
-      primaryProvider,
-      primaryReason,
-      fallbackProvider,
-      fallbackReason: "ok",
-    };
   } catch (error) {
     return {
       ok: false,

@@ -109,6 +109,16 @@ export function buildTurnTelemetry(input) {
           ...(typeof input.llmAttempt.finalProvider === "string" && input.llmAttempt.finalProvider.trim()
             ? { finalProvider: String(input.llmAttempt.finalProvider).trim() }
             : {}),
+          ...(Array.isArray(input.llmAttempt.fallbackModels) && input.llmAttempt.fallbackModels.length
+            ? { fallbackModels: [...input.llmAttempt.fallbackModels] }
+            : {}),
+          ...(Array.isArray(input.llmAttempt.fallbackAttempts) && input.llmAttempt.fallbackAttempts.length
+            ? {
+                fallbackAttempts: input.llmAttempt.fallbackAttempts.map((a) =>
+                  a && typeof a === "object" ? { ...a } : a,
+                ),
+              }
+            : {}),
           ...(typeof input.llmAttempt.invalidJsonRawPreview === "string" && input.llmAttempt.invalidJsonRawPreview.trim()
             ? { invalidJsonRawPreview: String(input.llmAttempt.invalidJsonRawPreview).slice(0, 3000) }
             : {}),
