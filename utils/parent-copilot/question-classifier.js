@@ -10,7 +10,9 @@
  *
  * Architecture:
  *   - The deterministic step is the primary decider. It uses small CATEGORY lexicons
- *     (not a long regex FAQ list) plus payload-derived subject/topic vocabulary.
+ *     plus compositional **semantic intent rules** (strength / weakness / explain-report
+ *     inquiries), not per-sentence FAQ tables. Payload-derived subject/topic vocabulary
+ *     layers on top.
  *   - WEAK report tokens (e.g. הוא, היא, הילד, השבוע, היום, בבית) cannot classify a
  *     question as report_related on their own; they must combine with at least one
  *     STRONG report token (תרגול, מתקשה, חזק, לתרגל, לפי הדוח, etc.) or a strong
@@ -106,18 +108,65 @@ const STRONG_REPORT_TOKENS = [
   "לפי הדוח", "על פי הדוח", "מהדוח", "בדוח", "הדוח אומר", "הדוח מראה",
 ];
 
-/** STRONG report intent phrases — match as substrings (after fold). */
+/** STRONG report intent phrases — compact routing cues (after fold). */
 const STRONG_REPORT_INTENTS = [
   /במה.{0,12}חזק/u, /במה.{0,12}מתקשה/u, /במה.{0,12}חלש/u,
-  // "איפה הוא מתקשה?" — pronoun + מתקשה without "במה"
+  /במה.{0,12}טוב/u,
   /איפה.{0,16}מתקשה/u, /איפה.{0,12}(הוא|היא|הילד|הילדה).{0,12}מתקשה/u,
   /מה.{0,8}לתרגל/u, /מה.{0,8}לעשות.{0,8}בבית/u, /איך.{0,8}לעזור/u,
   /מה.{0,8}הכי.{0,8}חשוב/u, /איפה.{0,8}להתמקד/u, /איפה.{0,8}להתחיל/u,
   /יש.{0,3}שיפור/u, /יש.{0,3}ירידה/u, /יש.{0,3}התקדמות/u,
   /סיבה.{0,3}לדאגה/u, /צריך.{0,3}לדאוג/u,
-  /נקודות.{0,3}חוזק/u, /הצלחות/u,
-  /בקצרה|תסביר.{0,3}לי.{0,3}את.{0,3}הדוח|מה.{0,3}הדוח.{0,3}אומר/u,
+  /הצלחות/u,
+  /בקצרה/u,
 ];
+
+/**
+ * Semantic **categories** for report-related questions: compositional rules (stems +
+ * inquiry frames), not a FAQ list of exact sentences. Contributes at most one
+ * STRONG_REPORT_INTENT_WEIGHT so a lone STRONG token (0.35) still clears 0.5.
+ */
+function matchesExplainReportInquiry(t) {
+  if (!/דוח|מהדוח|בדוח/u.test(t)) return false;
+  return /תסביר|הסבר|איך\s+לקרוא|אומר|משמעות|מה\s+אומר|מה\s+הדוח|פירוש|בקצרה|מבט\s+על|תוכן|מה\s+מופיע/u.test(
+    t,
+  );
+}
+
+function hasWeaknessStem(t) {
+  return /חלש|מתקשה|מתקשים|קושי|חולשות|דורש\s+חיזוק|לא\s+הולך|לא\s*יושב/u.test(t);
+}
+
+function hasLearningInquiryFrame(t) {
+  return /מקצוע|נושא|מה|איזה|איפה|במה|באיזה|הוא|היא|הילד|הילדה|דוח|נראו|תוצאות/u.test(t);
+}
+
+function matchesWeaknessInquiryCategory(t) {
+  return hasWeaknessStem(t) && hasLearningInquiryFrame(t);
+}
+
+function hasStrengthStem(t) {
+  if (/במה\s+(הוא|היא|הילד|הילדה)\s+טוב/u.test(t)) return true;
+  if (/חזק|חוזקות|חוזק/u.test(t)) return true;
+  if (t.includes("נקודות") && /חוזק|חוזקות/u.test(t)) return true;
+  if (t.includes("תוצאות") && /טוב|הכי|נראו/u.test(t)) return true;
+  if (/מצליח|הצלח/u.test(t)) {
+    return /מקצוע|נושא|בדוח|למידה|תרגול|הילד|הוא|היא|איפה|נראו|תוצאות/u.test(t);
+  }
+  return false;
+}
+
+function matchesStrengthInquiryCategory(t) {
+  return hasStrengthStem(t) && hasLearningInquiryFrame(t);
+}
+
+/** @returns {number} 0 or STRONG_REPORT_INTENT_WEIGHT */
+function computeSemanticReportIntentBonus(t) {
+  if (matchesExplainReportInquiry(t)) return STRONG_REPORT_INTENT_WEIGHT;
+  if (matchesWeaknessInquiryCategory(t)) return STRONG_REPORT_INTENT_WEIGHT;
+  if (matchesStrengthInquiryCategory(t)) return STRONG_REPORT_INTENT_WEIGHT;
+  return 0;
+}
 
 /** WEAK tokens — only count when paired with a STRONG token or strong intent. */
 const WEAK_REPORT_TOKENS = [
@@ -278,6 +327,11 @@ function scoreReportSignal(t, vocab) {
       score += STRONG_REPORT_TOKEN_WEIGHT;
       hasStrong = true;
     }
+  }
+  const semanticBonus = computeSemanticReportIntentBonus(t);
+  if (semanticBonus > 0) {
+    score += semanticBonus;
+    hasStrong = true;
   }
   for (const re of STRONG_REPORT_INTENTS) {
     if (re.test(t)) {

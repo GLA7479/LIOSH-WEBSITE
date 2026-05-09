@@ -318,6 +318,12 @@ const reportRelated = [
   "האם יש סיבה לדאגה?",
   "הוא מתקשה בשברים?",
   "מה עם גאומטריה?",
+  // Regression: strength/explain/weakness phrasing must clear deterministic threshold (0.5)
+  "מה המקצוע החזק?",
+  "תסביר לי על הדוח",
+  "מה המקצוע החלש?",
+  "איזה מקצוע דורש חיזוק?",
+  "באיזה מקצוע נראו התוצאות הכי טובות?",
 ];
 
 for (const q of reportRelated) {

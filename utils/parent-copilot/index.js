@@ -33,6 +33,7 @@ import { tryBuildParentShortFollowupDraft } from "./short-followup-composer.js";
 import { tryBuildComparisonPracticalFollowupDraft } from "./comparison-practical-continuity.js";
 import { compactParentAnswerBlocks } from "./answer-compaction.js";
 import { maxGlobalReportQuestionCount, STRONG_GLOBAL_QUESTION_FLOOR } from "./report-volume-context.js";
+import { semanticIntentForMetadata } from "./semantic-intent-labels.js";
 import {
   tryBuildPhaseEClarificationBypassDraft,
   augmentPhaseEThinEvidenceDraft,
@@ -584,6 +585,10 @@ function packageClassifierEarlyExit({
     classifierBucket: qaRoute.classifierBucket,
     classifierSource: classifierTrace?.source || qaRoute.classifierSource || "deterministic",
     classifierConfidence: Number(qaRoute.classifierConfidence || 0),
+    semanticIntent: semanticIntentForMetadata({
+      classifierBucket: qaRoute.classifierBucket,
+      canonicalIntent,
+    }),
     ...(classifierTrace?.reason ? { classifierLlmReason: classifierTrace.reason } : {}),
   };
 
@@ -731,6 +736,10 @@ function runDeterministicCore(input, options) {
     classifierBucket: classifierMetaForResolved.classifierBucket,
     classifierSource: classifierMetaForResolved.classifierSource,
     classifierConfidence: classifierMetaForResolved.classifierConfidence,
+    semanticIntent: semanticIntentForMetadata({
+      classifierBucket: classifierMetaForResolved.classifierBucket,
+      canonicalIntent: intent,
+    }),
   };
 
   if (scopeRes.resolutionStatus === "clarification_required") {

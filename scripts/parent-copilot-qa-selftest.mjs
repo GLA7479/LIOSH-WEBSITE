@@ -21,8 +21,10 @@ import guardrailMod from "../utils/parent-copilot/guardrail-validator.js";
 import reportVolumeMod from "../utils/parent-copilot/report-volume-context.js";
 import questionRouterMod from "../utils/parent-copilot/question-router.js";
 import parentCopilot from "../utils/parent-copilot/index.js";
+import classifierMod from "../utils/parent-copilot/question-classifier.js";
 
 const { interpretFreeformStageA } = stageAMod;
+const { AMBIGUOUS_RESPONSE_HE } = classifierMod;
 const { validateAnswerDraft } = guardrailMod;
 const { maxGlobalReportQuestionCount, STRONG_GLOBAL_QUESTION_FLOOR } = reportVolumeMod;
 const { routeParentQuestion, OFF_TOPIC_RESPONSE_HE } = questionRouterMod;
@@ -313,6 +315,9 @@ for (const q of offTopicOrAmbiguousQuestions) {
   );
 }
 
+// Semantic intent labels (ask_strengths, …) — category names for telemetry; canonical
+// routing still uses Stage-A intents (what_is_going_well, …).
+
 // ─── Regression: exact manual failure case from issue report ─────────────────
 {
   const res = parentCopilot.runParentCopilotTurn({
@@ -331,6 +336,62 @@ for (const q of offTopicOrAmbiguousQuestions) {
   check("[A-REG] מה מזג אויר — no geometry commentary", !text.includes("גאומטריה") && !text.includes("גיאוגרפיה"), text.slice(0, 200));
   check("[A-REG] מה מזג אויר — no topic commentary", !/שברים|אנגלית|חשבון/.test(text), text.slice(0, 200));
   check("[A-REG] מה מזג אויר — boundary answer present", text.includes("שאלות על הדוח") || text.includes("אפשר לשאול"), text.slice(0, 200));
+}
+
+// ─── Group R: Full-pipeline classifier regression (exact remote failures) ────
+process.stdout.write("\n── Group R: Classifier regression (full pipeline) ──\n");
+
+const classifierRegressionCases = [
+  { utterance: "מה המקצוע החזק?", expectedIntent: "what_is_going_well", expectedSemantic: "ask_strengths" },
+  { utterance: "איזה מקצוע הכי חזק?", expectedIntent: "what_is_going_well", expectedSemantic: "ask_strengths" },
+  { utterance: "במה הוא טוב?", expectedIntent: "what_is_going_well", expectedSemantic: "ask_strengths" },
+  { utterance: "איפה נראו התוצאות הכי טובות?", expectedIntent: "what_is_going_well", expectedSemantic: "ask_strengths" },
+  { utterance: "מה נקודות החוזק?", expectedIntent: "what_is_going_well", expectedSemantic: "ask_strengths" },
+  { utterance: "תסביר לי על הדוח", expectedIntent: "explain_report", expectedSemantic: "explain_report" },
+  { utterance: "מה הדוח אומר?", expectedIntent: "explain_report", expectedSemantic: "explain_report" },
+  { utterance: "מה המקצוע החלש?", expectedIntent: "what_is_still_difficult", expectedSemantic: "ask_weaknesses" },
+  { utterance: "איזה מקצוע דורש חיזוק?", expectedIntent: "what_is_still_difficult", expectedSemantic: "ask_weaknesses" },
+];
+
+for (const row of classifierRegressionCases) {
+  const res = parentCopilot.runParentCopilotTurn({
+    audience: "parent",
+    payload: highDataPayload(),
+    utterance: row.utterance,
+    sessionId: freshSid(),
+    selectedContextRef: null,
+  });
+  const text = answerText(res);
+  check(
+    `[R] resolved :: "${row.utterance}"`,
+    res.resolutionStatus === "resolved",
+    `resolutionStatus=${res.resolutionStatus} text=${text.slice(0, 120)}`,
+  );
+  check(
+    `[R] classifierBucket=report_related :: "${row.utterance}"`,
+    res.metadata?.classifierBucket === "report_related",
+    `classifierBucket=${res.metadata?.classifierBucket}`,
+  );
+  check(
+    `[R] not ambiguous boundary :: "${row.utterance}"`,
+    !text.includes("לא הבנתי בדיוק"),
+    text.slice(0, 160),
+  );
+  check(
+    `[R] intent ${row.expectedIntent} :: "${row.utterance}"`,
+    res.intent === row.expectedIntent,
+    `intent=${res.intent}`,
+  );
+  check(
+    `[R] semanticIntent ${row.expectedSemantic} :: "${row.utterance}"`,
+    res.metadata?.semanticIntent === row.expectedSemantic,
+    `semanticIntent=${res.metadata?.semanticIntent}`,
+  );
+  check(
+    `[R] no AMBIGUOUS_RESPONSE_HE :: "${row.utterance}"`,
+    text.trim() !== AMBIGUOUS_RESPONSE_HE.trim(),
+    `got clarification stub`,
+  );
 }
 
 // ═══════════════════════════════════════════════════════════════════════════════
