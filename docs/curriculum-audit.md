@@ -8,6 +8,7 @@
 | **2** | Complete | Topic normalization layer, structured Israeli primary map (grades 1–6), richer classifications, topic rollup, map coverage reports. |
 | **3** | Complete | Calibration of risk scoring + depth heuristics (advisory flags), optional `sourceRefs` on map topics, focused review reports (English early grades, geometry sequencing, coverage gaps, duplicates), richer rollup suspicion rules. |
 | **3.5** | Complete | Remediation planner merges Phase 3 artifacts into prioritized queues (`remediation-plan.*`) — planning only, no bank edits. |
+| **4A** | Complete | Content-fix **batch plan** from remediation (`content-fix-batches.*`) — groupings for Phase 4B; still no automatic bank edits. |
 
 No question banks, UI, or Hebrew learner-facing copy are modified by these tools.
 
@@ -38,6 +39,14 @@ Outputs are **reports only**. They do not change runtime behaviour or gate build
   - Prefer **`ignore_generator_sample`** when the collision is **only** among `generator_sample` rows or labeled intentional variants — deterministic harness noise.
   - Prefer **`remove_duplicate` / `split_by_grade_depth`** when **static** banks share the same stem across grades without intentional depth progression (see `likely_problem_duplicates`).
 - **Low coverage:** Means **add_more_questions** for that grade/subject band — it does **not** imply existing items are wrong; it signals insufficient inventory breadth for safe runtime diversity.
+
+## Phase 4A — content-fix batches (planning for Phase 4B, not edits)
+
+- **What it is:** `content-fix-batches.json` / `content-fix-batches.md` organize `remediation-plan.*` into batches **A–E** (coverage, English early, geometry, static duplicates, exclusions).
+- **What it is not:** It does **not** change question banks, delete duplicates, or touch UI. It is a **batch worksheet** for humans before any approved content work.
+- **Generator samples:** Batches B/C **exclude** `generator_sample` rows from “content fix” scope; those stay under batch E / harness noise — not static defects.
+- **Coverage vs correction:** Batch A is **additions** (new items / generator policy per master). Batches B–D are **reviews** of existing static content; do not conflate with coverage gap filling.
+- **No automatic deletion:** Duplicate rows are listed for review only — `remove_duplicate` is a planning label, not an executed delete.
 
 ## Topic normalization (Phase 2)
 
@@ -117,7 +126,13 @@ npm run audit:curriculum:duplicates
 npm run audit:curriculum:remediation
 ```
 
-**Full Phase 2+3+3.5 QA chain**
+**Content-fix batch plan (Phase 4A)**
+
+```bash
+npm run audit:curriculum:fix-batches
+```
+
+**Full curriculum audit / reports chain (through Phase 4A planning)**
 
 ```bash
 npm run qa:curriculum-audit
@@ -136,6 +151,7 @@ npm run qa:curriculum-audit
 | `coverage-gaps-by-grade.json` / `.md` | Thin subject×grade cells (Phase 3). |
 | `duplicates-review.json` / `.md` | Generator vs static duplicates and cross-grade stems (Phase 3). |
 | `remediation-plan.json` / `.md` | Prioritized remediation queues + coverage/duplicate action lists (Phase 3.5). |
+| `content-fix-batches.json` / `.md` | Phase 4A batch worksheet (coverage, English early, geometry, static dup candidates, exclusions). |
 
 ## Manual review: high-risk topics
 
@@ -145,4 +161,5 @@ npm run qa:curriculum-audit
 4. Use **`english-early-grades-review.md`** and **`geometry-sequencing-review.md`** for strand sequencing checks (Phase 3).
 5. Use **`coverage-gaps-by-grade.md`** and **`duplicates-review.md`** for thin cells and generator vs static collisions (Phase 3).
 6. Open **`remediation-plan.md`** for Phase 3.5 prioritized queues before scheduling content work (Phase 3.5).
-7. For English grades 1–2, confirm grammar items are tagged as enrichment/exposure in the map—not assumed as core reading comprehension.
+7. Open **`content-fix-batches.md`** for Phase 4A batch planning before any Phase 4B bank edits.
+8. For English grades 1–2, confirm grammar items are tagged as enrichment/exposure in the map—not assumed as core reading comprehension.
