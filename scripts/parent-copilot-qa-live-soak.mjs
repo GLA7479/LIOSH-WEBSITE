@@ -15,6 +15,9 @@
  * Exit 1: product QA failures accumulated, or crash.
  *
  * Auto loop: `--auto --pause-between-batches-ms 300000 --max-batches 12`
+ *
+ * Resume: `--resume` continues latest unless it is **complete** or **shorter than `--target-turns`**
+ * (then starts a new run). Force new plan: `--new` / `--fresh`.
  */
 
 import { mkdirSync, writeFileSync, existsSync, readFileSync, copyFileSync } from "fs";
@@ -72,10 +75,12 @@ function parseSoakArgs(argv) {
   /** @type {number} */
   let maxBatches = Number.POSITIVE_INFINITY;
   let maxProviderStops = 32;
+  let fresh = false;
   for (let i = 0; i < rest.length; i++) {
     const a = rest[i];
     if (a === "--status") statusOnly = true;
     else if (a === "--resume") resume = true;
+    else if (a === "--new" || a === "--fresh") fresh = true;
     else if (a === "--auto") auto = true;
     else if (a === "--include-fallback-stress") includeFallbackStress = true;
     else if (a === "--target-turns") {
@@ -122,7 +127,32 @@ function parseSoakArgs(argv) {
     pauseBetweenBatchesMs,
     maxBatches,
     maxProviderStops,
+    fresh,
   };
+}
+
+/**
+ * When `--resume` follows latest-run.txt, skip loading if that run is done or cannot satisfy the requested soak size.
+ * @param {object|null} state
+ * @param {number} requestedTargetTurns
+ */
+function shouldStartFreshInsteadOfResume(state, requestedTargetTurns) {
+  if (!state || !Array.isArray(state.plan) || state.plan.length === 0) return true;
+  const planLen = state.plan.length;
+  const idx = Number(state.currentPlanIndex ?? 0);
+  if (idx >= planLen) return true;
+
+  const storedTarget = Number(state.targetTurns ?? planLen);
+  const completed = Number(state.completedTurns ?? 0);
+
+  if (
+    requestedTargetTurns > storedTarget &&
+    completed >= storedTarget &&
+    idx >= Math.min(storedTarget, planLen)
+  ) {
+    return true;
+  }
+  return false;
 }
 
 function resolveRunDir(runId) {
@@ -584,18 +614,39 @@ async function main() {
 
   /** @type {string} */
   let runId = args.runIdArg || "";
-  if (args.resume) {
-    if (!runId) {
-      const fromLatest = readLatestRunDir();
-      if (fromLatest && existsSync(path.join(fromLatest, "state.json"))) {
+  /** Load existing state.json vs initialize a new plan */
+  let loadExistingState = false;
+
+  /** `--auto` or `--resume` + latest-run.txt: resume if incomplete, else new plan (unless `--fresh`). */
+  const trySmartLatestPeek = (args.auto || args.resume) && !args.fresh && !args.runIdArg;
+
+  if (args.fresh) {
+    runId = args.runIdArg || `soak-${isoNow().replace(/[:.]/g, "-")}`;
+    loadExistingState = false;
+  } else if (args.runIdArg) {
+    runId = args.runIdArg;
+    loadExistingState = existsSync(path.join(resolveRunDir(runId), "state.json"));
+  } else if (trySmartLatestPeek) {
+    const fromLatest = readLatestRunDir();
+    if (fromLatest && existsSync(path.join(fromLatest, "state.json"))) {
+      const peek = JSON.parse(readFileSync(path.join(fromLatest, "state.json"), "utf8"));
+      if (shouldStartFreshInsteadOfResume(peek, args.targetTurns)) {
+        process.stdout.write(
+          "Soak: starting a new run (latest saved run is complete or smaller than --target-turns).\n",
+        );
+        runId = `soak-${isoNow().replace(/[:.]/g, "-")}`;
+        loadExistingState = false;
+      } else {
         runId = path.basename(fromLatest);
+        loadExistingState = true;
       }
-    }
-    if (!runId) {
+    } else {
       runId = `soak-${isoNow().replace(/[:.]/g, "-")}`;
+      loadExistingState = false;
     }
   } else {
-    runId = args.runIdArg || `soak-${isoNow().replace(/[:.]/g, "-")}`;
+    runId = `soak-${isoNow().replace(/[:.]/g, "-")}`;
+    loadExistingState = false;
   }
 
   const runDir = resolveRunDir(runId);
@@ -604,7 +655,7 @@ async function main() {
 
   /** @type {object} */
   let state;
-  if (args.resume && existsSync(stateFile)) {
+  if (loadExistingState && existsSync(stateFile)) {
     state = JSON.parse(readFileSync(stateFile, "utf8"));
     if (!state.plan || !Array.isArray(state.plan)) {
       throw new Error("Invalid state: missing plan[]");
