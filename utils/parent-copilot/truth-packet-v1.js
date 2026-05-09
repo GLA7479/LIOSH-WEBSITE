@@ -392,7 +392,9 @@ function buildExecutiveIntentNarrativeSlots(x) {
   };
 
   const parentUtteranceRaw = String(x.parentUtterance || "").trim();
-  const subjectLevelStrengthQuestion = /מקצוע|מקצועות/u.test(parentUtteranceRaw);
+  /** Subject-level strength asks (מקצוע חזק / הכי טוב …) — align wording with llm-orchestrator.js */
+  const subjectLevelStrengthQuestion =
+    /מקצוע|מקצועות|המקצוע\s+ה(חזק|טוב)|איזה\s+מקצוע|באיזה\s+מקצוע|מה\s+המקצוע/u.test(parentUtteranceRaw);
 
   /** When the parent asks about מקצוע, lead with subject name then optional topic — not topic-only. */
   const subjectFirstStrengthObservation = (m) => {
@@ -496,7 +498,7 @@ function buildExecutiveIntentNarrativeSlots(x) {
             const rs = subjectLabelHe(rel.sid);
             const rt = parentFacingTopicTitleHe(rel.dn);
             const topicBit = rt && rt !== rs ? `, ובעיקר בנושא ${rt}` : "";
-            interp = `ביחס לשאר הנושאים בדוח, המקצוע שבו נראים המספרים הגבוהים ביותר הוא ${rs}${topicBit} (${rel.acc}%).`;
+            interp = `ביחס לשאר הנושאים בדוח, המקצוע שבו נראו התוצאות הטובות ביותר הוא ${rs}${topicBit} (${rel.acc}%).`;
           } else {
             interp = `ביחס לשאר הנושאים בדוח, ב${labelPair(rel)} נראים כרגע המספרים הגבוהים ביותר (${rel.acc}%).`;
           }

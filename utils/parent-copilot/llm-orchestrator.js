@@ -43,6 +43,11 @@ function env(name, fallback = "") {
   return v || fallback;
 }
 
+/** Same predicate as truth-packet executive strength (subject-level wording). */
+function utteranceAsksSubjectLevelStrength(u) {
+  return /מקצוע|מקצועות|המקצוע\s+ה(חזק|טוב)|איזה\s+מקצוע|באיזה\s+מקצוע|מה\s+המקצוע/u.test(String(u || "").trim());
+}
+
 function buildGroundedPrompt(utterance, truthPacket, parentIntent = "") {
   const nar = truthPacket?.contracts?.narrative?.textSlots || {};
   const dl = truthPacket?.derivedLimits || {};
@@ -79,11 +84,13 @@ function buildGroundedPrompt(utterance, truthPacket, parentIntent = "") {
     switch (intentLabel) {
       case "what_is_going_well": {
         const u = String(utterance || "").trim();
-        const asksMiktzoa = /מקצוע|מקצועות/u.test(u);
+        const asksMiktzoa = utteranceAsksSubjectLevelStrength(u);
         if (asksMiktzoa) {
           return [
             "השאלה מתייחסת למקצוע (רמת מקצוע), לא רק לנושא בודד.",
             "  בלוק observation: התחל במשפט כמו 'המקצוע שבו נראו התוצאות הטובות ביותר הוא [שם המקצוע בעברית]', ואז במידת הצורך 'ובעיקר בנושא [שם הנושא]' — רק מה שמופיע ב-FACTS_JSON.observation.",
+            "  חובה: אל תשתמש במילה «התחום» בבלוקים — במקום זה «המקצוע» או פתיחה ישירה בשם המקצוע (למשל «באנגלית נראו התוצאות הטובות ביותר בתקופה הזו…»).",
+            "  אסור במפורש ניסוחים כמו «התחום שבו נראים המספרים…» — זה לא מתאים כשההורה שאל על מקצוע.",
             "  אל תפתח בניסוח שמתחיל רק מנושא ספציפי (למשל «בנושא אוצר מילים...») כשהשאלה על מקצוע — קודם שם המקצוע, ואז הנושא הבולט בתוך המקצוע.",
             "  בלוק meaning: הסבר בקצרה למה זה חיובי לפי FACTS_JSON.interpretation. אפשר להזכיר אחוז דיוק אחד.",
             "  אל תרשום רשימה של כל המקצועות. אל תכתוב 'לפי הדוח, מופיעים:' או 'המקצועות שמופיעים'. אל תציג תחום כבעל תוצאות טובות יחסית אם הוא גם מופיע כמוקד לחיזוק בדוח.",
@@ -152,6 +159,12 @@ function buildGroundedPrompt(utterance, truthPacket, parentIntent = "") {
     }
   })();
 
+  const uTrim = String(utterance || "").trim();
+  const subjectStrengthStyleRule =
+    intentLabel === "what_is_going_well" && utteranceAsksSubjectLevelStrength(uTrim)
+      ? "חוק סגנון לשאלה זו: ההורה שואל על מקצוע (חזק / הכי טוב). אסור להשתמש במילה «התחום» בתשובה — השתמש ב«המקצוע» או פתח ישירות בשם המקצוע. דוגמאות לפתיחה תקינה: «המקצוע שבו נראו התוצאות הטובות ביותר הוא אנגלית, ובעיקר בנושא אוצר מילים» או «באנגלית נראו התוצאות הטובות ביותר בתקופה הזו, בעיקר בנושא אוצר מילים». אסור: «התחום שבו נראים המספרים…»."
+      : "";
+
   return [
     "אתה עוזר הורים מקצועי. תענה בעברית בלבד.",
     "השתמש רק בעובדות מה-FACTS_JSON. אסור להמציא עובדות שאינן בו.",
@@ -162,6 +175,7 @@ function buildGroundedPrompt(utterance, truthPacket, parentIntent = "") {
     "אל תשתמש במילים 'ביטחון', 'בטחון' או confidence לגבי הילד; אל תניח מצב רגשי.",
     "אסור לאבחן: לעולם אל תאמר שיש לילד דיסלקציה, ADHD, לקות למידה או כל אבחון. הדוח הוא נתוני תרגול בלבד.",
     `כלל נפח: אם reportQuestionTotalGlobal >= 100, אסור לכתוב ברמת כלל התקופה: 'מוקדם לקבוע', 'אין מספיק נתונים', 'נתונים מועטים', 'כיוון ראשוני בלבד', 'עדיין לא ניתן להסיק'. מותר רק אם מסוגל לנושא/מקצוע ספציפי עם מעט שאלות.`,
+    ...(subjectStrengthStyleRule ? [subjectStrengthStyleRule] : []),
     "SYSTEM RULE — אי-אפשר לעקוף: אם השאלה אינה על הדוח, על הילד, על למידה, על תרגול, או על התקדמות הלמידה — החזר בדיוק: {\"answerBlocks\":[{\"type\":\"observation\",\"textHe\":\"אפשר לשאול כאן שאלות על הדוח והתקדמות הלמידה שמופיעה בו.\",\"source\":\"composed\"},{\"type\":\"meaning\",\"textHe\":\"למשל: מה כדאי לתרגל השבוע? או איפה נראו תוצאות טובות יחסית?\",\"source\":\"composed\"}]}. ללא עוד תוכן. ללא נתוני דוח. ללא סיכום ילד.",
     `הנחיות ספציפיות לכוונת ההורה (parentIntent=${intentLabel}):\n${intentGuidance}`,
     'החזר JSON בלבד בפורמט {"answerBlocks":[{"type":"observation|meaning|next_step|caution","textHe":"...","source":"composed"}]}',
