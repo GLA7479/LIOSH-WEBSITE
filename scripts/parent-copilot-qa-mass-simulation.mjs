@@ -12,6 +12,7 @@
  *   --max-live-turns N       Cap live turns after building matrix (stress / rate-limit safety)
  *   --delay-ms N             Delay between live LLM calls (default 3500)
  *   --include-fallback-stress  Some turns force primary 429 (env sim) to exercise OpenRouter when configured
+ *   --fallback-stress-every N  Every Nth report-related row triggers simulated primary 429 (default 10; stress mode)
  *
  * Env (live): loads .env.local when vars unset; sets flash-lite + 30s timeout inside script.
  * Stops early after several consecutive HTTP 429 signals in telemetry (provider exhaustion).
@@ -21,8 +22,8 @@
  */
 
 import { mkdirSync, writeFileSync, copyFileSync, existsSync, readFileSync } from "fs";
-import { resolve, dirname, join } from "path";
-import { fileURLToPath } from "url";
+import path from "node:path";
+import { fileURLToPath } from "node:url";
 import semanticLabelsMod from "../utils/parent-copilot/semantic-intent-labels.js";
 import qcClassifierMod from "../utils/parent-copilot/question-classifier.js";
 
@@ -34,12 +35,12 @@ const _qc = qcClassifierMod?.default ?? qcClassifierMod;
 const maImSubjectAbsentFromPayload =
   typeof _qc?.maImSubjectAbsentFromPayload === "function" ? _qc.maImSubjectAbsentFromPayload.bind(_qc) : () => false;
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
-const ROOT = resolve(__dirname, "..");
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const ROOT = path.resolve(__dirname, "..");
 
 // ─── .env.local loader (no secrets printed) ─────────────────────────────────
 function loadEnvLocalBestEffort() {
-  const p = resolve(ROOT, ".env.local");
+  const p = path.resolve(ROOT, ".env.local");
   if (!existsSync(p)) return;
   const raw = readFileSync(p, "utf8");
   for (const line of raw.split(/\r?\n/)) {
@@ -69,6 +70,8 @@ function parseArgs(argv) {
   /** @type {number|null} */
   let maxLiveTurns = null;
   let includeFallbackStress = false;
+  /** @type {number|undefined} */
+  let fallbackStressEvery = undefined;
   let delayMs = Number(process.env.PARENT_COPILOT_MASS_LIVE_DELAY_MS);
   if (!Number.isFinite(delayMs) || delayMs < 0) delayMs = 3500;
   for (let i = 0; i < rest.length; i++) {
@@ -79,6 +82,10 @@ function parseArgs(argv) {
       const n = Number(rest[++i]);
       if (Number.isFinite(n) && n > 0) maxLiveTurns = Math.floor(n);
     }
+    if (rest[i] === "--fallback-stress-every") {
+      const n = Number(rest[++i]);
+      if (Number.isFinite(n) && n > 0) fallbackStressEvery = Math.floor(n);
+    }
     if (rest[i] === "--delay-ms") {
       const n = Number(rest[++i]);
       if (Number.isFinite(n) && n >= 0) delayMs = n;
@@ -86,7 +93,7 @@ function parseArgs(argv) {
   }
   if (process.env.npm_config_live === "true") live = true;
   if (process.env.npm_config_stress === "true") stress = true;
-  return { live, stress, maxLiveTurns, includeFallbackStress, delayMs };
+  return { live, stress, maxLiveTurns, includeFallbackStress, fallbackStressEvery, delayMs };
 }
 
 // ─── Payload builders ───────────────────────────────────────────────────────
@@ -748,10 +755,20 @@ function minimalDiagnosticPayload() {
 
 /**
  * Live stress: diverse scenarios × question groups, capped by maxTurns (concurrency stays 1).
+ * Same matrix structure as `npm run qa:parent-copilot:live-stress`.
+ *
  * @param {number} maxTurns
- * @param {boolean} includeFallbackStress
+ * @param {{ includeFallbackStress?: boolean; fallbackStressEvery?: number; maxFallbackSlots?: number }} [opts]
  */
-function buildStressLiveMatrix(maxTurns, includeFallbackStress) {
+function buildStressLiveMatrix(maxTurns, opts = {}) {
+  const includeFallbackStress = !!opts.includeFallbackStress;
+  const fallbackStressEvery =
+    Number(opts.fallbackStressEvery) > 0 ? Math.floor(Number(opts.fallbackStressEvery)) : 10;
+  const maxFallbackSlots =
+    opts.maxFallbackSlots != null && Number(opts.maxFallbackSlots) >= 0
+      ? Math.floor(Number(opts.maxFallbackSlots))
+      : 5;
+
   /** @type {{ scenario: string; group: string; question: string; stressFallback?: boolean }[]} */
   const rows = [];
   const reportGroups = ["explain_report", "strength_good", "weakness_focus", "home_practice", "subject_topic"];
@@ -767,7 +784,7 @@ function buildStressLiveMatrix(maxTurns, includeFallbackStress) {
 
   let round = 0;
   let fallbackSlotsUsed = 0;
-  const maxFallbackSlots = 5;
+  let reportRelatedCount = 0;
 
   while (rows.length < maxTurns) {
     for (const sk of SCENARIO_KEYS_FULL) {
@@ -775,12 +792,13 @@ function buildStressLiveMatrix(maxTurns, includeFallbackStress) {
         if (rows.length >= maxTurns) return rows;
         const qs = QUESTIONS[g];
         const q = qs[round % qs.length];
+        reportRelatedCount += 1;
         let stressFallback = false;
         if (
           includeFallbackStress &&
           fallbackSlotsUsed < maxFallbackSlots &&
-          rows.length >= 12 &&
-          rows.length % 13 === 0
+          reportRelatedCount > 0 &&
+          reportRelatedCount % fallbackStressEvery === 0
         ) {
           stressFallback = true;
           fallbackSlotsUsed += 1;
@@ -795,7 +813,7 @@ function buildStressLiveMatrix(maxTurns, includeFallbackStress) {
 
 /**
  * @param {boolean} live
- * @param {{ stress?: boolean; maxLiveTurns?: number | null; includeFallbackStress?: boolean }} opts
+ * @param {{ stress?: boolean; maxLiveTurns?: number | null; includeFallbackStress?: boolean; fallbackStressEvery?: number }} opts
  */
 function buildRunMatrix(live, opts = {}) {
   /** @type {{ scenario: string; group: string; question: string; stressFallback?: boolean }[]} */
@@ -819,7 +837,10 @@ function buildRunMatrix(live, opts = {}) {
   } else if (opts.stress) {
     const cap =
       opts.maxLiveTurns != null && opts.maxLiveTurns > 0 ? opts.maxLiveTurns : 80;
-    return buildStressLiveMatrix(cap, !!opts.includeFallbackStress);
+    return buildStressLiveMatrix(cap, {
+      includeFallbackStress: !!opts.includeFallbackStress,
+      fallbackStressEvery: opts.fallbackStressEvery ?? 10,
+    });
   } else {
     addRows("off_topic", SCENARIO_KEYS_BOUNDARY, QUESTIONS.off_topic.slice(0, 3));
     addRows("ambiguous", SCENARIO_KEYS_BOUNDARY, QUESTIONS.ambiguous.slice(0, 2));
@@ -856,7 +877,7 @@ function configureEnvLive() {
 
 async function main() {
   loadEnvLocalBestEffort();
-  const { live, stress, maxLiveTurns, includeFallbackStress, delayMs } = parseArgs(process.argv);
+  const { live, stress, maxLiveTurns, includeFallbackStress, fallbackStressEvery, delayMs } = parseArgs(process.argv);
 
   if (live) configureEnvLive();
   else configureEnvDeterministic();
@@ -866,11 +887,16 @@ async function main() {
   const runAsync = parentCopilot.runParentCopilotTurnAsync;
 
   const scenarios = buildScenarios();
-  const matrix = buildRunMatrix(live, { stress, maxLiveTurns, includeFallbackStress });
+  const matrix = buildRunMatrix(live, {
+    stress,
+    maxLiveTurns,
+    includeFallbackStress,
+    ...(fallbackStressEvery != null ? { fallbackStressEvery } : {}),
+  });
   const plannedTurns = matrix.length;
 
   const timestamp = new Date().toISOString().replace(/[:.]/g, "-");
-  const outDir = join(ROOT, "reports", "parent-copilot-qa-mass-simulation", timestamp);
+  const outDir = path.join(ROOT, "reports", "parent-copilot-qa-mass-simulation", timestamp);
   mkdirSync(outDir, { recursive: true });
 
   /** @type {object[]} */
@@ -987,6 +1013,7 @@ async function main() {
     liveConcurrency: 1,
     stress: !!stress,
     includeFallbackStress: !!includeFallbackStress,
+    ...(fallbackStressEvery != null ? { fallbackStressEvery } : {}),
     delayMs,
     plannedTurns,
     completedTurns: results.length,
@@ -1000,9 +1027,9 @@ async function main() {
     results,
   };
 
-  writeFileSync(join(outDir, "summary.json"), JSON.stringify(summaryJson, null, 2), "utf8");
-  writeFileSync(join(outDir, "failures.json"), JSON.stringify(failureRows, null, 2), "utf8");
-  writeFileSync(join(outDir, "provider-events.json"), JSON.stringify(providerEvents, null, 2), "utf8");
+  writeFileSync(path.join(outDir, "summary.json"), JSON.stringify(summaryJson, null, 2), "utf8");
+  writeFileSync(path.join(outDir, "failures.json"), JSON.stringify(failureRows, null, 2), "utf8");
+  writeFileSync(path.join(outDir, "provider-events.json"), JSON.stringify(providerEvents, null, 2), "utf8");
 
   let acceptedMd = `# Accepted turns (validator pass)\n\n`;
   acceptedMd += `- **Run:** ${timestamp}\n`;
@@ -1014,7 +1041,7 @@ async function main() {
       acceptedMd += `- Scenario: ${r.scenarioName}\n\n`;
       acceptedMd += `${String(r.finalVisibleAnswer || "").slice(0, 3500)}${String(r.finalVisibleAnswer || "").length > 3500 ? "\n\n…" : ""}\n\n`;
     });
-  writeFileSync(join(outDir, "accepted-answers.md"), acceptedMd, "utf8");
+  writeFileSync(path.join(outDir, "accepted-answers.md"), acceptedMd, "utf8");
 
   const byCat = {};
   for (const fr of failureRows) {
@@ -1067,11 +1094,11 @@ async function main() {
     md += `- Bad answer excerpt:\n\n\`\`\`\n${String(fr.record.finalVisibleAnswer || "").slice(0, 1200)}\n\`\`\`\n\n`;
   });
 
-  writeFileSync(join(outDir, "summary.md"), md, "utf8");
+  writeFileSync(path.join(outDir, "summary.md"), md, "utf8");
 
-  const latestPath = join(ROOT, "reports", "parent-copilot-qa-mass-simulation", "latest.md");
-  mkdirSync(dirname(latestPath), { recursive: true });
-  copyFileSync(join(outDir, "summary.md"), latestPath);
+  const latestPath = path.join(ROOT, "reports", "parent-copilot-qa-mass-simulation", "latest.md");
+  mkdirSync(path.dirname(latestPath), { recursive: true });
+  copyFileSync(path.join(outDir, "summary.md"), latestPath);
 
   process.stdout.write(md);
   process.stdout.write(`\nWritten: ${outDir}\n`);
@@ -1085,7 +1112,30 @@ async function main() {
   }
 }
 
-main().catch((e) => {
-  console.error(e);
-  process.exitCode = 1;
-});
+const __massScriptPath = fileURLToPath(import.meta.url);
+const __runsMassScript =
+  process.argv[1] && path.normalize(process.argv[1]) === path.normalize(__massScriptPath);
+
+export {
+  loadEnvLocalBestEffort,
+  sleepMs,
+  parseArgs,
+  buildScenarios,
+  QUESTIONS,
+  SCENARIO_KEYS_FULL,
+  buildStressLiveMatrix,
+  buildRunMatrix,
+  extractRecord,
+  validateTurn,
+  configureEnvLive,
+  configureEnvDeterministic,
+  turnShowsRateLimitOrOverload,
+  minimalDiagnosticPayload,
+};
+
+if (__runsMassScript) {
+  main().catch((e) => {
+    console.error(e);
+    process.exitCode = 1;
+  });
+}
