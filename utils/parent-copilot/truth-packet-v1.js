@@ -371,6 +371,7 @@ function pickExplainReportMetas(metas, rankedWorstFirst, limit) {
  *   recommendationIntensityCap?: string;
  *   overallSnapshotTotalQuestions?: number;
  *   primarySubjectId?: string;
+ *   parentUtterance?: string;
  * }} x
  * @returns {{ observation: string; interpretation: string; action?: string|null }}
  */
@@ -388,6 +389,19 @@ function buildExecutiveIntentNarrativeSlots(x) {
     const topic = parentFacingTopicTitleHe(m.dn);
     if (!topic || topic === sub) return sub;
     return `${sub} — ${topic}`;
+  };
+
+  const parentUtteranceRaw = String(x.parentUtterance || "").trim();
+  const subjectLevelStrengthQuestion = /מקצוע|מקצועות/u.test(parentUtteranceRaw);
+
+  /** When the parent asks about מקצוע, lead with subject name then optional topic — not topic-only. */
+  const subjectFirstStrengthObservation = (m) => {
+    const sub = subjectLabelHe(m.sid);
+    const topic = parentFacingTopicTitleHe(m.dn);
+    if (topic && topic !== sub) {
+      return `המקצוע שבו נראו התוצאות הטובות ביותר הוא ${sub}, ובעיקר בנושא ${topic}.`;
+    }
+    return `המקצוע שבו נראו התוצאות הטובות ביותר הוא ${sub}.`;
   };
 
   const sparseExecutive = metas.length <= 1;
@@ -442,7 +456,21 @@ function buildExecutiveIntentNarrativeSlots(x) {
       let obs;
       let interp;
       if (strengthTopics.length > 1) {
-        obs = `הנושא שבו נראו התוצאות הטובות ביותר הוא ${labelPair(strengthTopics[0])}; גם ב${labelPair(strengthTopics[1])} נראו תוצאות טובות יחסית.`;
+        if (subjectLevelStrengthQuestion) {
+          const m0 = strengthTopics[0];
+          const m1 = strengthTopics[1];
+          const s0 = subjectLabelHe(m0.sid);
+          const s1 = subjectLabelHe(m1.sid);
+          const t0 = parentFacingTopicTitleHe(m0.dn);
+          const t1 = parentFacingTopicTitleHe(m1.dn);
+          if (s0 === s1) {
+            obs = `המקצוע שבו נראו התוצאות הטובות ביותר הוא ${s0}, ובעיקר בנושא ${t0}; גם בנושא ${t1} נראו תוצאות טובות יחסית.`;
+          } else {
+            obs = `המקצוע שבו נראו התוצאות הטובות ביותר הוא ${s0}, ובעיקר בנושא ${t0}; גם במקצוע ${s1} נראו תוצאות טובות יחסית בנושא ${t1}.`;
+          }
+        } else {
+          obs = `הנושא שבו נראו התוצאות הטובות ביותר הוא ${labelPair(strengthTopics[0])}; גם ב${labelPair(strengthTopics[1])} נראו תוצאות טובות יחסית.`;
+        }
         const i0 = strengthTopics[0]?.interp && !interpretationReadsAsWeaknessNeedingSupport(strengthTopics[0].interp)
           ? clipHe(strengthTopics[0].interp, 170)
           : "";
@@ -451,7 +479,9 @@ function buildExecutiveIntentNarrativeSlots(x) {
           : "";
         interp = appendDistinctSentence(i0, i1);
       } else if (strengthTopics.length === 1) {
-        obs = `ב${labelPair(strengthTopics[0])} נראו תוצאות טובות יחסית בהשוואה לשאר הנושאים בדוח.`;
+        obs = subjectLevelStrengthQuestion
+          ? subjectFirstStrengthObservation(strengthTopics[0])
+          : `ב${labelPair(strengthTopics[0])} נראו תוצאות טובות יחסית בהשוואה לשאר הנושאים בדוח.`;
         const m0 = strengthTopics[0];
         interp =
           m0?.interp && !interpretationReadsAsWeaknessNeedingSupport(m0.interp)
@@ -462,7 +492,14 @@ function buildExecutiveIntentNarrativeSlots(x) {
           "לא מופיע כרגע תחום עם תוצאות טובות מובהקות, אבל אפשר לראות איפה התרגול יציב יותר.";
         const rel = rankedBestFirst.find((m) => !worstKeys.has(executiveTopicKey(m))) || rankedBestFirst[0];
         if (rel) {
-          interp = `ביחס לשאר הנושאים בדוח, ב${labelPair(rel)} נראים כרגע המספרים הגבוהים ביותר (${rel.acc}%).`;
+          if (subjectLevelStrengthQuestion) {
+            const rs = subjectLabelHe(rel.sid);
+            const rt = parentFacingTopicTitleHe(rel.dn);
+            const topicBit = rt && rt !== rs ? `, ובעיקר בנושא ${rt}` : "";
+            interp = `ביחס לשאר הנושאים בדוח, המקצוע שבו נראים המספרים הגבוהים ביותר הוא ${rs}${topicBit} (${rel.acc}%).`;
+          } else {
+            interp = `ביחס לשאר הנושאים בדוח, ב${labelPair(rel)} נראים כרגע המספרים הגבוהים ביותר (${rel.acc}%).`;
+          }
           if (rel.interp && !interpretationReadsAsWeaknessNeedingSupport(rel.interp)) {
             interp = appendDistinctSentence(interp, clipHe(rel.interp, 120));
           }
@@ -990,7 +1027,7 @@ function buildTruthPacketV1NoAnchoredFallback(scope) {
 
 /**
  * @param {unknown} payload
- * @param {{ scopeType: "topic"|"subject"|"executive"; scopeId: string; scopeLabel: string; canonicalIntent?: string }} scope
+ * @param {{ scopeType: "topic"|"subject"|"executive"; scopeId: string; scopeLabel: string; canonicalIntent?: string; parentUtterance?: string }} scope
  * @returns {object|null}
  */
 export function buildTruthPacketV1(payload, scope) {
@@ -1188,6 +1225,7 @@ export function buildTruthPacketV1(payload, scope) {
       recommendationIntensityCap,
       overallSnapshotTotalQuestions: Number(payload?.overallSnapshot?.totalQuestions) || 0,
       primarySubjectId: String(payload?.parentProductContractV1?.primarySubjectId || "").trim(),
+      parentUtterance: String(scope?.parentUtterance || "").trim(),
     });
     const slotAction =
       intentSlots &&

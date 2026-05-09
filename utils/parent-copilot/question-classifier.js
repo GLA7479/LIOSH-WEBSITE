@@ -119,6 +119,31 @@ const STRONG_REPORT_INTENTS = [
   /סיבה.{0,3}לדאגה/u, /צריך.{0,3}לדאוג/u,
   /הצלחות/u,
   /בקצרה/u,
+  // Strength / best-subject family (category signals — not FAQ sentences)
+  /מה\s+המקצוע\s*(הכי\s*)?טוב/u,
+  /המקצוע\s*(הכי\s*)?טוב/u,
+  /איזה\s+מקצוע\s*(הכי\s*)?טוב/u,
+  /באיזה\s+מקצוע\s*(הכי\s*)?טוב/u,
+  /איפה\s+(הכי\s*)?טוב/u,
+  /איפה\s+נראו.{0,28}תוצאות.{0,24}(הכי\s*)?טוב/u,
+  /במה\s+(הוא|היא|הילד|הילדה)\s+הכי\s+טוב/u,
+  /במה\s+(הוא|היא|הילד|הילדה)\s+(טוב|טובה)/u,
+  /מה\s+הנושא\s*(הכי\s*)?(חזק|טוב)/u,
+  /איזה\s+נושא\s*(הכי\s*)?(חזק|טוב)/u,
+  // Main focus / priority family
+  /^במה\s+(להתמקד|כדאי\s+להתמקד)/u,
+  /^איפה\s+(להתמקד|כדאי\s+להתמקד)/u,
+  /מה\s+הדגש/u,
+  /מה\s+הכי\s+חשוב\s+עכשיו/u,
+  /מה\s+חשוב\s+לתרגל/u,
+  /על\s+מה\s+להתמקד/u,
+  // Home-practice / dosage family
+  /כמה\s+לתרגל/u,
+  /כמה\s+זמן\s+לתרגל/u,
+  /כמה\s+שאלות/u,
+  /כמה\s+פעמים\s+בשבוע/u,
+  /^איך\s+לתרגל/u,
+  /איך\s+לעזור\s+בבית/u,
 ];
 
 /**
@@ -235,6 +260,11 @@ const DIAGNOSTIC_PATTERNS = [
   /רגשית\s*בסדר|רגשי\s*בסדר/u,
   /יש\s*לו\s*אבחון|יש\s*לה\s*אבחון|מה\s*ה?אבחון|מה\s*ה?אבחנה/u,
   /(?:יש\s*לילד|לילד\s*יש|יש\s*לילדה|לילדה\s*יש|יש\s*לו|יש\s*לה).{0,40}(?:דיסלקצי|דיסלקסי|דיסקלקולי|לקות|הפרעת|adhd|אוטיז|אוטיסט)/iu,
+  // Emotional / mental-health wording (boundary — not diagnosis from report data)
+  /בעיה\s+רגשית|קושי\s+רגשי|מצב\s+רגשי/u,
+  /דיכאון|בדיכאון/u,
+  /עצוב\s+מאוד/u,
+  /(?:^|\s)(הוא|היא)\s+חרד(?:\s|$)/u,
 ];
 
 // ─── Normalization ──────────────────────────────────────────────────────────
@@ -422,6 +452,34 @@ function scoreDiagnosticSignal(t) {
   return 0;
 }
 
+/**
+ * "מה עם …?" where the remainder names a subject/topic label present in the payload.
+ * Category-level shorthand (not per-sentence FAQ).
+ * @param {string} t
+ * @param {{ subjectsHe: string[]; topicsHe: string[] }} vocab
+ */
+function maImReferencesPayloadVocab(t, vocab) {
+  if (!/^מה\s+עם\s+/u.test(t)) return false;
+  const tail = t.replace(/^מה\s+עם\s+/u, "").trim();
+  if (tail.length < 2) return false;
+  const labels = [...new Set([...vocab.subjectsHe, ...vocab.topicsHe])];
+  for (const lbl of labels) {
+    if (lbl && tail.includes(lbl)) return true;
+  }
+  return false;
+}
+
+/**
+ * True for "מה עם …?" when no subject/topic label from the payload appears in the tail.
+ * QA harness / callers use this to distinguish expected ambiguity from routing bugs.
+ */
+export function maImSubjectAbsentFromPayload({ utterance, payload }) {
+  const t = normalizeForClassifier(utterance);
+  if (!/^מה\s+עם\s+/u.test(t)) return false;
+  const vocab = extractReportVocabulary(payload);
+  return !maImReferencesPayloadVocab(t, vocab);
+}
+
 // ─── Main entry ─────────────────────────────────────────────────────────────
 
 /**
@@ -477,6 +535,25 @@ export function classifyParentQuestionDeterministic({ utterance, payload }) {
       confidence: offTopicSignal,
       source: "deterministic",
       signals,
+    };
+  }
+
+  // 2b. "מה עם <payload subject/topic>?" — beats ambiguous when the named row exists.
+  if (
+    maImReferencesPayloadVocab(t, vocab) &&
+    offTopicSignal <= CLASSIFIER_THRESHOLDS.reportRelatedOffTopicCeiling &&
+    meaningfulTokenCount >= CLASSIFIER_THRESHOLDS.meaningfulTokenMinForReport
+  ) {
+    return {
+      bucket: "report_related",
+      confidence: 0.78,
+      source: "deterministic",
+      signals: {
+        ...signals,
+        reportSignal: Math.max(reportRes.score, 0.78),
+        hasStrongReportToken: true,
+        subjectTopicNameMatched: true,
+      },
     };
   }
 
@@ -561,6 +638,7 @@ export function bucketToCanonicalIntent(bucket) {
 export default {
   classifyParentQuestionDeterministic,
   bucketToCanonicalIntent,
+  maImSubjectAbsentFromPayload,
   OFF_TOPIC_RESPONSE_HE,
   DIAGNOSTIC_BOUNDARY_RESPONSE_HE,
   AMBIGUOUS_RESPONSE_HE,
