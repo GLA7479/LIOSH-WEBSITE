@@ -51,22 +51,33 @@ export const GRADES = {
   },
   g2: {
     name: "כיתה ב'",
-    topics: ["area", "solids", "transformations"], // מדידות שטח, מצולעים וגופים, שיקוף/הזזה (היקף מוזכר בהקשר של שטח אך לא כנושא נפרד)
+    topics: ["shapes_basic", "area", "solids", "transformations"], // צורות בסיסיות + מדידות שטח, גופים, טרנספורמציות
     shapes: ["square", "rectangle", "cube", "rectangular_prism", "cylinder", "pyramid", "cone", "sphere"],
   },
   g3: {
     name: "כיתה ג'",
-    topics: ["angles", "parallel_perpendicular", "triangles", "quadrilaterals", "area", "perimeter", "rotation"], // מאונכוּת, מקבילוּת, זוויות, משולשים, מרובעים, שטח, היקף, סיבוב
+    topics: ["shapes_basic", "angles", "parallel_perpendicular", "triangles", "quadrilaterals", "area", "perimeter", "rotation"], // היכרות צורות; מאונכות/מקבילות; משולשים/מרובעים; מדידות; סיבוב
     shapes: ["triangle", "square", "rectangle"],
   },
   g4: {
     name: "כיתה ד'",
-    topics: ["shapes_basic", "diagonal", "symmetry", "area", "perimeter", "volume"], // מצולעים ואלכסון, ריבוע ומלבן, תכונות משולש, תיבות, סימטרייה, שטח, היקף, נפח תיבה
+    topics: [
+      "shapes_basic",
+      "angles",
+      "parallel_perpendicular",
+      "triangles",
+      "quadrilaterals",
+      "diagonal",
+      "symmetry",
+      "area",
+      "perimeter",
+      "volume",
+    ], // מצולעים, זוויות, מקבילות/מאונכות, משולשים/מרובעים, אלכסון, סימטרייה, מדידות, נפח תיבה
     shapes: ["square", "rectangle", "triangle", "circle", "rectangular_prism", "cube"],
   },
   g5: {
     name: "כיתה ה'",
-    topics: ["angles", "parallel_perpendicular", "quadrilaterals", "diagonal", "heights", "tiling", "area", "perimeter", "volume", "mixed"], // אלכסון (כולל מקבילית), מקבילוּת, מאונכוּת, זוויות, מרובעים, גבהים, ריצוף, שטח, היקף, נפח, ערבוב
+    topics: ["angles", "parallel_perpendicular", "quadrilaterals", "solids", "diagonal", "heights", "tiling", "area", "perimeter", "volume", "mixed"], // גופים מוכרים נשארים זמינים לצד נושאי מישור
     shapes: ["square", "rectangle", "triangle", "circle", "parallelogram", "trapezoid", "rectangular_prism", "cube"],
   },
   g6: {
@@ -80,6 +91,8 @@ export const GRADES = {
 export const TOPIC_SHAPES = {
   shapes_basic: {
     g1: ["square", "rectangle"], // הכרת מצולעים - כיתה א'
+    g2: ["square", "rectangle"],
+    g3: ["square", "rectangle", "triangle"],
     g4: ["square", "rectangle"], // ריבוע ומלבן (תכונות) - כיתה ד'
   },
   area: {
@@ -141,6 +154,7 @@ export const TOPIC_SHAPES = {
   },
   solids: {
     g2: ["cube", "rectangular_prism", "cylinder", "pyramid", "cone", "sphere"], // גופים - כיתה ב'
+    g5: ["cube", "rectangular_prism", "cylinder", "pyramid", "cone", "sphere"],
     g6: ["cube", "rectangular_prism", "cylinder", "pyramid", "cone", "sphere"], // גופים משוכללים - כיתה ו'
   },
   pythagoras: {

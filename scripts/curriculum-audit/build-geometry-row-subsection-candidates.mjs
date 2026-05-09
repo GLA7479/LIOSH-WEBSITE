@@ -21,12 +21,30 @@ function loadJson(path, label) {
   return JSON.parse(readFileSync(path, "utf8"));
 }
 
-function matchingSections(grade, normalizedTopicKey) {
+const CONF_ORDER = { high: 0, medium: 1, low: 2 };
+
+/**
+ * When multiple catalog sections map the same normalized key, keep one deterministic pick
+ * (highest confidence, then sectionKey) — avoids false “competing candidates” noise at scale.
+ */
+function canonicalCatalogSections(sections) {
+  if (sections.length <= 1) return { sections, hadAmbiguity: false };
+  const sorted = [...sections].sort((a, b) => {
+    const da = CONF_ORDER[a.confidence] ?? 3;
+    const db = CONF_ORDER[b.confidence] ?? 3;
+    if (da !== db) return da - db;
+    return String(a.sectionKey || "").localeCompare(String(b.sectionKey || ""));
+  });
+  return { sections: sorted.slice(0, 1), hadAmbiguity: true };
+}
+
+function matchingSectionsResolved(grade, normalizedTopicKey) {
   const slot = GEOMETRY_OFFICIAL_SUBSECTION_CATALOG[`grade_${grade}`];
-  if (!slot) return [];
-  return slot.sections.filter((s) =>
+  if (!slot) return { sections: [], hadAmbiguity: false };
+  const raw = slot.sections.filter((s) =>
     (s.mapsToNormalizedKeys || []).includes(normalizedTopicKey)
   );
+  return canonicalCatalogSections(raw);
 }
 
 /**
@@ -35,7 +53,6 @@ function matchingSections(grade, normalizedTopicKey) {
  */
 function candidateConfidenceTier(sections) {
   if (!sections.length) return "none";
-  if (sections.length > 1) return "low";
   const c = sections[0].confidence || "medium";
   if (c === "high") return "high";
   if (c === "medium") return "medium";
@@ -61,14 +78,16 @@ export async function buildGeometryRowSubsectionCandidates(opts = {}) {
     const seq = geometrySequencingSuspicions(rec, normKey);
     const seqCodes = seq.map((s) => s.code);
 
-    const sections =
-      Number.isFinite(gmin) && gmin >= 1 && gmin <= 6
-        ? matchingSections(gmin, normKey)
-        : [];
+    let sections = [];
+    let catalogSectionAmbiguity = false;
+    if (Number.isFinite(gmin) && gmin >= 1 && gmin <= 6) {
+      const res = matchingSectionsResolved(gmin, normKey);
+      sections = res.sections;
+      catalogSectionAmbiguity = res.hadAmbiguity;
+    }
 
     const candidateKeys = sections.map((s) => s.sectionKey);
     const tier = candidateConfidenceTier(sections);
-    const competingCandidates = sections.length > 1;
 
     const gradePdfAnchored =
       Number.isFinite(gmin) && exactGradeTopicRegistryCovers("geometry", gmin);
@@ -86,7 +105,8 @@ export async function buildGeometryRowSubsectionCandidates(opts = {}) {
       textPreview: (rec.textPreview || "").slice(0, 200),
       candidateSubsectionKeys: candidateKeys,
       candidateConfidence: tier,
-      competingCandidates,
+      competingCandidates: false,
+      catalogSectionAmbiguity,
       sequencingSuspicionCodes: seqCodes,
       sequencingSuspicionsDetail: seq,
       gradePdfAnchored,
@@ -108,6 +128,7 @@ export async function buildGeometryRowSubsectionCandidates(opts = {}) {
     noSubsectionCandidateRows: rows.filter((r) => r.candidateConfidence === "none").length,
     stillNeedsManualReviewRows: rows.filter((r) => r.needsManualReview).length,
     rowsWithCompetingCandidates: rows.filter((r) => r.competingCandidates).length,
+    catalogSectionAmbiguityRows: rows.filter((r) => r.catalogSectionAmbiguity).length,
   };
 
   const sequencingHistogram = rows.reduce((acc, r) => {

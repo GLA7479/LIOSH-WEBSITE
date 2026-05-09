@@ -42,7 +42,8 @@ function markdown(payload) {
   for (let g = 1; g <= 6; g++) {
     const slot = payload.catalog[`grade_${g}`];
     lines.push(`### כיתה ${["", "א׳", "ב׳", "ג׳", "ד׳", "ה׳", "ו׳"][g]}`, ``);
-    lines.push(`- **POP anchor:** ${slot.sourcePdf}`);
+    lines.push(`- **Programme PDF:** ${slot.sourcePdf}`);
+    lines.push(`- **POP strand (reference):** ${slot.strandPopAnchor || "—"}`);
     lines.push(`- **Missing / uncertain:**`);
     for (const u of slot.missingUncertainAreas) lines.push(`  - ${u}`);
     lines.push(

@@ -3,10 +3,31 @@ import { useRouter } from "next/router";
 import { useIOSViewportFix } from "../../hooks/useIOSViewportFix";
 import { GRADES, TOPICS, LEVELS, TOPIC_SHAPES } from "../../utils/geometry-constants";
 
+const GRADE_KEYS = ["g1", "g2", "g3", "g4", "g5", "g6"];
+
+const HEB_GRADE = {
+  g1: "א׳",
+  g2: "ב׳",
+  g3: "ג׳",
+  g4: "ד׳",
+  g5: "ה׳",
+  g6: "ו׳",
+};
+
+/** Pedagogical gloss — not an official Ministry subsection list */
+const GRADE_NOTES = {
+  g1: "התמקדות בהיכרות עם מצולעים בסיסיים וטרנספורמציות פשוטות (הזזה ושיקוף).",
+  g2: "שטח, גופים מוכרים וטרנספורמיות; אין נושא היקף נפרד במערכת לכיתה זו.",
+  g3: "שטח, היקף, זוויות, מקבילות ומאונכות, משולשים, מרובעים וסיבוב.",
+  g4: "שטח, היקף, נפח תיבות, אלכסון, סימטרייה וצורות בסיסיות עם תכונות.",
+  g5: "שטח, היקף, נפח, זוויות, מקבילות ומאונכות, מרובעים, גבהים, ריצוף, אלכסון וערבוב.",
+  g6: "שטח, היקף, נפח, זוויות, מעגל ועיגול, פיתגורס, גופים וערבוב.",
+};
+
 export default function GeometryCurriculum() {
   useIOSViewportFix();
   const router = useRouter();
-  
+
   const handleClose = () => {
     router.back();
   };
@@ -15,22 +36,30 @@ export default function GeometryCurriculum() {
     return TOPICS[topicKey]?.name || topicKey;
   };
 
+  const shapeNames = {
+    square: "ריבוע",
+    rectangle: "מלבן",
+    triangle: "משולש",
+    quadrilateral: "מרובע",
+    circle: "עיגול",
+    parallelogram: "מקבילית",
+    trapezoid: "טרפז",
+    rectangular_prism: "תיבה",
+    cube: "קובייה",
+    cylinder: "גליל",
+    sphere: "כדור",
+    cone: "חרוט",
+    pyramid: "פירמידה",
+    prism: "מנסרה",
+  };
+
   const getShapesForGradeTopic = (gradeKey, topicKey) => {
     const shapes = TOPIC_SHAPES[topicKey]?.[gradeKey] || [];
-    const shapeNames = {
-      square: "ריבוע",
-      rectangle: "מלבן",
-      triangle: "משולש",
-      circle: "עיגול",
-      parallelogram: "מקבילית",
-      trapezoid: "טרפז",
-      rectangular_prism: "תיבה",
-      cube: "קובייה",
-      cylinder: "גליל",
-      sphere: "כדור",
-    };
-    return shapes.map(s => shapeNames[s] || s).join(", ");
+    return shapes.map((s) => shapeNames[s] || s).join(", ");
   };
+
+  const topicKeysForProduct = Object.keys(TOPICS).filter((k) => k !== "mixed");
+  const topicCountLabel = String(topicKeysForProduct.length);
 
   return (
     <Layout>
@@ -53,7 +82,7 @@ export default function GeometryCurriculum() {
               תוכנית הלימודים באתר - הנדסה
             </h1>
             <p className="text-sm md:text-base text-white/70 max-w-2xl mx-auto" dir="rtl">
-              סיכום מלא של כל הנושאים, רמות הקושי והכיתות הזמינות במערכת
+              סיכום של הנושאים, רמות הקושי והכיתות כפי שהוגדרו במערכת — לצורכי שקיפות בלבד
             </p>
           </header>
 
@@ -62,174 +91,71 @@ export default function GeometryCurriculum() {
               <div className="bg-emerald-500/20 border-r-4 border-emerald-500 p-4 rounded-lg mb-6">
                 <h3 className="text-xl font-bold mb-2">מבנה כללי</h3>
                 <ul className="list-disc pr-6 space-y-2">
-                  <li><strong>6 כיתות</strong>: א', ב', ג', ד', ה', ו'</li>
-                  <li><strong>3 רמות קושי</strong> לכל כיתה: קל, בינוני, קשה</li>
-                  <li><strong>17 נושאי הנדסה</strong>: צורות בסיסיות, שטח, היקף, נפח, זוויות, מקבילות ומאונכות, משולשים, מרובעים, טרנספורמציות, סיבוב, סימטרייה, אלכסון, גבהים, ריצוף, מעגל ועיגול, גופים, פיתגורס, ערבוב</li>
+                  <li>
+                    <strong>6 כיתות</strong>: א׳, ב׳, ג׳, ד׳, ה׳, ו׳
+                  </li>
+                  <li>
+                    <strong>{LEVELS.easy.name}, {LEVELS.medium.name}, {LEVELS.hard.name}</strong> (
+                    {Object.keys(LEVELS).length} רמות קושי) לכל כיתה
+                  </li>
+                  <li>
+                    <strong>{topicCountLabel} נושאי הנדסה</strong> במפת הנושאים של המוצר (לא כולל &quot;ערבוב&quot; כנושא נפרד בספירה זו)
+                  </li>
                 </ul>
+                <p className="text-sm text-white/75 mt-3">
+                  הרצף כאן משקף את הגדרות המוצר בלבד. אימות מול קובץ התוכנית הרשמי של משרד החינוך (
+                  לדוגמה תוכנית המתמטיקה היסודית לפי כיתה) הוא שלב נפרד ואינו מוצג כאן כאישור מלא.
+                </p>
               </div>
 
-              {/* כיתה א' */}
-              <div className="bg-blue-500/20 border-r-4 border-blue-500 p-4 rounded-lg mb-6">
-                <h2 className="text-2xl font-bold mb-3">כיתה א'</h2>
-                <h3 className="text-lg font-semibold mb-2">נושאים זמינים:</h3>
-                <ol className="list-decimal pr-6 space-y-1 mb-4">
-                  <li>צורות בסיסיות - הכרת מצולעים</li>
-                  <li>טרנספורמציות - הזזה ושיקוף</li>
-                </ol>
-                <div className="bg-white/5 p-3 rounded mb-3">
-                  <h4 className="font-semibold mb-2">צורות זמינות:</h4>
-                  <div className="text-sm">ריבוע, מלבן</div>
-                </div>
-                <div className="bg-yellow-500/20 p-3 rounded text-sm">
-                  <strong>הערות:</strong> היכרות ראשונית עם מצולעים (ריבוע ומלבן). טרנספורמציות בסיסיות (הזזה ושיקוף).
-                </div>
-              </div>
+              {GRADE_KEYS.map((gradeKey) => {
+                const topics = GRADES[gradeKey]?.topics || [];
+                return (
+                  <div
+                    key={gradeKey}
+                    className="bg-blue-500/20 border-r-4 border-blue-500 p-4 rounded-lg mb-6"
+                  >
+                    <h2 className="text-2xl font-bold mb-3">כיתה {HEB_GRADE[gradeKey]}</h2>
+                    <h3 className="text-lg font-semibold mb-2">נושאים בממשק לכיתה זו:</h3>
+                    <ol className="list-decimal pr-6 space-y-1 mb-4">
+                      {topics.map((tk) => (
+                        <li key={tk}>
+                          <span className="font-semibold">{getTopicName(tk)}</span>
+                          {TOPICS[tk]?.description ? (
+                            <span className="text-white/85"> — {TOPICS[tk].description}</span>
+                          ) : null}
+                        </li>
+                      ))}
+                    </ol>
+                    <div className="bg-white/5 p-3 rounded mb-3">
+                      <h4 className="font-semibold mb-2">צורות ודוגמאות לפי נושא (כפי שהוגדר במוצר):</h4>
+                      <div className="text-sm space-y-1">
+                        {topics.map((tk) => {
+                          const shapesLine = getShapesForGradeTopic(gradeKey, tk);
+                          if (!shapesLine) return null;
+                          return (
+                            <div key={`${gradeKey}-${tk}`}>
+                              <strong>{getTopicName(tk)}:</strong> {shapesLine}
+                            </div>
+                          );
+                        })}
+                      </div>
+                    </div>
+                    <div className="bg-yellow-500/20 p-3 rounded text-sm">
+                      <strong>הערות:</strong> {GRADE_NOTES[gradeKey]}
+                    </div>
+                  </div>
+                );
+              })}
 
-              {/* כיתה ב' */}
-              <div className="bg-blue-500/20 border-r-4 border-blue-500 p-4 rounded-lg mb-6">
-                <h2 className="text-2xl font-bold mb-3">כיתה ב'</h2>
-                <h3 className="text-lg font-semibold mb-2">נושאים זמינים:</h3>
-                <ol className="list-decimal pr-6 space-y-1 mb-4">
-                  <li>שטח - היכרות בסיסית</li>
-                  <li>היקף - היכרות בסיסית</li>
-                  <li>גופים - הכרת גופים תלת-מימדיים</li>
-                  <li>טרנספורמציות - שיקוף והזזה</li>
-                </ol>
-                <div className="bg-white/5 p-3 rounded mb-3">
-                  <h4 className="font-semibold mb-2">צורות זמינות:</h4>
-                  <div className="text-sm mb-2">
-                    <strong>לשטח והיקף:</strong> ריבוע, מלבן
-                  </div>
-                  <div className="text-sm">
-                    <strong>גופים:</strong> קובייה, תיבה, גליל, פירמידה, חרוט, כדור
-                  </div>
-                </div>
-                <div className="bg-yellow-500/20 p-3 rounded text-sm">
-                  <strong>הערות:</strong> היכרות ראשונית עם מושגי שטח והיקף. הכרת גופים תלת-מימדיים. טרנספורמציות (שיקוף והזזה).
-                </div>
-              </div>
-
-              {/* כיתה ג' */}
-              <div className="bg-blue-500/20 border-r-4 border-blue-500 p-4 rounded-lg mb-6">
-                <h2 className="text-2xl font-bold mb-3">כיתה ג'</h2>
-                <h3 className="text-lg font-semibold mb-2">נושאים זמינים:</h3>
-                <ol className="list-decimal pr-6 space-y-1 mb-4">
-                  <li>שטח</li>
-                  <li>היקף</li>
-                  <li>זוויות - מיון זוויות (חדות, ישרות, קהות)</li>
-                  <li>מקבילות ומאונכות</li>
-                  <li>משולשים - מיון משולשים</li>
-                  <li>מרובעים - מיון מרובעים</li>
-                  <li>סיבוב</li>
-                </ol>
-                <div className="bg-white/5 p-3 rounded mb-3">
-                  <h4 className="font-semibold mb-2">צורות זמינות:</h4>
-                  <div className="text-sm">ריבוע, מלבן, משולש</div>
-                </div>
-                <div className="bg-yellow-500/20 p-3 rounded text-sm">
-                  <strong>הערות:</strong> מתווספת צורת המשולש. זוויות, מקבילות ומאונכות. מיון משולשים ומרובעים. סיבוב.
-                </div>
-              </div>
-
-              {/* כיתה ד' */}
-              <div className="bg-blue-500/20 border-r-4 border-blue-500 p-4 rounded-lg mb-6">
-                <h2 className="text-2xl font-bold mb-3">כיתה ד'</h2>
-                <h3 className="text-lg font-semibold mb-2">נושאים זמינים:</h3>
-                <ol className="list-decimal pr-6 space-y-1 mb-4">
-                  <li>שטח (מ"ר, סמ"ר)</li>
-                  <li>היקף</li>
-                  <li>אלכסון</li>
-                  <li>סימטרייה</li>
-                  <li>נפח תיבה</li>
-                  <li>צורות בסיסיות - ריבוע ומלבן (תכונות)</li>
-                </ol>
-                <div className="bg-white/5 p-3 rounded mb-3">
-                  <h4 className="font-semibold mb-2">צורות זמינות:</h4>
-                  <div className="text-sm mb-2">
-                    <strong>לשטח והיקף:</strong> ריבוע, מלבן, משולש, עיגול
-                  </div>
-                  <div className="text-sm">
-                    <strong>לנפח:</strong> תיבה, קובייה
-                  </div>
-                </div>
-                <div className="bg-yellow-500/20 p-3 rounded text-sm">
-                  <strong>הערות:</strong> מתווספת צורת העיגול. אלכסון במצולעים. סימטרייה. נפח תיבות. תכונות ריבוע ומלבן.
-                </div>
-              </div>
-
-              {/* כיתה ה' */}
-              <div className="bg-blue-500/20 border-r-4 border-blue-500 p-4 rounded-lg mb-6">
-                <h2 className="text-2xl font-bold mb-3">כיתה ה'</h2>
-                <h3 className="text-lg font-semibold mb-2">נושאים זמינים:</h3>
-                <ol className="list-decimal pr-6 space-y-1 mb-4">
-                  <li>שטח (מלבנים, מקביליות, משולשים)</li>
-                  <li>היקף</li>
-                  <li>נפח</li>
-                  <li>זוויות</li>
-                  <li>מקבילות ומאונכות</li>
-                  <li>מרובעים - ניתוח תכונות, מיון מרובעים, קשרי הכלה</li>
-                  <li>גבהים</li>
-                  <li>ריצוף במצולעים משוכללים</li>
-                  <li>אלכסון</li>
-                  <li>ערבוב - תרגילים מעורבים</li>
-                </ol>
-                <div className="bg-white/5 p-3 rounded mb-3">
-                  <h4 className="font-semibold mb-2">צורות זמינות:</h4>
-                  <div className="text-sm mb-2">
-                    <strong>לשטח והיקף:</strong> ריבוע, מלבן, משולש, עיגול, מקבילית, טרפז
-                  </div>
-                  <div className="text-sm">
-                    <strong>לנפח:</strong> תיבה, קובייה
-                  </div>
-                </div>
-                <div className="bg-yellow-500/20 p-3 rounded text-sm">
-                  <strong>הערות:</strong> מתווספות צורות מורכבות יותר (מקבילית, טרפז). גבהים במשולשים ובמקביליות. ריצוף במצולעים משוכללים. ניתוח תכונות מרובעים.
-                </div>
-              </div>
-
-              {/* כיתה ו' */}
-              <div className="bg-blue-500/20 border-r-4 border-blue-500 p-4 rounded-lg mb-6">
-                <h2 className="text-2xl font-bold mb-3">כיתה ו'</h2>
-                <h3 className="text-lg font-semibold mb-2">נושאים זמינים:</h3>
-                <ol className="list-decimal pr-6 space-y-1 mb-4">
-                  <li>שטח</li>
-                  <li>היקף</li>
-                  <li>נפח - חישובי נפחים (תיבות, גלילים, מנסרות, פירמידות, כדורים)</li>
-                  <li>זוויות</li>
-                  <li>פיתגורס - משפט פיתגורס</li>
-                  <li>מעגל ועיגול - היקף ושטח</li>
-                  <li>גופים - מנסרה, פירמידה, גליל, חרוט, כדור, גופים משוכללים</li>
-                  <li>ערבוב - תרגילים מעורבים</li>
-                </ol>
-                <div className="bg-white/5 p-3 rounded mb-3">
-                  <h4 className="font-semibold mb-2">צורות זמינות:</h4>
-                  <div className="text-sm mb-2">
-                    <strong>לשטח והיקף:</strong> ריבוע, מלבן, משולש, עיגול, מקבילית, טרפז
-                  </div>
-                  <div className="text-sm mb-2">
-                    <strong>לנפח:</strong> תיבה, קובייה, גליל, כדור, מנסרה, פירמידה, חרוט
-                  </div>
-                  <div className="text-sm mb-2">
-                    <strong>לזוויות ופיתגורס:</strong> משולש
-                  </div>
-                  <div className="text-sm">
-                    <strong>גופים:</strong> קובייה, תיבה, גליל, פירמידה, חרוט, כדור
-                  </div>
-                </div>
-                <div className="bg-yellow-500/20 p-3 rounded text-sm">
-                  <strong>הערות:</strong> כל נושאי ההנדסה זמינים. משפט פיתגורס לחישוב אורך צלעות במשולש ישר זווית. מעגל ועיגול (היקף ושטח). נפח של צורות תלת-ממדיות מורכבות. גופים משוכללים.
-                </div>
-              </div>
-
-              {/* סיכום */}
               <div className="bg-emerald-500/20 border-r-4 border-emerald-500 p-4 rounded-lg">
                 <h3 className="text-xl font-bold mb-3 text-center">סיכום כללי</h3>
                 <p className="text-center mb-3">
-                  המערכת כוללת <strong>17 נושאי הנדסה</strong>, <strong>6 כיתות</strong> (א'-ו'), <strong>3 רמות קושי</strong> לכל כיתה, 
-                  עם התאמה מלאה לתכנית הלימודים של משרד החינוך.
+                  במערכת מוצגים <strong>{topicCountLabel} נושאי הנדסה</strong> (בנוסף למצב ערבוב היכן שקיים), ב־
+                  <strong> שש כיתות</strong> ובשלוש רמות קושי — בהתאם להגדרות הקוד והתצורה בעמוד התרגול.
                 </p>
                 <p className="text-center text-sm text-white/80">
-                  כל הנושאים והצורות מותאמים בדיוק לתוכנית הלימודים הרשמית של משרד החינוך לכיתות א'-ו'.
+                  זהו תיאור המוצר ולא הצהרת התאמה רשמית למשרד החינוך; לא נדרש אישור מלא של בעלי התוכן כדי לצפות בעמוד זה.
                 </p>
               </div>
             </div>
@@ -239,4 +165,3 @@ export default function GeometryCurriculum() {
     </Layout>
   );
 }
-

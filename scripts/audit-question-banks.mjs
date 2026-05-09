@@ -159,6 +159,9 @@ const { generateQuestion: genGeometry } = await import(
 const { GRADES: GEO_GRADES, LEVELS: GEO_LEVELS } = await import(
   modUrl("utils/geometry-constants.js")
 );
+const { minGradeForTopicKey, maxGradeForTopicKey } = await import(
+  modUrl("utils/geometry-grade-topic-policy.js")
+);
 const { generateQuestion: genMath } = await import(
   modUrl("utils/math-question-generator.js")
 );
@@ -681,10 +684,45 @@ function collectEnglishPool(rows, category, pools) {
   }
 }
 
+function flattenGeometryConceptTopics(topicsArr) {
+  /** @type {string[]} */
+  const out = [];
+  for (const x of topicsArr || []) {
+    String(x)
+      .split("|")
+      .map((s) => s.trim())
+      .filter(Boolean)
+      .forEach((t) => out.push(t));
+  }
+  return out;
+}
+
+/**
+ * Intersect grade-band span with product GRADES[].topics exposure (geometry-grade-topic-policy).
+ * Drops conceptual rows that cannot appear in any allowed grade.
+ */
+function intersectGeometryConceptWithProductGrades(item, bandLo, bandHi) {
+  const topicIds = flattenGeometryConceptTopics(item.topics);
+  if (!topicIds.length) return [bandLo, bandHi];
+  let lo = bandLo;
+  let hi = bandHi;
+  for (const t of topicIds) {
+    const mn = minGradeForTopicKey(t);
+    const mx = maxGradeForTopicKey(t);
+    if (mn != null) lo = Math.max(lo, mn);
+    if (mx != null) hi = Math.min(hi, mx);
+  }
+  if (lo > hi) return null;
+  return [lo, hi];
+}
+
 function collectGeometryConceptual(rows) {
   const hebG = ["", "א׳", "ב׳", "ג׳", "ד׳", "ה׳", "ו׳"];
   GEOMETRY_CONCEPTUAL_ITEMS.forEach((item, idx) => {
-    const [lo, hi] = itemGradeSpan(item);
+    let [lo, hi] = itemGradeSpan(item);
+    const clipped = intersectGeometryConceptWithProductGrades(item, lo, hi);
+    if (!clipped) return;
+    [lo, hi] = clipped;
     const stem = item.question || "";
     for (let g = lo; g <= hi; g++) {
       const scoped =

@@ -6,7 +6,15 @@
  * @typedef {'intro' | 'basic' | 'developing' | 'advanced'} ExpectedDepth
  */
 
-import { SOURCE_REGISTRY_CHECKED_AT } from "./official-curriculum-source-registry.js";
+import {
+  MATH_ELEMENTARY_GRADE_PDF_BASE,
+  SOURCE_REGISTRY_CHECKED_AT,
+} from "./official-curriculum-source-registry.js";
+
+/** Official elementary programme PDF for grade (geometry strand appears inside math kita PDF). */
+export function geometryGradeProgrammePdfUrl(grade) {
+  return `${MATH_ELEMENTARY_GRADE_PDF_BASE}/kita${grade}.pdf`;
+}
 
 /** POP — geometry strand (single anchor for all elementary grades). */
 export const GEOMETRY_STRAND_POP_PAGE =
@@ -409,7 +417,8 @@ function buildFullGeometryCatalog() {
   for (let g = 1; g <= 6; g++) {
     out[`grade_${g}`] = {
       grade: g,
-      sourcePdf: GEOMETRY_STRAND_POP_PAGE,
+      sourcePdf: geometryGradeProgrammePdfUrl(g),
+      strandPopAnchor: GEOMETRY_STRAND_POP_PAGE,
       catalogCheckedAt: SOURCE_REGISTRY_CHECKED_AT,
       missingUncertainAreas: geometryMissingUncertainAreasForGrade(g),
       sections: buildGeometrySectionsForGrade(g),

@@ -223,6 +223,36 @@ export const OFFICIAL_CURRICULUM_SOURCE_REGISTRY = [
     actionNeeded: "ראו גם דף מצולעים למיפוי נושאים ספציפיים.",
     notes: "מסגרת רשמית POP למתמטיקה — הגאומטריה כמיתר בתוכה.",
   },
+  /** Per-grade official programme PDFs — same kita1–kita6 as math; geometry strand appears inside each document. */
+  ...[1, 2, 3, 4, 5, 6].map((g) => {
+    const he = ["", "א׳", "ב׳", "ג׳", "ד׳", "ה׳", "ו׳"][g];
+    return {
+      subject: "geometry",
+      sourceType: "official_pdf",
+      title: `משרד החינוך — מתמטיקה יסודי כיתה ${he} (PDF): מיתר גאומטריה במסמך הכיתה`,
+      url: `${MATH_ELEMENTARY_GRADE_PDF_BASE}/kita${g}.pdf`,
+      checkedAt: SOURCE_REGISTRY_CHECKED_AT,
+      appliesToGrades: [g],
+      appliesToTopics: [
+        "geometry_strand",
+        "plane_figures",
+        "measurement_volume",
+        "spatial_reasoning",
+        "geometric_reasoning",
+      ],
+      sourceQualityLevel: "exact_grade_topic_source",
+      confidenceAfterAudit: "medium",
+      isOfficialMoEPublished: true,
+      providesGradeLevelDetail: true,
+      providesTopicLevelDetail: true,
+      providesSkillOrDepthDetail: true,
+      needsHumanPedagogyReview: true,
+      actionNeeded:
+        "להצליב נושאי ההנדסה במוצר מול סעיפי הגאומטריה בתוך מסמך הכיתה (PDF).",
+      notes:
+        "מסמך כיתה זהה למתמטיקה — עיגון כיתתי לביצוע ביקורת הנדסה ושורות מאגר.",
+    };
+  }),
 
   /* ---------- Hebrew linguistic education ---------- */
   {
