@@ -1,6 +1,10 @@
 /**
  * E2E: Hebrew A–B (g1/g2) — question + answers show niqqud on real Next page.
  *
+ * דורש התחברות תלמיד (StudentAccessGate): לפני הריצה הגדר
+ *   E2E_STUDENT_PIN (4 ספרות) ו-E2E_STUDENT_USERNAME או E2E_STUDENT_CODE
+ * (אפשר גם ב-.env.local בשורות E2E_STUDENT_* — ראה scripts/e2e-lib/hebrew-e2e-student-auth.mjs)
+ *
  * מומלץ מול `next start` (יציב) — ב־`next dev` לפעמים יש סערת Fast Refresh
  * ואז הדף נשאר על ״טוען...׳ ב-Playwright.
  *   npx next build && npx next start -p 3110
@@ -13,6 +17,7 @@
  * - שאלות בינאריות (2 כפתורים) — תקין.
  */
 import { chromium } from "playwright";
+import { applyStudentSessionFromLogin } from "./e2e-lib/hebrew-e2e-student-auth.mjs";
 
 const BASE = process.env.E2E_BASE_URL || "http://localhost:3110";
 
@@ -264,7 +269,9 @@ async function runScenario(page, { grade, level, topic }) {
 
 async function main() {
   const browser = await chromium.launch({ headless: true });
-  const page = await browser.newPage();
+  const context = await browser.newContext();
+  await applyStudentSessionFromLogin(context, BASE);
+  const page = await context.newPage();
   page.setDefaultTimeout(30000);
 
   const results = [];

@@ -1,6 +1,9 @@
 /**
  * E2E: Hebrew grades א׳–ב׳ (g1/g2) — product fit on real Next page.
  *
+ * דורש התחברות תלמיד (StudentAccessGate): E2E_STUDENT_PIN + E2E_STUDENT_USERNAME או E2E_STUDENT_CODE
+ * (ראה scripts/e2e-lib/hebrew-e2e-student-auth.mjs)
+ *
  * לכל נושא (כולל דיבור אם מופיע ב־select): סבב תקין הוא או MCQ (בדיוק 4 כפתורים)
  * או סבב הקלדה מבוקר (שדה טקסט + ״בדוק תשובה׳) לפי `preferredAnswerMode` בבנק החי —
  * לא שילוב של שני המצבים. אין מטא/תוויות פנימיות בגוף השאלה הגלוי.
@@ -13,6 +16,7 @@
  *   node scripts/e2e-hebrew-g1-g2-product-fit.mjs
  */
 import { chromium } from "playwright";
+import { applyStudentSessionFromLogin } from "./e2e-lib/hebrew-e2e-student-auth.mjs";
 
 const BASE = process.env.E2E_BASE_URL || "http://localhost:3110";
 const PATH = "/learning/hebrew-master";
@@ -216,7 +220,9 @@ async function runScenario(page, { grade, topic }) {
 
 async function main() {
   const browser = await chromium.launch({ headless: true });
-  const page = await browser.newPage();
+  const context = await browser.newContext();
+  await applyStudentSessionFromLogin(context, BASE);
+  const page = await context.newPage();
   page.setDefaultTimeout(30000);
 
   await page.goto(`${BASE}${PATH}`, { waitUntil: "load", timeout: 120000 });

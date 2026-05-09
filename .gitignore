@@ -58,3 +58,5 @@ public/audio/hebrew/gen/v1/
 # AI-hybrid synthetic gold (regenerate: npm run ai-hybrid:generate-gold)
 data/ai-hybrid-gold/synthetic-gold-v1.jsonl
 
+
+.vercel
