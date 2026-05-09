@@ -12,6 +12,7 @@
  * @property {'core' | 'allowed' | 'enrichment' | 'not_yet'} expectedLevel
  * @property {MapConfidence} confidence
  * @property {string} notes
+ * @property {Array<{ sourceType: string, title: string, url: string, checkedAt: string, note: string }>} [sourceRefs]
  */
 
 /**
@@ -27,15 +28,89 @@
 const REVIEW_NOTE =
   "Conservative elementary mapping; requires human curriculum review before release blocking.";
 
-/** @param {string} key @param {string} labelHe @param {'core'|'allowed'|'enrichment'|'not_yet'} level @param {MapConfidence} conf */
-function td(key, labelHe, level, conf = "medium") {
+/**
+ * Sample anchors only — broad references for human verification; not item-level Ministry certification.
+ * @type {Record<string, Array<{ sourceType: string, title: string, url: string, checkedAt: string, note: string }>>}
+ */
+export const CURRICULUM_SOURCE_REF_PRESETS = {
+  internal_conservative: [
+    {
+      sourceType: "internal_conservative",
+      title: "Internal conservative strand mapping (LIOSH audit layer)",
+      url: "",
+      checkedAt: "2026-05-09",
+      note: "Repo-maintained interpretation — requires pedagogy sign-off before any release gate.",
+    },
+  ],
+  rama_general: [
+    {
+      sourceType: "rama",
+      title: "אופקים חדשים — עקרונות כלליים (משרד החינוך / רשויות)",
+      url: "https://www.gov.il/he/departments/education",
+      checkedAt: "2026-05-09",
+      note: "General framework reference only; does not map individual question stems to outcomes.",
+    },
+  ],
+  moe_portal: [
+    {
+      sourceType: "official_moe",
+      title: "משרד החינוך — דף ראשי והנחיות כלליות",
+      url: "https://www.gov.il/he/departments/education",
+      checkedAt: "2026-05-09",
+      note: "Official portal — use for policy context; not a line-by-line syllabus match.",
+    },
+  ],
+  /** Broad framing only — not item-level English outcomes. */
+  english_exposure_framework: [
+    {
+      sourceType: "official_moe",
+      title: "משרד החינוך — מסגרת כללית (אנגלית)",
+      url: "https://www.gov.il/he/departments/education",
+      checkedAt: "2026-05-09",
+      note: "General policy context; early grades often emphasize exposure/listening — verify formal literacy vs exposure per school.",
+    },
+    {
+      sourceType: "rama",
+      title: "אופקים חדשים — עקרונות כלליים (משרד החינוך / רשויות)",
+      url: "https://www.gov.il/he/departments/education",
+      checkedAt: "2026-05-09",
+      note: "General framework reference only; does not map individual question stems to outcomes.",
+    },
+  ],
+  /** Shapes / spatial orientation — interpretive mapping; not a formal geometry syllabus slice. */
+  geometry_shapes_intro: [
+    {
+      sourceType: "internal_conservative",
+      title: "Internal strand: plane shapes recognition (audit)",
+      url: "",
+      checkedAt: "2026-05-09",
+      note: "Repo interpretation of typical early shape recognition — requires pedagogy validation.",
+    },
+    {
+      sourceType: "official_moe",
+      title: "משרד החינוך — דף ראשי והנחיות כלליות",
+      url: "https://www.gov.il/he/departments/education",
+      checkedAt: "2026-05-09",
+      note: "Official portal — use for policy context; not a line-by-line syllabus match.",
+    },
+  ],
+};
+
+/** @param {object} [extra] optional sourceRefs and overrides */
+function td(key, labelHe, level, conf = "medium", extra = {}) {
   return {
     key,
     labelHe,
     expectedLevel: level,
     confidence: conf,
     notes: REVIEW_NOTE,
+    ...extra,
   };
+}
+
+function anchored(...refGroups) {
+  const sourceRefs = refGroups.flat().filter(Boolean);
+  return sourceRefs.length ? { sourceRefs } : {};
 }
 
 const G_HE = ["", "א׳", "ב׳", "ג׳", "ד׳", "ה׳", "ו׳"];
@@ -91,7 +166,13 @@ function mathGrade(g) {
     confidence: "medium",
   };
 
-  const NS = td("math.number_sense", "תפיסה מספרית וחישוב מנטלי", "core");
+  const NS = td(
+    "math.number_sense",
+    "תפיסה מספרית וחישוב מנטלי",
+    "core",
+    "medium",
+    anchored(CURRICULUM_SOURCE_REF_PRESETS.internal_conservative, CURRICULUM_SOURCE_REF_PRESETS.rama_general)
+  );
   const AS = td("math.addition_subtraction", "חיבור וחיסור", "core");
   const MD = td("math.multiplication_division", "כפל וחילוק", "core");
   const WP = td("math.word_problems", "שאלות מילוליות", "core");
@@ -153,7 +234,9 @@ function geometryGrade(g) {
   const SH = td(
     "geometry.shape_recognition_plane_figures",
     "הכרת צורות ומצולעים במישור",
-    "core"
+    "core",
+    "medium",
+    anchored(CURRICULUM_SOURCE_REF_PRESETS.geometry_shapes_intro)
   );
   const SP = td(
     "geometry.parallel_perpendicular_spatial",
@@ -257,7 +340,8 @@ function englishGrade(g) {
     "english.exposure_oral_listening",
     "חשיפה ראשונית: האזנה ושיח בסיסי",
     "core",
-    "medium"
+    "medium",
+    anchored(CURRICULUM_SOURCE_REF_PRESETS.english_exposure_framework)
   );
   const VOC = td(
     "english.vocabulary_translation",
@@ -409,9 +493,9 @@ export const ISRAELI_PRIMARY_CURRICULUM_MAP = {
 };
 
 export const CURRICULUM_MAP_META = {
-  version: 2,
-  phase: 2,
-  scope: "Israel elementary (grades 1–6) — conservative structured mapping layer",
+  version: 3,
+  phase: 3,
+  scope: "Israel elementary (grades 1–6) — conservative structured mapping + advisory source anchors",
   defaultConfidence: "medium",
   disclaimer:
     "This map does not encode an official Ministry of Education syllabus line-by-line. " +

@@ -29,9 +29,35 @@ const SUSPICIOUS_GRADE_RULES = [
     maxGradeSuspicious: 4,
     code: "math_percent_ratio_early",
   },
+  {
+    subject: "math",
+    rawIncludes: ["percent"],
+    maxGradeSuspicious: 3,
+    code: "math_percent_wording_early",
+  },
   { subject: "math", rawIncludes: ["decimals"], maxGradeSuspicious: 2, code: "math_decimals_very_early" },
   { subject: "geometry", rawIncludes: ["pythagoras"], maxGradeSuspicious: 5, code: "geometry_pythagoras_early" },
   { subject: "geometry", rawIncludes: ["volume"], maxGradeSuspicious: 3, code: "geometry_volume_early" },
+  { subject: "geometry", rawIncludes: ["diagonal"], maxGradeSuspicious: 3, code: "geometry_diagonals_early" },
+  { subject: "geometry", rawIncludes: ["diagonals"], maxGradeSuspicious: 3, code: "geometry_diagonals_early" },
+  {
+    subject: "english",
+    rawExact: ["grammar"],
+    maxGradeSuspicious: 2,
+    code: "english_grammar_formal_early",
+  },
+  {
+    subject: "english",
+    rawExact: ["sentence"],
+    maxGradeSuspicious: 2,
+    code: "english_sentence_patterns_early",
+  },
+  {
+    subject: "hebrew",
+    rawExact: ["grammar"],
+    maxGradeSuspicious: 2,
+    code: "hebrew_grammar_language_knowledge_early",
+  },
 ];
 
 function appliesSuspicion(rec, rule) {
@@ -103,6 +129,42 @@ function buildRollup(inventory, latestMeta, normalizeInventoryTopic) {
           ruleCode: rule.code,
         });
       }
+    }
+
+    if (rec.subject === "english" && gmin <= 3) {
+      if (
+        norm.normalizedTopicKey.includes("formal_reading") ||
+        (norm.normalizedTopicKey.includes("vocabulary") && String(rec.difficulty || "").toLowerCase() === "hard")
+      ) {
+        suspicious.push({
+          questionId: rec.questionId,
+          subject: rec.subject,
+          gradeMin: gmin,
+          rawTopic: rec.topic,
+          ruleCode: "english_reading_load_early_normalized",
+        });
+      }
+    }
+    if (rec.subject === "geometry" && gmin <= 3) {
+      const nk = norm.normalizedTopicKey;
+      if (nk.includes("volume") || nk.includes("diagonals")) {
+        suspicious.push({
+          questionId: rec.questionId,
+          subject: rec.subject,
+          gradeMin: gmin,
+          rawTopic: rec.topic,
+          ruleCode: "geometry_volume_or_diagonals_early_normalized",
+        });
+      }
+    }
+    if (rec.subject === "math" && gmin <= 3 && norm.normalizedTopicKey.includes("percentages")) {
+      suspicious.push({
+        questionId: rec.questionId,
+        subject: rec.subject,
+        gradeMin: gmin,
+        rawTopic: rec.topic,
+        ruleCode: "math_percentages_early_normalized",
+      });
     }
 
     const sg = rec.subject;

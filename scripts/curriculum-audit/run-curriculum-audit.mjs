@@ -27,6 +27,13 @@ async function loadTopicNormalizer() {
   return import(href);
 }
 
+async function loadDepthHeuristics() {
+  const href = pathToFileURL(
+    join(ROOT, "utils/curriculum-audit/curriculum-depth-heuristics.js")
+  ).href;
+  return import(href);
+}
+
 /**
  * @typedef {'aligned' | 'aligned_low_confidence' | 'too_easy' | 'too_advanced' | 'wrong_subject' | 'unclear_topic' | 'enrichment_only' | 'missing_metadata' | 'needs_human_review'} CurriculumClassification
  */
@@ -236,23 +243,78 @@ function stemNormalizeHint(text) {
     .replace(/\d+/g, "#");
 }
 
-function riskScore(rec, cls, dupWeight) {
-  let s = 0;
+/** Phase 3: prioritize review queue topics — plain `aligned` stays low unless depth/dup/span signals exist. */
+const RISK_CLASS_BASE = {
+  missing_metadata: 100,
+  unclear_topic: 96,
+  needs_human_review: 88,
+  aligned_low_confidence: 58,
+  too_advanced: 54,
+  too_easy: 50,
+  enrichment_only: 44,
+  wrong_subject: 40,
+  aligned: 14,
+};
+
+const RISK_FLAG_WEIGHT = {
+  english_grammar_early_grade: 24,
+  english_sentence_writing_early_grade: 24,
+  english_reading_comprehension_early_grade: 22,
+  geometry_volume_early: 26,
+  geometry_diagonals_early: 26,
+  geometry_area_too_broad: 18,
+  geometry_advanced_angles_early_grade: 24,
+  math_fractions_depth_unclear: 16,
+  math_percentages_too_early_grade: 22,
+  hebrew_language_complexity_early_grade: 20,
+  science_grade_low_coverage: 12,
+  hebrew_upper_grade_low_coverage: 12,
+  wide_grade_span_requires_review: 14,
+  duplicate_across_grades_requires_review: 20,
+  topic_shallow_cross_grade_spread: 16,
+  moledet_values_homeland_repeated_across_grades: 10,
+};
+
+/**
+ * @param {object} rec
+ * @param {object} row classification row (includes classification, depthFlags, duplicatePeerCount)
+ */
+function riskScorePhase3(rec, row) {
+  const c = row.classification;
+  let s = RISK_CLASS_BASE[c] ?? 36;
+
   const mc = rec.metadataCompleteness || {};
-  if (mc.missingCritical) s += 10;
-  if (!mc.hasTopic) s += 8;
-  if (!mc.hasGrade) s += 8;
-  if (!mc.hasDifficulty) s += 5;
-  if (rec.questionType === "generator_sample") s += 1;
-  if (Number(rec.gradeMax) - Number(rec.gradeMin) >= 3) s += 4;
-  if (bandLabel(Number(rec.gradeMin)) !== bandLabel(Number(rec.gradeMax))) s += 3;
-  s += dupWeight * 4;
-  if (cls.classification === "missing_metadata") s += 6;
-  if (cls.classification === "unclear_topic") s += 6;
-  if (cls.classification === "too_advanced") s += 5;
-  if (cls.classification === "needs_human_review") s += 2;
-  if (cls.classification === "aligned_low_confidence") s += 1;
-  if (cls.classification === "aligned") s += 0;
+  if (mc.missingCritical) s += 14;
+  if (!mc.hasTopic) s += 12;
+  if (!mc.hasGrade) s += 12;
+  if (!mc.hasDifficulty) s += 8;
+
+  const gmin = Number(rec.gradeMin);
+  const gmax = Number(rec.gradeMax);
+  const span = Number.isFinite(gmax) && Number.isFinite(gmin) ? gmax - gmin : 0;
+  if (span >= 3) s += 20;
+  else if (span >= 2) s += 14;
+  else if (Number.isFinite(gmin) && Number.isFinite(gmax) && bandLabel(gmin) !== bandLabel(gmax)) {
+    s += 8;
+  }
+
+  const dupPeers = row.duplicatePeerCount ?? 0;
+  const genOnly = rec.questionType === "generator_sample";
+  s += dupPeers * (genOnly ? 6 : 18);
+
+  for (const f of row.depthFlags || []) {
+    s += RISK_FLAG_WEIGHT[f] ?? 12;
+  }
+
+  if (c === "enrichment_only" && span >= 2) s += 12;
+
+  const noDepth = !(row.depthFlags && row.depthFlags.length);
+  const noDup = dupPeers === 0;
+  const narrowSpan = span < 2;
+  if (c === "aligned" && noDepth && noDup && narrowSpan && !mc.missingCritical) {
+    s = Math.min(s, 30);
+  }
+
   return s;
 }
 
@@ -350,10 +412,11 @@ function buildMarkdown(report) {
     ``,
     `## Top 50 highest-risk manual review`,
     ``,
-    ...sections.top50Risk.map(
-      (x, i) =>
-        `${i + 1}. score=${x.score.toFixed(1)} [${x.classification}] \`${x.questionId}\` ${x.subject} g${x.gradeMin}-${x.gradeMax} ${x.topic} — ${x.reasons.join("; ")}`
-    ),
+    ...sections.top50Risk.map((x, i) => {
+      const flags =
+        x.depthFlags && x.depthFlags.length ? x.depthFlags.join(", ") : "—";
+      return `${i + 1}. score=${x.score.toFixed(1)} [${x.classification}] depth=${flags} \`${x.questionId}\` ${x.subject} g${x.gradeMin}-${x.gradeMax} ${x.topic} — ${x.reasons.join("; ")}`;
+    }),
     ``,
   ];
   return lines.join("\n");
@@ -363,8 +426,10 @@ export async function runCurriculumAudit(opts = {}) {
   const writeFiles = opts.writeFiles !== false;
   const mapMod = await loadCurriculumMapModule();
   const normMod = await loadTopicNormalizer();
+  const depthMod = await loadDepthHeuristics();
   const { CURRICULUM_MAP_META, getGradeEntry, findTopicPlacement } = mapMod;
   const { normalizeInventoryTopic } = normMod;
+  const { analyzeCurriculumDepth, mergeDepthFlagsIntoClassification } = depthMod;
   const classifyRecord = makeClassifyRecord({
     getGradeEntry,
     findTopicPlacement,
@@ -373,12 +438,88 @@ export async function runCurriculumAudit(opts = {}) {
 
   const inventory = await generateQuestionInventory({ writeFiles });
 
+  const scienceByGrade = Object.fromEntries([1, 2, 3, 4, 5, 6].map((g) => [g, 0]));
+  const hebrewByGrade = Object.fromEntries([1, 2, 3, 4, 5, 6].map((g) => [g, 0]));
+  for (const rec of inventory.records) {
+    if (rec.subject === "science") {
+      for (let g = Number(rec.gradeMin); g <= Number(rec.gradeMax); g++) {
+        if (g >= 1 && g <= 6) scienceByGrade[g] += 1;
+      }
+    }
+    if (rec.subject === "hebrew") {
+      for (let g = Number(rec.gradeMin); g <= Number(rec.gradeMax); g++) {
+        if (g >= 1 && g <= 6) hebrewByGrade[g] += 1;
+      }
+    }
+  }
+
+  /** @type {Map<string, Set<number>>} */
+  const normKeyGrades = new Map();
+  for (const rec of inventory.records) {
+    const norm = normalizeInventoryTopic({
+      subject: rec.subject,
+      topic: rec.topic,
+      subtopic: rec.subtopic,
+    });
+    const nkKey = `${rec.subject}|${norm.normalizedTopicKey}`;
+    if (!normKeyGrades.has(nkKey)) normKeyGrades.set(nkKey, new Set());
+    for (let g = Number(rec.gradeMin); g <= Number(rec.gradeMax); g++) {
+      if (g >= 1 && g <= 6) normKeyGrades.get(nkKey).add(g);
+    }
+  }
+  const normKeyGradesLookup = Object.fromEntries(normKeyGrades);
+
+  const stemHashGroups = new Map();
+  for (const rec of inventory.records) {
+    const h = rec.stemHash;
+    if (!h) continue;
+    const k = `${rec.subject}|${h}`;
+    if (!stemHashGroups.has(k)) stemHashGroups.set(k, []);
+    stemHashGroups.get(k).push(rec);
+  }
+
+  const duplicateCollisionCount = new Map();
+  for (const rec of inventory.records) {
+    const h = rec.stemHash;
+    if (!h) continue;
+    const k = `${rec.subject}|${h}`;
+    duplicateCollisionCount.set(k, (duplicateCollisionCount.get(k) || 0) + 1);
+  }
+  function duplicatePeerCountForQuestionId(id) {
+    const rec = inventory.records.find((r) => r.questionId === id);
+    const h = rec?.stemHash;
+    if (!h || !rec?.subject) return 0;
+    const k = `${rec.subject}|${h}`;
+    const n = duplicateCollisionCount.get(k) || 0;
+    return Math.max(0, n - 1);
+  }
+
   /** @type {Array<object>} */
   const classifications = [];
   const countsByClassification = {};
 
   for (const rec of inventory.records) {
     const cls = classifyRecord(rec);
+    const norm =
+      cls.norm ||
+      normalizeInventoryTopic({
+        subject: rec.subject,
+        topic: rec.topic,
+        subtopic: rec.subtopic,
+      });
+    const dupPeers = duplicatePeerCountForQuestionId(rec.questionId);
+    const depth = analyzeCurriculumDepth(rec, norm, {
+      coverageContext: { scienceByGrade, hebrewByGrade },
+      normKeyGrades: normKeyGradesLookup,
+      duplicatePeerCount: dupPeers,
+    });
+    const merged = mergeDepthFlagsIntoClassification(
+      cls.classification,
+      cls.reasons,
+      depth,
+      cls.placement,
+      rec
+    );
     classifications.push({
       questionId: rec.questionId,
       subject: rec.subject,
@@ -387,19 +528,23 @@ export async function runCurriculumAudit(opts = {}) {
       topic: rec.topic,
       subtopic: rec.subtopic,
       difficulty: rec.difficulty,
-      normalizedTopicKey: cls.norm?.normalizedTopicKey,
-      normalizationConfidence: cls.norm?.normalizationConfidence,
-      normalizedTopicLabelHe: cls.norm?.normalizedTopicLabelHe,
+      normalizedTopicKey: norm.normalizedTopicKey,
+      normalizationConfidence: norm.normalizationConfidence,
+      normalizedTopicLabelHe: norm.normalizedTopicLabelHe,
       placementBucket: cls.placement?.bucket ?? null,
       mappedCurriculumKey: cls.placement?.def?.key ?? null,
-      classification: cls.classification,
-      reasons: cls.reasons,
+      classification: merged.classification,
+      reasons: merged.reasons,
       detail: cls.detail,
       questionType: rec.questionType,
       sourceFile: rec.sourceFile,
+      depthFlags: depth.depthFlags,
+      depthNotes: depth.notes,
+      depthAdjusted: merged.depthAdjusted,
+      duplicatePeerCount: dupPeers,
     });
-    const k = cls.classification;
-    countsByClassification[k] = (countsByClassification[k] || 0) + 1;
+    const ck = merged.classification;
+    countsByClassification[ck] = (countsByClassification[ck] || 0) + 1;
   }
 
   const total = inventory.records.length;
@@ -423,15 +568,6 @@ export async function runCurriculumAudit(opts = {}) {
   }
 
   const topicTop = Object.entries(byTopic).sort((a, b) => b[1] - a[1]);
-
-  const stemHashGroups = new Map();
-  for (const rec of inventory.records) {
-    const h = rec.stemHash;
-    if (!h) continue;
-    const k = `${rec.subject}|${h}`;
-    if (!stemHashGroups.has(k)) stemHashGroups.set(k, []);
-    stemHashGroups.get(k).push(rec);
-  }
 
   /** @type {Array<object>} */
   const duplicateWarnings = [];
@@ -477,22 +613,6 @@ export async function runCurriculumAudit(opts = {}) {
 
   duplicateWarnings.sort((a, b) => (b.rowCount || 0) - (a.rowCount || 0));
 
-  const duplicateCollisionCount = new Map();
-  for (const rec of inventory.records) {
-    const h = rec.stemHash;
-    if (!h) continue;
-    const k = `${rec.subject}|${h}`;
-    duplicateCollisionCount.set(k, (duplicateCollisionCount.get(k) || 0) + 1);
-  }
-  function duplicateWeightForQuestionId(id) {
-    const rec = inventory.records.find((r) => r.questionId === id);
-    const h = rec?.stemHash;
-    if (!h || !rec?.subject) return 0;
-    const k = `${rec.subject}|${h}`;
-    const n = duplicateCollisionCount.get(k) || 0;
-    return Math.max(0, n - 1);
-  }
-
   const missingMetadata = classifications.filter(
     (x) => x.classification === "missing_metadata"
   );
@@ -522,12 +642,13 @@ export async function runCurriculumAudit(opts = {}) {
 
   const scored = classifications.map((c) => {
     const rec = inventory.records.find((r) => r.questionId === c.questionId);
-    const score = riskScore(rec, c, duplicateWeightForQuestionId(c.questionId));
+    const score = riskScorePhase3(rec, c);
     return {
       questionId: c.questionId,
       score,
       classification: c.classification,
       reasons: c.reasons,
+      depthFlags: c.depthFlags,
       subject: rec?.subject,
       gradeMin: rec?.gradeMin,
       gradeMax: rec?.gradeMax,
