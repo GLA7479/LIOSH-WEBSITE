@@ -354,7 +354,7 @@ export const GRADES = {
       "compare",
       "number_sense",
       "word_problems", // שאלות חיבור וחיסור
-      "equations", // משוואות פשוטות (נעלם אחד) — מיושר עם utils/math-question-generator.js לכיתה א׳
+      // משוואות פורמליות — לא כנושא נפרד בכיתה א׳; חוסר מספר/איזון טרום־אלגברי דרך number_sense / מילולי
       "mixed", // תרגילים מעורבים
     ],
     allowFractions: false,
@@ -367,8 +367,8 @@ export const GRADES = {
       "subtraction",
       "multiplication", // לוח כפל עד 10×10
       "division",       // חילוק פשוט לפי לוח הכפל
-      "fractions",      // חצי ורבע
-      "divisibility",   // סימני התחלקות ב-2,5,10
+      "fractions",      // חצי ורבע (שברי יחידה בלבד בגנרטור)
+      // התחלקות פורמלית — מכיתה ג׳ (גם UI וגם גנרטור)
       "compare",
       "number_sense",
       "word_problems",  // שאלות חיבור, חיסור, כפל וחילוק
@@ -391,7 +391,7 @@ export const GRADES = {
       "divisibility",   // סימני התחלקות ב-2,5,10
       "order_of_operations", // סדר פעולות והשימוש בסוגריים
       "compare",
-      "equations",
+      // משוואות אלגבריות פורמליות — מכיתה ד׳ בדף הפעולות; כיתה ג׳ ממשיכה עם סדר פעולות / נעלם פשוט במסלולים אחרים
       "number_sense",
       "word_problems",  // שאלות מילוליות (חשבון)
       "mixed",

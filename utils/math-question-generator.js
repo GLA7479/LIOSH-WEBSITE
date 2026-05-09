@@ -1730,7 +1730,13 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
           const num = dividend / divisorGcd;
           const den = divisor / divisorGcd;
           correctAnswer = `${num}/${den}`;
-          question = `מה התוצאה של ${dividend} ÷ ${divisor}? רשמו כשבר: ${BLANK}`;
+          const pickDivQ = () =>
+            [
+              `מה התוצאה של ${dividend} ÷ ${divisor}? רשמו כשבר: ${BLANK}`,
+              `${dividend} חלקי ${divisor} — רשמו כשבר מצומצם: ${BLANK}`,
+              `חילוק שלמים כשבר: ${dividend} ÷ ${divisor} = ${BLANK}`,
+            ][Math.floor(Math.random() * 3)];
+          question = pickDivQ();
           params = { kind: "frac_as_division", dividend, divisor, num, den };
         } else {
           // אם התוצאה היא מספר שלם, ננסה שוב
@@ -1741,10 +1747,13 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
           const num = newDividend / divisorGcd;
           const den = newDivisor / divisorGcd;
           correctAnswer = `${num}/${den}`;
-          question = `מה התוצאה של ${newDividend} ÷ ${newDivisor}? רשמו כשבר: ${BLANK}`;
+          question = [
+            `מה התוצאה של ${newDividend} ÷ ${newDivisor}? רשמו כשבר: ${BLANK}`,
+            `${newDividend} חלקי ${newDivisor} (כשבר): ${BLANK}`,
+          ][Math.floor(Math.random() * 2)];
           params = { kind: "frac_as_division", dividend: newDividend, divisor: newDivisor, num, den };
         }
-      } else if (fractionType < 0.7) {
+      } else if (fractionType < 0.63) {
         // כפל שברים
         const den1 = dens[Math.floor(Math.random() * dens.length)] || 4;
         const den2 = dens[Math.floor(Math.random() * dens.length)] || 6;
@@ -1761,8 +1770,29 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
         const finalDen = resDen / divisor;
         
         correctAnswer = `${finalNum}/${finalDen}`;
-        question = `${n1}/${den1} × ${n2}/${den2} = ${BLANK}`;
+        question = [
+          `${n1}/${den1} × ${n2}/${den2} = ${BLANK}`,
+          `כפל שברים: ${n1}/${den1} · ${n2}/${den2} = ${BLANK}`,
+          `מה תוצאת ${n1}/${den1} כפול ${n2}/${den2}? ${BLANK}`,
+          `חשב את המכפלה ${n1}/${den1} × ${n2}/${den2} = ${BLANK}`,
+        ][Math.floor(Math.random() * 4)];
         params = { kind: "frac_multiply", n1, den1, n2, den2, finalNum, finalDen };
+      } else if (fractionType < 0.73) {
+        const den = dens[Math.floor(Math.random() * dens.length)] || 8;
+        let n1 = randInt(1, den - 1);
+        let n2 = randInt(1, den - 1);
+        let guard = 0;
+        while (n1 === n2 && guard++ < 20) {
+          n2 = randInt(1, den - 1);
+        }
+        const biggerStr = n1 > n2 ? `${n1}/${den}` : `${n2}/${den}`;
+        correctAnswer = biggerStr;
+        question = [
+          `איזה שבר גדול יותר — ${n1}/${den} או ${n2}/${den}? רשמו את השבר הגדול: ${BLANK}`,
+          `בחרו את השבר הגדול מבין ${n1}/${den} ו-${n2}/${den}: ${BLANK}`,
+          `השוו בין ${n1}/${den} ל-${n2}/${den}. הגדול הוא: ${BLANK}`,
+        ][Math.floor(Math.random() * 3)];
+        params = { kind: "frac_compare_same_den", n1, n2, den };
       } else {
         // חילוק שברים
         const den1 = dens[Math.floor(Math.random() * dens.length)] || 4;
@@ -1781,55 +1811,135 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
         const finalDen = resDen / divisor;
         
         correctAnswer = `${finalNum}/${finalDen}`;
-        question = `${n1}/${den1} ÷ ${n2}/${den2} = ${BLANK}`;
+        question = [
+          `${n1}/${den1} ÷ ${n2}/${den2} = ${BLANK}`,
+          `חילוק שברים: ${n1}/${den1} : ${n2}/${den2} = ${BLANK}`,
+          `מה תוצאת ${n1}/${den1} חלקי ${n2}/${den2}? ${BLANK}`,
+          `${n1}/${den1} לחלק ב-${n2}/${den2} שווה ל־${BLANK}`,
+        ][Math.floor(Math.random() * 4)];
         params = { kind: "frac_divide", n1, den1, n2, den2, finalNum, finalDen };
       }
     } else if (gradeKey === "g3" || gradeKey === "g4") {
-      // כיתות ג'-ד' - שברים בסיסיים (חיבור וחיסור עם מכנה זהה)
-      const opKind = Math.random() < 0.5 ? "add_frac" : "sub_frac";
-      const den = dens[Math.floor(Math.random() * dens.length)] || 4;
-      const n1 = randInt(1, den - 1);
-      const n2 = randInt(1, den - 1);
-
-      let resNum = opKind === "add_frac" ? n1 + n2 : n1 - n2;
-      const resDen = den;
-
+      // כיתות ג'-ד' — מכנה זהה, השוואה, צמצום בסיסי, שקילות פשוטה
       const g4tag = gradeKey === "g4" ? "כיתה ד׳ — " : "";
-      if (opKind === "sub_frac" && resNum < 0) {
-        resNum = n2 - n1;
-        question = `${g4tag}${n2}/${den} - ${n1}/${den} = ${BLANK}`;
+      const den = dens[Math.floor(Math.random() * dens.length)] || 4;
+      const branch = Math.random();
+
+      if (branch < 0.58) {
+        const opKind = Math.random() < 0.5 ? "add_frac" : "sub_frac";
+        const n1 = randInt(1, den - 1);
+        const n2 = randInt(1, den - 1);
+
+        let resNum = opKind === "add_frac" ? n1 + n2 : n1 - n2;
+        const resDen = den;
+
+        if (opKind === "sub_frac" && resNum < 0) {
+          resNum = n2 - n1;
+          question = [
+            `${g4tag}${n2}/${den} - ${n1}/${den} = ${BLANK}`,
+            `${g4tag}חיסור שברים (מכנה ${den}): ${n2}/${den} − ${n1}/${den} = ${BLANK}`,
+          ][Math.floor(Math.random() * 2)];
+          params = {
+            kind:
+              gradeKey === "g4"
+                ? "frac_same_den_sub_g4"
+                : "frac_same_den_sub",
+            op: "sub",
+            n1: n2,
+            n2: n1,
+            den,
+          };
+        } else {
+          question =
+            opKind === "add_frac"
+              ? [
+                  `${g4tag}${n1}/${den} + ${n2}/${den} = ${BLANK}`,
+                  `${g4tag}חיבור שברים במכנה ${den}: ${n1}/${den} + ${n2}/${den} = ${BLANK}`,
+                ][Math.floor(Math.random() * 2)]
+              : [
+                  `${g4tag}${n1}/${den} - ${n2}/${den} = ${BLANK}`,
+                  `${g4tag}חיסור במכנה זהה: ${n1}/${den} − ${n2}/${den} = ${BLANK}`,
+                ][Math.floor(Math.random() * 2)];
+          params = {
+            kind:
+              gradeKey === "g4"
+                ? opKind === "add_frac"
+                  ? "frac_same_den_add_g4"
+                  : "frac_same_den_sub_g4"
+                : opKind === "add_frac"
+                  ? "frac_same_den_add"
+                  : "frac_same_den_sub",
+            op: opKind === "add_frac" ? "add" : "sub",
+            n1,
+            n2,
+            den,
+          };
+        }
+
+        params = mergeDiagnosticContractIntoParams(params, {
+          patternFamily: "fraction_same_denominator_add_sub",
+          conceptTag: "frac_same_den",
+          diagnosticSkillId: "math_frac_same_den",
+          probePower: "medium",
+          expectedErrorTags: ["calculation_slip", "operation_confusion"],
+          explanationHe:
+            "חיבור/חיסור שברים עם מכנה זהה — טעויות נפוצות בחישוב המונה או בבחירת הפעולה.",
+        });
+
+        correctAnswer = `${resNum}/${resDen}`;
+      } else if (branch < 0.76) {
+        let n1 = randInt(1, den - 1);
+        let n2 = randInt(1, den - 1);
+        let guard = 0;
+        while (n1 === n2 && guard++ < 25) {
+          n2 = randInt(1, den - 1);
+        }
+        const biggerStr = n1 > n2 ? `${n1}/${den}` : `${n2}/${den}`;
+        correctAnswer = biggerStr;
+        question = [
+          `${g4tag}איזה שבר גדול יותר — ${n1}/${den} או ${n2}/${den}? רשמו את השבר הגדול: ${BLANK}`,
+          `${g4tag}השוו ${n1}/${den} ו-${n2}/${den} (מכנה ${den}). הגדול: ${BLANK}`,
+        ][Math.floor(Math.random() * 2)];
         params = {
-          kind: gradeKey === "g4" ? "frac_same_den_g4" : "frac_same_den",
-          op: "sub",
-          n1: n2,
-          n2: n1,
-          den,
-        };
-      } else {
-        question =
-          opKind === "add_frac"
-            ? `${g4tag}${n1}/${den} + ${n2}/${den} = ${BLANK}`
-            : `${g4tag}${n1}/${den} - ${n2}/${den} = ${BLANK}`;
-        params = {
-          kind: gradeKey === "g4" ? "frac_same_den_g4" : "frac_same_den",
-          op: opKind === "add_frac" ? "add" : "sub",
+          kind: gradeKey === "g4" ? "frac_compare_like_den_g4" : "frac_compare_like_den_g3",
           n1,
           n2,
           den,
         };
+      } else if (branch < 0.9) {
+        const num = randInt(2, 6) * 2;
+        const denBig = 8;
+        const gcdS = (x, y) => (y === 0 ? x : gcdS(y, x % y));
+        const g = gcdS(num, denBig);
+        correctAnswer = `${num / g}/${denBig / g}`;
+        question = [
+          `${g4tag}צמצם את השבר ${num}/${denBig}: ${BLANK}`,
+          `${g4tag}מצא שבר שקול פשוט יותר ל-${num}/${denBig}: ${BLANK}`,
+        ][Math.floor(Math.random() * 2)];
+        params = {
+          kind: gradeKey === "g4" ? "frac_simplify_intro_g4" : "frac_simplify_intro_g3",
+          num,
+          den: denBig,
+        };
+      } else {
+        const factor = randInt(2, 2);
+        const smallDen = den;
+        const bigDen = smallDen * factor;
+        const numSmall = randInt(1, smallDen - 1);
+        const numBig = numSmall * factor;
+        correctAnswer = `${smallDen}`;
+        question = [
+          `${g4tag}${numBig}/${bigDen} = ${numSmall}/${BLANK}`,
+          `${g4tag}השלים מכנה: ${numBig}/${bigDen} = ${numSmall}/${BLANK}`,
+        ][Math.floor(Math.random() * 2)];
+        params = {
+          kind: gradeKey === "g4" ? "frac_equiv_missing_den_g4" : "frac_equiv_missing_den_g3",
+          numSmall,
+          smallDen,
+          numBig,
+          bigDen,
+        };
       }
-
-      params = mergeDiagnosticContractIntoParams(params, {
-        patternFamily: "fraction_same_denominator_add_sub",
-        conceptTag: "frac_same_den",
-        diagnosticSkillId: "math_frac_same_den",
-        probePower: "medium",
-        expectedErrorTags: ["calculation_slip", "operation_confusion"],
-        explanationHe:
-          "חיבור/חיסור שברים עם מכנה זהה — טעויות נפוצות בחישוב המונה או בבחירת הפעולה.",
-      });
-
-      correctAnswer = `${resNum}/${resDen}`;
     } else if (gradeKey === "g1" || gradeKey === "g2") {
       // כיתות א׳–ב׳ — חצי ורבע בלבד; כיתה א׳ בטווחים צרים יותר
       const isG1 = gradeKey === "g1";
@@ -1963,10 +2073,31 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
       })
       .join(" ");
     
-    const questionLabel = "השלם את הסדרה";
+    const seqVariant = Math.floor(Math.random() * 4);
+    let questionLabel = "השלם את הסדרה";
+    let seqKind = "seq_inline";
+    if (seqVariant === 1) {
+      questionLabel = "מצא את החסר בדפוס";
+      seqKind = "seq_pattern_gap";
+    } else if (seqVariant === 2) {
+      questionLabel = "בסדרה חשבונית השלם את המספר הבא";
+      seqKind = "seq_arithmetic_explicit";
+    } else if (seqVariant === 3) {
+      questionLabel = "המשך את הרצף";
+      seqKind = "seq_continue";
+    }
     const exerciseText = display;
     question = `${questionLabel} ${exerciseText}`;
-    params = { kind: "sequence", start, step, seq, posOfBlank, questionLabel, exerciseText };
+    params = {
+      kind: seqKind,
+      start,
+      step,
+      seq,
+      posOfBlank,
+      questionLabel,
+      exerciseText,
+      variant: seqVariant,
+    };
   // ===== עשרוניים =====
   } else if (selectedOp === "decimals") {
     // Grade-band alignment: א׳–ב׳ אין פעולת עשרוניים ב־GRADES — אם הגיע סימפול ידני/ארוע נדיר, נפיל לתפיסה מספרית.
@@ -2068,37 +2199,61 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
         }
       }
     } else {
-      // עשרוניים רגילים - חיבור וחיסור
-      const a = round(Math.random() * maxBase, places);
-      const b = round(Math.random() * maxBase, places);
-      const t = Math.random() < 0.5 ? "add" : "sub";
-
-      if (t === "add") {
-        correctAnswer = round(a + b, places);
-        question = `${a.toFixed(places)} + ${b.toFixed(places)} = ${BLANK}`;
-        params = {
-          kind: "dec_add",
-          a,
-          b,
-          places,
-          presentationVariant: randInt(0, 3),
-        };
-        operandA = a;
-        operandB = b;
+      // עשרוניים רגילים — השוואה / עיגול לשלם / חיבור וחיסור
+      const roll = Math.random();
+      const allowDecimalVariety = gradeKey !== "g1" && gradeKey !== "g2";
+      if (allowDecimalVariety && roll < 0.22) {
+        let x = round(randInt(2, Math.min(95, Math.floor(maxBase))) / 10, Math.min(places, 2));
+        let y = round(randInt(2, Math.min(95, Math.floor(maxBase))) / 10, Math.min(places, 2));
+        let guard = 0;
+        while (Math.abs(x - y) < 0.05 && guard++ < 25) {
+          y = round(randInt(2, Math.min(95, Math.floor(maxBase))) / 10, Math.min(places, 2));
+        }
+        const bigger = x > y ? x : y;
+        correctAnswer = bigger;
+        question = `איזה מספר גדול יותר — ${x.toFixed(places)} או ${y.toFixed(places)}? רשמו את הגדול: ${BLANK}`;
+        params = { kind: "dec_compare_max", x, y, places };
+        operandA = x;
+        operandB = y;
+      } else if (allowDecimalVariety && roll < 0.38) {
+        const n = round(randInt(12, Math.min(98, Math.floor(maxBase))) / 10, 1);
+        correctAnswer = Math.round(n);
+        question = `עגלו את ${n.toFixed(1)} למספר השלם הקרוב (כללי עיגול סטנדרטי): ${BLANK}`;
+        params = { kind: "dec_round_whole_standard", n, places: 1 };
+        operandA = n;
+        operandB = null;
       } else {
-        const big = Math.max(a, b);
-        const small = Math.min(a, b);
-        correctAnswer = round(big - small, places);
-        question = `${big.toFixed(places)} - ${small.toFixed(places)} = ${BLANK}`;
-        params = {
-          kind: "dec_sub",
-          a: big,
-          b: small,
-          places,
-          presentationVariant: randInt(0, 3),
-        };
-        operandA = big;
-        operandB = small;
+        const a = round(Math.random() * maxBase, places);
+        const b = round(Math.random() * maxBase, places);
+        const t = Math.random() < 0.5 ? "add" : "sub";
+
+        if (t === "add") {
+          correctAnswer = round(a + b, places);
+          question = `${a.toFixed(places)} + ${b.toFixed(places)} = ${BLANK}`;
+          params = {
+            kind: "dec_add",
+            a,
+            b,
+            places,
+            presentationVariant: randInt(0, 3),
+          };
+          operandA = a;
+          operandB = b;
+        } else {
+          const big = Math.max(a, b);
+          const small = Math.min(a, b);
+          correctAnswer = round(big - small, places);
+          question = `${big.toFixed(places)} - ${small.toFixed(places)} = ${BLANK}`;
+          params = {
+            kind: "dec_sub",
+            a: big,
+            b: small,
+            places,
+            presentationVariant: randInt(0, 3),
+          };
+          operandA = big;
+          operandB = small;
+        }
       }
     }
   // ===== עיגול =====
@@ -2365,7 +2520,7 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
         ? ["neighbors", "place_tens_units", "even_odd", "complement10"]
         : gradeKey === "g3" || gradeKey === "g4"
         ? ["neighbors", "place_hundreds", "complement10", "complement100"]
-        : ["neighbors", "place_hundreds", "complement100"];
+        : ["neighbors", "place_hundreds", "complement10", "complement100", "even_odd"];
     const t = types[Math.floor(Math.random() * types.length)];
 
     const maxNumberSense = levelConfig.number_sense?.max || levelConfig.addition?.max || 999;
@@ -3255,39 +3410,56 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
 
   // ===== תכונות ה-0 וה-1 (כיתה ד') =====
   } else if (selectedOp === "zero_one_properties") {
-    const variant = Math.random();
-    if (variant < 0.25) {
-      // כפל ב-0
-      const a = randInt(1, 100);
+    const a = randInt(1, 100);
+    const slot = Math.random();
+    if (slot < 0.125) {
       correctAnswer = 0;
       question = `מה התוצאה של ${a} × 0?`;
       params = { kind: "zero_mul", a };
       operandA = a;
       operandB = 0;
-    } else if (variant < 0.5) {
-      // חיבור עם 0
-      const a = randInt(1, 100);
-      correctAnswer = a;
-      question = `מה התוצאה של ${a} + 0?`;
-      params = { kind: "zero_add", a };
+    } else if (slot < 0.25) {
+      correctAnswer = 0;
+      question = `0 × ${a} = ${BLANK} — השלם את המספר החסר`;
+      params = { kind: "zero_mul_eq", a };
+      operandA = 0;
+      operandB = a;
+    } else if (slot < 0.375) {
+      correctAnswer = 0;
+      question = `חשב במילים: ${a} כפול אפס שווה ל־__`;
+      params = { kind: "zero_mul_word", a };
       operandA = a;
       operandB = 0;
-    } else if (variant < 0.75) {
-      // חיסור של 0
-      const a = randInt(1, 100);
+    } else if (slot < 0.5) {
       correctAnswer = a;
-      question = `מה התוצאה של ${a} - 0?`;
-      params = { kind: "zero_sub", a };
+      question = `מה ערך הביטוי ${a} + 0?`;
+      params = { kind: "zero_add_expr", a };
       operandA = a;
       operandB = 0;
-    } else {
-      // כפל ב-1
-      const a = randInt(1, 100);
+    } else if (slot < 0.625) {
       correctAnswer = a;
-      question = `מה התוצאה של ${a} × 1?`;
-      params = { kind: "one_mul", a };
+      question = `השלם: 0 + ${a} = ${BLANK}`;
+      params = { kind: "zero_add_swap", a };
+      operandA = 0;
+      operandB = a;
+    } else if (slot < 0.75) {
+      correctAnswer = a;
+      question = `${a} − 0 = ${BLANK}`;
+      params = { kind: "zero_sub_line", a };
+      operandA = a;
+      operandB = 0;
+    } else if (slot < 0.875) {
+      correctAnswer = a;
+      question = `מספר ${a} נשאר אותו דבר כשמכפילים אותו ב־1: ${a} × 1 = ${BLANK}`;
+      params = { kind: "one_mul_identity", a };
       operandA = a;
       operandB = 1;
+    } else {
+      correctAnswer = a;
+      question = `1 × ${a} = ${BLANK}`;
+      params = { kind: "one_mul_comm", a };
+      operandA = 1;
+      operandB = a;
     }
 
   // ===== אומדן (כיתות ד'-ה') =====

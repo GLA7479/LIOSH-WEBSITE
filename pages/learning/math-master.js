@@ -846,27 +846,15 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
     }
   }, [grade]); // רק כשהכיתה משתנה, לא כשהפעולה משתנה
 
-  // עדכון mixedOperations לפי הכיתה
+  // עדכון mixedOperations לפי הכיתה — כל פעולה זמינה לכיתה מקבלת מפתח (ברירת מחדל: הכל פעיל)
   useEffect(() => {
     const availableOps = GRADES[grade].operations.filter(
       (op) => op !== "mixed"
     );
-    const newMixedOps = {
-      addition: availableOps.includes("addition"),
-      subtraction: availableOps.includes("subtraction"),
-      multiplication: availableOps.includes("multiplication"),
-      division: availableOps.includes("division"),
-      fractions: availableOps.includes("fractions"),
-      percentages: availableOps.includes("percentages"),
-      sequences: availableOps.includes("sequences"),
-      decimals: availableOps.includes("decimals"),
-      rounding: availableOps.includes("rounding"),
-      equations: availableOps.includes("equations"),
-      compare: availableOps.includes("compare"),
-      number_sense: availableOps.includes("number_sense"),
-      factors_multiples: availableOps.includes("factors_multiples"),
-      word_problems: availableOps.includes("word_problems"),
-    };
+    const newMixedOps = {};
+    for (const op of availableOps) {
+      newMixedOps[op] = true;
+    }
     setMixedOperations(newMixedOps);
   }, [grade]);
 
@@ -3299,6 +3287,7 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                   style={{ textAlign: playerName && /[\u0590-\u05FF]/.test(playerName) ? "right" : "left" }}
                 />
                 <select
+                  data-testid="math-grade-select"
                   value={gradeNumber}
                   title={`כיתה ${["א", "ב", "ג", "ד", "ה", "ו"][gradeNumber - 1]}`}
                   onChange={(e) => {

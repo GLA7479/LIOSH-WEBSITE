@@ -571,14 +571,15 @@ export function buildSectionsForGrade(grade) {
       }),
       sec({
         sectionKey: "g6_mixed_review",
-        labelHe: "תרגול משולב ושאלות מילוליות מאתגרות",
+        labelHe: "תרגול משולב (פעולות בסיסיות)",
         strand: strand.numbers,
         subsectionLabelsHe: [],
         expectedDepth: "advanced",
         sourcePageHint: "סיכום כיתה ו׳",
+        notes:
+          "לא ממפים math.word_problems כאן — שאלות מילוליות ואחוזים/יחס מקבלות מקטע ייעודי g6_percent_ratio_problems בלבד; מונע חפיפת מועמדים בביקורת קטלוג.",
         mapsToNormalizedKeys: [
           "math.mixed_operations",
-          "math.word_problems",
           "math.addition_subtraction",
           "math.multiplication_division",
         ],
