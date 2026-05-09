@@ -351,6 +351,33 @@ async function main() {
   const inventoryPresent = !!inv.path && inv.records.length > 0;
   const inventoryCriticalOk = invAgg.missingCriticalMetadataRows === 0;
 
+  let sampledContentQuality = null;
+  try {
+    const sqPath = join(OUT_DIR, "hebrew-sampled-content-quality.json");
+    if (existsSync(sqPath)) {
+      sampledContentQuality = JSON.parse(readFileSync(sqPath, "utf8"));
+    }
+  } catch {
+    sampledContentQuality = null;
+  }
+  const sampledReportPresent = !!sampledContentQuality?.summary;
+  const productContentQualityGatePassed =
+    sampledContentQuality?.summary?.productContentQualityGatePassed === true;
+
+  const automatedInfrastructureClosed =
+    thinBranches.length === 0 &&
+    weakVariety.length === 0 &&
+    (!inventoryPresent || inventoryCriticalOk) &&
+    runtimeVsOk;
+
+  const productContentClosedForDev =
+    automatedInfrastructureClosed &&
+    sampledReportPresent &&
+    productContentQualityGatePassed;
+
+  const fullOwnerMoEClosed =
+    ownerSignedOff && productContentClosedForDev && automatedInfrastructureClosed;
+
   const payload = {
     generatedAt: new Date().toISOString(),
     phase: "hebrew-final-closure",
@@ -367,8 +394,11 @@ async function main() {
       notes: [
         "mixed topic excluded from per-topic sampling — same pattern as geometry closure.",
         "Hebrew has no kita PDF extraction in this repo — PDF alignment is manual/advisory.",
+        "productContentClosedForDev requires hebrew-sampled-content-quality.json with productContentQualityGatePassed=true.",
       ],
+      sampledContentQualityPath: sampledReportPresent ? "reports/curriculum-audit/hebrew-sampled-content-quality.json" : null,
     },
+    sampledContentQualitySummary: sampledContentQuality?.summary ?? null,
     ownerVerificationAppendix: ownerAppendix,
     inventory: {
       present: inventoryPresent,
@@ -394,17 +424,13 @@ async function main() {
       runtimeVsOfficialCatalogGatePassed: runtimeVsOk,
       ownerCatalogSignoffGatePassed: ownerSignedOff,
       runtimeVsOfficialMismatchRatio: rvTotal ? Math.round(rvRatio * 1000) / 1000 : 0,
-      isHebrewClosedForAutomatedDevelopmentStage:
-        thinBranches.length === 0 &&
-        weakVariety.length === 0 &&
-        (!inventoryPresent || inventoryCriticalOk) &&
-        runtimeVsOk,
-      isHebrewFullyClosedIncludingOwnerSignoff:
-        thinBranches.length === 0 &&
-        weakVariety.length === 0 &&
-        (!inventoryPresent || inventoryCriticalOk) &&
-        runtimeVsOk &&
-        ownerSignedOff,
+      automatedInfrastructureClosed,
+      productContentClosedForDev,
+      fullOwnerMoEClosed,
+      productContentQualityGatePassed,
+      sampledContentQualityReportPresent: sampledReportPresent,
+      isHebrewClosedForAutomatedDevelopmentStage: automatedInfrastructureClosed,
+      isHebrewFullyClosedIncludingOwnerSignoff: fullOwnerMoEClosed,
       remainingAutomatedBlockers: [
         thinBranches.length || weakVariety.length
           ? "Variety / thin-branch warnings in automated sampling — see thinBranches / weakVarietyBranches."
@@ -415,6 +441,12 @@ async function main() {
           : null,
         !runtimeVsOk
           ? `Runtime/inventory vs catalog alignment weak (${rvBad}/${rvTotal} rows need review) — see hebrew-runtime-vs-official-source.`
+          : null,
+        !sampledReportPresent
+          ? "Missing hebrew-sampled-content-quality.json — run npm run audit:curriculum:hebrew-sampled-content-quality."
+          : null,
+        sampledReportPresent && !productContentQualityGatePassed
+          ? "Sampled Hebrew content quality gate failed — see hebrew-sampled-content-quality.md."
           : null,
       ].filter(Boolean),
       remainingOwnerBlockers: [!ownerSignedOff ? "Owner POP/meyda strand verification — set HEBREW_OWNER_CLOSURE_SIGNOFF=1 after manual cross-check." : null].filter(
@@ -451,11 +483,28 @@ function renderMarkdown(p) {
   lines.push(
     `- Runtime vs official catalog gate: **${p.closureQuestions.runtimeVsOfficialCatalogGatePassed ? "pass" : "fail"}**`
   );
+  lines.push("");
+  lines.push(`### Closure tiers`);
   lines.push(
-    `- Hebrew closed (automated development stage): **${p.closureQuestions.isHebrewClosedForAutomatedDevelopmentStage ? "yes" : "no"}**`
+    `- **automatedInfrastructureClosed:** ${p.closureQuestions.automatedInfrastructureClosed ? "yes" : "no"} (inventory + variety + catalog alignment)`
   );
   lines.push(
-    `- Hebrew closed including owner signoff: **${p.closureQuestions.isHebrewFullyClosedIncludingOwnerSignoff ? "yes" : "no"}**`
+    `- **productContentClosedForDev:** ${p.closureQuestions.productContentClosedForDev ? "yes" : "no"} (requires \`hebrew-sampled-content-quality\` gate pass)`
+  );
+  lines.push(
+    `- **fullOwnerMoEClosed:** ${p.closureQuestions.fullOwnerMoEClosed ? "yes" : "no"} (needs \`HEBREW_OWNER_CLOSURE_SIGNOFF=1\` + content gate)`
+  );
+  lines.push(
+    `- Sampled content report present: **${p.closureQuestions.sampledContentQualityReportPresent ? "yes" : "no"}**`
+  );
+  lines.push(
+    `- productContentQualityGatePassed: **${p.closureQuestions.productContentQualityGatePassed ? "yes" : "no"}**`
+  );
+  lines.push(
+    `- Legacy alias — isHebrewClosedForAutomatedDevelopmentStage: **${p.closureQuestions.isHebrewClosedForAutomatedDevelopmentStage ? "yes" : "no"}** (= automatedInfrastructureClosed)`
+  );
+  lines.push(
+    `- Legacy alias — isHebrewFullyClosedIncludingOwnerSignoff: **${p.closureQuestions.isHebrewFullyClosedIncludingOwnerSignoff ? "yes" : "no"}** (= fullOwnerMoEClosed)`
   );
   if (p.closureQuestions.remainingAutomatedBlockers?.length) {
     lines.push(`### Remaining automated blockers`);

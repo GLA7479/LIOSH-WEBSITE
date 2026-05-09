@@ -1,13 +1,22 @@
 /**
- * Runtime Hebrew gate — explicit-topic generation per grade; output topic must stay in grade list.
- * Lower grades: optional advisory caps on comprehension stem length (fail only if wildly exceeded).
+ * Runtime Hebrew gate — topic visibility + grade-sensitive stem/content rules (esp. g1/g2).
+ * Writes reports/curriculum-audit/hebrew-g12-runtime-sampled-export.json (summary + failure excerpts).
  */
+import { mkdir, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { pathToFileURL } from "node:url";
 
+import {
+  analyzeG12Stem,
+  extractStemText,
+  G12_ADVISORY_MIN_CHARS,
+  G12_FAIL_MAX_CHARS,
+} from "./curriculum-audit/lib/hebrew-content-quality-lib.mjs";
+
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, "..");
+const OUT_DIR = join(ROOT, "reports", "curriculum-audit");
 const modUrl = (rel) => pathToFileURL(join(ROOT, rel)).href;
 
 const { GRADES } = await import(modUrl("utils/hebrew-constants.js"));
@@ -16,9 +25,6 @@ const { generateQuestion } = await import(modUrl("utils/hebrew-question-generato
 
 const LEVELS = ["easy", "medium", "hard"];
 const PER_CELL = 24;
-/** Hard caps (characters) — heuristic; only fail if exceeded (guards against absurd leakage). */
-const G1_COMP_HARD_MAX = 2200;
-const G2_COMP_HARD_MAX = 2600;
 
 let rngState = 0xdeadbeef;
 function runWithSeed(seed, fn) {
@@ -35,16 +41,26 @@ function runWithSeed(seed, fn) {
   }
 }
 
-function stemLen(q) {
-  const s = String(q?.question ?? q?.exerciseText ?? q?.stem ?? "").length;
-  return s;
+function median(nums) {
+  if (!nums.length) return 0;
+  const a = [...nums].sort((x, y) => x - y);
+  const m = Math.floor(a.length / 2);
+  return a.length % 2 ? a[m] : (a[m - 1] + a[m]) / 2;
 }
 
-function main() {
+async function main() {
+  await mkdir(OUT_DIR, { recursive: true });
+
   /** @type {string[]} */
   const failures = [];
+  let g12StemFailureEvents = 0;
   /** @type {string[]} */
   const notes = [];
+
+  /** @type {Record<string, { lengths: number[], advisoryCount: number, failureCount: number }>} */
+  const g12CellAgg = {};
+  /** @type {object[]} */
+  const g12FailureRows = [];
 
   for (let g = 1; g <= 6; g++) {
     const gk = `g${g}`;
@@ -53,6 +69,11 @@ function main() {
     for (const topic of topics) {
       for (const lev of LEVELS) {
         const lc = getLevelForGrade(lev, gk);
+        const cellKey = `${gk}|${topic}|${lev}`;
+        if (g <= 2 && !g12CellAgg[cellKey]) {
+          g12CellAgg[cellKey] = { lengths: [], advisoryCount: 0, failureCount: 0 };
+        }
+
         for (let i = 0; i < PER_CELL; i++) {
           const seed =
             0x686272 + g * 4099 + topic.length * 17 + i * 997 + (lev === "easy" ? 3 : lev === "medium" ? 5 : 7);
@@ -69,17 +90,63 @@ function main() {
             notes.push(`${gk}/${topic}: unexpected difficulty label "${diff}"`);
           }
 
-          if (topic === "comprehension" && (g === 1 || g === 2)) {
-            const L = stemLen(q);
-            const cap = g === 1 ? G1_COMP_HARD_MAX : G2_COMP_HARD_MAX;
-            if (L > cap) {
-              failures.push(`${gk}/comprehension/${lev}: stem length ${L} exceeds hard cap ${cap}`);
+          const stem = extractStemText(q);
+          if (g <= 2) {
+            const r = analyzeG12Stem(g, topic, stem);
+            g12CellAgg[cellKey].lengths.push(stem.length);
+            g12CellAgg[cellKey].advisoryCount += r.advisories.length;
+            if (r.failures.length) {
+              g12CellAgg[cellKey].failureCount += 1;
+              g12StemFailureEvents += 1;
+              failures.push(`${gk}/${topic}/${lev}[${i}]: ${r.failures.join("; ")}`);
+              if (g12FailureRows.length < 120) {
+                g12FailureRows.push({
+                  gradeKey: gk,
+                  topic,
+                  difficulty: lev,
+                  seed,
+                  stemPreview: stem.slice(0, 380),
+                  failures: r.failures,
+                  metrics: r.metrics,
+                });
+              }
             }
           }
         }
       }
     }
   }
+
+  /** @type {Record<string, unknown>} */
+  const cellSummaries = {};
+  for (const [ck, v] of Object.entries(g12CellAgg)) {
+    const lens = v.lengths;
+    cellSummaries[ck] = {
+      samples: lens.length,
+      medianStemChars: Math.round(median(lens)),
+      maxStemChars: lens.length ? Math.max(...lens) : 0,
+      failureSamplesInCell: v.failureCount,
+      advisoryHitsInCell: v.advisoryCount,
+    };
+  }
+
+  const exportPayload = {
+    generatedAt: new Date().toISOString(),
+    purpose:
+      "g1/g2 runtime sampling — stem metrics + analyzeG12Stem failures; thresholds in hebrew-content-quality-lib.mjs",
+    thresholdsReference: {
+      G12_FAIL_MAX_CHARS,
+      G12_ADVISORY_MIN_CHARS,
+    },
+    perCellSummary: cellSummaries,
+    failureSamples: g12FailureRows,
+    totals: {
+      g12Cells: Object.keys(g12CellAgg).length,
+      g12StemFailureEvents,
+    },
+  };
+
+  await writeFile(join(OUT_DIR, "hebrew-g12-runtime-sampled-export.json"), JSON.stringify(exportPayload, null, 2), "utf8");
 
   console.log(
     JSON.stringify(
@@ -88,6 +155,7 @@ function main() {
         failureCount: failures.length,
         failures: failures.slice(0, 80),
         notes: notes.slice(0, 40),
+        g12Export: "reports/curriculum-audit/hebrew-g12-runtime-sampled-export.json",
       },
       null,
       2
@@ -101,4 +169,7 @@ function main() {
   console.log("qa-hebrew-runtime-gate: OK");
 }
 
-main();
+main().catch((e) => {
+  console.error(e);
+  process.exit(1);
+});

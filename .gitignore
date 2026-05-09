@@ -58,3 +58,6 @@ public/audio/hebrew/gen/v1/
 # AI-hybrid synthetic gold (regenerate: npm run ai-hybrid:generate-gold)
 data/ai-hybrid-gold/synthetic-gold-v1.jsonl
 
+# Owner-provided official/reference curriculum PDFs (keep locally; English stage uses when implemented)
+/תוכנית משרד החינוך/english Curriculum2020.pdf
+
