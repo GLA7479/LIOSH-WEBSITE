@@ -43,6 +43,33 @@ function safeJsonParse(raw) {
   }
 }
 
+function sleepMs(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+/** Best-effort summary for Google Generative Language API JSON errors (quota, rate limit, overload). */
+function summarizeGeminiHttpError(parsed, httpStatus) {
+  if (!parsed || typeof parsed !== "object") return `HTTP ${httpStatus} (non-JSON or empty body)`;
+  const err = parsed.error;
+  if (!err || typeof err !== "object") {
+    try {
+      return `HTTP ${httpStatus}: ${JSON.stringify(parsed).slice(0, 500)}`;
+    } catch {
+      return `HTTP ${httpStatus}`;
+    }
+  }
+  const bits = [];
+  if (err.status) bits.push(`API status: ${err.status}`);
+  if (err.code != null) bits.push(`code: ${err.code}`);
+  if (err.message) bits.push(String(err.message));
+  const details = Array.isArray(err.details) ? err.details : [];
+  for (const d of details.slice(0, 3)) {
+    if (d && typeof d === "object" && d["@type"]) bits.push(`detail: ${d["@type"]}`);
+    if (d && typeof d === "object" && d.reason) bits.push(`reason: ${d.reason}`);
+  }
+  return bits.length ? bits.join(" · ") : `HTTP ${httpStatus}`;
+}
+
 function extractGeminiText(body) {
   if (!body || typeof body !== "object") return "";
   const candidates = Array.isArray(body.candidates) ? body.candidates : [];
@@ -72,7 +99,7 @@ function extractOpenAiText(body) {
 /**
  * @param {AbortSignal} signal — caller owns timeout via AbortController (see llm-orchestrator).
  * @param {string} prompt
- * @returns {Promise<{ ok: boolean; payload?: unknown; reason?: string; raw?: string }>}
+ * @returns {Promise<{ ok: boolean; payload?: unknown; reason?: string; raw?: string; httpStatus?: number; geminiErrorBody?: string; geminiErrorSummary?: string; geminiErrorParsed?: unknown; llmRetryCount?: number }>}
  */
 export async function callCopilotLlmJson(signal, prompt) {
   const provider = getProvider();
@@ -87,26 +114,71 @@ export async function callCopilotLlmJson(signal, prompt) {
       );
       const model = envStr("PARENT_COPILOT_LLM_MODEL", "gemini-2.5-flash");
       const url = `${baseUrl}/models/${encodeURIComponent(model)}:generateContent`;
-      const res = await fetch(url, {
-        method: "POST",
-        headers: { "Content-Type": "application/json", "x-goog-api-key": apiKey },
-        body: JSON.stringify({
-          contents: [{ role: "user", parts: [{ text: prompt }] }],
-          generationConfig: {
-            temperature: 0.2,
-            maxOutputTokens: 900,
-            responseMimeType: "application/json",
-            thinkingConfig: { thinkingBudget: 0 },
-          },
-        }),
-        signal,
-      });
-      if (!res.ok) return { ok: false, reason: `http_${res.status}` };
-      const body = await res.json();
-      const raw = extractGeminiText(body);
-      const parsed = safeJsonParse(String(raw || "").trim());
-      if (!parsed.ok) return { ok: false, reason: "invalid_json_output", raw: String(raw || "") };
-      return { ok: true, payload: parsed.value, raw: String(raw || "") };
+      const maxAttempts = 3;
+      const backoffMs = [2000, 5000];
+
+      for (let attempt = 0; attempt < maxAttempts; attempt++) {
+        const res = await fetch(url, {
+          method: "POST",
+          headers: { "Content-Type": "application/json", "x-goog-api-key": apiKey },
+          body: JSON.stringify({
+            contents: [{ role: "user", parts: [{ text: prompt }] }],
+            generationConfig: {
+              temperature: 0.2,
+              maxOutputTokens: 900,
+              responseMimeType: "application/json",
+              thinkingConfig: { thinkingBudget: 0 },
+            },
+          }),
+          signal,
+        });
+        const rawText = await res.text();
+        let parsedBody = null;
+        try {
+          parsedBody = JSON.parse(rawText);
+        } catch {
+          parsedBody = null;
+        }
+
+        if (res.ok) {
+          const body = parsedBody && typeof parsedBody === "object" ? parsedBody : {};
+          const raw = extractGeminiText(body);
+          const parsed = safeJsonParse(String(raw || "").trim());
+          if (!parsed.ok) {
+            return {
+              ok: false,
+              reason: "invalid_json_output",
+              raw: String(raw || ""),
+              httpStatus: res.status,
+              llmRetryCount: attempt,
+            };
+          }
+          return {
+            ok: true,
+            payload: parsed.value,
+            raw: String(raw || ""),
+            llmRetryCount: attempt,
+          };
+        }
+
+        const is429 = res.status === 429;
+        const canRetry = is429 && attempt < maxAttempts - 1;
+        if (canRetry) {
+          await sleepMs(backoffMs[attempt] ?? backoffMs[backoffMs.length - 1]);
+          continue;
+        }
+
+        const summary = summarizeGeminiHttpError(parsedBody, res.status);
+        return {
+          ok: false,
+          reason: `http_${res.status}`,
+          httpStatus: res.status,
+          geminiErrorBody: rawText,
+          geminiErrorSummary: summary,
+          geminiErrorParsed: parsedBody,
+          llmRetryCount: attempt,
+        };
+      }
     }
 
     const url = envStr("PARENT_COPILOT_LLM_BASE_URL", "https://api.openai.com/v1/responses");

@@ -227,12 +227,27 @@ export async function maybeGenerateGroundedLlmDraft(input) {
   const timer = setTimeout(() => controller.abort("timeout"), timeoutMs);
   try {
     const response = await callCopilotLlmJson(controller.signal, prompt);
-    if (!response.ok) return { ok: false, reason: response.reason || "llm_provider_error" };
+    if (!response.ok) {
+      return {
+        ok: false,
+        reason: response.reason || "llm_provider_error",
+        httpStatus: response.httpStatus,
+        geminiErrorBody: response.geminiErrorBody,
+        geminiErrorSummary: response.geminiErrorSummary,
+        geminiErrorParsed: response.geminiErrorParsed,
+        llmRetryCount: response.llmRetryCount,
+      };
+    }
     const validated = validateLlmDraft(response.payload, input.truthPacket, {
       intent: String(input?.parentIntent || "").trim(),
     });
     if (!validated.ok) return { ok: false, reason: validated.reason || "llm_validation_failed" };
-    return { ok: true, draft: validated.draft, provider: copilotLlmProviderLabel() };
+    return {
+      ok: true,
+      draft: validated.draft,
+      provider: copilotLlmProviderLabel(),
+      ...(typeof response.llmRetryCount === "number" ? { llmRetryCount: response.llmRetryCount } : {}),
+    };
   } catch (error) {
     return { ok: false, reason: `llm_exception:${String(error?.message || error || "unknown")}` };
   } finally {

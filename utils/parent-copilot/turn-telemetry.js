@@ -80,12 +80,22 @@ export function buildTurnTelemetry(input) {
   const resolutionStatus = String(input.resolutionStatus || "resolved");
   const scopeType = input.scopeType == null ? null : String(input.scopeType);
   const scopeId = input.scopeId == null ? null : String(input.scopeId);
-  const llmAttempt = input.llmAttempt && typeof input.llmAttempt === "object"
-    ? {
-        ok: !!input.llmAttempt.ok,
-        reason: String(input.llmAttempt.reason || ""),
-      }
-    : null;
+  const llmAttempt =
+    input.llmAttempt && typeof input.llmAttempt === "object"
+      ? {
+          ok: !!input.llmAttempt.ok,
+          reason: String(input.llmAttempt.reason || ""),
+          ...(input.llmAttempt.provider ? { provider: String(input.llmAttempt.provider) } : {}),
+          ...(input.llmAttempt.httpStatus != null ? { httpStatus: Number(input.llmAttempt.httpStatus) } : {}),
+          ...(typeof input.llmAttempt.geminiErrorSummary === "string" && input.llmAttempt.geminiErrorSummary
+            ? { geminiErrorSummary: String(input.llmAttempt.geminiErrorSummary) }
+            : {}),
+          ...(typeof input.llmAttempt.geminiErrorBody === "string" && input.llmAttempt.geminiErrorBody
+            ? { geminiErrorBody: String(input.llmAttempt.geminiErrorBody) }
+            : {}),
+          ...(typeof input.llmAttempt.llmRetryCount === "number" ? { llmRetryCount: input.llmAttempt.llmRetryCount } : {}),
+        }
+      : null;
   return {
     schemaVersion: "v1",
     traceId,

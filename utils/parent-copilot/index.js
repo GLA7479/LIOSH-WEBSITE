@@ -46,6 +46,25 @@ import {
 } from "./question-router.js";
 import { classifyParentQuestionViaLlm } from "./question-classifier-llm.js";
 
+/**
+ * @param {Record<string, unknown>} base
+ * @param {unknown} llmResult
+ */
+function mergeLlmFailureDiagnostics(base, llmResult) {
+  const out = { ...base };
+  if (!llmResult || typeof llmResult !== "object") return out;
+  const r = /** @type {Record<string, unknown>} */ (llmResult);
+  if (r.httpStatus != null) out.httpStatus = Number(r.httpStatus);
+  if (typeof r.geminiErrorSummary === "string" && String(r.geminiErrorSummary).trim()) {
+    out.geminiErrorSummary = String(r.geminiErrorSummary).trim();
+  }
+  if (typeof r.geminiErrorBody === "string" && r.geminiErrorBody.length) {
+    out.geminiErrorBody = String(r.geminiErrorBody);
+  }
+  if (typeof r.llmRetryCount === "number") out.llmRetryCount = r.llmRetryCount;
+  return out;
+}
+
 const CLINICAL_GUARDRAIL_FAIL_CODES = new Set([
   "clinical_diagnosis_language",
   "clinical_certainty_language",
@@ -232,7 +251,22 @@ function persistTelemetryBestEffort(response, context) {
     semanticAggregateSatisfied: !!telemetry.semanticAggregateSatisfied,
     llmAttempt:
       llmAttempt && typeof llmAttempt === "object"
-        ? { ok: !!llmAttempt.ok, reason: String(llmAttempt.reason || ""), provider: llmAttempt.provider || undefined }
+        ? (() => {
+            const base = {
+              ok: !!llmAttempt.ok,
+              reason: String(llmAttempt.reason || ""),
+              provider: llmAttempt.provider || undefined,
+            };
+            if (llmAttempt.httpStatus != null) base.httpStatus = Number(llmAttempt.httpStatus);
+            if (typeof llmAttempt.geminiErrorSummary === "string" && llmAttempt.geminiErrorSummary) {
+              base.geminiErrorSummary = String(llmAttempt.geminiErrorSummary).slice(0, 2000);
+            }
+            if (typeof llmAttempt.geminiErrorBody === "string" && llmAttempt.geminiErrorBody) {
+              base.geminiErrorBody = String(llmAttempt.geminiErrorBody).slice(0, 8000);
+            }
+            if (typeof llmAttempt.llmRetryCount === "number") base.llmRetryCount = llmAttempt.llmRetryCount;
+            return base;
+          })()
         : null,
     utteranceLength: Number(context.utteranceLength || 0),
     timestampMs: Number(telemetry.timestampMs || Date.now()),
@@ -1238,11 +1272,14 @@ export async function runParentCopilotTurnAsync(input) {
       ...baseResponse,
       telemetry: {
         ...(baseResponse.telemetry || {}),
-        llmAttempt: {
-          ok: false,
-          reason: llmResult.reason || "llm_unavailable",
-          ...(Array.isArray(llmResult.gateReasonCodes) ? { gateReasonCodes: llmResult.gateReasonCodes } : {}),
-        },
+        llmAttempt: mergeLlmFailureDiagnostics(
+          {
+            ok: false,
+            reason: llmResult.reason || "llm_unavailable",
+            ...(Array.isArray(llmResult.gateReasonCodes) ? { gateReasonCodes: llmResult.gateReasonCodes } : {}),
+          },
+          llmResult,
+        ),
       },
     }, {
       audience: core.audience,
@@ -1251,7 +1288,7 @@ export async function runParentCopilotTurnAsync(input) {
       intent: core.intent,
       utteranceLength: String(core.utteranceStr || "").trim().length,
       generationPath: "deterministic",
-      llmAttempt: { ok: false, reason: llmResult.reason || "llm_unavailable" },
+      llmAttempt: mergeLlmFailureDiagnostics({ ok: false, reason: llmResult.reason || "llm_unavailable" }, llmResult),
     });
   }
 
@@ -1379,7 +1416,13 @@ export async function runParentCopilotTurnAsync(input) {
       llmAttempt: { ok: true, reason: "llm_draft_accepted" },
     }),
   };
-  llmResponse.telemetry.llmAttempt = { ok: true, provider: llmResult.provider || "unknown" };
+  const llmOkAttempt = {
+    ok: true,
+    reason: "llm_draft_accepted",
+    provider: llmResult.provider || "unknown",
+    ...(typeof llmResult.llmRetryCount === "number" ? { llmRetryCount: llmResult.llmRetryCount } : {}),
+  };
+  llmResponse.telemetry.llmAttempt = llmOkAttempt;
   return finalizeTurnResponse(llmResponse, {
     audience: core.audience,
     sessionId: core.sessionId,
@@ -1387,7 +1430,7 @@ export async function runParentCopilotTurnAsync(input) {
     intent: core.intent,
     utteranceLength: String(core.utteranceStr || "").trim().length,
     generationPath: "llm_grounded",
-    llmAttempt: { ok: true, reason: "llm_draft_accepted" },
+    llmAttempt: llmOkAttempt,
   });
 }
 

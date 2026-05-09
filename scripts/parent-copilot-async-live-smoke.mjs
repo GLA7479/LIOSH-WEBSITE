@@ -6,11 +6,20 @@
  * Run:
  *   npm run test:parent-copilot-async-live-smoke
  *
- * Or set explicitly:
+ * Single question (report-related payload — best for proving llm_grounded without hammering the API):
+ *   npm run test:parent-copilot-async-live-smoke -- --only "מה הכי חשוב לתרגל השבוע?"
+ *
+ * Delay between Report-related questions (default 2500 ms; avoids free-tier rate limits):
+ *   PARENT_COPILOT_ASYNC_SMOKE_DELAY_MS=3000 npm run test:parent-copilot-async-live-smoke
+ *   npm run test:parent-copilot-async-live-smoke -- --delay-ms 4000
+ *
+ * Env (examples):
  *   PARENT_COPILOT_LLM_ENABLED=true
  *   PARENT_COPILOT_LLM_EXPERIMENT=true
  *   PARENT_COPILOT_LLM_PROVIDER=gemini
  *   PARENT_COPILOT_LLM_MODEL=gemini-2.5-flash
+ *   # If flash hits HTTP 429 often, try a lighter model:
+ *   # PARENT_COPILOT_LLM_MODEL=gemini-2.5-flash-lite
  *   GEMINI_API_KEY=...
  */
 
@@ -40,6 +49,30 @@ function loadEnvLocalBestEffort() {
       process.env[k] = v;
     }
   }
+}
+
+function parseSmokeArgs(argv) {
+  const rest = argv.slice(2);
+  let onlyQuestion = null;
+  let delayMs = Number(process.env.PARENT_COPILOT_ASYNC_SMOKE_DELAY_MS);
+  if (!Number.isFinite(delayMs) || delayMs < 0) delayMs = 2500;
+  for (let i = 0; i < rest.length; i++) {
+    const a = rest[i];
+    if (a === "--only") {
+      onlyQuestion = rest[i + 1] != null ? String(rest[++i]).trim() : "";
+      continue;
+    }
+    if (a === "--delay-ms") {
+      const n = Number(rest[++i]);
+      if (Number.isFinite(n) && n >= 0) delayMs = n;
+      continue;
+    }
+  }
+  return { onlyQuestion, delayMs };
+}
+
+function sleepMs(ms) {
+  return new Promise((r) => setTimeout(r, ms));
 }
 
 loadEnvLocalBestEffort();
@@ -73,9 +106,15 @@ function makeContract(topicKey, subjectId, obs, interp, act, unc, qCount = 12, a
       readiness: { contractVersion: "v1", topicKey, subjectId, readiness: "emerging" },
       confidence: { contractVersion: "v1", topicKey, subjectId, confidenceBand: "medium" },
       recommendation: {
-        contractVersion: "v1", topicKey, subjectId,
-        eligible: recEligible, intensity: recEligible ? "RI2" : "RI0",
-        family: "general_practice", anchorEvidenceIds: [], rationaleCodes: [], forbiddenBecause: [],
+        contractVersion: "v1",
+        topicKey,
+        subjectId,
+        eligible: recEligible,
+        intensity: recEligible ? "RI2" : "RI0",
+        family: "general_practice",
+        anchorEvidenceIds: [],
+        rationaleCodes: [],
+        forbiddenBecause: [],
       },
       evidence: { contractVersion: "v1", topicKey, subjectId },
     },
@@ -84,21 +123,24 @@ function makeContract(topicKey, subjectId, obs, interp, act, unc, qCount = 12, a
 
 function highDataPayload() {
   const mathGeo = makeContract(
-    "geo", "math",
+    "geo",
+    "math",
     "בגאומטריה נצפו 45 שאלות, עם דיוק של כ־72%.",
     "יש כיוון עבודה ברור בגאומטריה ונדרש חיזוק בזיהוי תכונות צורות.",
     "מומלץ תרגול ממוקד בזיהוי צורות וחישוב שטחים.",
     "כדאי לעקוב אחרי ההתקדמות בסבב הבא.",
   );
   const mathFrac = makeContract(
-    "frac", "math",
+    "frac",
+    "math",
     "בשברים נצפו 60 שאלות, עם דיוק של כ־68%.",
     "שברים מהווים אתגר ייחודי ודורשים חיזוק בסיסי בהמרות.",
     "מומלץ לתרגל המרות שברים וחיבור שברים פשוטים.",
     "כדאי לחזור לנושא אחרי עוד תרגול.",
   );
   const engVocab = makeContract(
-    "eng_vocab", "english",
+    "eng_vocab",
+    "english",
     "באוצר מילים אנגלית נצפו 38 שאלות, עם דיוק של כ־81%.",
     "אוצר מילים מתפתח בצורה טובה.",
     "המשך עם תרגול יומי קצר.",
@@ -142,6 +184,39 @@ function answerLlmTelemetry(res) {
   return la && typeof la === "object" ? la : null;
 }
 
+/** Flatten llmAttempt from telemetry for diagnostics (includes Gemini error fields). */
+function answerLlmTelemetryFlat(res) {
+  const tel = res?.telemetry?.llmAttempt;
+  const branch = res?.telemetry?.trace?.branchOutcomes?.llmAttempt;
+  const pick = branch && typeof branch === "object" ? branch : tel;
+  return pick && typeof pick === "object" ? pick : null;
+}
+
+function printGemini429Diagnostics(res, utterance, groupName) {
+  const la = answerLlmTelemetryFlat(res);
+  const reason = la && String(la.reason || "");
+  const is429 =
+    reason === "http_429" ||
+    la?.httpStatus === 429 ||
+    (reason.startsWith("http_") && reason.includes("429"));
+  const reportRelated = groupName === "Report-related";
+  if (!reportRelated || !is429 || !la) return;
+
+  console.log("\n--- Gemini HTTP 429 diagnostics (report-related LLM attempt) ---");
+  if (typeof la.llmRetryCount === "number") console.log(`clientRetriesExhaustedAfterAttempts: ${la.llmRetryCount + 1}`);
+  if (la.geminiErrorSummary) console.log(`geminiErrorSummary: ${la.geminiErrorSummary}`);
+  if (la.geminiErrorBody) {
+    console.log("geminiErrorBody (full HTTP response body):");
+    console.log(String(la.geminiErrorBody));
+  } else {
+    console.log("geminiErrorBody: (missing — provider returned 429 without readable body)");
+  }
+  console.log(
+    "hint: quota vs rate-limit vs overload appear in error.message / error.details in the JSON above.",
+  );
+  console.log("--- end 429 diagnostics ---\n");
+}
+
 const gatePreview = {
   PARENT_COPILOT_LLM_ENABLED: process.env.PARENT_COPILOT_LLM_ENABLED,
   PARENT_COPILOT_LLM_EXPERIMENT: process.env.PARENT_COPILOT_LLM_EXPERIMENT,
@@ -150,7 +225,7 @@ const gatePreview = {
   hasGeminiKey: !!(process.env.GEMINI_API_KEY || process.env.PARENT_COPILOT_LLM_API_KEY || "").trim(),
 };
 
-const GROUPS = [
+const GROUPS_BASE = [
   {
     name: "Off-topic",
     questions: [
@@ -177,6 +252,17 @@ const GROUPS = [
   },
 ];
 
+const { onlyQuestion, delayMs } = parseSmokeArgs(process.argv);
+
+let GROUPS = GROUPS_BASE;
+if (onlyQuestion != null) {
+  if (!onlyQuestion) {
+    console.error('Usage: --only requires a question string, e.g. --only "מה הכי חשוב לתרגל השבוע?"');
+    process.exit(2);
+  }
+  GROUPS = [{ name: "Report-related (--only)", questions: [onlyQuestion] }];
+}
+
 const payload = highDataPayload();
 let seq = 0;
 
@@ -185,13 +271,23 @@ const llmGate = getLlmGateDecision();
 console.log("=== Parent Copilot async live smoke (runParentCopilotTurnAsync) ===\n");
 console.log("Env preview (no secrets):", JSON.stringify(gatePreview, null, 2));
 console.log("getLlmGateDecision():", JSON.stringify({ enabled: llmGate.enabled, reasonCodes: llmGate.reasonCodes, stage: llmGate.stage }, null, 2));
+if (onlyQuestion != null) {
+  console.log(`Mode: single question (--only), delay-ms=${delayMs} (not applied — only one call)`);
+} else {
+  console.log(`Delay between Report-related questions: ${delayMs} ms (set PARENT_COPILOT_ASYNC_SMOKE_DELAY_MS or --delay-ms)`);
+}
 console.log(
   "Note: generationPath=llm_grounded only when the gate is enabled, Gemini returns a valid draft, and validators pass.\n",
 );
 
 for (const g of GROUPS) {
   console.log(`\n${"=".repeat(72)}\n## ${g.name}\n${"=".repeat(72)}`);
+  let reportRelatedIndex = 0;
   for (const q of g.questions) {
+    if (g.name.startsWith("Report-related") && reportRelatedIndex++ > 0) {
+      await sleepMs(delayMs);
+    }
+
     seq += 1;
     const sessionId = `async-smoke-${seq}-${Date.now()}-${Math.random().toString(36).slice(2, 9)}`;
     let res;
@@ -220,6 +316,7 @@ for (const g of GROUPS) {
     console.log(`generationPath: ${gp}`);
     console.log(`answerLlmUsed (grounded draft accepted): ${llmOk}`);
     console.log(`telemetry.llmAttempt: ${JSON.stringify(la)}`);
+    printGemini429Diagnostics(res, q, g.name);
     console.log(`fallbackUsed: ${!!res.fallbackUsed}`);
     console.log(`validatorStatus: ${res.validatorStatus ?? "(missing)"}`);
     console.log(`validatorFailCodes: ${JSON.stringify(res.validatorFailCodes || [])}`);
