@@ -62,6 +62,9 @@ function mergeLlmFailureDiagnostics(base, llmResult) {
     out.geminiErrorBody = String(r.geminiErrorBody);
   }
   if (typeof r.llmRetryCount === "number") out.llmRetryCount = r.llmRetryCount;
+  if (Array.isArray(r.gateReasonCodes) && r.gateReasonCodes.length) {
+    out.gateReasonCodes = [...r.gateReasonCodes];
+  }
   return out;
 }
 
@@ -196,8 +199,48 @@ function buildNoScopeCategorySpecificClarification(utterance) {
   return null;
 }
 
+function normalizeMergedLlmAttempt(raw) {
+  if (!raw || typeof raw !== "object") return null;
+  const base = {
+    ok: !!raw.ok,
+    reason: String(raw.reason ?? ""),
+    ...(raw.provider ? { provider: String(raw.provider) } : {}),
+    ...(raw.httpStatus != null ? { httpStatus: Number(raw.httpStatus) } : {}),
+    ...(typeof raw.geminiErrorSummary === "string" && raw.geminiErrorSummary
+      ? { geminiErrorSummary: String(raw.geminiErrorSummary).slice(0, 2000) }
+      : {}),
+    ...(typeof raw.geminiErrorBody === "string" && raw.geminiErrorBody
+      ? { geminiErrorBody: String(raw.geminiErrorBody).slice(0, 8000) }
+      : {}),
+    ...(typeof raw.llmRetryCount === "number" ? { llmRetryCount: raw.llmRetryCount } : {}),
+    ...(Array.isArray(raw.gateReasonCodes) ? { gateReasonCodes: [...raw.gateReasonCodes] } : {}),
+    ...(Array.isArray(raw.failCodes) ? { failCodes: [...raw.failCodes] } : {}),
+  };
+  return base;
+}
+
 function ensureResponseTelemetry(response, context) {
-  if (response?.telemetry && typeof response.telemetry === "object") return response;
+  if (response?.telemetry && typeof response.telemetry === "object") {
+    const merged = normalizeMergedLlmAttempt(context?.llmAttempt);
+    if (!merged) return response;
+    const t = response.telemetry;
+    const trace = t.trace && typeof t.trace === "object" ? t.trace : {};
+    const branchOutcomes = trace.branchOutcomes && typeof trace.branchOutcomes === "object" ? trace.branchOutcomes : {};
+    return {
+      ...response,
+      telemetry: {
+        ...t,
+        llmAttempt: merged,
+        trace: {
+          ...trace,
+          branchOutcomes: {
+            ...branchOutcomes,
+            llmAttempt: merged,
+          },
+        },
+      },
+    };
+  }
   const metadata = response?.metadata && typeof response.metadata === "object" ? response.metadata : {};
   const fallbackUsed = !!response?.fallbackUsed;
   const validatorFailCodes = Array.isArray(response?.validatorFailCodes) ? response.validatorFailCodes : [];
@@ -380,13 +423,17 @@ function packageParentResolvedEarlyTurn(input, sessionId, priorRepeated, conv, u
 
   /** @type {Array<"contractsV1.evidence"|"contractsV1.decision"|"contractsV1.readiness"|"contractsV1.confidence"|"contractsV1.recommendation"|"contractsV1.narrative">} */
   const contractSourcesUsed = ["contractsV1.narrative"];
-  if (plannerIntent !== "explain_report") {
+  const explainLikeIntentEarly =
+    plannerIntent === "explain_report" ||
+    plannerIntent === "ask_topic_specific" ||
+    plannerIntent === "ask_subject_specific";
+  if (!explainLikeIntentEarly) {
     contractSourcesUsed.push("contractsV1.decision", "contractsV1.readiness", "contractsV1.confidence");
   }
   if (draft.answerBlocks.some((b) => b.type === "next_step")) {
     contractSourcesUsed.push("contractsV1.recommendation");
   }
-  if (plannerIntent === "explain_report") {
+  if (explainLikeIntentEarly) {
     contractSourcesUsed.push("contractsV1.evidence");
   }
 
@@ -959,13 +1006,17 @@ function runDeterministicCore(input, options) {
 
   /** @type {Array<"contractsV1.evidence"|"contractsV1.decision"|"contractsV1.readiness"|"contractsV1.confidence"|"contractsV1.recommendation"|"contractsV1.narrative">} */
   const contractSourcesUsed = ["contractsV1.narrative"];
-  if (plannerIntent !== "explain_report") {
+  const explainLikeIntent =
+    plannerIntent === "explain_report" ||
+    plannerIntent === "ask_topic_specific" ||
+    plannerIntent === "ask_subject_specific";
+  if (!explainLikeIntent) {
     contractSourcesUsed.push("contractsV1.decision", "contractsV1.readiness", "contractsV1.confidence");
   }
   if (draft.answerBlocks.some((b) => b.type === "next_step")) {
     contractSourcesUsed.push("contractsV1.recommendation");
   }
-  if (plannerIntent === "explain_report") {
+  if (explainLikeIntent) {
     contractSourcesUsed.push("contractsV1.evidence");
   }
 

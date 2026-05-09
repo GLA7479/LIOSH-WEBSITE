@@ -68,6 +68,8 @@ export function planConversation(intent, truthPacket, hints = null) {
       else blocks.push("observation", "uncertainty_reason", "caution");
       break;
     case "explain_report":
+    case "ask_topic_specific":
+    case "ask_subject_specific":
     case "clarify_term":
       obsMeanCaut();
       break;

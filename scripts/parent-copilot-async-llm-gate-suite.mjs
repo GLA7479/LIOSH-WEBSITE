@@ -18,6 +18,8 @@ function resetLlmEnv() {
     "PARENT_COPILOT_LLM_EXPERIMENT",
     "PARENT_COPILOT_LLM_API_KEY",
     "PARENT_COPILOT_LLM_TIMEOUT_MS",
+    "GEMINI_API_KEY",
+    "PARENT_COPILOT_LLM_MODEL",
   ]) {
     delete process.env[k];
   }
@@ -122,7 +124,7 @@ try {
     asyncGateFetchCalls += 1;
     throw new Error("fetch must not run when LLM rollout gate is disabled");
   };
-  const a = await runAsyncWith(syntheticPayload({ eligible: true }), "מה לעשות עכשיו?", "llm-gate-a");
+  const a = await runAsyncWith(syntheticPayload({ eligible: true }), "מה הכי חשוב לתרגל השבוע?", "llm-gate-a");
   assert.equal(asyncGateFetchCalls, 0, "no network when gate disables LLM");
   assert.equal(a?.telemetry?.generationPath, "deterministic");
   assert.equal(a?.telemetry?.llmAttempt?.ok, false);
@@ -139,7 +141,7 @@ try {
     calledB = true;
     throw new Error("fetch must not be called when force deterministic is true");
   };
-  const b = await runAsyncWith(syntheticPayload({ eligible: true }), "מה לעשות עכשיו?", "llm-gate-b");
+  const b = await runAsyncWith(syntheticPayload({ eligible: true }), "מה הכי חשוב לתרגל השבוע?", "llm-gate-b");
   assert.equal(calledB, false);
   assert.equal(b?.telemetry?.llmAttempt?.ok, false);
   assert.equal(b?.telemetry?.llmAttempt?.reason, "llm_disabled_by_rollout_gate");
@@ -152,7 +154,7 @@ try {
     calledC = true;
     throw new Error("fetch must not be called without explicit experiment flag");
   };
-  const c = await runAsyncWith(syntheticPayload({ eligible: true }), "מה לעשות עכשיו?", "llm-gate-c");
+  const c = await runAsyncWith(syntheticPayload({ eligible: true }), "מה הכי חשוב לתרגל השבוע?", "llm-gate-c");
   assert.equal(calledC, false);
   assert.equal(c?.telemetry?.llmAttempt?.ok, false);
   assert.equal(c?.telemetry?.llmAttempt?.reason, "llm_disabled_by_rollout_gate");
@@ -172,7 +174,7 @@ try {
       },
     };
   };
-  const d = await runAsyncWith(syntheticPayload({ eligible: true }), "מה לעשות עכשיו?", "llm-gate-d");
+  const d = await runAsyncWith(syntheticPayload({ eligible: true }), "מה הכי חשוב לתרגל השבוע?", "llm-gate-d");
   assert.equal(calledD > 0, true);
   assert.equal(d?.telemetry?.llmAttempt?.ok, false);
   assert.equal(d?.telemetry?.llmAttempt?.reason, "invalid_json_output");
@@ -191,11 +193,11 @@ try {
       };
     },
   });
-  const e = await runAsyncWith(syntheticPayload({ eligible: true }), "מה לעשות עכשיו?", "llm-gate-e");
+  const e = await runAsyncWith(syntheticPayload({ eligible: true }), "מה הכי חשוב לתרגל השבוע?", "llm-gate-e");
   assert.equal(e?.telemetry?.llmAttempt?.ok, false);
   assert.equal(e?.telemetry?.llmAttempt?.reason, "llm_invalid_block_shape");
 
-  // F) Enabled path, next_step on ineligible packet must fail strict LLM validation.
+  // F) Ineligible recommendation + stray next_step: next_step is stripped; observation-only remainder fails length.
   globalThis.fetch = async () => ({
     ok: true,
     async json() {
@@ -209,25 +211,33 @@ try {
       };
     },
   });
-  const f = await runAsyncWith(syntheticPayload({ eligible: false }), "מה לעשות עכשיו?", "llm-gate-f");
+  const f = await runAsyncWith(syntheticPayload({ eligible: false }), "מה הכי חשוב לתרגל השבוע?", "llm-gate-f");
   assert.equal(f?.telemetry?.llmAttempt?.ok, false);
-  assert.equal(f?.telemetry?.llmAttempt?.reason, "llm_next_step_not_eligible");
+  assert.equal(f?.telemetry?.llmAttempt?.reason, "llm_answer_too_short");
 
-  // G) Enabled path, valid output accepted.
+  // G) Enabled path, valid output accepted (what_is_most_important needs practical cues + length — see guardrail).
   globalThis.fetch = async () => ({
     ok: true,
     async json() {
       return {
         output_text: JSON.stringify({
           answerBlocks: [
-            { type: "observation", textHe: "נכון לעכשיו בשברים יש תמונה ברורה יותר בדוח." },
-            { type: "meaning", textHe: "נכון לעכשיו המשמעות היא חיזוק ממוקד ושמירה על זהירות." },
+            {
+              type: "observation",
+              textHe:
+                "נכון לעכשיו השבוע כדאי להתמקד בעיקר בשברים ובגאומטריה לפי מה שמופיע בדוח — תמונה ברורה יחסית לשני המוקדים האלה.",
+            },
+            {
+              type: "meaning",
+              textHe:
+                "נכון לעכשיו בשברים רואים צורך בחיזוק בהמרות; בגאומטריה יש כיוון עבודה אך עדיין צריך ייצוב. מומלץ לתרגל בערך 10 דקות, 3 פעמים בשבוע, עם 5–8 שאלות קצרות בכל פעם.",
+            },
           ],
         }),
       };
     },
   });
-  const g = await runAsyncWith(syntheticPayload({ eligible: true }), "מה לעשות עכשיו?", "llm-gate-g");
+  const g = await runAsyncWith(syntheticPayload({ eligible: true }), "מה הכי חשוב לתרגל השבוע?", "llm-gate-g");
   assert.equal(g?.telemetry?.generationPath, "llm_grounded");
   assert.equal(g?.telemetry?.llmAttempt?.ok, true);
 } finally {

@@ -6,6 +6,7 @@
 import { getLlmGateDecision } from "./rollout-gates.js";
 import { clinicalBoundaryJoinedFingerprintHe } from "./answer-composer.js";
 import { callCopilotLlmJson, copilotLlmProviderLabel } from "./copilot-llm-client.js";
+import { collectParentFacingOutputQualityIssues } from "./guardrail-validator.js";
 
 const DEFAULT_TIMEOUT_MS = 9000;
 
@@ -92,10 +93,13 @@ function buildGroundedPrompt(utterance, truthPacket, parentIntent = "") {
         ].join("\n");
       case "what_is_most_important":
         return [
-          "השאלה היא על הדבר החשוב ביותר להתמקד בו. המבנה הנדרש:",
-          "  בלוק observation: התחל ב'נראה שכדאי להתמקד ב...' — ציין 1–2 תחומים ספציפיים מה-FACTS_JSON.observation.",
-          "  בלוק meaning: הסבר בקצרה למה דווקא אלה הנושאים הדחופים.",
-          "  אל תכתוב 'אפשר לסדר מה חשוב קודם' או 'זה מה שהדוח נותן כרגע'.",
+          "השאלה היא על מה הכי חשוב לתרגל השבוע. חובה למלא את המבנה הבא (ניסוח טבעי, שמות נושאים מלאים מ-FACTS_JSON.observation בלבד):",
+          '  בלוק observation — משפט פתיחה ישיר במבנה: "השבוע כדאי להתמקד בעיקר ב-[שם נושא מלא] וב-[שם נושא מלא נוסף כשיש]."',
+          "  בלוק meaning — משפט קצר אחד להסבר למה חשוב להתמקד בכל תחום שציינת (אם יש שני תחומים — שני משפטים קצרים).",
+          '  חובה לכלול משפט פעולה ביתית מעשית (בתוך meaning, או משפט נוסף באותו בלוק): "מומלץ לתרגל בערך 10 דקות, 3 פעמים בשבוע, עם 5–8 שאלות קצרות בכל פעם."',
+          "  אם FACTS_JSON מאפשר בלוק next_step — אפשר לשים שם את משפט הפעולה; אם לא — עדיין חובה את אותו משפט (או ניסוח קרוב עם 10 דקות, 3 פעמים, 5–8 שאלות, תרגול קצר, בכל פעם) בתוך הטקסט.",
+          "  אסור נקודה או פיסוק מיד אחרי מילת יחס (ב, על, עם, של, ל) לפני שם הנושא — אסור \"ב.\", \"ב .\", \"ב־.\", \"ב-.\", \"ב:.\". המשך מיד אחרי \"ב\" עם שם הנושא המלא.",
+          "  אל תפתח ב\"נראה שכדאי להתמקד ב\" ואז נקודה או מקף לפני הנושא. אל תכתוב 'אפשר לסדר מה חשוב קודם' או 'זה מה שהדוח נותן כרגע'.",
         ].join("\n");
       case "what_to_do_today":
       case "what_to_do_this_week":
@@ -121,8 +125,11 @@ function buildGroundedPrompt(utterance, truthPacket, parentIntent = "") {
         return [
           "השאלה היא על מקצוע או נושא ספציפי. המבנה הנדרש:",
           "  בלוק observation: ציין רק מה שמופיע על הנושא הספציפי ב-FACTS_JSON.observation.",
-          "  בלוק meaning: הסבר מה המשמעות ומה כדאי לעשות.",
+          "  בלוק meaning: הסבר מה המשמעות; כל הצעה מעשית קצרה מותרת כאן או במשפט נוסף באותו בלוק — לפי FACTS_JSON.interpretation/action רק אם מופיעים שם.",
           "  אם לנושא הספציפי יש מעט שאלות — אפשר לציין זאת בזהירות רק לנושא הזה.",
+          facts.recommendationEligible && facts.recommendationIntensityCap !== "RI0"
+            ? "  אופציונלי: בלוק next_step — צעד ביתי קצר אחד לפי FACTS_JSON.action בלבד."
+            : "  אסור לכלול בלוק next_step — המלצות מעשיות רק בתוך בלוק meaning (FACTS_JSON מאשר המלצות רק כש-recommendationEligible=true ו-cap לא RI0).",
         ].join("\n");
       default:
         return [
@@ -138,7 +145,8 @@ function buildGroundedPrompt(utterance, truthPacket, parentIntent = "") {
     "השתמש רק בעובדות מה-FACTS_JSON. אסור להמציא עובדות שאינן בו.",
     "כתוב בשפה פשוטה, ישירה, וידידותית להורה — לא בשפת מערכת.",
     "אל תשתמש בביטויים: 'לפי הדוח, מופיעים:', 'המקצועות שמופיעים:', 'מוקדים עם ניסוח', 'זה מה שהדוח נותן כרגע', 'אפשר לסדר מה חשוב קודם'.",
-    "השתמש בביטויים: 'נראה שכדאי להתמקד ב...', 'ב... נראו תוצאות טובות יחסית', 'התחום שדורש חיזוק כרגע הוא...', 'בבית כדאי לתרגל...', 'בשלב הזה מומלץ...', 'הנתונים מצביעים על...'.",
+    "ניסוח טבעי לדוגמה: 'השבוע כדאי להתמקד בעיקר ב...', 'ב... נראו תוצאות טובות יחסית', 'התחום שדורש חיזוק כרגע הוא...', 'בבית כדאי לתרגל...', 'בשלב הזה מומלץ...', 'הנתונים מצביעים על...'.",
+    "אסור לכתוב נקודה, נקודתיים או מקף מיד אחרי מילת יחס (ב, על, עם, של, ל) לפני שם הנושא — תמיד המשך מיד עם שם הנושא המלא. דוגמה אסורה: \"להתמקד ב. חשבון\"; נכון: \"להתמקד בחשבון\" או \"להתמקד בחשבון —\".",
     "אל תשתמש במילים 'ביטחון', 'בטחון' או confidence לגבי הילד; אל תניח מצב רגשי.",
     "אסור לאבחן: לעולם אל תאמר שיש לילד דיסלקציה, ADHD, לקות למידה או כל אבחון. הדוח הוא נתוני תרגול בלבד.",
     `כלל נפח: אם reportQuestionTotalGlobal >= 100, אסור לכתוב ברמת כלל התקופה: 'מוקדם לקבוע', 'אין מספיק נתונים', 'נתונים מועטים', 'כיוון ראשוני בלבד', 'עדיין לא ניתן להסיק'. מותר רק אם מסוגל לנושא/מקצוע ספציפי עם מעט שאלות.`,
@@ -156,7 +164,20 @@ function buildGroundedPrompt(utterance, truthPacket, parentIntent = "") {
  * @param {{ intent?: string }} [hints]
  */
 function validateLlmDraft(payload, truthPacket, hints = null) {
-  const blocks = Array.isArray(payload?.answerBlocks) ? payload.answerBlocks : [];
+  const dl0 = truthPacket?.derivedLimits || {};
+  const recommendationOk =
+    dl0.recommendationEligible === true && String(dl0.recommendationIntensityCap || "RI0") !== "RI0";
+  /** Drop next_step when contracts forbid recommendations — models often add it anyway; same rule as validateAnswerDraft next_step_not_eligible. */
+  let blocks = Array.isArray(payload?.answerBlocks)
+    ? payload.answerBlocks.map((b) => ({
+        type: b?.type,
+        textHe: b?.textHe,
+        source: b?.source,
+      }))
+    : [];
+  if (!recommendationOk) {
+    blocks = blocks.filter((b) => String(b?.type || "") !== "next_step");
+  }
   if (blocks.length < 2) return { ok: false, reason: "llm_answer_too_short" };
   if (blocks.length > 4) return { ok: false, reason: "llm_answer_too_long" };
   const allowedTypes = new Set(["observation", "meaning", "next_step", "caution", "uncertainty_reason"]);
@@ -192,11 +213,11 @@ function validateLlmDraft(payload, truthPacket, hints = null) {
       if (ph && textHe.includes(String(ph))) return { ok: false, reason: "llm_forbidden_phrase" };
     }
   }
-  const hasNext = blocks.some((b) => String(b?.type || "") === "next_step");
-  const dl = truthPacket?.derivedLimits || {};
-  if (hasNext && (!dl.recommendationEligible || dl.recommendationIntensityCap === "RI0")) {
-    return { ok: false, reason: "llm_next_step_not_eligible" };
+  const qualityIssues = collectParentFacingOutputQualityIssues(joined, intent);
+  if (qualityIssues.length) {
+    return { ok: false, reason: `llm_${qualityIssues[0]}` };
   }
+
   return {
     ok: true,
     draft: {

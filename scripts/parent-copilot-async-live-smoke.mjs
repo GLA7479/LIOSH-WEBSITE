@@ -194,13 +194,14 @@ function answerLlmTelemetryFlat(res) {
 
 function printGemini429Diagnostics(res, utterance, groupName) {
   const la = answerLlmTelemetryFlat(res);
-  const reason = la && String(la.reason || "");
+  if (!la || typeof la !== "object") return;
+  const reason = String(la.reason ?? "");
   const is429 =
     reason === "http_429" ||
     la?.httpStatus === 429 ||
     (reason.startsWith("http_") && reason.includes("429"));
-  const reportRelated = groupName === "Report-related";
-  if (!reportRelated || !is429 || !la) return;
+  const reportRelated = groupName === "Report-related" || groupName.startsWith("Report-related");
+  if (!reportRelated || !is429) return;
 
   console.log("\n--- Gemini HTTP 429 diagnostics (report-related LLM attempt) ---");
   if (typeof la.llmRetryCount === "number") console.log(`clientRetriesExhaustedAfterAttempts: ${la.llmRetryCount + 1}`);

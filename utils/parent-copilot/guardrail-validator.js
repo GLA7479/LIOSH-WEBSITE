@@ -163,6 +163,74 @@ function latinToHebrewLetterRatio(s) {
   return sum ? lat / sum : 0;
 }
 
+/** Preposition + punctuation before a Hebrew topic word (e.g. "ב. חשבון"). */
+const MALFORMED_PREP_PUNCT_BEFORE_TOPIC_RE =
+  /(?:^|[\s,;—])(ב|על|עם|של|ל)\s*[.:]\s+(?=[\u0590-\u05FF])/u;
+/** e.g. "ב־." / "ב-." */
+const MALFORMED_PREP_DASH_DOT_RE = /(?:^|[\s,;—])(ב|על|עם|של|ל)\s*[־\-]\s*\./u;
+
+const EXPLICIT_BROKEN_FRAGMENT_RES = [
+  /(?:^|[\s,;—])ב\.\s/u,
+  /(?:^|[\s,;—])ב\s+\.\s/u,
+  /ב־\./u,
+  /ב-\./u,
+  /ב:\./u,
+];
+
+/** At least one practical home-practice cue for main-focus answers. */
+const MAIN_FOCUS_PRACTICAL_HINT_RE =
+  /10\s*דקות|3\s*פעמים|5\s*[–\-]\s*8\s*שאלות|תרגול\s*קצר|בכל\s*פעם/u;
+
+const MAIN_FOCUS_MIN_JOINED_LEN = 90;
+
+/**
+ * @param {string} segment
+ */
+function sentenceEndsWithHangingPreposition(segment) {
+  const t = String(segment || "").trim();
+  if (!t) return false;
+  const words = t.split(/\s+/).filter(Boolean);
+  const last = words[words.length - 1] || "";
+  return ["ב", "על", "עם", "של", "ל"].includes(last);
+}
+
+/**
+ * Hebrew surface-quality checks for parent-facing joined copy (deterministic + LLM paths).
+ * @param {string} joined
+ * @param {string} intent
+ * @returns {string[]}
+ */
+export function collectParentFacingOutputQualityIssues(joined, intent) {
+  /** @type {string[]} */
+  const codes = [];
+  const j = String(joined || "");
+
+  for (const re of EXPLICIT_BROKEN_FRAGMENT_RES) {
+    if (re.test(j)) {
+      codes.push("malformed_hebrew_fragment");
+      break;
+    }
+  }
+  if (MALFORMED_PREP_PUNCT_BEFORE_TOPIC_RE.test(j)) codes.push("malformed_preposition_punctuation");
+  if (MALFORMED_PREP_DASH_DOT_RE.test(j)) codes.push("malformed_preposition_punctuation");
+
+  const roughParts = j.split(/\s*(?:[.!?]|׃)\s+/u).filter(Boolean);
+  for (const part of roughParts) {
+    if (sentenceEndsWithHangingPreposition(part)) {
+      codes.push("sentence_hanging_preposition");
+      break;
+    }
+  }
+
+  const intentNorm = String(intent || "").trim();
+  if (intentNorm === "what_is_most_important") {
+    if (j.length > 0 && j.length < MAIN_FOCUS_MIN_JOINED_LEN) codes.push("main_focus_answer_too_short");
+    if (!MAIN_FOCUS_PRACTICAL_HINT_RE.test(j)) codes.push("main_focus_missing_practical_action");
+  }
+
+  return [...new Set(codes)];
+}
+
 /**
  * @param {{ answerBlocks: Array<{ type: string; textHe: string; source: string }> }} draft
  * @param {NonNullable<ReturnType<typeof import("./truth-packet-v1.js").buildTruthPacketV1>>} truthPacket
@@ -320,6 +388,10 @@ export function validateAnswerDraft(draft, truthPacket, hints = null) {
     if (intent === "clinical_boundary" && CLINICAL_CERTAINTY_RE.test(joined)) {
       failCodes.push("clinical_certainty_language");
     }
+  }
+
+  for (const q of collectParentFacingOutputQualityIssues(joined, intent)) {
+    failCodes.push(q);
   }
 
   return {

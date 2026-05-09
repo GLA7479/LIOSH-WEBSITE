@@ -20,6 +20,8 @@ export function parentDirectOpenerHe(intent, truthPacket) {
 
   switch (k) {
     case "explain_report":
+    case "ask_topic_specific":
+    case "ask_subject_specific":
       return exec
         ? "הנה מה שמופיע בדוח לגבי התקופה:"
         : "הנה מה שמופיע בדוח לגבי הנושא הזה:";

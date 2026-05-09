@@ -28,6 +28,8 @@ import { SUBJECT_ORDER, subjectLabelHe } from "./contract-reader.js";
  *   "off_report_subject_clarification" |
  *   "off_topic_redirect" |
  *   "simple_parent_explanation" |
+ *   "ask_topic_specific" |
+ *   "ask_subject_specific" |
  *   "unclear"
  * )} CanonicalParentIntent
  */
@@ -67,6 +69,8 @@ export const CANONICAL_PARENT_INTENTS = [
   "off_report_subject_clarification",
   "off_topic_redirect",
   "simple_parent_explanation",
+  "ask_topic_specific",
+  "ask_subject_specific",
   "unclear",
 ];
 
@@ -405,6 +409,9 @@ const INTENT_PARAPHRASES = {
     /מה\s*ההבדל\s*בין|מה\s*ההבדל\s*ל/u,
     /מה\s*זה\s*אומר\s*בפשטות/u,
   ],
+  /** Resolved via payload vocabulary when Stage‑A scores zero (see interpretFreeformStageA rescue). */
+  ask_topic_specific: [],
+  ask_subject_specific: [],
   off_topic_redirect: [
     // Weather — all spellings (with/without ה, אוויר/אויר)
     /מזג\s*ה?אוויר|מזג\s*ה?אויר/u,
@@ -543,6 +550,8 @@ export function interpretFreeformStageA(utteranceRaw, payload) {
   const normalizedUtterance = normalizeFreeformParentUtteranceHe(String(utteranceRaw || ""));
   const t = normalizedUtterance.toLowerCase().replace(/\s+/g, " ").trim();
   const folded = foldUtteranceForHeMatch(normalizedUtterance);
+  const topicHintEarly = payload ? extractTopicHint(folded, payload) : null;
+  const subjectHintEarly = payload ? extractSubjectHint(folded, payload) : null;
 
   /** @type {Record<CanonicalParentIntent, number>} */
   const scores = /** @type {any} */ ({});
@@ -718,6 +727,20 @@ export function interpretFreeformStageA(utteranceRaw, payload) {
     }
   }
 
+  // Short topic/subject follow-ups (e.g. "מה עם גאומטריה?") often score zero Stage‑A patterns.
+  // When the utterance matches an anchored topic or subject row from the payload, route explicitly.
+  if (best === "unclear" && topicHintEarly) {
+    best = "ask_topic_specific";
+    bestScore = 6;
+    second = 0;
+    topIntentCount = 1;
+  } else if (best === "unclear" && subjectHintEarly && !topicHintEarly) {
+    best = "ask_subject_specific";
+    bestScore = 6;
+    second = 0;
+    topIntentCount = 1;
+  }
+
   const scopeSignal = bestScopeClassFromSignals(folded);
   /** @type {ScopeClass} */
   let scopeClass =
@@ -735,9 +758,6 @@ export function interpretFreeformStageA(utteranceRaw, payload) {
   if (best === "clinical_boundary" || best === "sensitive_education_choice") {
     scopeClass = "confidence_uncertainty";
   }
-
-  const topicHint = payload ? extractTopicHint(folded, payload) : null;
-  const subjectHint = payload ? extractSubjectHint(folded, payload) : null;
 
   if (best === "strength_vs_weakness_summary") {
     scopeClass = strengthVsInterpretationScopeFromFolded(folded);
@@ -769,8 +789,8 @@ export function interpretFreeformStageA(utteranceRaw, payload) {
     intentReason: best === "unclear" ? "no_intent_signal" : `stage_a:${best}`,
     normalizedUtterance: t,
     scopeClass,
-    subjectHint,
-    topicHint,
+    subjectHint: subjectHintEarly,
+    topicHint: topicHintEarly,
     timeframeHint,
     toneHint,
     ambiguityLevel,

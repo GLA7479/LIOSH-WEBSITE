@@ -182,6 +182,8 @@ function supportingNumericTail(x, canonicalIntent = "") {
     "what_to_do_this_week",
     "strength_vs_weakness_summary",
     "explain_report",
+    "ask_topic_specific",
+    "ask_subject_specific",
     "report_trust_question",
     "why_not_advance",
     "how_to_tell_child",
@@ -688,7 +690,9 @@ function buildExecutiveIntentNarrativeSlots(x) {
         interpretation: appendDistinctSentence(interp, supportingNumericTail(x, intent)),
       };
     }
-    case "explain_report": {
+    case "explain_report":
+    case "ask_topic_specific":
+    case "ask_subject_specific": {
       let obs;
       const scarcityLead =
         practiceVolume < 80 || sparseExecutive

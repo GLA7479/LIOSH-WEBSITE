@@ -12,6 +12,8 @@ export function mapCanonicalIntentToPackGroup(intent) {
   /** @type {Record<string, string>} */
   const t = {
     explain_report: "understand_observation",
+    ask_topic_specific: "understand_observation",
+    ask_subject_specific: "understand_observation",
     what_is_most_important: "understand_meaning",
     what_to_do_today: "action_today",
     what_to_do_this_week: "action_week",
