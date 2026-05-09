@@ -92,24 +92,47 @@ export async function vocalizeHebrewWithDicta(text, opts = {}) {
   const maxLen = 3500;
   const payload = stripped.length > maxLen ? stripped.slice(0, maxLen) : stripped;
 
-  try {
+  const singleAttempt = async (addMorph = false) => {
     const res = await fetch(url, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
         task: "nakdan",
         data: payload,
-        addmorph: false,
+        addmorph: addMorph,
         genre: "modern",
       }),
       signal: opts.signal,
     });
 
-    if (!res.ok) return raw;
+    if (!res.ok) return null;
     const data = await res.json();
-    if (!Array.isArray(data)) return raw;
+    if (!Array.isArray(data)) return null;
     const vocalized = sanitizeNakdanDisplayText(dictaNakdanTokensToString(data));
-    return vocalized ? vocalized : raw;
+    return vocalized ? vocalized : null;
+  };
+
+  try {
+    let out = await singleAttempt(false);
+    if (out == null) {
+      await new Promise((r) => setTimeout(r, 220));
+      out = await singleAttempt(false);
+    }
+    if (out == null) return raw;
+
+    const lettersOnly = stripped.replace(/[^\u0590-\u05FF]/g, "");
+    const multiLetterHebrew = lettersOnly.length >= 2;
+    if (multiLetterHebrew && !textAlreadyHasNiqqud(out)) {
+      await new Promise((r) => setTimeout(r, 200));
+      let retry = await singleAttempt(false);
+      if (!retry || !textAlreadyHasNiqqud(retry)) {
+        await new Promise((r) => setTimeout(r, 200));
+        retry = await singleAttempt(true);
+      }
+      if (retry && textAlreadyHasNiqqud(retry)) return retry;
+    }
+
+    return out;
   } catch {
     return raw;
   }

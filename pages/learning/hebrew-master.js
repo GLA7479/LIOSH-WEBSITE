@@ -79,6 +79,7 @@ import {
   hebrewScriptLikely,
   isChildHebrewNiqqudGradeKey,
   stripHebrewNiqqudMarks,
+  textAlreadyHasNiqqud,
 } from "../../utils/hebrew-dicta-nakdan";
 import {
   spellingStemForNiqqudDetect,
@@ -867,6 +868,46 @@ useEffect(() => {
           for (const e of data.entries || []) {
             if (e?.id) map[e.id] = e.text;
           }
+
+          const retryEntries = [];
+          for (const { id, text } of entries) {
+            const rendered = map[id];
+            if (!rendered) continue;
+            const lettersOnly = stripHebrewNiqqudMarks(rendered).replace(
+              /[^\u0590-\u05FF]/g,
+              ""
+            );
+            if (
+              lettersOnly.length >= 2 &&
+              hebrewScriptLikely(rendered) &&
+              !textAlreadyHasNiqqud(rendered)
+            ) {
+              retryEntries.push({
+                id,
+                text: stripHebrewNiqqudMarks(String(text ?? "")).trim(),
+              });
+            }
+          }
+
+          if (retryEntries.length > 0 && !cancelled) {
+            try {
+              const res2 = await fetch("/api/hebrew-nakdan", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ entries: retryEntries }),
+                signal: ac.signal,
+              });
+              if (res2.ok) {
+                const data2 = await res2.json();
+                for (const e of data2.entries || []) {
+                  if (e?.id && e.text) map[e.id] = e.text;
+                }
+              }
+            } catch {
+              /* keep first-pass map */
+            }
+          }
+
           const stemN = spellingStemForNiqqudDetect(q);
           if (isSpellingTargetWordInQuotesContextFromStem(stemN)) {
             for (const id of ["questionLabel", "exerciseText", "question"]) {

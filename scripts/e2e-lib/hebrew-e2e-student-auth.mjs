@@ -102,12 +102,13 @@ export async function applyStudentSessionFromLogin(browserContext, baseUrl) {
     );
   }
 
+  // Playwright: use `url` **or** `path`+`domain`, not both — invalid combo throws
+  // "Cookie should have either url or path".
   await browserContext.addCookies([
     {
       name: COOKIE,
       value: token,
       url: origin,
-      path: "/",
       httpOnly: true,
       sameSite: "Lax",
     },
