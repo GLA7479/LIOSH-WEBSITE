@@ -13,7 +13,7 @@
 import { createHash } from "node:crypto";
 import { readFileSync } from "node:fs";
 import { mkdir, writeFile } from "node:fs/promises";
-import { dirname, join } from "node:path";
+import { dirname, join, resolve } from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -1469,7 +1469,11 @@ function analyze(rows) {
   };
 }
 
-async function main() {
+/**
+ * Shared row collection for advisory tooling (e.g. curriculum inventory).
+ * Matches the quantitative audit scan (static banks + deterministic generator samples).
+ */
+export function buildRowsForCurriculumInventory() {
   const rows = [];
   collectGeographyBankItems(rows);
   collectScienceBankItems(rows);
@@ -1481,6 +1485,22 @@ async function main() {
   collectGeometryConceptual(rows);
   sampleGeometryGenerator(rows, 24);
   sampleMathGenerator(rows, 16);
+  return rows;
+}
+
+function isExecutedAsMainScript() {
+  const entry = process.argv[1];
+  if (!entry) return false;
+  try {
+    const self = fileURLToPath(import.meta.url);
+    return resolve(entry) === resolve(self);
+  } catch {
+    return false;
+  }
+}
+
+async function main() {
+  const rows = buildRowsForCurriculumInventory();
 
   const declaredMathKinds = extractDeclaredKindsFromSource(
     "utils/math-question-generator.js"
@@ -1519,7 +1539,9 @@ async function main() {
   );
 }
 
-main().catch((e) => {
-  console.error(e);
-  process.exit(1);
-});
+if (isExecutedAsMainScript()) {
+  main().catch((e) => {
+    console.error(e);
+    process.exit(1);
+  });
+}
