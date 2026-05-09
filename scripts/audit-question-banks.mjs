@@ -786,10 +786,13 @@ function sampleMathGenerator(rows, samplesPerOp = 10) {
           const q = runWithAuditRandom(seed, () => genMath(lc, op, gk, null));
           const stem = q.question ?? q.exerciseText ?? "";
           const kind = q.params?.kind ?? op;
+          const rawOp = q?.operation;
+          const effectiveOp =
+            typeof rawOp === "string" && rawOp.trim() ? rawOp.trim() : op;
           if (!stem) continue;
           pushRow(rows, {
             subject: "math",
-            topic: op,
+            topic: effectiveOp,
             subtopic: kind,
             patternFamily: q.params?.patternFamily || kind,
             subtype: q.params?.subtype || "",
@@ -848,13 +851,16 @@ function sampleMathGenerator(rows, samplesPerOp = 10) {
       });
       const stem = q?.question ?? q?.exerciseText ?? "";
       const kind = q?.params?.kind ?? p.op;
+      const rawForceOp = q?.operation;
+      const effectiveForceOp =
+        typeof rawForceOp === "string" && rawForceOp.trim() ? rawForceOp.trim() : p.op;
       if (!stem) continue;
       pushRow(rows, {
         subject: "math",
-        topic: p.op,
+        topic: effectiveForceOp,
         subtopic: kind,
-        patternFamily: q.params?.patternFamily || kind,
-        subtype: q.params?.subtype || "",
+        patternFamily: q?.params?.patternFamily || kind,
+        subtype: q?.params?.subtype || "",
         difficulty: p.lev,
         gradeBand: gradeBandForKey(p.gk) || "",
         minGrade: gNum,

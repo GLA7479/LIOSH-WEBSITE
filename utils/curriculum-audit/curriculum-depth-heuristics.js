@@ -98,18 +98,16 @@ export function analyzeCurriculumDepth(rec, norm, ctx = {}) {
   const ADV_ANGLE_HINT =
     /\bobtuse\b|\bsupplementary\b|\bcomplementary\b|\binscribed\b|\bcircumscribed\b|\balternate\s+interior\b/i;
   if (subject === "geometry") {
-    if ((rawTopic.includes("volume") || nk.includes("volume")) && gmin <= 3) {
+    /* Align with israeli-primary-curriculum-map geometryGrade: volume allowed from g2; diagonals from g3. */
+    if ((rawTopic.includes("volume") || nk.includes("volume")) && gmin <= 1) {
       depthFlags.push(FLAG.GEOMETRY_VOLUME_EARLY);
       suggestTooAdvanced = true;
-      notes.push("Volume strand flagged early — sequencing review.");
+      notes.push("Volume strand before grade 2 — sequencing review.");
     }
-    if ((rawTopic.includes("diagonal") || nk.includes("diagonals")) && gmin <= 3) {
+    if ((rawTopic.includes("diagonal") || nk.includes("diagonals")) && gmin <= 2) {
       depthFlags.push(FLAG.GEOMETRY_DIAGONALS_EARLY);
       suggestTooAdvanced = true;
-    }
-    if ((rawTopic.includes("area") || nk.includes("area")) && gmin <= 2) {
-      depthFlags.push(FLAG.GEOMETRY_AREA_BROAD);
-      suggestNeedsHumanReview = true;
+      notes.push("Diagonal properties before grade 3 — sequencing review.");
     }
     if (gmin <= 3 && ADV_ANGLE_HINT.test(preview)) {
       depthFlags.push(FLAG.GEOMETRY_ADVANCED_ANGLES_EARLY);

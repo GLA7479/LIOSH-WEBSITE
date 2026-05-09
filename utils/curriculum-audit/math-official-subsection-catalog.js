@@ -148,6 +148,8 @@ export function buildSectionsForGrade(grade) {
         sourcePageHint: "כפל וחילוק ראשוני",
         mapsToNormalizedKeys: ["math.multiplication_division"],
         confidence: "medium",
+        notes:
+          "לא ממפים כאן math.divisibility_factors — סימני התחלקות פורמליים בקטלוג נפרד לכיתה ג׳ (g3_divisibility_intro); הגנרטור משחרר התחלקות מכיתה ג׳ בלבד.",
       }),
       sec({
         sectionKey: "g2_fractions_intro",
@@ -288,6 +290,8 @@ export function buildSectionsForGrade(grade) {
         sourcePageHint: "מספרים שלמים",
         mapsToNormalizedKeys: ["math.divisibility_factors"],
         confidence: "low",
+        notes:
+          "מיפוי ראשון ל־math.divisibility_factors; מיושר עם שחרור הגנרטור (סימני התחלקות) מכיתה ג׳ — לאמת מול kita3.pdf.",
       }),
       sec({
         sectionKey: "g3_patterns_algebra",

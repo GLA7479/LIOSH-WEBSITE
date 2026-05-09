@@ -37,9 +37,10 @@ const SUSPICIOUS_GRADE_RULES = [
   },
   { subject: "math", rawIncludes: ["decimals"], maxGradeSuspicious: 2, code: "math_decimals_very_early" },
   { subject: "geometry", rawIncludes: ["pythagoras"], maxGradeSuspicious: 5, code: "geometry_pythagoras_early" },
-  { subject: "geometry", rawIncludes: ["volume"], maxGradeSuspicious: 3, code: "geometry_volume_early" },
-  { subject: "geometry", rawIncludes: ["diagonal"], maxGradeSuspicious: 3, code: "geometry_diagonals_early" },
-  { subject: "geometry", rawIncludes: ["diagonals"], maxGradeSuspicious: 3, code: "geometry_diagonals_early" },
+  /** POP strand allows volume from grade 2 — flag raw topic only in grade 1 */
+  { subject: "geometry", rawIncludes: ["volume"], maxGradeSuspicious: 1, code: "geometry_volume_early" },
+  { subject: "geometry", rawIncludes: ["diagonal"], maxGradeSuspicious: 2, code: "geometry_diagonals_early" },
+  { subject: "geometry", rawIncludes: ["diagonals"], maxGradeSuspicious: 2, code: "geometry_diagonals_early" },
   {
     subject: "english",
     rawExact: ["grammar"],
@@ -145,9 +146,18 @@ function buildRollup(inventory, latestMeta, normalizeInventoryTopic) {
         });
       }
     }
-    if (rec.subject === "geometry" && gmin <= 3) {
+    if (rec.subject === "geometry") {
       const nk = norm.normalizedTopicKey;
-      if (nk.includes("volume") || nk.includes("diagonals")) {
+      if (nk.includes("volume") && gmin <= 1) {
+        suspicious.push({
+          questionId: rec.questionId,
+          subject: rec.subject,
+          gradeMin: gmin,
+          rawTopic: rec.topic,
+          ruleCode: "geometry_volume_or_diagonals_early_normalized",
+        });
+      }
+      if (nk.includes("diagonals") && gmin <= 2) {
         suspicious.push({
           questionId: rec.questionId,
           subject: rec.subject,

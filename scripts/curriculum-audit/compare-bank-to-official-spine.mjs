@@ -57,13 +57,10 @@ function classifyRow(record, normKey, norm) {
   }
 
   if (subject === "geometry" && gmin <= 2) {
-    if (
-      normKey.includes("volume") ||
-      normKey.includes("pythagoras") ||
-      normKey.includes("diagonal")
-    ) {
-      tags.push("geometry_early_depth_warning");
-    }
+    if (normKey.includes("pythagoras")) tags.push("geometry_early_depth_warning");
+    /* Volume is allowed from grade 2 in POP geometry strand — warn only in grade 1. */
+    if (normKey.includes("volume") && gmin <= 1) tags.push("geometry_early_depth_warning");
+    if (normKey.includes("diagonal")) tags.push("geometry_early_depth_warning");
   }
 
   if (

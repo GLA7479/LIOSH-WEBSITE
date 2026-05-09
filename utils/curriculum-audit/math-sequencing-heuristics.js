@@ -114,6 +114,14 @@ export function mathSequencingSuspicions(invRecord, normKey) {
       note: "יחס וקנה מידה בכיתות נמוכות — לאמת.",
     });
   }
+  /** Generator emits formal divisibility stems from grade 3; grade-2 rows are legacy until inventory rescan. */
+  if (normKey.includes("divisibility_factors") && g === 2) {
+    flags.push({
+      code: "divisibility_factors_grade2_inventory_review",
+      severity: "review",
+      note: "כיתה ב׳: הגנרטור לא משגר סימני התחלקות פורמליים; לרענן דגימות מאגר או לאמת שורות סטטיות ישנות.",
+    });
+  }
 
   return flags;
 }

@@ -25,6 +25,7 @@ const SEQUENCING_CODES = [
   "fractions_depth_unclear_low_grade",
   "decimals_possibly_early",
   "word_problem_difficulty_mismatch_low_grade",
+  "divisibility_factors_grade2_inventory_review",
 ];
 
 /** @typedef {'no_change'|'improve_metadata'|'improve_subsection_catalog'|'adjust_generator_grade_gate'|'split_generator_by_grade_depth'|'owner_manual_review_required'} FutureAction */
@@ -173,6 +174,14 @@ function classifyBranch(branchRows) {
         likelyRootCause: "metadata_topic_labeling_issue",
         recommendedFutureAction: /** @type {FutureAction} */ ("improve_metadata"),
         rationale: "Hard-labelled word problems in early grades — verify difficulty tagging vs stem.",
+      };
+    }
+    if (code === "divisibility_factors_grade2_inventory_review") {
+      return {
+        likelyRootCause: "legacy_inventory_or_static_bank",
+        recommendedFutureAction: /** @type {FutureAction} */ ("adjust_generator_grade_gate"),
+        rationale:
+          "Formal divisibility is gated from grade 3 in generator — rescan inventory; remove stale grade-2 rows if any remain.",
       };
     }
     return {

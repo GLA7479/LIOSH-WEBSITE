@@ -1014,8 +1014,15 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
   if (mixedOps) {
     allowedOps = allowedOps.filter((op) => mixedOps[op]);
   }
+  /** Formal divisibility-rule stems align with programme spine from grade 3 (MoE kita3.pdf); even/odd stays under number_sense. */
+  if (gradeKey === "g2") {
+    allowedOps = allowedOps.filter((op) => op !== "divisibility");
+  }
   if (allowedOps.length === 0) {
     allowedOps = (gradeCfg.operations || ["addition"]).filter((op) => op !== "mixed");
+    if (gradeKey === "g2") {
+      allowedOps = allowedOps.filter((op) => op !== "divisibility");
+    }
   }
   if (allowedOps.length === 0) {
     allowedOps = ["addition"];
