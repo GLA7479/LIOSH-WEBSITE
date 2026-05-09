@@ -964,7 +964,7 @@ function computeSubjectPriorityFieldsPhase8(subjectId, args) {
     return {
       subjectPriorityLevel: "maintain",
       subjectPriorityReasonHe: `ב${lab} נראה שהרמה נשמרת טוב יחסית — להישאר על שגרה רגועה.`,
-      subjectImmediateActionHe: home || `ב${lab}: לשמר שני מפגשים קצרים בשבוע סביב החוזקות.`,
+      subjectImmediateActionHe: home || `ב${lab}: לשמר שני מפגשים קצרים בשבוע סביב הנושאים שבהם נראות תוצאות טובות יחסית.`,
       subjectDeferredActionHe: `ב${lab}: לדחות הרחבות או הקשחה לפני צורך ברור.`,
       subjectMonitoringOnly: false,
       subjectDoNowHe: "להמשיך קצב קבוע; לשבח התמדה קטנה.",
@@ -1464,7 +1464,7 @@ function synthesizeSubjectPhase3FromRows(subjectId, report) {
     confidenceSummaryHe += " התמונה במקצוע עדיין חלקית — נשארים בזהירות.";
   }
   if (anyHighRisk && strongRows.length >= 2) {
-    confidenceSummaryHe += " למרות חוזקות בשורות, מופיעות גם נקודות לתשומת לב — לא לפרש הכל כהצלחה מלאה.";
+    confidenceSummaryHe += " למרות שורות עם תוצאות טובות יחסית, מופיעות גם נקודות לתשומת לב — לא לפרש הכל כהצלחה מלאה.";
   }
 
   const riskLabelHe = {

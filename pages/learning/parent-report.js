@@ -270,7 +270,7 @@ function topicBarColor(accuracy) {
   return "#ef4444";
 }
 
-/** סדר תצוגת אבחון מקצועי — תואם `patternDiagnostics.subjects` (הצטיינות עקבית → חוזקות → מומלץ לשמר → נקודות לשיפור → תחומים דורשים תשומת לב) */
+/** סדר תצוגת אבחון מקצועי — תואם `patternDiagnostics.subjects` (הצטיינות עקבית → תוצאות טובות יחסית → מומלץ לשמר → נקודות לשיפור → תחומים דורשים תשומת לב) */
 const PATTERN_DIAGNOSTIC_SUBJECT_ORDER = [
   "math",
   "geometry",
@@ -1357,7 +1357,7 @@ export default function ParentReport() {
             }
 
             /*
-             * דוגמאות טעות / חוזקה — הדפסה בלבד: Tailwind text-white/45, text-white/88, text-sky-300 וכו׳
+             * דוגמאות טעות / תוצאות טובות — הדפסה בלבד: Tailwind text-white/45, text-white/88, text-sky-300 וכו׳
              * לא תואמים תמיד ל-overrides הגלובליים; כאן צבעים מפורשים ללא opacity נמוכה.
              */
             #parent-report-pdf .parent-report-diagnostics-print .parent-report-example-card {
@@ -1729,7 +1729,7 @@ export default function ParentReport() {
 
           {(report.rawMetricStrengthsHe?.length || report.summary?.rawMetricStrengthsHe?.length) ? (
             <div className="mb-3 md:mb-5 avoid-break rounded-lg border border-emerald-400/25 bg-emerald-950/15 p-3 md:p-4 text-sm text-white/90 space-y-1">
-              <p className="font-bold text-emerald-100/95 m-0 text-sm md:text-base">חוזקות לפי נתוני התרגול בטווח</p>
+              <p className="font-bold text-emerald-100/95 m-0 text-sm md:text-base">איפה נראו תוצאות טובות לפי נתוני התרגול בטווח</p>
               <ul className="m-0 pr-4 list-disc text-xs md:text-sm text-white/85 space-y-1">
                 {(report.rawMetricStrengthsHe || report.summary?.rawMetricStrengthsHe || []).map((line, i) => (
                   <li key={`rms-${i}`} className="leading-relaxed">
@@ -1758,7 +1758,7 @@ export default function ParentReport() {
               ) : null}
               {report.summary.diagnosticOverviewHe.strongestAreaLineHe ? (
                 <p className="m-0 leading-relaxed">
-                  <span className="text-white/55">חוזק לשימור: </span>
+                  <span className="text-white/55">תוצאות טובות יחסית — כדאי לשמר: </span>
                   {report.summary.diagnosticOverviewHe.strongestAreaLineHe}
                 </p>
               ) : null}
@@ -3003,7 +3003,7 @@ export default function ParentReport() {
                             ))}
                             {topStr.length > 0 && (
                               <div className="parent-report-print-section-label text-[11px] font-semibold text-emerald-200/80 pt-1">
-                                חוזקות מובילות
+                                איפה נראו התוצאות הטובות ביותר
                               </div>
                             )}
                             {topStr.map((x, tsIdx) => (
@@ -3015,7 +3015,7 @@ export default function ParentReport() {
                                   <span className="text-lg shrink-0">🌟</span>
                                   <div className="flex-1 min-w-0">
                                     <div className="parent-report-print-subheading font-semibold text-xs md:text-sm text-white/90 mb-0.5">
-                                      {x.tierHe || "נושא חזק כרגע"}
+                                      {x.tierHe || "נושא עם תוצאות טובות יחסית"}
                                     </div>
                                     <div className="parent-report-print-muted-text text-xs md:text-sm text-white/80 break-words">
                                       {diagnosticParentVisibleTextHe(x.labelHe)} — דיוק {x.accuracy}% ({x.questions} שאלות)

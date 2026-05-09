@@ -28,10 +28,10 @@ const SYSTEM_LINES_HE = [
   "אם בקלט יש שדה `required_caution_note_he` והוא אינו null ואינו מחרוזת ריקה, חובה להעתיק את הטקסט שלו אות-באות לתוך השדה `cautionNote` שבפלט. אסור לשנות, לפרש, לקצר, להאריך, לחזק, לרכך, לתרגם, להוסיף הקדמה, או להחליף ניסוח. עותק מדויק בלבד.",
   "אם `required_caution_note_he` הוא null או ריק, וגם `thin_data_warnings` ריק — אפשר להותיר את `cautionNote` כמחרוזת ריקה.",
   "אם `required_caution_note_he` ריק/null אך `thin_data_warnings` אינו ריק (מצב נדיר), כתוב/י משפט קצר בעברית שמכיל את הצירוף 'כיוון ראשוני'.",
-  "החוזקות וה-focus areas שתבחר/י מותרות אך ורק מתוך הרשימות הסגורות `available_strength_source_ids` ו-`available_focus_source_ids`. עבור כל פריט, החזר/י גם `sourceId` תואם.",
-  "ה-`textHe` של כל חוזקה/focus area חייב להיות מבוסס על ה-`display_name_he` המקביל בקלט (אפשר לנסח אותו במשפט קצר), ולא להמציא נושא חדש.",
+  "הפריטים לשדה JSON `strengths` (תוצאות טובות יחסית לפי המועמדים) ולשדה `focusAreas` מותרים אך ורק מתוך הרשימות הסגורות `available_strength_source_ids` ו-`available_focus_source_ids`. עבור כל פריט, החזר/י גם `sourceId` תואם.",
+  "ה-`textHe` של כל פריט ב-`strengths` או ב-`focusAreas` חייב להיות מבוסס על ה-`display_name_he` המקביל בקלט (אפשר לנסח במשפט קצר בעברית ברורה להורה), ולא להמציא נושא חדש.",
   // ---- Hard count limits (must match output-schema.js / validate-narrative-output.js) ----
-  "מגבלת כמות לחוזקות: לכל היותר 3 פריטים בשדה strengths. אסור לעבור 3, גם אם ברשימת המועמדים יש יותר. אם ברשימת `strengths_candidates` יש יותר מ-3, בחר/י את 3 המשמעותיים ביותר בלבד.",
+  "מגבלת כמות לשדה strengths: לכל היותר 3 פריטים. אסור לעבור 3, גם אם ברשימת המועמדים יש יותר. אם ברשימת `strengths_candidates` יש יותר מ-3, בחר/י את 3 המשמעותיים ביותר בלבד.",
   "מגבלת כמות לתחומי חיזוק: לכל היותר 3 פריטים בשדה focusAreas. אסור לעבור 3.",
   "מגבלת כמות לטיפים: בדיוק 2 עד 3 פריטים בשדה homeTips. לא פחות מ-2 ולא יותר מ-3.",
   "כתוב/י 2 עד 3 `homeTips` פרקטיים, קצרים, בני ביצוע בבית.",

@@ -299,6 +299,40 @@ function buildAnchoredMetasForExecutive(allAnchored) {
  * For `explain_report`, surface worst-performing anchored rows first so parents see the priority gap
  * (e.g. Hebrew weakness) before other subjects — insertion order of `metas` alone is not ranked.
  */
+/** Stable key for matching executive rows across rankings. */
+function executiveTopicKey(m) {
+  return `${String(m?.sid || "").trim()}::${String(m?.dn || "").trim()}`;
+}
+
+/**
+ * Interpretation copy that signals weakness / need for support — must not be framed as a "strength".
+ * @param {string} interp
+ */
+function interpretationReadsAsWeaknessNeedingSupport(interp) {
+  const s = String(interp || "").trim();
+  if (!s) return false;
+  return /נדרש\s*חיזוק|דורש\s*חיזוק|דורשים\s*חיזוק|חיזוק\s*משמעותי|דורש\s*עבודה|דורשים\s*עבודה|אתגר\s*ייחודי|עדיין\s*דורש|קשה\s*יותר|חולש|לא\s*יציב|תשומת\s*לב\s*מיוחדת|דורש\s*תרגול/u.test(
+    s,
+  );
+}
+
+/**
+ * Topics eligible for positive-relative framing: not among worst focus rows, not weakness-narrative rows,
+ * and accuracy/readiness crossbar (stricter than legacy — avoids "ready && acc≥70" lifting borderline topics).
+ * @param {Array<object>} rankedBestFirst
+ * @param {Set<string>} worstKeys
+ */
+function filterExecutiveStrengthTopics(rankedBestFirst, worstKeys) {
+  return rankedBestFirst.filter((m) => {
+    if (!m || worstKeys.has(executiveTopicKey(m))) return false;
+    if (interpretationReadsAsWeaknessNeedingSupport(m.interp)) return false;
+    const acc = Math.max(0, Math.min(100, Math.round(Number(m.acc) || 0)));
+    if (acc >= 78) return true;
+    if (acc >= 74 && m.readiness === "ready") return true;
+    return false;
+  });
+}
+
 function pickExplainReportMetas(metas, rankedWorstFirst, limit) {
   const out = [];
   const seen = new Set();
@@ -400,33 +434,66 @@ function buildExecutiveIntentNarrativeSlots(x) {
       return { observation: obs, interpretation: interp };
     }
     case "what_is_going_well": {
-      // Only include topics with genuinely strong performance (acc >= 75 or readiness=ready).
-      const strongTopics = rankedBestFirst.filter(
-        (m) => m.acc >= 75 || (m.readiness === "ready" && m.acc >= 70),
-      );
-      const top = (strongTopics.length > 0 ? strongTopics : rankedBestFirst).slice(0, 2);
-      const obs =
-        top.length > 1
-          ? `החוזקה המרכזית היא ${labelPair(top[0])}; גם ${labelPair(top[1])} חזק יחסית.`
-          : top.length === 1
-            ? `החוזקה המרכזית היא ${labelPair(top[0])}.`
-            : defaultObs;
-      // Accuracy numbers are already embedded in each topic's obs text — skip the redundant accNote.
-      const interp0 = top[0]?.interp ? clipHe(top[0].interp, 180) : "";
-      let interp = appendDistinctSentence(
-        interp0,
-        top.length ? "כדאי להמשיך עם תרגול קצר כדי לשמר את ההתקדמות." : "",
+      const worstKeys = new Set(rankedWorstFirst.slice(0, 2).map(executiveTopicKey));
+      const strengthTopics = filterExecutiveStrengthTopics(rankedBestFirst, worstKeys).slice(0, 2);
+
+      let obs;
+      let interp;
+      if (strengthTopics.length > 1) {
+        obs = `הנושא שבו נראו התוצאות הטובות ביותר הוא ${labelPair(strengthTopics[0])}; גם ב${labelPair(strengthTopics[1])} נראו תוצאות טובות יחסית.`;
+        const i0 = strengthTopics[0]?.interp && !interpretationReadsAsWeaknessNeedingSupport(strengthTopics[0].interp)
+          ? clipHe(strengthTopics[0].interp, 170)
+          : "";
+        const i1 = strengthTopics[1]?.interp && !interpretationReadsAsWeaknessNeedingSupport(strengthTopics[1].interp)
+          ? clipHe(strengthTopics[1].interp, 140)
+          : "";
+        interp = appendDistinctSentence(i0, i1);
+      } else if (strengthTopics.length === 1) {
+        obs = `ב${labelPair(strengthTopics[0])} נראו תוצאות טובות יחסית בהשוואה לשאר הנושאים בדוח.`;
+        const m0 = strengthTopics[0];
+        interp =
+          m0?.interp && !interpretationReadsAsWeaknessNeedingSupport(m0.interp)
+            ? clipHe(m0.interp, 190)
+            : "";
+      } else {
+        obs =
+          "לא מופיע כרגע תחום עם תוצאות טובות מובהקות, אבל אפשר לראות איפה התרגול יציב יותר.";
+        const rel = rankedBestFirst.find((m) => !worstKeys.has(executiveTopicKey(m))) || rankedBestFirst[0];
+        if (rel) {
+          interp = `ביחס לשאר הנושאים בדוח, ב${labelPair(rel)} נראים כרגע המספרים הגבוהים ביותר (${rel.acc}%).`;
+          if (rel.interp && !interpretationReadsAsWeaknessNeedingSupport(rel.interp)) {
+            interp = appendDistinctSentence(interp, clipHe(rel.interp, 120));
+          }
+        } else {
+          interp = "";
+        }
+      }
+
+      interp = appendDistinctSentence(
+        interp,
+        strengthTopics.length ? "כדאי להמשיך עם תרגול קצר כדי לשמר את ההתקדמות." : "כדאי להמשיך עם תרגול קצר ומדוד כדי לייצב התקדמות בכל התחומים.",
       );
       interp = appendDistinctSentence(interp, supportingNumericTail(x, intent));
       if (!interp.trim()) interp = defaultInterp;
       return { observation: obs, interpretation: interp };
     }
     case "what_is_still_difficult": {
-      const low = rankedWorstFirst.slice(0, 2);
-      const obs =
-        low.length > 0
-          ? `מה שעדיין דורש תרגול ותשומת לב: ${low.map((m) => `${labelPair(m)} — ${m.obs ? clipHe(m.obs, 95) : "עדיין דורש חיזוק"}`).join(" · ")}.`
-          : defaultObs;
+      const low = rankedWorstFirst.slice(0, 2).filter(Boolean);
+      let obs = defaultObs;
+      if (low.length >= 2) {
+        obs = `התחומים שדורשים חיזוק כרגע הם ${labelPair(low[0])} ו${labelPair(low[1])}.`;
+        const d0 = low[0]?.obs ? clipHe(low[0].obs, 95) : "";
+        const d1 = low[1]?.obs ? clipHe(low[1].obs, 95) : "";
+        if (d0 || d1) {
+          obs = appendDistinctSentence(
+            obs,
+            [d0, d1].filter(Boolean).join(" · "),
+          );
+        }
+      } else if (low.length === 1) {
+        obs = `התחום שדורש חיזוק כרגע הוא ${labelPair(low[0])}.`;
+        if (low[0]?.obs) obs = appendDistinctSentence(obs, clipHe(low[0].obs, 110));
+      }
       const interp0 = low[0]?.interp ? clipHe(low[0].interp, 190) : "";
       let interp = interp0;
       interp = appendDistinctSentence(interp, supportingNumericTail(x, intent));
@@ -434,19 +501,27 @@ function buildExecutiveIntentNarrativeSlots(x) {
       return { observation: obs, interpretation: interp };
     }
     case "strength_vs_weakness_summary": {
-      const best = rankedBestFirst[0];
+      const worstKeys = new Set(rankedWorstFirst.slice(0, 2).map(executiveTopicKey));
+      const strengthPool = filterExecutiveStrengthTopics(rankedBestFirst, worstKeys);
+      const best = strengthPool[0] || rankedBestFirst[0];
       const worst = rankedWorstFirst[0];
       let obs = defaultObs;
       if (best && worst && (best.dn !== worst.dn || best.sid !== worst.sid)) {
-        obs = `בהשוואה בתוך הדוח: הכי חזק — ${labelPair(best)} · הכי דורש חיזוק — ${labelPair(worst)}.`;
+        obs = `בהשוואה בתוך הדוח: הנושא שבו נראו התוצאות הטובות ביותר הוא ${labelPair(best)} · התחום שדורש חיזוק כרגע הוא ${labelPair(worst)}.`;
         obs = appendDistinctSentence(obs, `ליד המספרים: כ־${best.acc}% מול כ־${worst.acc}%.`);
       } else if (best) {
         obs = `לפי הדוח, הנקודה הבולטת ביותר במדדים היא ${labelPair(best)}.`;
         obs = appendDistinctSentence(obs, `ליד המספרים: כ־${best.acc}%.`);
       }
       const interpParts = [];
-      if (best?.interp) interpParts.push(`בצד שמקבל חיזוק בניסוח: ${clipHe(best.interp, 125)}`);
-      if (worst && worst !== best && worst.interp) interpParts.push(`בצד שדורש עבודה: ${clipHe(worst.interp, 125)}`);
+      if (best?.interp && !interpretationReadsAsWeaknessNeedingSupport(best.interp)) {
+        interpParts.push(`בניסוח המעוגן של ${labelPair(best)}: ${clipHe(best.interp, 125)}`);
+      } else if (best) {
+        interpParts.push(`ליד המספרים ב${labelPair(best)} נראית רמת דיוק של כ־${best.acc}%.`);
+      }
+      if (worst && worst !== best && worst.interp) {
+        interpParts.push(`ב${labelPair(worst)}: ${clipHe(worst.interp, 125)}`);
+      }
       let interp = interpParts.join(" · ");
       if (trends[1] && shouldAttachExecutiveSecondTrendLine(trends[1], x.totalQ)) {
         interp = appendDistinctSentence(interp, trends[1]);
@@ -478,11 +553,27 @@ function buildExecutiveIntentNarrativeSlots(x) {
           metas.find((m) => normalizeSubjectId(m.sid) === primarySid && m.q > 0);
         if (prefer) focus = prefer;
       }
-      const obs = focus ? `כדאי להתמקד עכשיו ב${labelPair(focus)}.` : defaultObs;
-      let interp = focus?.interp ? clipHe(focus.interp, 160) : defaultInterpBase;
+      const hot2 = rankedWorstFirst.filter((m) => m.q > 0).slice(0, 2);
+      const week = intent === "what_to_do_this_week";
+      let obs = defaultObs;
+      if (week && hot2.length >= 2) {
+        obs = `לפי מוקדי החיזוק בדוח, השבוע כדאי להקדיש זמן ל${labelPair(hot2[0])} ול${labelPair(hot2[1])}.`;
+      } else if (focus) {
+        obs = week
+          ? `לפי מוקדי החיזוק בדוח, השבוע כדאי להתמקד ב${labelPair(focus)}.`
+          : `כדאי להתמקד עכשיו ב${labelPair(focus)}.`;
+      }
+      let interp =
+        week && hot2.length >= 2
+          ? appendDistinctSentence(
+              hot2[0]?.interp ? clipHe(hot2[0].interp, 130) : "",
+              hot2[1]?.interp ? clipHe(hot2[1].interp, 130) : "",
+            )
+          : focus?.interp
+            ? clipHe(focus.interp, 160)
+            : defaultInterpBase;
       interp = appendDistinctSentence(interp, supportingNumericTail(x, intent));
       if (!interp.trim()) interp = defaultInterp;
-      const week = intent === "what_to_do_this_week";
       const thinPlan = practiceVolume < 90 || sparseExecutive;
       const allowRec =
         x.recommendationEligible === true && String(x.recommendationIntensityCap || "RI0") !== "RI0";
@@ -490,21 +581,34 @@ function buildExecutiveIntentNarrativeSlots(x) {
       let action = null;
       /** @type {string|null} */
       let stepsOnly = null;
-      if (focus && !thinPlan) {
-        const subjName = subjectLabelHe(focus.sid);
-        const topicClean = parentFacingTopicTitleHe(focus.dn);
+      const stepAnchorFrom = (m) => {
+        const subjName = subjectLabelHe(m.sid);
+        const topicClean = parentFacingTopicTitleHe(m.dn);
         const topicShort = clipHe(topicClean, 44);
-        const stepAnchor =
-          !topicClean || topicClean === subjName
-            ? subjName
-            : `${subjName} · ${topicShort}`;
+        return !topicClean || topicClean === subjName ? subjName : `${subjName} · ${topicShort}`;
+      };
+      if (!thinPlan && week && hot2.length >= 2) {
+        const a0 = stepAnchorFrom(hot2[0]);
+        const a1 = stepAnchorFrom(hot2[1]);
+        stepsOnly = `בבית: 3 פעמים בשבוע, כ־10 דקות בכל פעם — לחלק זמן בין ${a0} לבין ${a1} (למשל יום לנושא או חצי־חצי באותו יום). בכל תרגול 5–8 שאלות קצרות, ובסוף לבקש מהילד להסביר בקול איך הגיע לתשובה.`;
+      } else if (focus && !thinPlan) {
+        const stepAnchor = stepAnchorFrom(focus);
         stepsOnly = week
           ? `בבית כדאי להתחיל ב${stepAnchor}: 3 פעמים בשבוע, כ־10 דקות בכל פעם. בכל תרגול לפתור 5–8 שאלות קצרות, ואז לבקש מהילד להסביר בקול איך הגיע לתשובה.`
           : `מחר: כ־10 דקות תרגול ממוקד ב${stepAnchor}, 5–8 שאלות קצרות, ואז בקשו מהילד להסביר בקול איך חישב.`;
       } else if (thinPlan) {
+        const hot = rankedWorstFirst.filter((m) => m.q > 0).slice(0, 2);
+        const focusLabel =
+          hot.length >= 2
+            ? `${labelPair(hot[0])} ו${labelPair(hot[1])}`
+            : hot.length === 1
+              ? labelPair(hot[0])
+              : focus
+                ? labelPair(focus)
+                : "המוקדים שמזוהים בדוח כדורשי חיזוק";
         stepsOnly = week
-          ? `1) לעשות השבוע עוד מספר סשנים קצרים של תרגול כדי שהדוח ייצב תמונה.\n2) לבחור נושא אחד שחוזר כקשה ולאזן חיזוק קצר מול לא להעמיס.\n3) בסוף השבוע לסכם במשפט אחד מה התקדם.`
-          : `1) לעשות מחר שני סבבים קצרים של תרגול (כ־8–10 דקות כל אחד).\n2) לבחור נושא אחד שחוזר כקשה ולנסות שוב בקצב רגוע.\n3) לסיים במשפט אחד עם הילד מה הרגישם בבית.`;
+          ? `1) השבוע: מספר סשנים קצרים (8–10 דקות) סביב ${focusLabel}, כדי לייצב את התמונה בדוח.\n2) בכל סשן 3–5 שאלות קצרות, ואז משפט אחד — מה היה יחסית יציב ומה עדיין דורש ליווי.\n3) לאזן חיזוק קצר מול לא להעמיס, ובסוף השבוע לסכם במשפט אחד מה התקדם.`
+          : `1) מחר: שני סבבים קצרים סביב ${focusLabel} (8–10 דקות כל אחד).\n2) בכל סבב כמה שאלות בודדות, בקצב רגוע.\n3) לסיים במשפט אחד עם הילד מה הרגישם בבית.`;
       }
       if (stepsOnly) {
         if (allowRec) action = stepsOnly;
@@ -636,7 +740,7 @@ function buildExecutiveIntentNarrativeSlots(x) {
       if (worst && worst.acc < 55) {
         interp += ` המקום שבו זה נראה פחות יציב הוא סביב ${subjectLabelHe(worst.sid)} — שם כדאי לחזק בקצב קצר וקבוע.`;
       } else if (best && best.acc >= 75) {
-        interp += ` יש גם כיוון חזק יחסית ב${subjectLabelHe(best.sid)} — אפשר לבנות עליו ביטחון הדרגתי.`;
+        interp += ` ב${subjectLabelHe(best.sid)} נראו בתקופה הזו תוצאות טובות יחסית יותר — אפשר לבנות על זה ביטחון הדרגתי.`;
       }
       return { observation: obs, interpretation: interp };
     }

@@ -85,7 +85,7 @@ function StructuredBlock({ structured, sourceLabel }) {
 
       {strengths.length > 0 ? (
         <div className="mb-3">
-          <p className="m-0 mb-1 text-xs md:text-sm font-bold text-emerald-200/95">חוזקות</p>
+          <p className="m-0 mb-1 text-xs md:text-sm font-bold text-emerald-200/95">מה הולך טוב</p>
           <ul className="m-0 ps-5 text-xs md:text-sm text-white/88 leading-relaxed list-disc">
             {strengths.map((textHe, i) => (
               <li key={`strength-${bulletKey(rawStrengths[i], i)}`}>{textHe}</li>

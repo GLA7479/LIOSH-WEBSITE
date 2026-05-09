@@ -92,7 +92,8 @@ for (const key of SCENARIO_KEYS) {
   const html = render("exec-guard:english-strength", h(ExecutiveSummarySection, { es, compact: false }));
   assertNoForbiddenInHtml(html, "english-strength");
   assert.ok(
-    html.includes("אנגלית") && (html.includes("חוזקה") || html.includes("יציבות")),
+    html.includes("אנגלית") &&
+      (html.includes("תוצאות טובות") || html.includes("יציבות") || html.includes("חוזקה")),
     "english-strength: expected strength wording in executive HTML"
   );
   const totalQ = Number(detailed.overallSnapshot?.totalQuestions) || 0;

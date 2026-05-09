@@ -27,6 +27,7 @@ import { normalizeParentFacingHe } from "../parent-report-language/parent-facing
 import { normalizeFreeformParentUtteranceHe } from "./utterance-normalize-he.js";
 import { buildTurnTelemetry } from "./turn-telemetry.js";
 import { maybeGenerateGroundedLlmDraft } from "./llm-orchestrator.js";
+import { getLlmGateDecision } from "./rollout-gates.js";
 import { appendTurnTelemetryTrace } from "./telemetry-store.js";
 import { tryBuildParentShortFollowupDraft } from "./short-followup-composer.js";
 import { tryBuildComparisonPracticalFollowupDraft } from "./comparison-practical-continuity.js";

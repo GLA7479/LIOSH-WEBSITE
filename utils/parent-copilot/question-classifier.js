@@ -62,13 +62,13 @@ import { SUBJECT_ORDER, normalizeSubjectId } from "./contract-reader.js";
  * Public boundary copy. Imported by question-router.js / index.js.
  */
 export const OFF_TOPIC_RESPONSE_HE =
-  "אפשר לשאול כאן שאלות על הדוח והתקדמות הלמידה שמופיעה בו. למשל: מה כדאי לתרגל השבוע? או במה הילד התחזק?";
+  "אפשר לשאול כאן שאלות על הדוח והתקדמות הלמידה שמופיעה בו. למשל: מה כדאי לתרגל השבוע? או איפה נראו תוצאות טובות יחסית?";
 
 export const DIAGNOSTIC_BOUNDARY_RESPONSE_HE =
   "על סמך הדוח הזה אי אפשר לקבוע אבחנה או להצמיד תווית קלינית. הדוח מבוסס על נתוני תרגול בלבד. אם יש חשש, מומלץ לפנות לאיש מקצוע מוסמך.";
 
 export const AMBIGUOUS_RESPONSE_HE =
-  "לא הבנתי בדיוק על מה השאלה. אפשר לשאול כאן שאלות על הדוח, למשל: מה הכי חשוב לתרגל השבוע? במה הילד התחזק? או מה לעשות בבית?";
+  "לא הבנתי בדיוק על מה השאלה. אפשר לשאול כאן שאלות על הדוח, למשל: מה הכי חשוב לתרגל השבוע? או איפה נראו תוצאות טובות יחסית? או מה לעשות בבית?";
 
 /**
  * Decision thresholds. Exported so tests can assert behavior without re-deriving them.
@@ -109,6 +109,8 @@ const STRONG_REPORT_TOKENS = [
 /** STRONG report intent phrases — match as substrings (after fold). */
 const STRONG_REPORT_INTENTS = [
   /במה.{0,12}חזק/u, /במה.{0,12}מתקשה/u, /במה.{0,12}חלש/u,
+  // "איפה הוא מתקשה?" — pronoun + מתקשה without "במה"
+  /איפה.{0,16}מתקשה/u, /איפה.{0,12}(הוא|היא|הילד|הילדה).{0,12}מתקשה/u,
   /מה.{0,8}לתרגל/u, /מה.{0,8}לעשות.{0,8}בבית/u, /איך.{0,8}לעזור/u,
   /מה.{0,8}הכי.{0,8}חשוב/u, /איפה.{0,8}להתמקד/u, /איפה.{0,8}להתחיל/u,
   /יש.{0,3}שיפור/u, /יש.{0,3}ירידה/u, /יש.{0,3}התקדמות/u,

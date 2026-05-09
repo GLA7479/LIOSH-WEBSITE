@@ -173,7 +173,7 @@ function buildSubjectOpeningLineHe(sp, lab) {
   if (mr && ex0) {
     const acc = Math.round(Number(ex0.accuracy) || 0);
     return stripGuillemetsHe(
-      `ב${lab} יש גם חוזקות (למשל ${displayTopicPhraseHe(ex0.labelHe)}, כ־${acc}%) וגם נקודות שכדאי לשים לב אליהן — לא מסכמים הכל כהצלחה מלאה.`
+      `ב${lab} יש גם תחומים עם תוצאות טובות יחסית (למשל ${displayTopicPhraseHe(ex0.labelHe)}, כ־${acc}%) וגם נקודות שכדאי לשים לב אליהן — לא מסכמים הכל כהצלחה מלאה.`
     );
   }
   if (domRisk && domRisk !== "דל נתון" && w0) {

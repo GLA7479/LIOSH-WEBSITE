@@ -174,7 +174,7 @@ export function composeAnswerDraft(plan, truthPacket, coachingCtx = null) {
         {
           type: "meaning",
           textHe:
-            "למשל: מה כדאי לתרגל השבוע? או במה הילד התחזק?",
+            "למשל: מה כדאי לתרגל השבוע? או איפה נראו תוצאות טובות יחסית?",
           source: "composed",
         },
       ],

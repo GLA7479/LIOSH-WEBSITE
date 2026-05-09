@@ -560,7 +560,7 @@ export function buildSemanticAggregateDraft(input) {
     const mentioned = subjectsMentionedInUtterance(utterance, payload);
     if (mentioned.length < 2) {
       obs = `${lead} כדי להשוות בין שני מקצועות צריך לציין את שני השמות כפי שמופיעים אצלך בדוח.`;
-      meaning = "אפשר לנסח שוב עם שני שמות מקצוע, או לשאול שאלה אחת על דירוג לפי קושי או חוזק לפי הנתונים בדוח.";
+      meaning = "אפשר לנסח שוב עם שני שמות מקצוע, או לשאול שאלה אחת על דירוג לפי קושי מול תוצאות טובות יחסית לפי הנתונים בדוח.";
     } else {
       const a = roll.find((r) => r.sid === mentioned[0]);
       const b = roll.find((r) => r.sid === mentioned[1]);

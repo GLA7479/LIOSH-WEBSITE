@@ -459,7 +459,7 @@ function buildMixedSignalNoticeHe(subjects, crossRisks, topStrengthsAcrossHe) {
   const strong = topStrengthsAcrossHe.length >= 2;
   const risky = crossRisks.falsePromotionRisk || crossRisks.hintDependenceRisk;
   if (strong && risky) {
-    return "תמונה מעורבת: יש חוזקות, אך גם סימנים שכדאי לבדוק לפני מסקנה של הצלחה מלאה בכל התחומים.";
+    return "תמונה מעורבת: יש תחומים עם תוצאות טובות יחסית, אך גם סימנים שכדאי לבדוק לפני מסקנה של הצלחה מלאה בכל התחומים.";
   }
   if (anyIbs) {
     return "מופיע שיפור לצד תלות בעזרה בעצמאות — ההתקדמות עדיין דורשת ליווי מדוד.";

@@ -140,6 +140,7 @@
     "test:parent-copilot-qa": "tsx scripts/parent-copilot-qa-selftest.mjs",
     "test:parent-copilot-classifier": "tsx scripts/parent-copilot-classifier-selftest.mjs",
     "test:parent-copilot-classifier:live-smoke": "tsx scripts/parent-copilot-classifier-live-smoke.mjs",
+    "test:parent-copilot-async-live-smoke": "tsx scripts/parent-copilot-async-live-smoke.mjs",
     "test:parent-report-narrative-safety-extractor": "node scripts/parent-report-narrative-safety-extractor-selftest.mjs",
     "test:parent-report-narrative-safety-artifacts": "node scripts/parent-report-narrative-safety-artifacts.mjs",
     "qa:question-metadata": "tsx scripts/question-metadata-qa.mjs",

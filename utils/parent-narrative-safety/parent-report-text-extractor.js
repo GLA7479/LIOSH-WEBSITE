@@ -216,7 +216,7 @@ export function runParentReportTextExtractorInlineTests() {
   const nested = {
     summary: {
       diagnosticOverviewHe: {
-        strongestAreaLineHe: "חוזקה בתרגול בסיסי",
+        strongestAreaLineHe: "תוצאות טובות יחסית בתרגול בסיסי",
         mainFocusAreaLineHe: null,
       },
       needsPracticeLines: ["עברית: הבנה"],
@@ -226,7 +226,7 @@ export function runParentReportTextExtractorInlineTests() {
   };
 
   const ext = extractParentVisibleNarratives(nested, { source: "test_nested", dedupeText: true });
-  if (!ext.some((x) => x.text.includes("חוזקה"))) failures.push("nested: missed Hebrew He field");
+  if (!ext.some((x) => x.text.includes("תוצאות טובות"))) failures.push("nested: missed Hebrew He field");
   if (ext.some((x) => x.path.includes("mistakes"))) failures.push("nested: should skip mistakes subtree");
   if (ext.some((x) => x.text.includes("סודית"))) failures.push("nested: leaked mistake stem");
 

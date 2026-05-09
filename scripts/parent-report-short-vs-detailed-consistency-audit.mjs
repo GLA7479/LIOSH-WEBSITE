@@ -91,7 +91,7 @@ function shortLegacyLines(baseReport) {
   const overview = baseReport?.summary?.diagnosticOverviewHe || {};
   const out = [];
   if (overview.mainFocusAreaLineHe) out.push(`דורש תשומת לב כעת: ${overview.mainFocusAreaLineHe}`);
-  if (overview.strongestAreaLineHe) out.push(`חוזק לשימור: ${overview.strongestAreaLineHe}`);
+  if (overview.strongestAreaLineHe) out.push(`תוצאות טובות יחסית — כדאי לשמר: ${overview.strongestAreaLineHe}`);
   if (Array.isArray(overview.readyForProgressPreviewHe) && overview.readyForProgressPreviewHe.length) {
     out.push(`מוכנות להתקדמות נוספת: ${overview.readyForProgressPreviewHe.join(" · ")}`);
   }

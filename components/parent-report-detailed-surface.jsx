@@ -124,7 +124,7 @@ export function ExecutiveSummarySection({ es, compact }) {
         }`.trim()}
       >
         <div>
-          <h4 className="pr-detailed-subheading text-emerald-200/95">חוזקות בכל המקצועות</h4>
+          <h4 className="pr-detailed-subheading text-emerald-200/95">איפה נראו תוצאות טובות בכל המקצועות</h4>
           <Bullets items={es.topStrengthsAcrossHe || []} volumeQuestionsTotal={volQ} />
         </div>
         {(es.topFocusAreasHe || []).length > 0 ? (

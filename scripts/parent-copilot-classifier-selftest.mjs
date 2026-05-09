@@ -107,8 +107,7 @@ let sid = 0;
 const freshSid = () => `cls-test-${++sid}-${Date.now()}`;
 
 const SUBJECT_TOPIC_HE = ["חשבון", "גאומטריה", "אנגלית", "מדעים", "עברית", "מולדת", "שברים", "אוצר מילים", "פוטוסינתזה"];
-// NOTE: The boundary copies legitimately include "במה הילד התחזק?" as a SUGGESTED
-// example question for the parent. That is not a report fact, so we exclude
+// NOTE: Boundary copies are suggested example questions for the parent, not report facts, so we exclude
 // "התחזק" / "מתקדם" from the banned-verb list; we only ban verbs that, when
 // attached to "הילד", indicate a child-state assertion.
 const REPORT_DATA_BANNED_PATTERNS = [
@@ -313,6 +312,7 @@ const reportRelated = [
   "מה הכי חשוב לתרגל השבוע?",
   "במה הוא חזק?",
   "במה הוא מתקשה?",
+  "איפה הוא מתקשה?",
   "מה לעשות בבית?",
   "איך לעזור לו בשברים לפי הדוח?",
   "האם יש סיבה לדאגה?",
