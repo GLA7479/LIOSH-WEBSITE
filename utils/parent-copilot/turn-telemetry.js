@@ -109,6 +109,9 @@ export function buildTurnTelemetry(input) {
           ...(typeof input.llmAttempt.finalProvider === "string" && input.llmAttempt.finalProvider.trim()
             ? { finalProvider: String(input.llmAttempt.finalProvider).trim() }
             : {}),
+          ...(typeof input.llmAttempt.invalidJsonRawPreview === "string" && input.llmAttempt.invalidJsonRawPreview.trim()
+            ? { invalidJsonRawPreview: String(input.llmAttempt.invalidJsonRawPreview).slice(0, 3000) }
+            : {}),
         }
       : null;
   return {

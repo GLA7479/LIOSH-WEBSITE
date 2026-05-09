@@ -63,6 +63,9 @@ function mergeLlmFailureDiagnostics(base, llmResult) {
     out.geminiErrorBody = String(r.geminiErrorBody);
   }
   if (typeof r.llmRetryCount === "number") out.llmRetryCount = r.llmRetryCount;
+  if (typeof r.invalidJsonRawPreview === "string" && String(r.invalidJsonRawPreview).trim()) {
+    out.invalidJsonRawPreview = String(r.invalidJsonRawPreview).slice(0, 3000);
+  }
   if (Array.isArray(r.gateReasonCodes) && r.gateReasonCodes.length) {
     out.gateReasonCodes = [...r.gateReasonCodes];
   }
@@ -234,6 +237,9 @@ function normalizeMergedLlmAttempt(raw) {
     ...(typeof raw.finalProvider === "string" && raw.finalProvider.trim()
       ? { finalProvider: String(raw.finalProvider).trim() }
       : {}),
+    ...(typeof raw.invalidJsonRawPreview === "string" && String(raw.invalidJsonRawPreview).trim()
+      ? { invalidJsonRawPreview: String(raw.invalidJsonRawPreview).slice(0, 3000) }
+      : {}),
   };
   return base;
 }
@@ -329,6 +335,9 @@ function persistTelemetryBestEffort(response, context) {
             if (typeof llmAttempt.llmRetryCount === "number") base.llmRetryCount = llmAttempt.llmRetryCount;
             for (const k of ["primaryProvider", "primaryReason", "fallbackProvider", "fallbackReason", "finalProvider"]) {
               if (typeof llmAttempt[k] === "string" && llmAttempt[k].trim()) base[k] = String(llmAttempt[k]).trim();
+            }
+            if (typeof llmAttempt.invalidJsonRawPreview === "string" && llmAttempt.invalidJsonRawPreview.trim()) {
+              base.invalidJsonRawPreview = String(llmAttempt.invalidJsonRawPreview).slice(0, 3000);
             }
             return base;
           })()

@@ -272,6 +272,9 @@ function pickLlmFailureFields(response) {
     ...(typeof response.geminiErrorSummary === "string" ? { geminiErrorSummary: response.geminiErrorSummary } : {}),
     ...(response.geminiErrorParsed !== undefined ? { geminiErrorParsed: response.geminiErrorParsed } : {}),
     ...(typeof response.llmRetryCount === "number" ? { llmRetryCount: response.llmRetryCount } : {}),
+    ...(typeof response.invalidJsonRawPreview === "string" && String(response.invalidJsonRawPreview).trim()
+      ? { invalidJsonRawPreview: String(response.invalidJsonRawPreview).slice(0, 3000) }
+      : {}),
   };
 }
 
@@ -358,6 +361,7 @@ export async function maybeGenerateGroundedLlmDraft(input) {
         baseUrl: fbCfg.baseUrl,
         apiKey: fbCfg.apiKey,
         model: fbCfg.model,
+        providerKind: fbCfg.kind,
       }),
     );
     const fallbackReason = fallbackRes.ok ? "ok" : String(fallbackRes.reason || "llm_provider_error");

@@ -13,8 +13,11 @@
  * Fallback env (only used after transient primary failure — see isTransientCopilotLlmFailure):
  *   PARENT_COPILOT_LLM_FALLBACK_PROVIDER   "openrouter" | "groq"
  *   PARENT_COPILOT_LLM_FALLBACK_MODEL
- *   PARENT_COPILOT_LLM_FALLBACK_API_KEY
+ *   PARENT_COPILOT_LLM_FALLBACK_API_KEY     (trimmed; Bearer auth — never logged)
  *   PARENT_COPILOT_LLM_FALLBACK_BASE_URL    full URL to chat/completions (optional; sensible defaults)
+ * OpenRouter-only optional attribution (see openrouter.ai docs):
+ *   PARENT_COPILOT_OPENROUTER_HTTP_REFERER  default https://localhost
+ *   PARENT_COPILOT_OPENROUTER_X_TITLE       default LIOSH Parent Copilot
  *
  * Test / dev (forces primary to fail without calling the network):
  *   PARENT_COPILOT_LLM_SIMULATE_PRIMARY_TRANSIENT_FAILURE=http_429 | timeout | network
@@ -26,6 +29,24 @@ function envStr(name, fallback = "") {
     return String(v ?? "").trim() || fallback;
   } catch {
     return fallback;
+  }
+}
+
+/** Trim/BOM-strip for bearer tokens (never log the raw value). */
+function normalizeFallbackApiKey(raw) {
+  if (raw == null) return "";
+  return String(raw).replace(/^\uFEFF/, "").trim();
+}
+
+/**
+ * Reads only `PARENT_COPILOT_LLM_FALLBACK_API_KEY` (required for fallback chat requests).
+ */
+function readParentCopilotFallbackApiKeyFromEnv() {
+  try {
+    const v = typeof process !== "undefined" && process.env ? process.env.PARENT_COPILOT_LLM_FALLBACK_API_KEY : undefined;
+    return normalizeFallbackApiKey(v);
+  } catch {
+    return "";
   }
 }
 
@@ -102,9 +123,24 @@ function extractOpenAiText(body) {
     }
   }
   const choice = Array.isArray(body.choices) ? body.choices[0] : null;
-  if (choice?.message?.content) return String(choice.message.content);
+  const mc = choice?.message?.content;
+  if (typeof mc === "string") return mc;
+  if (Array.isArray(mc)) {
+    const t = mc.map((p) => (typeof p?.text === "string" ? p.text : "")).join("");
+    if (t) return t;
+  }
   return "";
 }
+
+/** Truncate model output for telemetry (invalid JSON debug). */
+function previewForTelemetry(s, max = 2500) {
+  const t = String(s ?? "");
+  if (t.length <= max) return t;
+  return `${t.slice(0, max)}…`;
+}
+
+const OPENROUTER_JSON_SYSTEM_INSTRUCTION =
+  "Return valid JSON only. No Markdown. No text outside JSON.";
 
 function readSimulatedPrimaryFailure() {
   const v = envStr("PARENT_COPILOT_LLM_SIMULATE_PRIMARY_TRANSIENT_FAILURE").toLowerCase();
@@ -157,7 +193,7 @@ export function isTransientCopilotLlmFailure(res) {
 export function getCopilotLlmFallbackConfig() {
   const kind = envStr("PARENT_COPILOT_LLM_FALLBACK_PROVIDER").toLowerCase();
   if (!kind || kind === "none" || kind === "off" || kind === "false" || kind === "0") return null;
-  const apiKey = envStr("PARENT_COPILOT_LLM_FALLBACK_API_KEY");
+  const apiKey = readParentCopilotFallbackApiKeyFromEnv();
   const model = envStr("PARENT_COPILOT_LLM_FALLBACK_MODEL");
   if (!apiKey || !model) return null;
 
@@ -183,23 +219,56 @@ export function getCopilotLlmFallbackConfig() {
  * OpenAI-compatible chat.completions (OpenRouter, Groq, etc.).
  * @param {AbortSignal} signal
  * @param {string} prompt
- * @param {{ baseUrl: string; apiKey: string; model: string }} cfg
+ * @param {{ baseUrl: string; apiKey: string; model: string; providerKind?: string }} cfg
  */
 export async function callCopilotLlmOpenAiChatCompletionsJson(signal, prompt, cfg) {
   const url = cfg.baseUrl;
+  const isOpenRouter = String(cfg.providerKind || "").toLowerCase() === "openrouter";
+  const bearer = normalizeFallbackApiKey(cfg.apiKey);
+  if (!bearer) {
+    return {
+      ok: false,
+      reason: "missing_fallback_api_key",
+      geminiErrorSummary: "fallback_chat missing PARENT_COPILOT_LLM_FALLBACK_API_KEY after trim",
+    };
+  }
   try {
-    const res = await fetch(url, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${cfg.apiKey}`,
-      },
-      body: JSON.stringify({
+    const payloadBody = (() => {
+      const base = {
         model: cfg.model,
-        messages: [{ role: "user", content: prompt }],
         temperature: 0.2,
         max_tokens: 900,
-      }),
+      };
+      if (isOpenRouter) {
+        return {
+          ...base,
+          messages: [
+            { role: "system", content: OPENROUTER_JSON_SYSTEM_INSTRUCTION },
+            { role: "user", content: prompt },
+          ],
+          response_format: { type: "json_object" },
+        };
+      }
+      return {
+        ...base,
+        messages: [{ role: "user", content: prompt }],
+      };
+    })();
+
+    const headers = new Headers();
+    headers.set("Content-Type", "application/json");
+    headers.set("Authorization", `Bearer ${bearer}`);
+    if (isOpenRouter) {
+      const referer = envStr("PARENT_COPILOT_OPENROUTER_HTTP_REFERER", "https://localhost");
+      const title = envStr("PARENT_COPILOT_OPENROUTER_X_TITLE", "LIOSH Parent Copilot");
+      if (referer) headers.set("HTTP-Referer", referer);
+      if (title) headers.set("X-Title", title);
+    }
+
+    const res = await fetch(url, {
+      method: "POST",
+      headers,
+      body: JSON.stringify(payloadBody),
       signal,
     });
     const rawText = await res.text();
@@ -219,11 +288,28 @@ export async function callCopilotLlmOpenAiChatCompletionsJson(signal, prompt, cf
       };
     }
     const maybeText = extractOpenAiText(body || {});
-    const parsed = safeJsonParse(String(maybeText || "").trim());
+    const trimmed = String(maybeText || "").trim();
+    const parsed = safeJsonParse(trimmed);
     if (!parsed.ok) {
-      return { ok: false, reason: "invalid_json_output", raw: String(maybeText || ""), httpStatus: res.status };
+      const previewBits = [trimmed];
+      if (!trimmed && body && typeof body === "object") {
+        try {
+          previewBits.push(JSON.stringify(body).slice(0, 4000));
+        } catch {
+          previewBits.push("[unserializable body]");
+        }
+      }
+      if (!previewBits[0] && rawText) previewBits.push(rawText);
+      const invalidJsonRawPreview = previewForTelemetry(previewBits.filter(Boolean).join("\n---\n"));
+      return {
+        ok: false,
+        reason: "invalid_json_output",
+        raw: trimmed,
+        invalidJsonRawPreview,
+        httpStatus: res.status,
+      };
     }
-    return { ok: true, payload: parsed.value, raw: String(maybeText || "") };
+    return { ok: true, payload: parsed.value, raw: trimmed };
   } catch (e) {
     return { ok: false, reason: `network_or_abort:${String(e?.message || e)}` };
   }
