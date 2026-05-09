@@ -21,6 +21,7 @@ const INPUTS = {
 
 const SEQUENCING_CODES = [
   "equations_expressions_possibly_early",
+  "missing_number_intro_review",
   "fractions_depth_unclear_low_grade",
   "decimals_possibly_early",
   "word_problem_difficulty_mismatch_low_grade",
@@ -144,6 +145,14 @@ function classifyBranch(branchRows) {
 
   if (sequencingShare > 0) {
     const code = topSeqCode?.code;
+    if (code === "missing_number_intro_review") {
+      return {
+        likelyRootCause: "acceptable_spiral_practice",
+        recommendedFutureAction: /** @type {FutureAction} */ ("no_change"),
+        rationale:
+          "Intro missing-number / balance items in early grades — advisory label only; not formal algebra sequencing.",
+      };
+    }
     if (code === "equations_expressions_possibly_early" || code === "decimals_possibly_early") {
       return {
         likelyRootCause: "real_generator_sequencing_issue",

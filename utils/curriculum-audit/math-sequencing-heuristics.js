@@ -26,14 +26,20 @@ export function mathSequencingSuspicions(invRecord, normKey) {
       note: "אחוזים לפני כיתות העליונות — לאמת מול מסמך הכיתה והוראת המוסד.",
     });
   }
-  if (normKey.includes("decimals") && g <= 3) {
+  // Grade 3 decimal work is common in programmes; flag only grades 1–2 unless inventory is refreshed.
+  if (normKey.includes("decimals") && g <= 2) {
     flags.push({
       code: "decimals_possibly_early",
       severity: "review",
-      note: "עשרוניים בכיתות נמוכות — לוודא מול תוכנית הכיתה.",
+      note: "עשרוניים בכיתות א׳–ב׳ — לוודא מול תוכנית הכיתה (בדגימות ישנות ייתכן נושא לא מעודכן).",
     });
   }
-  if (normKey.includes("fractions") && g <= 2) {
+  const introUnitFracKind =
+    sub === "frac_half" ||
+    sub === "frac_half_reverse" ||
+    sub === "frac_quarter" ||
+    sub === "frac_quarter_reverse";
+  if (normKey.includes("fractions") && g <= 2 && !introUnitFracKind) {
     flags.push({
       code: "fractions_depth_unclear_low_grade",
       severity: "review",
@@ -51,14 +57,43 @@ export function mathSequencingSuspicions(invRecord, normKey) {
       note: "חילוק עם שארית בכיתות נמוכות — לאמת רצף.",
     });
   }
+  const simpleMissingNumberEq = sub === "eq_add_simple" || sub === "eq_sub_simple";
+  /** Order-of-operations kinds share `equations_and_expressions` with formal algebra but grade 3+ placement is typically appropriate. */
+  const isOrderOfOperationsKind =
+    topic.includes("order_of_operations") || /^order_/.test(sub);
   if (normKey.includes("equations_and_expressions") && g <= 3) {
-    flags.push({
-      code: "equations_expressions_possibly_early",
-      severity: "review",
-      note: "משוואות/ביטויים מוקדם — השווה למסמך הכיתה.",
-    });
+    if (isOrderOfOperationsKind && g >= 3) {
+      // no flag — not “algebra too early”; differs from formal unknown-x equations
+    } else if (simpleMissingNumberEq) {
+      flags.push({
+        code: "missing_number_intro_review",
+        severity: "review",
+        note: "איזון קצר / מספר חסר בטרום־אלגברה — לא משוואות פורמליות; לאמת מול המוסד רק אם נדרש.",
+      });
+    } else {
+      flags.push({
+        code: "equations_expressions_possibly_early",
+        severity: "review",
+        note: "משוואות/ביטויים מוקדם — השווה למסמך הכיתה.",
+      });
+    }
   }
-  if (normKey.includes("word_problems") && isHard && g <= 2) {
+  /** Harness samples every difficulty label; early single-step story kinds stay simple even when labelled hard. */
+  const earlySimpleWordProblemKind = new Set([
+    "wp_simple_add",
+    "wp_simple_add_g2",
+    "wp_simple_sub",
+    "wp_simple_sub_g2",
+    "wp_pocket_money",
+    "wp_pocket_money_g2",
+    "wp_coins",
+    "wp_coins_spent",
+    "wp_time_days",
+    "wp_time_date",
+    "wp_division_simple",
+    "wp_groups_g2",
+  ]);
+  if (normKey.includes("word_problems") && isHard && g <= 2 && !earlySimpleWordProblemKind.has(sub)) {
     flags.push({
       code: "word_problem_difficulty_mismatch_low_grade",
       severity: "review",

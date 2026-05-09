@@ -1823,8 +1823,11 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
       });
 
       correctAnswer = `${resNum}/${resDen}`;
-    } else if (gradeKey === "g2") {
-      // כיתה ב' - חצי ורבע בלבד
+    } else if (gradeKey === "g1" || gradeKey === "g2") {
+      // כיתות א׳–ב׳ — חצי ורבע בלבד; כיתה א׳ בטווחים צרים יותר
+      const isG1 = gradeKey === "g1";
+      const halfWholeHi = isG1 ? 12 : 20;
+      const quarterWholeHi = isG1 ? 12 : 20;
       let fractionType = Math.random() < 0.5 ? "half" : "quarter";
       let fracVariant = Math.random();
       if (mathForce === "frac_half") {
@@ -1840,29 +1843,33 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
         fractionType = "quarter";
         fracVariant = 1;
       }
+      const depthMeta = {
+        fractionDepthBand: "intro_unit_fractions",
+        fractionGradeBand: gradeKey,
+      };
       if (fractionType === "half") {
-        const whole = randInt(2, 20);
+        const whole = randInt(2, halfWholeHi);
         const variant = fracVariant;
         if (variant < 0.5) {
           correctAnswer = whole / 2;
           question = `מהו חצי מ-${whole}?`;
-          params = { kind: "frac_half", whole };
+          params = { kind: "frac_half", whole, ...depthMeta };
         } else {
           correctAnswer = whole;
           question = `חצי מ-${BLANK} הוא ${whole / 2}. מה המספר השלם?`;
-          params = { kind: "frac_half_reverse", half: whole / 2, whole };
+          params = { kind: "frac_half_reverse", half: whole / 2, whole, ...depthMeta };
         }
       } else {
-        const whole = randInt(4, 20);
+        const whole = randInt(4, quarterWholeHi);
         const variant = fracVariant;
         if (variant < 0.5) {
           correctAnswer = whole / 4;
           question = `מהו רבע מ-${whole}?`;
-          params = { kind: "frac_quarter", whole };
+          params = { kind: "frac_quarter", whole, ...depthMeta };
         } else {
           correctAnswer = whole;
           question = `רבע מ-${BLANK} הוא ${whole / 4}. מה המספר השלם?`;
-          params = { kind: "frac_quarter_reverse", quarter: whole / 4, whole };
+          params = { kind: "frac_quarter_reverse", quarter: whole / 4, whole, ...depthMeta };
         }
       }
     }
@@ -1955,6 +1962,17 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
     params = { kind: "sequence", start, step, seq, posOfBlank, questionLabel, exerciseText };
   // ===== עשרוניים =====
   } else if (selectedOp === "decimals") {
+    // Grade-band alignment: א׳–ב׳ אין פעולת עשרוניים ב־GRADES — אם הגיע סימפול ידני/ארוע נדיר, נפיל לתפיסה מספרית.
+    if (gradeKey === "g1" || gradeKey === "g2") {
+      return generateQuestion(
+        levelConfig,
+        "number_sense",
+        gradeKey,
+        mixedOps,
+        probeOpts
+      );
+    }
+
     const places = levelConfig.decimals?.places || 2;
     const maxBase = levelConfig.decimals?.maxBase || 200;
 
@@ -2175,10 +2193,39 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
         const t = types[Math.floor(Math.random() * types.length)];
 
         const maxAdd = levelConfig.addition.max || 100;
-        const maxSub = levelConfig.subtraction.max || 100;
+        const maxSub =
+          levelConfig.subtraction?.max != null
+            ? levelConfig.subtraction.max
+            : 100;
         const maxMul = levelConfig.multiplication?.max ?? 10;
 
-        if (t === "add") {
+        const gNumEq =
+          parseInt(String(gradeKey || "").replace(/\D/g, ""), 10) || 0;
+        const useFormalEquationKinds = gNumEq >= 4;
+
+        if (!useFormalEquationKinds && (t === "add" || t === "sub")) {
+          if (t === "add") {
+            const a = randInt(1, Math.min(9, Math.floor(maxAdd / 2)));
+            const c = randInt(a + 1, Math.min(maxAdd, 30));
+            const b = c - a;
+            correctAnswer = b;
+            const exerciseText = `${a} + ${BLANK} = ${c}`;
+            question = exerciseText;
+            params = { kind: "eq_add_simple", a, b, c, exerciseText };
+            operandA = a;
+            operandB = b;
+          } else {
+            const c = randInt(1, Math.min(9, Math.floor(maxSub / 2)));
+            const a = randInt(c + 1, Math.min(maxSub, 30));
+            const b = a - c;
+            correctAnswer = b;
+            const exerciseText = `${a} - ${BLANK} = ${c}`;
+            question = exerciseText;
+            params = { kind: "eq_sub_simple", a, b, c, exerciseText };
+            operandA = a;
+            operandB = b;
+          }
+        } else if (t === "add") {
           const a = randInt(1, Math.floor(maxAdd / 2));
           const b = randInt(1, Math.floor(maxAdd / 2));
           const c = a + b;

@@ -66,7 +66,11 @@ export function buildSectionsForGrade(grade) {
         subsectionLabelsHe: ["חיבור עד 20", "חיסור כמשלים להוספה"],
         expectedDepth: "intro",
         sourcePageHint: "מספרים ופעולות — כיתה א׳",
-        mapsToNormalizedKeys: ["math.addition_subtraction", "math.mixed_operations"],
+        mapsToNormalizedKeys: [
+          "math.addition_subtraction",
+          "math.mixed_operations",
+          "math.multiplication_division",
+        ],
         confidence: "medium",
       }),
       sec({
@@ -208,7 +212,11 @@ export function buildSectionsForGrade(grade) {
         subsectionLabelsHe: ["עיגול", "השוואות"],
         expectedDepth: "developing",
         sourcePageHint: "מספרים ופעולות",
-        mapsToNormalizedKeys: ["math.number_sense", "math.estimation_rounding"],
+        mapsToNormalizedKeys: [
+          "math.number_sense",
+          "math.estimation_rounding",
+          "math.addition_subtraction",
+        ],
         confidence: "medium",
       }),
       sec({
@@ -308,8 +316,21 @@ export function buildSectionsForGrade(grade) {
           "math.fractions",
           "math.decimals",
           "math.mixed_operations",
+          "math.multiplication_division",
           "math.addition_subtraction",
+          "math.estimation_rounding",
+          "math.number_sense",
         ],
+        confidence: "medium",
+      }),
+      sec({
+        sectionKey: "g4_divisibility_factors",
+        labelHe: "גורמים, התחלקות וראשוניים",
+        strand: strand.numbers,
+        subsectionLabelsHe: ["בדיקות התחלקות בסיסיות", "ראשוני מול פריק"],
+        expectedDepth: "developing",
+        sourcePageHint: "מספרים שלמים — כיתה ד׳",
+        mapsToNormalizedKeys: ["math.divisibility_factors"],
         confidence: "medium",
       }),
       sec({
@@ -395,7 +416,12 @@ export function buildSectionsForGrade(grade) {
         subsectionLabelsHe: ["קנה מידה באחוזים"],
         expectedDepth: "advanced",
         sourcePageHint: "עשרוניים ואחוזים",
-        mapsToNormalizedKeys: ["math.decimals", "math.percentages", "math.estimation_rounding"],
+        mapsToNormalizedKeys: [
+          "math.decimals",
+          "math.percentages",
+          "math.estimation_rounding",
+          "math.number_sense",
+        ],
         confidence: "medium",
       }),
       sec({
@@ -471,7 +497,12 @@ export function buildSectionsForGrade(grade) {
         subsectionLabelsHe: ["השוואה והזמנה"],
         expectedDepth: "advanced",
         sourcePageHint: "מספרים ופעולות — כיתה ו׳",
-        mapsToNormalizedKeys: ["math.fractions", "math.decimals", "math.number_sense"],
+        mapsToNormalizedKeys: [
+          "math.fractions",
+          "math.decimals",
+          "math.number_sense",
+          "math.estimation_rounding",
+        ],
         confidence: "medium",
       }),
       sec({
