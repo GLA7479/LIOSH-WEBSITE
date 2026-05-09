@@ -304,7 +304,12 @@ export function buildSectionsForGrade(grade) {
         subsectionLabelsHe: ["חיבור שברים בעלי מכנה משותף", "קשר עשרוני־שבר"],
         expectedDepth: "developing",
         sourcePageHint: "שברים ועשרוניים",
-        mapsToNormalizedKeys: ["math.fractions", "math.decimals", "math.mixed_operations"],
+        mapsToNormalizedKeys: [
+          "math.fractions",
+          "math.decimals",
+          "math.mixed_operations",
+          "math.addition_subtraction",
+        ],
         confidence: "medium",
       }),
       sec({
@@ -380,7 +385,7 @@ export function buildSectionsForGrade(grade) {
         subsectionLabelsHe: ["כפל וחילוק שברים"],
         expectedDepth: "advanced",
         sourcePageHint: "שברים",
-        mapsToNormalizedKeys: ["math.fractions", "math.mixed_operations"],
+        mapsToNormalizedKeys: ["math.fractions", "math.mixed_operations", "math.addition_subtraction"],
         confidence: "medium",
       }),
       sec({
@@ -390,7 +395,7 @@ export function buildSectionsForGrade(grade) {
         subsectionLabelsHe: ["קנה מידה באחוזים"],
         expectedDepth: "advanced",
         sourcePageHint: "עשרוניים ואחוזים",
-        mapsToNormalizedKeys: ["math.decimals", "math.percentages"],
+        mapsToNormalizedKeys: ["math.decimals", "math.percentages", "math.estimation_rounding"],
         confidence: "medium",
       }),
       sec({
@@ -536,7 +541,12 @@ export function buildSectionsForGrade(grade) {
         subsectionLabelsHe: [],
         expectedDepth: "advanced",
         sourcePageHint: "סיכום כיתה ו׳",
-        mapsToNormalizedKeys: ["math.mixed_operations", "math.word_problems"],
+        mapsToNormalizedKeys: [
+          "math.mixed_operations",
+          "math.word_problems",
+          "math.addition_subtraction",
+          "math.multiplication_division",
+        ],
         confidence: "low",
       })
     );

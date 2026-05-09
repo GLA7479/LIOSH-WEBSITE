@@ -17,6 +17,8 @@
 | **4B-4 (Math)** | Complete | **Math owner review pack** — compact, owner-facing slice of subsection candidates + queues (`math-owner-review-pack.*`) for inspection before any approved content batch. Reports/tools only — **not** bank edits. |
 | **4B-5 (Math)** | Complete | **Generator branch mapping** — maps inventory rows to harness branches (`topic::subtopic` → generator `selectedOp` + `params.kind`) and rolls up sequencing / subsection gaps (`math-generator-branch-mapping.*`). Reports only — **no** generator or bank edits until owner approves scope. |
 | **4B-6 (Math)** | Complete | **Owner approval candidate pack** — safest/first Math correction candidates grouped for explicit owner sign-off (`math-owner-approval-candidates.*`). Planning only — **even catalog-only plans require owner approval** before any patch. |
+| **4B-7 (Math)** | Complete | **Catalog-only patch plan** — branch-by-branch proposals to extend `mapsToNormalizedKeys` / placeholders (`math-catalog-only-patch-plan.*`). Reports only — **does not edit** the subsection catalog module or generator; owner approval still required before any implementation. |
+| **4B-8 (Math)** | Complete | **Safe catalog patch subset** — filtered approval-ready slice of Phase 4B-7 (`math-safe-catalog-patch-subset.*`): high/medium confidence, risk low, `add_mapsToNormalizedKeys_entry` only; excludes placeholders and weak interim hosts. Reports only. |
 
 No question banks, UI, or Hebrew learner-facing copy are modified by these tools.
 
@@ -30,7 +32,7 @@ Outputs are **reports only**. They do not change runtime behaviour or gate build
 
 - **Content gate:** Any question-bank **addition, modification, or deletion** requires **explicit owner approval** before implementation. Passing Phase 4B-0b audits or generating remediation plans does **not** authorize edits.
 - **Source hardening ≠ content editing:** Registry PDFs, POP links, and audit reports improve **traceability and confidence** for planning; they do **not** change stems, answers, or metadata in banks.
-- **Math first:** Official source hardening for **Math** (Phase **4B-1**) is the **first** subject-specific anchor pass; Phase **4B-2** clarifies that a **grade programme PDF** is **not** the same as **exact subsection approval** inside that PDF. Phase **4B-3** adds a **subsection catalog** (PDF-linked headings/strands, manually encoded) and **candidate** mappings per inventory row — still **not** exact Ministry subsection sign-off. Phase **4B-4** adds an **owner review pack** so the owner can sample representative rows before approving any batch — still **not** approval to edit banks. Phase **4B-5** maps Math inventory rows to **generator branches** (Math is harness-driven, not a static bank cleanup). Phase **4B-6** is the **final approval-facing pack** before any Math patch — it lists candidate batches (catalog / metadata / generator / defer) but **does not apply changes**; **even catalog-only work requires explicit owner approval**. **Math correction is not approved** until the owner explicitly approves a **concrete correction batch** — pipeline reports do **not** substitute approval.
+- **Math first:** Official source hardening for **Math** (Phase **4B-1**) is the **first** subject-specific anchor pass; Phase **4B-2** clarifies that a **grade programme PDF** is **not** the same as **exact subsection approval** inside that PDF. Phase **4B-3** adds a **subsection catalog** (PDF-linked headings/strands, manually encoded) and **candidate** mappings per inventory row — still **not** exact Ministry subsection sign-off. Phase **4B-4** adds an **owner review pack** so the owner can sample representative rows before approving any batch — still **not** approval to edit banks. Phase **4B-5** maps Math inventory rows to **generator branches** (Math is harness-driven, not a static bank cleanup). Phase **4B-6** is the **final approval-facing pack** before any Math patch — it lists candidate batches (catalog / metadata / generator / defer) but **does not apply changes**; **even catalog-only work requires explicit owner approval**. Phase **4B-7** turns catalog-only candidates into a **structured catalog-only patch plan** (gaps vs encoded catalog per grade/key + suggested hosts — **still reports-only**). **Math correction is not approved** until the owner explicitly approves a **concrete correction batch** — pipeline reports do **not** substitute approval.
 - **Subject priority (future curriculum / content sequencing):**
   1. Math  
   2. Geometry  
@@ -169,6 +171,28 @@ npm run audit:curriculum:math-approval-candidates
 npm run audit:curriculum:math-source-hardening
 ```
 
+## Phase 4B-7 — Catalog-only patch plan (reports only)
+
+- **Purpose:** For branches classified **catalog-only** in Phase **4B-6**, compare normalized keys × grades against the encoded subsection catalog (`math-official-subsection-catalog.json`) and emit **branch-by-branch** proposals (`math-catalog-only-patch-plan.*`) — each tagged **not implemented**, **owner approval required**, and **no runtime/generator change implied**.
+- **Not implementation:** Does **not** edit `math-official-subsection-catalog.js`, `math-question-generator.js`, metadata, banks, grade gates, UI, or Hebrew learner copy.
+
+```bash
+npm run audit:curriculum:math-catalog-patch-plan
+# Also runs at the end of:
+npm run audit:curriculum:math-source-hardening
+```
+
+## Phase 4B-8 — Safe catalog patch subset (approval-ready slice)
+
+- **Purpose:** Filter Phase **4B-7** into **`math-safe-catalog-patch-subset.*`** — only `add_mapsToNormalizedKeys_entry`, confidence high/medium, risk low; excludes new-section placeholders, low-confidence rows, and explicit weak hosts (for example grade 4 divisibility on `g4_powers_ratio`).
+- **Not implementation:** Does **not** edit `math-official-subsection-catalog.js` or any runtime asset.
+
+```bash
+npm run audit:curriculum:math-safe-catalog-subset
+# Also runs at the end of:
+npm run audit:curriculum:math-source-hardening
+```
+
 ## Phase 4A — content-fix batches (planning for Phase 4B, not edits)
 
 - **What it is:** `content-fix-batches.json` / `content-fix-batches.md` organize `remediation-plan.*` into batches **A–E** (coverage, English early, geometry, static duplicates, exclusions).
@@ -293,6 +317,8 @@ npm run qa:curriculum-audit
 | `math-owner-review-pack.json` / `.md` | Phase 4B-4 — owner-facing summary: sequencing/no-candidate/competing/high-confidence sanity cohorts, grade readiness, source-file impact preview (not bank edits). |
 | `math-generator-branch-mapping.json` / `.md` | Phase 4B-5 — per `topic::subtopic` branch roll-ups: sequencing, subsection gaps, suggested future actions (generator/catalog/metadata — planning only). |
 | `math-owner-approval-candidates.json` / `.md` | Phase 4B-6 — owner approval batches (safest first), suggested decisions, impact — **no** automatic patches. |
+| `math-catalog-only-patch-plan.json` / `.md` | Phase 4B-7 — catalog-only gap closure proposals per generator branch (encoded catalog vs normalized keys × grades) — **planning only**, owner approval before any catalog edit. |
+| `math-safe-catalog-patch-subset.json` / `.md` | Phase 4B-8 — safest slice of 4B-7 for owner review (`add_mapsToNormalizedKeys_entry`, high/medium + risk low); **planning only**. |
 
 ## Manual review: high-risk topics
 
