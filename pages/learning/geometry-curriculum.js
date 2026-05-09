@@ -1,7 +1,13 @@
 import Layout from "../../components/Layout";
 import { useRouter } from "next/router";
 import { useIOSViewportFix } from "../../hooks/useIOSViewportFix";
-import { GRADES, TOPICS, LEVELS, TOPIC_SHAPES } from "../../utils/geometry-constants";
+import {
+  GRADES,
+  TOPICS,
+  LEVELS,
+  TOPIC_SHAPES,
+  topicDescriptionForCurriculumPage,
+} from "../../utils/geometry-constants";
 
 const GRADE_KEYS = ["g1", "g2", "g3", "g4", "g5", "g6"];
 
@@ -16,9 +22,9 @@ const HEB_GRADE = {
 
 /** Pedagogical gloss — not an official Ministry subsection list */
 const GRADE_NOTES = {
-  g1: "התמקדות בהיכרות עם מצולעים בסיסיים וטרנספורמציות פשוטות (הזזה ושיקוף).",
-  g2: "שטח, גופים מוכרים וטרנספורמיות; אין נושא היקף נפרד במערכת לכיתה זו.",
-  g3: "שטח, היקף, זוויות, מקבילות ומאונכות, משולשים, מרובעים וסיבוב.",
+  g1: "לפי תוכנית המתמטיקה היסודי: מקטע «מדידות וגאומטריה» כולל צורות גאומטריות, הכרת מצולעים, זיהוי מלבן וריבוע, והזזה או שיקוף — ברמת היכרות.",
+  g2: "מקטע מדידות וגאומטריה כולל מצולעים וגופים (שיקוף והזזה), מדידות שטח ועוד — בעומק המתאים לכיתה ב׳ במוצר (לא רק נוסחאות פורמליות בדף זה).",
+  g3: "בתוכנית מופיע במפורש: זוויות, מאונכות, מקבילות, משולשים, מרובעים, מידות ומדידות, סיבוב — יחד עם מדידות אורך/משקל/נפח/זמן לפי הסעיפים.",
   g4: "שטח, היקף, נפח תיבות, אלכסון, סימטרייה וצורות בסיסיות עם תכונות.",
   g5: "שטח, היקף, נפח, זוויות, מקבילות ומאונכות, מרובעים, גבהים, ריצוף, אלכסון וערבוב.",
   g6: "שטח, היקף, נפח, זוויות, מעגל ועיגול, פיתגורס, גופים וערבוב.",
@@ -118,14 +124,17 @@ export default function GeometryCurriculum() {
                     <h2 className="text-2xl font-bold mb-3">כיתה {HEB_GRADE[gradeKey]}</h2>
                     <h3 className="text-lg font-semibold mb-2">נושאים בממשק לכיתה זו:</h3>
                     <ol className="list-decimal pr-6 space-y-1 mb-4">
-                      {topics.map((tk) => (
+                      {topics.map((tk) => {
+                        const desc = topicDescriptionForCurriculumPage(gradeKey, tk);
+                        return (
                         <li key={tk}>
                           <span className="font-semibold">{getTopicName(tk)}</span>
-                          {TOPICS[tk]?.description ? (
-                            <span className="text-white/85"> — {TOPICS[tk].description}</span>
+                          {desc ? (
+                            <span className="text-white/85"> — {desc}</span>
                           ) : null}
                         </li>
-                      ))}
+                      );
+                      })}
                     </ol>
                     <div className="bg-white/5 p-3 rounded mb-3">
                       <h4 className="font-semibold mb-2">צורות ודוגמאות לפי נושא (כפי שהוגדר במוצר):</h4>

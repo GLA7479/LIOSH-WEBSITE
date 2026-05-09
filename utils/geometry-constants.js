@@ -22,6 +22,7 @@ export const PI = 3.14;
 
 export const TOPICS = {
   shapes_basic: { name: "צורות בסיסיות", description: "הכרת מצולעים", icon: "🔷" },
+  /** Default subtitles — detailed grades א׳–ג׳ use `topicDescriptionForCurriculumPage` on the curriculum page */
   area: { name: "שטח", description: "חישוב שטח", icon: "📐" },
   perimeter: { name: "היקף", description: "חישוב היקף", icon: "📏" },
   volume: { name: "נפח", description: "חישוב נפח", icon: "📦" },
@@ -40,6 +41,82 @@ export const TOPICS = {
   pythagoras: { name: "פיתגורס", description: "משפט פיתגורס", icon: "🔺" },
   mixed: { name: "ערבוב", description: "ערבוב", icon: "🎲" },
 };
+
+/**
+ * Subtitles for כיתות א׳–ג׳ on the curriculum transparency page — aligned to תוכנית המתמטיקה (מדידות וגאומטריה)
+ * phrasing: היכרות / זיהוי / השוואה / מדידות — not “formal calculation only”.
+ */
+export const TOPIC_DESCRIPTION_LOW_GRADES = {
+  g1: {
+    shapes_basic: "הכרת מצולעים — זיהוי ריבוע ומלבן והשוואה בסיסית",
+    transformations: "הזזה ושיקוף — היכרות (בתוכנית היסודי ללא סיבוב נפרד בכיתה א׳)",
+  },
+  g2: {
+    shapes_basic: "צורות במישור — זיהוי והשוואה",
+    area: "מדידות שטח — היכרות, השוואה וכיסוי (לפי רמת הקושי במוצר)",
+    solids: "מצולעים וגופים — היכרות ושמות גופים תלת־ממדיים",
+    transformations: "שיקוף והזזה — המשך היכרות",
+  },
+  g3: {
+    shapes_basic: "צורות במישור — הרחבת זיהוי",
+    angles: "זוויות — סיווג והיכרות",
+    parallel_perpendicular: "מקבילות ומאונכות במישור",
+    triangles: "משולשים — מיון והיכרות",
+    quadrilaterals: "מרובעים — מיון והיכרות",
+    area: "שטח — מדידות והשוואה (עומק לפי רמה)",
+    perimeter: "היקף — מדידה והיכרות במצולעים",
+    rotation: "סיבוב במישור — היכרות בתוכנית היסודי",
+  },
+};
+
+/** כיתות ד׳–ו׳ — ניסוח עמוק יותר מ«חישוב בלבד» בעמוד השקיפות בלבד */
+export const TOPIC_DESCRIPTION_MID_HIGH_GRADES = {
+  g4: {
+    shapes_basic: "צורות במישור — תכונות ריבוע ומלבן והרחבה",
+    angles: "זוויות — סיווג והמשך פיתוח",
+    parallel_perpendicular: "מקבילות ומאונכות — יישום במצולעים",
+    triangles: "משולשים — תכונות וסיווג",
+    quadrilaterals: "מרובעים — תכונות וסיווג",
+    diagonal: "אלכסונים במצולעים — היכרות ותרגול",
+    symmetry: "סימטרייה במישור",
+    area: "שטח — מדידות, השוואה וחישובים לפי רמה",
+    perimeter: "היקף — מדידה וחישוב במצולעים",
+    volume: "נפח תיבה — היכרות ומדידות בסיסיות",
+  },
+  g5: {
+    angles: "זוויות — יישום במצולעים",
+    parallel_perpendicular: "מקבילות ומאונכות — קשר לצורות",
+    quadrilaterals: "מרובעים — תכונות, מיון וקשרי הכלה",
+    solids: "גופים תלת־ממדיים — היכרות ושטח פנים",
+    diagonal: "אלכסונים — כולל הקשר במרובעים",
+    heights: "גבהים — קשר לשטח במשולשים ובמרובעים",
+    tiling: "ריצוף במישור — היכרות ודוגמאות",
+    area: "שטח — חישובים והשוואות לפי צורה",
+    perimeter: "היקף — חישוב במצולעים מורכבים יותר",
+    volume: "נפח — תיבות וגופים מוכרים",
+  },
+  g6: {
+    solids: "גופים משוכללים — נפח ושטח פנים לפי רמה",
+    circles: "מעגל ועיגול — היקף ושטח",
+    volume: "נפח — גופים שונים לפי התוכנית",
+    area: "שטח — יישומים כולל צורות מורכבות",
+    perimeter: "היקף — יישומים כולל מעגל",
+    angles: "זוויות — יישום במצולשים ובבעיות",
+    pythagoras: "משפט פיתגורס — משולש ישר זווית",
+  },
+};
+
+/**
+ * @param {string} gradeKey g1..g6
+ * @param {string} topicKey
+ */
+export function topicDescriptionForCurriculumPage(gradeKey, topicKey) {
+  const low = TOPIC_DESCRIPTION_LOW_GRADES[gradeKey]?.[topicKey];
+  if (low) return low;
+  const mid = TOPIC_DESCRIPTION_MID_HIGH_GRADES[gradeKey]?.[topicKey];
+  if (mid) return mid;
+  return TOPICS[topicKey]?.description || "";
+}
 
 // עדכון ל-6 כיתות נפרדות (א', ב', ג', ד', ה', ו')
 // בהתאם לתוכנית משרד החינוך
