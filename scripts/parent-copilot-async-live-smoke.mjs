@@ -21,6 +21,9 @@
  *   # If flash hits HTTP 429 often, try a lighter model:
  *   # PARENT_COPILOT_LLM_MODEL=gemini-2.5-flash-lite
  *   GEMINI_API_KEY=...
+ *
+ * Force primary to fail transiently (tests fallback without hitting Gemini) when fallback env is set:
+ *   npm run test:parent-copilot-async-live-smoke -- --only "מה הכי חשוב לתרגל השבוע?" --simulate-primary-fail http_429
  */
 
 import { readFileSync, existsSync } from "fs";
@@ -54,6 +57,8 @@ function loadEnvLocalBestEffort() {
 function parseSmokeArgs(argv) {
   const rest = argv.slice(2);
   let onlyQuestion = null;
+  /** @type {string|null} */
+  let simulatePrimaryTransientFailure = null;
   let delayMs = Number(process.env.PARENT_COPILOT_ASYNC_SMOKE_DELAY_MS);
   if (!Number.isFinite(delayMs) || delayMs < 0) delayMs = 2500;
   for (let i = 0; i < rest.length; i++) {
@@ -67,12 +72,25 @@ function parseSmokeArgs(argv) {
       if (Number.isFinite(n) && n >= 0) delayMs = n;
       continue;
     }
+    if (a === "--simulate-primary-fail" || a === "--simulate-primary-transient-failure") {
+      simulatePrimaryTransientFailure =
+        rest[i + 1] != null && !String(rest[i + 1]).startsWith("--")
+          ? String(rest[++i]).trim()
+          : "http_429";
+      continue;
+    }
   }
-  return { onlyQuestion, delayMs };
+  return { onlyQuestion, delayMs, simulatePrimaryTransientFailure };
 }
 
 function sleepMs(ms) {
   return new Promise((r) => setTimeout(r, ms));
+}
+
+const smokeArgsEarly = parseSmokeArgs(process.argv);
+if (smokeArgsEarly.simulatePrimaryTransientFailure) {
+  process.env.PARENT_COPILOT_LLM_SIMULATE_PRIMARY_TRANSIENT_FAILURE =
+    smokeArgsEarly.simulatePrimaryTransientFailure;
 }
 
 loadEnvLocalBestEffort();
@@ -224,6 +242,10 @@ const gatePreview = {
   PARENT_COPILOT_LLM_PROVIDER: process.env.PARENT_COPILOT_LLM_PROVIDER,
   PARENT_COPILOT_LLM_MODEL: process.env.PARENT_COPILOT_LLM_MODEL,
   hasGeminiKey: !!(process.env.GEMINI_API_KEY || process.env.PARENT_COPILOT_LLM_API_KEY || "").trim(),
+  PARENT_COPILOT_LLM_SIMULATE_PRIMARY_TRANSIENT_FAILURE:
+    process.env.PARENT_COPILOT_LLM_SIMULATE_PRIMARY_TRANSIENT_FAILURE || "",
+  PARENT_COPILOT_LLM_FALLBACK_PROVIDER: process.env.PARENT_COPILOT_LLM_FALLBACK_PROVIDER || "",
+  hasFallbackKey: !!String(process.env.PARENT_COPILOT_LLM_FALLBACK_API_KEY || "").trim(),
 };
 
 const GROUPS_BASE = [
@@ -253,7 +275,7 @@ const GROUPS_BASE = [
   },
 ];
 
-const { onlyQuestion, delayMs } = parseSmokeArgs(process.argv);
+const { onlyQuestion, delayMs, simulatePrimaryTransientFailure } = smokeArgsEarly;
 
 let GROUPS = GROUPS_BASE;
 if (onlyQuestion != null) {
@@ -272,6 +294,11 @@ const llmGate = getLlmGateDecision();
 console.log("=== Parent Copilot async live smoke (runParentCopilotTurnAsync) ===\n");
 console.log("Env preview (no secrets):", JSON.stringify(gatePreview, null, 2));
 console.log("getLlmGateDecision():", JSON.stringify({ enabled: llmGate.enabled, reasonCodes: llmGate.reasonCodes, stage: llmGate.stage }, null, 2));
+if (simulatePrimaryTransientFailure) {
+  console.log(
+    `Test mode: primary LLM will fail transiently (${simulatePrimaryTransientFailure}) — fallback runs if configured.`,
+  );
+}
 if (onlyQuestion != null) {
   console.log(`Mode: single question (--only), delay-ms=${delayMs} (not applied — only one call)`);
 } else {

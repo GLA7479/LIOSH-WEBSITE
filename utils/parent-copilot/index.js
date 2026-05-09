@@ -66,6 +66,9 @@ function mergeLlmFailureDiagnostics(base, llmResult) {
   if (Array.isArray(r.gateReasonCodes) && r.gateReasonCodes.length) {
     out.gateReasonCodes = [...r.gateReasonCodes];
   }
+  for (const k of ["primaryProvider", "primaryReason", "fallbackProvider", "fallbackReason", "finalProvider"]) {
+    if (typeof r[k] === "string" && String(r[k]).trim()) out[k] = String(r[k]).trim();
+  }
   return out;
 }
 
@@ -216,6 +219,21 @@ function normalizeMergedLlmAttempt(raw) {
     ...(typeof raw.llmRetryCount === "number" ? { llmRetryCount: raw.llmRetryCount } : {}),
     ...(Array.isArray(raw.gateReasonCodes) ? { gateReasonCodes: [...raw.gateReasonCodes] } : {}),
     ...(Array.isArray(raw.failCodes) ? { failCodes: [...raw.failCodes] } : {}),
+    ...(typeof raw.primaryProvider === "string" && raw.primaryProvider.trim()
+      ? { primaryProvider: String(raw.primaryProvider).trim() }
+      : {}),
+    ...(typeof raw.primaryReason === "string" && raw.primaryReason.trim()
+      ? { primaryReason: String(raw.primaryReason).trim() }
+      : {}),
+    ...(typeof raw.fallbackProvider === "string" && raw.fallbackProvider.trim()
+      ? { fallbackProvider: String(raw.fallbackProvider).trim() }
+      : {}),
+    ...(typeof raw.fallbackReason === "string" && raw.fallbackReason.trim()
+      ? { fallbackReason: String(raw.fallbackReason).trim() }
+      : {}),
+    ...(typeof raw.finalProvider === "string" && raw.finalProvider.trim()
+      ? { finalProvider: String(raw.finalProvider).trim() }
+      : {}),
   };
   return base;
 }
@@ -309,6 +327,9 @@ function persistTelemetryBestEffort(response, context) {
               base.geminiErrorBody = String(llmAttempt.geminiErrorBody).slice(0, 8000);
             }
             if (typeof llmAttempt.llmRetryCount === "number") base.llmRetryCount = llmAttempt.llmRetryCount;
+            for (const k of ["primaryProvider", "primaryReason", "fallbackProvider", "fallbackReason", "finalProvider"]) {
+              if (typeof llmAttempt[k] === "string" && llmAttempt[k].trim()) base[k] = String(llmAttempt[k]).trim();
+            }
             return base;
           })()
         : null,
@@ -1477,13 +1498,27 @@ export async function runParentCopilotTurnAsync(input) {
       resolutionStatus: "resolved",
       scopeType: core.truthPacket.scopeType,
       scopeId: core.truthPacket.scopeId,
-      llmAttempt: { ok: true, reason: "llm_draft_accepted" },
+      llmAttempt: {
+        ok: true,
+        reason: "llm_draft_accepted",
+        provider: llmResult.finalProvider || llmResult.provider || "unknown",
+        ...(typeof llmResult.primaryProvider === "string" ? { primaryProvider: llmResult.primaryProvider } : {}),
+        ...(typeof llmResult.primaryReason === "string" ? { primaryReason: llmResult.primaryReason } : {}),
+        ...(typeof llmResult.fallbackProvider === "string" ? { fallbackProvider: llmResult.fallbackProvider } : {}),
+        ...(typeof llmResult.fallbackReason === "string" ? { fallbackReason: llmResult.fallbackReason } : {}),
+        ...(typeof llmResult.finalProvider === "string" ? { finalProvider: llmResult.finalProvider } : {}),
+      },
     }),
   };
   const llmOkAttempt = {
     ok: true,
     reason: "llm_draft_accepted",
-    provider: llmResult.provider || "unknown",
+    provider: llmResult.finalProvider || llmResult.provider || "unknown",
+    finalProvider: llmResult.finalProvider || llmResult.provider || "unknown",
+    ...(typeof llmResult.primaryProvider === "string" ? { primaryProvider: llmResult.primaryProvider } : {}),
+    ...(typeof llmResult.primaryReason === "string" ? { primaryReason: llmResult.primaryReason } : {}),
+    ...(typeof llmResult.fallbackProvider === "string" ? { fallbackProvider: llmResult.fallbackProvider } : {}),
+    ...(typeof llmResult.fallbackReason === "string" ? { fallbackReason: llmResult.fallbackReason } : {}),
     ...(typeof llmResult.llmRetryCount === "number" ? { llmRetryCount: llmResult.llmRetryCount } : {}),
   };
   llmResponse.telemetry.llmAttempt = llmOkAttempt;

@@ -5,7 +5,13 @@
 
 import { getLlmGateDecision } from "./rollout-gates.js";
 import { clinicalBoundaryJoinedFingerprintHe } from "./answer-composer.js";
-import { callCopilotLlmJson, copilotLlmProviderLabel } from "./copilot-llm-client.js";
+import {
+  callCopilotLlmPrimaryJson,
+  callCopilotLlmOpenAiChatCompletionsJson,
+  copilotLlmPrimaryProviderLabel,
+  getCopilotLlmFallbackConfig,
+  isTransientCopilotLlmFailure,
+} from "./copilot-llm-client.js";
 import { collectParentFacingOutputQualityIssues } from "./guardrail-validator.js";
 
 const DEFAULT_TIMEOUT_MS = 9000;
@@ -259,6 +265,30 @@ function validateLlmDraft(payload, truthPacket, hints = null) {
 /**
  * @param {{ utterance: string; truthPacket: NonNullable<ReturnType<typeof import("./truth-packet-v1.js").buildTruthPacketV1>>; parentIntent?: string }} input
  */
+function pickLlmFailureFields(response) {
+  return {
+    ...(response.httpStatus != null ? { httpStatus: response.httpStatus } : {}),
+    ...(typeof response.geminiErrorBody === "string" ? { geminiErrorBody: response.geminiErrorBody } : {}),
+    ...(typeof response.geminiErrorSummary === "string" ? { geminiErrorSummary: response.geminiErrorSummary } : {}),
+    ...(response.geminiErrorParsed !== undefined ? { geminiErrorParsed: response.geminiErrorParsed } : {}),
+    ...(typeof response.llmRetryCount === "number" ? { llmRetryCount: response.llmRetryCount } : {}),
+  };
+}
+
+/**
+ * @param {number} timeoutMs
+ * @param {(signal: AbortSignal) => Promise<unknown>} fn
+ */
+async function withAbortTimeout(timeoutMs, fn) {
+  const controller = new AbortController();
+  const timer = setTimeout(() => controller.abort("timeout"), timeoutMs);
+  try {
+    return await fn(controller.signal);
+  } finally {
+    clearTimeout(timer);
+  }
+}
+
 export async function maybeGenerateGroundedLlmDraft(input) {
   const gate = getLlmGateDecision();
   if (!gate.enabled) {
@@ -268,37 +298,114 @@ export async function maybeGenerateGroundedLlmDraft(input) {
       gateReasonCodes: gate.reasonCodes,
     };
   }
+  const primaryProvider = copilotLlmPrimaryProviderLabel();
   const prompt = buildGroundedPrompt(input.utterance, input.truthPacket, String(input?.parentIntent || ""));
-  const controller = new AbortController();
   const timeoutMs = Number(env("PARENT_COPILOT_LLM_TIMEOUT_MS", String(DEFAULT_TIMEOUT_MS))) || DEFAULT_TIMEOUT_MS;
-  const timer = setTimeout(() => controller.abort("timeout"), timeoutMs);
+  const intentHint = String(input?.parentIntent || "").trim();
+
   try {
-    const response = await callCopilotLlmJson(controller.signal, prompt);
-    if (!response.ok) {
+    const primaryRes = await withAbortTimeout(timeoutMs, (sig) => callCopilotLlmPrimaryJson(sig, prompt));
+    const primaryReason = primaryRes.ok ? "ok" : String(primaryRes.reason || "llm_provider_error");
+
+    if (primaryRes.ok) {
+      const validated = validateLlmDraft(primaryRes.payload, input.truthPacket, { intent: intentHint });
+      if (!validated.ok) {
+        return {
+          ok: false,
+          reason: validated.reason || "llm_validation_failed",
+          primaryProvider,
+          primaryReason: "ok",
+          finalProvider: primaryProvider,
+        };
+      }
       return {
-        ok: false,
-        reason: response.reason || "llm_provider_error",
-        httpStatus: response.httpStatus,
-        geminiErrorBody: response.geminiErrorBody,
-        geminiErrorSummary: response.geminiErrorSummary,
-        geminiErrorParsed: response.geminiErrorParsed,
-        llmRetryCount: response.llmRetryCount,
+        ok: true,
+        draft: validated.draft,
+        provider: primaryProvider,
+        finalProvider: primaryProvider,
+        primaryProvider,
+        primaryReason: "ok",
+        ...(typeof primaryRes.llmRetryCount === "number" ? { llmRetryCount: primaryRes.llmRetryCount } : {}),
       };
     }
-    const validated = validateLlmDraft(response.payload, input.truthPacket, {
-      intent: String(input?.parentIntent || "").trim(),
-    });
-    if (!validated.ok) return { ok: false, reason: validated.reason || "llm_validation_failed" };
+
+    if (!isTransientCopilotLlmFailure(primaryRes)) {
+      return {
+        ok: false,
+        reason: primaryRes.reason || "llm_provider_error",
+        primaryProvider,
+        primaryReason,
+        finalProvider: primaryProvider,
+        ...pickLlmFailureFields(primaryRes),
+      };
+    }
+
+    const fbCfg = getCopilotLlmFallbackConfig();
+    if (!fbCfg) {
+      return {
+        ok: false,
+        reason: primaryRes.reason || "llm_provider_error",
+        primaryProvider,
+        primaryReason,
+        finalProvider: primaryProvider,
+        ...pickLlmFailureFields(primaryRes),
+      };
+    }
+
+    const fallbackProvider = fbCfg.telemetryLabel;
+    const fallbackRes = await withAbortTimeout(timeoutMs, (sig) =>
+      callCopilotLlmOpenAiChatCompletionsJson(sig, prompt, {
+        baseUrl: fbCfg.baseUrl,
+        apiKey: fbCfg.apiKey,
+        model: fbCfg.model,
+      }),
+    );
+    const fallbackReason = fallbackRes.ok ? "ok" : String(fallbackRes.reason || "llm_provider_error");
+
+    if (!fallbackRes.ok) {
+      return {
+        ok: false,
+        reason: fallbackRes.reason || "llm_fallback_provider_error",
+        primaryProvider,
+        primaryReason,
+        fallbackProvider,
+        fallbackReason,
+        finalProvider: fallbackProvider,
+        ...pickLlmFailureFields(fallbackRes),
+      };
+    }
+
+    const validatedFb = validateLlmDraft(fallbackRes.payload, input.truthPacket, { intent: intentHint });
+    if (!validatedFb.ok) {
+      return {
+        ok: false,
+        reason: validatedFb.reason || "llm_validation_failed",
+        primaryProvider,
+        primaryReason,
+        fallbackProvider,
+        fallbackReason: "ok",
+        finalProvider: fallbackProvider,
+      };
+    }
+
     return {
       ok: true,
-      draft: validated.draft,
-      provider: copilotLlmProviderLabel(),
-      ...(typeof response.llmRetryCount === "number" ? { llmRetryCount: response.llmRetryCount } : {}),
+      draft: validatedFb.draft,
+      provider: fallbackProvider,
+      finalProvider: fallbackProvider,
+      primaryProvider,
+      primaryReason,
+      fallbackProvider,
+      fallbackReason: "ok",
     };
   } catch (error) {
-    return { ok: false, reason: `llm_exception:${String(error?.message || error || "unknown")}` };
-  } finally {
-    clearTimeout(timer);
+    return {
+      ok: false,
+      reason: `llm_exception:${String(error?.message || error || "unknown")}`,
+      primaryProvider,
+      primaryReason: "exception",
+      finalProvider: primaryProvider,
+    };
   }
 }
 

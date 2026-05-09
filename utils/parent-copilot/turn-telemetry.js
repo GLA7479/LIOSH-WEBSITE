@@ -94,6 +94,21 @@ export function buildTurnTelemetry(input) {
             ? { geminiErrorBody: String(input.llmAttempt.geminiErrorBody) }
             : {}),
           ...(typeof input.llmAttempt.llmRetryCount === "number" ? { llmRetryCount: input.llmAttempt.llmRetryCount } : {}),
+          ...(typeof input.llmAttempt.primaryProvider === "string" && input.llmAttempt.primaryProvider.trim()
+            ? { primaryProvider: String(input.llmAttempt.primaryProvider).trim() }
+            : {}),
+          ...(typeof input.llmAttempt.primaryReason === "string" && input.llmAttempt.primaryReason.trim()
+            ? { primaryReason: String(input.llmAttempt.primaryReason).trim() }
+            : {}),
+          ...(typeof input.llmAttempt.fallbackProvider === "string" && input.llmAttempt.fallbackProvider.trim()
+            ? { fallbackProvider: String(input.llmAttempt.fallbackProvider).trim() }
+            : {}),
+          ...(typeof input.llmAttempt.fallbackReason === "string" && input.llmAttempt.fallbackReason.trim()
+            ? { fallbackReason: String(input.llmAttempt.fallbackReason).trim() }
+            : {}),
+          ...(typeof input.llmAttempt.finalProvider === "string" && input.llmAttempt.finalProvider.trim()
+            ? { finalProvider: String(input.llmAttempt.finalProvider).trim() }
+            : {}),
         }
       : null;
   return {

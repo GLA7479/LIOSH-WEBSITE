@@ -1,13 +1,23 @@
 /**
- * Parent Copilot Q&A LLM — OpenAI-compatible `/v1/responses` or Gemini `generateContent`.
+ * Parent Copilot Q&A LLM — primary: OpenAI `/v1/responses` or Gemini `generateContent`.
+ * Optional fallback: OpenAI-compatible `POST .../chat/completions` (OpenRouter, Groq, etc.).
  *
- * Env:
+ * Primary env:
  *   PARENT_COPILOT_LLM_PROVIDER     "openai" | "gemini" (default "openai")
- *   PARENT_COPILOT_LLM_BASE_URL     OpenAI default https://api.openai.com/v1
+ *   PARENT_COPILOT_LLM_BASE_URL     OpenAI default https://api.openai.com/v1; Gemini API base for gemini
  *   PARENT_COPILOT_LLM_MODEL
  *   PARENT_COPILOT_LLM_API_KEY      OpenAI key when provider=openai
- *   PARENT_COPILOT_LLM_TIMEOUT_MS
+ *   PARENT_COPILOT_LLM_TIMEOUT_MS   (orchestrator AbortController)
  *   GEMINI_API_KEY / GOOGLE_API_KEY when provider=gemini (or PARENT_COPILOT_LLM_API_KEY override)
+ *
+ * Fallback env (only used after transient primary failure — see isTransientCopilotLlmFailure):
+ *   PARENT_COPILOT_LLM_FALLBACK_PROVIDER   "openrouter" | "groq"
+ *   PARENT_COPILOT_LLM_FALLBACK_MODEL
+ *   PARENT_COPILOT_LLM_FALLBACK_API_KEY
+ *   PARENT_COPILOT_LLM_FALLBACK_BASE_URL    full URL to chat/completions (optional; sensible defaults)
+ *
+ * Test / dev (forces primary to fail without calling the network):
+ *   PARENT_COPILOT_LLM_SIMULATE_PRIMARY_TRANSIENT_FAILURE=http_429 | timeout | network
  */
 
 function envStr(name, fallback = "") {
@@ -96,12 +106,141 @@ function extractOpenAiText(body) {
   return "";
 }
 
+function readSimulatedPrimaryFailure() {
+  const v = envStr("PARENT_COPILOT_LLM_SIMULATE_PRIMARY_TRANSIENT_FAILURE").toLowerCase();
+  if (!v || v === "0" || v === "false" || v === "off") return null;
+  if (v === "429" || v === "http_429" || v === "rate_limit") return { reason: "http_429", httpStatus: 429 };
+  if (v === "timeout" || v === "abort") return { reason: "network_or_abort:timeout" };
+  if (v === "network" || v === "econnreset") return { reason: "network_or_abort:ECONNRESET" };
+  if (v.startsWith("http_")) {
+    const n = Number(v.replace(/^http_/, ""));
+    if (Number.isFinite(n)) return { reason: `http_${n}`, httpStatus: n };
+  }
+  return { reason: "http_429", httpStatus: 429 };
+}
+
 /**
- * @param {AbortSignal} signal — caller owns timeout via AbortController (see llm-orchestrator).
+ * True when the grounded path may try a configured fallback provider (429, 5xx, timeout, flaky network).
+ * Not used for invalid JSON, auth errors, or missing keys.
+ * @param {{ ok?: boolean; reason?: string; httpStatus?: number }} res
+ */
+export function isTransientCopilotLlmFailure(res) {
+  if (!res || res.ok) return false;
+  const reason = String(res.reason || "");
+  const st = Number(res.httpStatus);
+  if (reason === "http_429" || st === 429) return true;
+  if ([408, 500, 502, 503, 504].includes(st)) return true;
+  if (/^http_(50[0-4]|408)\b/.test(reason)) return true;
+  if (reason.startsWith("network_or_abort:")) {
+    const tail = reason.slice("network_or_abort:".length).toLowerCase();
+    if (
+      tail.includes("timeout") ||
+      tail.includes("abort") ||
+      tail.includes("aborterror") ||
+      tail.includes("fetch") ||
+      tail.includes("failed to fetch") ||
+      tail.includes("econnreset") ||
+      tail.includes("etimedout") ||
+      tail.includes("enotfound") ||
+      tail.includes("socket") ||
+      tail.includes("network")
+    ) {
+      return true;
+    }
+  }
+  return false;
+}
+
+/**
+ * @returns {null | { kind: string; baseUrl: string; apiKey: string; model: string; telemetryLabel: string }}
+ */
+export function getCopilotLlmFallbackConfig() {
+  const kind = envStr("PARENT_COPILOT_LLM_FALLBACK_PROVIDER").toLowerCase();
+  if (!kind || kind === "none" || kind === "off" || kind === "false" || kind === "0") return null;
+  const apiKey = envStr("PARENT_COPILOT_LLM_FALLBACK_API_KEY");
+  const model = envStr("PARENT_COPILOT_LLM_FALLBACK_MODEL");
+  if (!apiKey || !model) return null;
+
+  let baseUrl = envStr("PARENT_COPILOT_LLM_FALLBACK_BASE_URL");
+  if (kind === "openrouter") {
+    if (!baseUrl) baseUrl = "https://openrouter.ai/api/v1/chat/completions";
+  } else if (kind === "groq") {
+    if (!baseUrl) baseUrl = "https://api.groq.com/openai/v1/chat/completions";
+  } else {
+    return null;
+  }
+
+  return {
+    kind,
+    baseUrl: baseUrl.replace(/\/$/, ""),
+    apiKey,
+    model,
+    telemetryLabel: `${kind}_chat:${model}`,
+  };
+}
+
+/**
+ * OpenAI-compatible chat.completions (OpenRouter, Groq, etc.).
+ * @param {AbortSignal} signal
+ * @param {string} prompt
+ * @param {{ baseUrl: string; apiKey: string; model: string }} cfg
+ */
+export async function callCopilotLlmOpenAiChatCompletionsJson(signal, prompt, cfg) {
+  const url = cfg.baseUrl;
+  try {
+    const res = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${cfg.apiKey}`,
+      },
+      body: JSON.stringify({
+        model: cfg.model,
+        messages: [{ role: "user", content: prompt }],
+        temperature: 0.2,
+        max_tokens: 900,
+      }),
+      signal,
+    });
+    const rawText = await res.text();
+    let body = null;
+    try {
+      body = JSON.parse(rawText);
+    } catch {
+      body = null;
+    }
+    if (!res.ok) {
+      return {
+        ok: false,
+        reason: `http_${res.status}`,
+        httpStatus: res.status,
+        geminiErrorBody: rawText,
+        geminiErrorSummary: `fallback_chat HTTP ${res.status}`,
+      };
+    }
+    const maybeText = extractOpenAiText(body || {});
+    const parsed = safeJsonParse(String(maybeText || "").trim());
+    if (!parsed.ok) {
+      return { ok: false, reason: "invalid_json_output", raw: String(maybeText || ""), httpStatus: res.status };
+    }
+    return { ok: true, payload: parsed.value, raw: String(maybeText || "") };
+  } catch (e) {
+    return { ok: false, reason: `network_or_abort:${String(e?.message || e)}` };
+  }
+}
+
+/**
+ * Primary provider only (Gemini or OpenAI responses API). Used by classifier LLM and as first hop for grounded Q&A.
+ * @param {AbortSignal} signal
  * @param {string} prompt
  * @returns {Promise<{ ok: boolean; payload?: unknown; reason?: string; raw?: string; httpStatus?: number; geminiErrorBody?: string; geminiErrorSummary?: string; geminiErrorParsed?: unknown; llmRetryCount?: number }>}
  */
-export async function callCopilotLlmJson(signal, prompt) {
+export async function callCopilotLlmPrimaryJson(signal, prompt) {
+  const sim = readSimulatedPrimaryFailure();
+  if (sim) {
+    return { ok: false, ...sim, llmRetryCount: 0 };
+  }
+
   const provider = getProvider();
 
   try {
@@ -198,7 +337,7 @@ export async function callCopilotLlmJson(signal, prompt) {
       }),
       signal,
     });
-    if (!res.ok) return { ok: false, reason: `http_${res.status}` };
+    if (!res.ok) return { ok: false, reason: `http_${res.status}`, httpStatus: res.status };
     const body = await res.json();
     const maybeText = extractOpenAiText(body);
     const parsed = safeJsonParse(String(maybeText || "").trim());
@@ -209,6 +348,18 @@ export async function callCopilotLlmJson(signal, prompt) {
   }
 }
 
-export function copilotLlmProviderLabel() {
+/**
+ * @deprecated Prefer callCopilotLlmPrimaryJson; kept for callers that only need primary (e.g. classifier).
+ */
+export async function callCopilotLlmJson(signal, prompt) {
+  return callCopilotLlmPrimaryJson(signal, prompt);
+}
+
+export function copilotLlmPrimaryProviderLabel() {
   return getProvider() === "gemini" ? "gemini" : "openai_compatible";
+}
+
+/** @deprecated Use copilotLlmPrimaryProviderLabel */
+export function copilotLlmProviderLabel() {
+  return copilotLlmPrimaryProviderLabel();
 }

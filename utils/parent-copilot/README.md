@@ -24,6 +24,21 @@ Implemented in `rollout-gates.js` (`getLlmGateDecision`). **All** of the followi
 
 **When LLM is actually invoked** (only if `getLlmGateDecision().enabled`): `llm-orchestrator.js` also requires `PARENT_COPILOT_LLM_API_KEY` (and uses `PARENT_COPILOT_LLM_BASE_URL`, `PARENT_COPILOT_LLM_MODEL`, `PARENT_COPILOT_LLM_TIMEOUT_MS` with documented defaults in that module).
 
+### Optional fallback provider (grounded Q&A only)
+
+If the **primary** call fails with a **transient** error (HTTP 429, 5xx/408, timeout, or common network errors), `maybeGenerateGroundedLlmDraft` may call **one** fallback using OpenAI-compatible `chat/completions`. The classifier LLM path still uses the primary client only. Validator failures on a successful HTTP response **do not** trigger fallback.
+
+| Env | Purpose |
+|-----|---------|
+| `PARENT_COPILOT_LLM_FALLBACK_PROVIDER` | `openrouter` or `groq` |
+| `PARENT_COPILOT_LLM_FALLBACK_MODEL` | Model id (e.g. OpenRouter model string) |
+| `PARENT_COPILOT_LLM_FALLBACK_API_KEY` | Bearer token for the fallback API |
+| `PARENT_COPILOT_LLM_FALLBACK_BASE_URL` | Full URL to `.../chat/completions` (optional; defaults per provider) |
+
+On success after fallback, telemetry `llmAttempt` includes `primaryProvider`, `primaryReason`, `fallbackProvider`, `fallbackReason`, and `finalProvider`. **`generationPath`** is still `llm_grounded` when the (possibly fallback-sourced) draft passes validation.
+
+Dev-only: `PARENT_COPILOT_LLM_SIMULATE_PRIMARY_TRANSIENT_FAILURE` (e.g. `http_429`) forces primary failure without calling the primary API; use with `scripts/parent-copilot-async-live-smoke.mjs --simulate-primary-fail`.
+
 ## `generationPath` (telemetry)
 
 | Value | Meaning |
