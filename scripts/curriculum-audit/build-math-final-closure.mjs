@@ -2,12 +2,16 @@
  * Math Final Closure Gate — coverage, curriculum placement, variety (Phase closure report).
  * Writes reports/curriculum-audit/math-final-closure.{json,md}
  */
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { mkdir, writeFile } from "node:fs/promises";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
 import { pathToFileURL } from "node:url";
 import { createHash } from "node:crypto";
+import {
+  buildRuntimeVsPdfRows,
+  compareOfficialCatalogToPdfSections,
+} from "./lib/math-catalog-pdf-compare.mjs";
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = join(__dirname, "..", "..");
@@ -317,16 +321,101 @@ async function main() {
     },
   };
 
+  /** MoE kita1–6 extracted PDF vs official catalog vs UI topic rows */
+  let pdfCatalogPayload = null;
+  let catalogVsPdfPayload = null;
+  let runtimeVsPdfPayload = null;
+  const pdfCatPath = join(OUT_DIR, "math-pdf-section-catalog.json");
+  const catVsPath = join(OUT_DIR, "math-catalog-vs-pdf-sections.json");
+  try {
+    if (existsSync(pdfCatPath)) {
+      pdfCatalogPayload = JSON.parse(readFileSync(pdfCatPath, "utf8"));
+    }
+    if (existsSync(catVsPath)) {
+      catalogVsPdfPayload = JSON.parse(readFileSync(catVsPath, "utf8"));
+    } else if (pdfCatalogPayload?.meta?.allGradesDownloaded) {
+      catalogVsPdfPayload = compareOfficialCatalogToPdfSections(
+        pdfCatalogPayload,
+        MATH_OFFICIAL_SUBSECTION_CATALOG
+      );
+      await writeFile(catVsPath, JSON.stringify(catalogVsPdfPayload, null, 2), "utf8");
+    }
+    if (pdfCatalogPayload && catalogVsPdfPayload) {
+      runtimeVsPdfPayload = buildRuntimeVsPdfRows(
+        { grades: gradeReports },
+        catalogVsPdfPayload,
+        pdfCatalogPayload
+      );
+      try {
+        const candPath = join(OUT_DIR, "math-row-subsection-candidates.json");
+        if (existsSync(candPath)) {
+          runtimeVsPdfPayload.meta = {
+            ...(runtimeVsPdfPayload.meta || {}),
+            mathRowSubsectionCandidatesSummary:
+              JSON.parse(readFileSync(candPath, "utf8")).summary || null,
+          };
+        }
+      } catch {
+        /* ignore */
+      }
+      await writeFile(
+        join(OUT_DIR, "math-runtime-vs-pdf-sections.json"),
+        JSON.stringify(runtimeVsPdfPayload, null, 2),
+        "utf8"
+      );
+      await writeFile(
+        join(OUT_DIR, "math-runtime-vs-pdf-sections.md"),
+        renderRuntimeVsPdfMarkdown(runtimeVsPdfPayload),
+        "utf8"
+      );
+    }
+  } catch (e) {
+    payload.pdfVerificationException = String(e?.message || e);
+  }
+
+  const unresolvedTopicRows = (runtimeVsPdfPayload?.rows || []).filter(
+    (r) => r.status === "missing" || r.status === "needs_manual_review"
+  );
+
+  payload.pdfSectionVerification = {
+    mathPdfSectionCatalogPresent: !!pdfCatalogPayload,
+    allGradesPdfDownloaded: !!pdfCatalogPayload?.meta?.allGradesDownloaded,
+    catalogSectionsMissingPdfSupport: catalogVsPdfPayload?.summary?.missing_pdf_support ?? null,
+    siteTopicsMissingPdfSupport: runtimeVsPdfPayload?.summary?.siteTopicsMissingPdfSupport ?? null,
+    generatedTopicsMissingPdfSupport:
+      runtimeVsPdfPayload?.summary?.generatedTopicsMissingPdfSupport ?? null,
+    unresolvedTopicRowCount: unresolvedTopicRows.length,
+    unresolvedTopicRows,
+  };
+  payload.catalogVsPdfSectionsSummary = catalogVsPdfPayload?.summary || null;
+  payload.runtimeVsPdfSectionsSummary = runtimeVsPdfPayload?.summary || null;
+
   const competing =
     Number(auditCrossRefs.mathRowSubsectionCandidatesSummary?.rowsWithCompetingCandidates) || 0;
   const seqMissing = Number(auditCrossRefs.sequencingHistogram?.missing_number_intro_review) || 0;
 
+  const missCatalogPdf = Number(catalogVsPdfPayload?.summary?.missing_pdf_support ?? -1);
+  const missSitePdf = Number(runtimeVsPdfPayload?.summary?.siteTopicsMissingPdfSupport ?? -1);
+  const missGenPdf = Number(runtimeVsPdfPayload?.summary?.generatedTopicsMissingPdfSupport ?? -1);
+
+  const pdfSectionGatePassed =
+    !!pdfCatalogPayload &&
+    !!pdfCatalogPayload.meta?.allGradesDownloaded &&
+    !!catalogVsPdfPayload &&
+    missCatalogPdf === 0 &&
+    !!runtimeVsPdfPayload &&
+    missSitePdf === 0 &&
+    missGenPdf === 0 &&
+    unresolvedTopicRows.length === 0;
+
   payload.closureQuestions.automatedVarietyGatePassed =
     thinBranches.length === 0 && weakVariety.length === 0;
+  payload.closureQuestions.pdfSectionGatePassed = pdfSectionGatePassed;
   payload.closureQuestions.isMathFullyClosedForDevelopmentStage =
     payload.closureQuestions.automatedVarietyGatePassed &&
     competing === 0 &&
     seqMissing === 0 &&
+    pdfSectionGatePassed &&
     ownerPdfSignedOff;
   payload.closureQuestions.remainingBlockers = [
     competing > 0
@@ -334,6 +423,30 @@ async function main() {
       : null,
     seqMissing > 0
       ? `${seqMissing} inventory rows carry missing_number_intro_review (pedagogy/PDF confirmation — not suppressed)`
+      : null,
+    !pdfCatalogPayload
+      ? "Missing reports/curriculum-audit/math-pdf-section-catalog.json — run npm run audit:curriculum:math-pdf-section-catalog (via math-source-hardening)."
+      : null,
+    pdfCatalogPayload && !pdfCatalogPayload.meta?.allGradesDownloaded
+      ? "One or more kita PDF downloads failed — see math-pdf-section-catalog.json byGrade[].downloadOk."
+      : null,
+    !catalogVsPdfPayload
+      ? "Missing math-catalog-vs-pdf-sections — run catalog vs PDF step after PDF extraction."
+      : null,
+    missCatalogPdf > 0
+      ? `${missCatalogPdf} official catalog subsection(s) classified missing_pdf_support vs extracted PDF text — refine utils/curriculum-audit/math-official-subsection-catalog.js or extraction heuristics.`
+      : null,
+    !runtimeVsPdfPayload
+      ? "Could not build runtime-vs-PDF report — ensure PDF catalog and catalog-vs-PDF exist."
+      : null,
+    missSitePdf > 0
+      ? `${missSitePdf} site-visible topic row(s) lack PDF support per heuristic — see math-runtime-vs-pdf-sections.json.`
+      : null,
+    missGenPdf > 0
+      ? `${missGenPdf} generated topic row(s) lack PDF support — see math-runtime-vs-pdf-sections.json.`
+      : null,
+    unresolvedTopicRows.length > 0
+      ? `${unresolvedTopicRows.length} unresolved topic rows (missing / needs_manual_review) — listed under pdfSectionVerification.unresolvedTopicRows.`
       : null,
     !ownerPdfSignedOff
       ? "Owner PDF verification pending — see ownerVerificationAppendix; export MATH_OWNER_CLOSURE_SIGNOFF=1 only after MoE kita PDF cross-check per grade."
@@ -347,6 +460,24 @@ async function main() {
   console.log(`Wrote ${join(OUT_DIR, "math-final-closure.md")}`);
 }
 
+function renderRuntimeVsPdfMarkdown(payload) {
+  const lines = [];
+  lines.push("# Math runtime / UI topics vs PDF sections");
+  lines.push("");
+  lines.push(`Generated: ${payload.generatedAt}`);
+  lines.push("");
+  lines.push(`- Site topics missing PDF support: **${payload.summary.siteTopicsMissingPdfSupport}**`);
+  lines.push(`- Generated topics missing PDF support: **${payload.summary.generatedTopicsMissingPdfSupport}**`);
+  lines.push(`- Needs manual review: **${payload.summary.needsManualReview}**`);
+  lines.push("");
+  for (const r of payload.rows || []) {
+    lines.push(
+      `- **G${r.grade}** \`${r.operation}\` → ${r.normalizedKey} — **${r.status}** (PDF support: ${r.pdfNormKeySupport})`
+    );
+  }
+  return lines.join("\n");
+}
+
 function renderMarkdown(p) {
   const lines = [];
   lines.push(`# Math Final Closure Report`);
@@ -357,6 +488,16 @@ function renderMarkdown(p) {
   lines.push(`- Thin-branch warnings: **${p.summary.thinBranchWarnings}**`);
   lines.push(`- Weak variety flags (rich-kind ops): **${p.summary.weakVarietyFlags}**`);
   lines.push(`- Automated variety gate: **${p.closureQuestions.automatedVarietyGatePassed ? "pass" : "fail"}**`);
+  lines.push(`- PDF section gate (catalog + runtime vs MoE PDF text): **${p.closureQuestions.pdfSectionGatePassed ? "pass" : "fail"}**`);
+  if (p.pdfSectionVerification) {
+    const v = p.pdfSectionVerification;
+    lines.push(`- PDF catalog on disk: **${v.mathPdfSectionCatalogPresent ? "yes" : "no"}**`);
+    lines.push(`- All kita PDFs downloaded: **${v.allGradesPdfDownloaded ? "yes" : "no"}**`);
+    lines.push(`- Catalog sections missing_pdf_support: **${v.catalogSectionsMissingPdfSupport ?? "?"}**`);
+    lines.push(`- Site topics missing PDF support: **${v.siteTopicsMissingPdfSupport ?? "?"}**`);
+    lines.push(`- Generated topics missing PDF support: **${v.generatedTopicsMissingPdfSupport ?? "?"}**`);
+    lines.push(`- Unresolved topic rows: **${v.unresolvedTopicRowCount ?? "?"}**`);
+  }
   lines.push(
     `- Math closed for current dev stage: **${p.closureQuestions.isMathFullyClosedForDevelopmentStage ? "yes" : "no"}**`
   );
