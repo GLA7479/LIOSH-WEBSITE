@@ -30,6 +30,30 @@ function shouldTryNextFallbackCandidate(res) {
   return false;
 }
 
+/**
+ * Non-safety `validateLlmDraft` failures where trying another fallback model may help.
+ * Does not apply to clinical/safety/contract/raw-leak/thin-data contradiction/etc.
+ * @param {string} reason
+ */
+export function shouldTryNextFallbackCandidateAfterValidationFailure(reason) {
+  const r = String(reason || "").trim();
+  /** @type {Set<string>} */
+  const retryable = new Set([
+    "llm_answer_too_short",
+    /** Guardrail `main_focus_missing_practical_action` */
+    "llm_main_focus_missing_practical_action",
+    /** User-facing label alias (not emitted today; kept for forward compat) */
+    "llm_missing_required_practical_action",
+    "llm_malformed_hebrew_fragment",
+    "llm_malformed_preposition_punctuation",
+    /** Legacy / forward alias if surfaced under a different guardrail label */
+    "llm_main_focus_missing_practical_magnitude",
+    /** Intent-specific short answer for main_focus (guardrail-validator) */
+    "llm_main_focus_answer_too_short",
+  ]);
+  return retryable.has(r);
+}
+
 const DEFAULT_TIMEOUT_MS = 9000;
 
 const LLM_CLINICAL_DIAGNOSIS_RES = [
@@ -401,47 +425,18 @@ export async function maybeGenerateGroundedLlmDraft(input) {
           ? fallbackRes.actualModel.trim()
           : candidateModel;
 
-      fallbackAttempts.push({
-        model: candidateModel,
-        reason: fallbackRes.ok ? "ok" : String(fallbackRes.reason || "error"),
-        ...(fallbackRes.httpStatus != null ? { httpStatus: Number(fallbackRes.httpStatus) } : {}),
-        ...(resolvedRouteModel ? { actualModel: resolvedRouteModel } : {}),
-        ...(typeof fallbackRes.invalidJsonRawPreview === "string" && fallbackRes.invalidJsonRawPreview.trim()
-          ? { invalidJsonRawPreview: String(fallbackRes.invalidJsonRawPreview).slice(0, 3000) }
-          : {}),
-      });
-
-      if (fallbackRes.ok) {
-        const validatedFb = validateLlmDraft(fallbackRes.payload, input.truthPacket, { intent: intentHint });
-        if (validatedFb.ok) {
-          return {
-            ok: true,
-            draft: validatedFb.draft,
-            provider: resolvedRouteModel,
-            finalProvider: resolvedRouteModel,
-            primaryProvider,
-            primaryReason,
-            fallbackProvider,
-            fallbackModels,
-            fallbackAttempts,
-            fallbackReason: "ok",
-          };
-        }
-        return {
-          ok: false,
-          reason: validatedFb.reason || "llm_validation_failed",
-          primaryProvider,
-          primaryReason,
-          fallbackProvider,
-          fallbackModels,
-          fallbackAttempts,
-          fallbackReason: "ok",
-          finalProvider: resolvedRouteModel,
-        };
-      }
-
-      const tryNext = shouldTryNextFallbackCandidate(fallbackRes) && i < candidates.length - 1;
-      if (!tryNext) {
+      if (!fallbackRes.ok) {
+        fallbackAttempts.push({
+          model: candidateModel,
+          reason: String(fallbackRes.reason || "error"),
+          ...(fallbackRes.httpStatus != null ? { httpStatus: Number(fallbackRes.httpStatus) } : {}),
+          actualModel: resolvedRouteModel,
+          ...(typeof fallbackRes.invalidJsonRawPreview === "string" && fallbackRes.invalidJsonRawPreview.trim()
+            ? { invalidJsonRawPreview: String(fallbackRes.invalidJsonRawPreview).slice(0, 3000) }
+            : {}),
+        });
+        const tryNextNetwork = shouldTryNextFallbackCandidate(fallbackRes) && i < candidates.length - 1;
+        if (tryNextNetwork) continue;
         return {
           ok: false,
           reason: fallbackRes.reason || "llm_fallback_provider_error",
@@ -455,7 +450,54 @@ export async function maybeGenerateGroundedLlmDraft(input) {
           ...pickLlmFailureFields(fallbackRes),
         };
       }
+
+      const validatedFb = validateLlmDraft(fallbackRes.payload, input.truthPacket, { intent: intentHint });
+      if (validatedFb.ok) {
+        fallbackAttempts.push({
+          model: candidateModel,
+          reason: "ok",
+          ...(fallbackRes.httpStatus != null ? { httpStatus: Number(fallbackRes.httpStatus) } : {}),
+          actualModel: resolvedRouteModel,
+        });
+        return {
+          ok: true,
+          draft: validatedFb.draft,
+          provider: resolvedRouteModel,
+          finalProvider: resolvedRouteModel,
+          primaryProvider,
+          primaryReason,
+          fallbackProvider,
+          fallbackModels,
+          fallbackAttempts,
+          fallbackReason: "ok",
+        };
+      }
+
+      const vr = validatedFb.reason || "llm_validation_failed";
+      fallbackAttempts.push({
+        model: candidateModel,
+        reason: `validator_rejected:${vr}`,
+        ...(fallbackRes.httpStatus != null ? { httpStatus: Number(fallbackRes.httpStatus) } : {}),
+        actualModel: resolvedRouteModel,
+      });
+
+      const tryNextQuality =
+        shouldTryNextFallbackCandidateAfterValidationFailure(vr) && i < candidates.length - 1;
+      if (tryNextQuality) continue;
+
+      return {
+        ok: false,
+        reason: vr,
+        primaryProvider,
+        primaryReason,
+        fallbackProvider,
+        fallbackModels,
+        fallbackAttempts,
+        fallbackReason: vr,
+        finalProvider: resolvedRouteModel,
+      };
     }
+
   } catch (error) {
     return {
       ok: false,
@@ -467,4 +509,4 @@ export async function maybeGenerateGroundedLlmDraft(input) {
   }
 }
 
-export default { maybeGenerateGroundedLlmDraft };
+export default { maybeGenerateGroundedLlmDraft, shouldTryNextFallbackCandidateAfterValidationFailure };
