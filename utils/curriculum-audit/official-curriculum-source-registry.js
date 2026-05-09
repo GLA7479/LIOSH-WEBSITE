@@ -291,6 +291,29 @@ export const OFFICIAL_CURRICULUM_SOURCE_REGISTRY = [
     actionNeeded: "להוסיף דפי כיתה נפרדים לכיתות ב׳–ו׳ מאותו עץ POP כשזמינים.",
     notes: "עיגון כיתתי לכיתה א׳ בלבד — לא מכסה את כל המאגר.",
   },
+  ...[2, 3, 4, 5, 6].map((g) => {
+    const he = ["ב׳", "ג׳", "ד׳", "ה׳", "ו׳"][g - 2];
+    return {
+      subject: "hebrew",
+      sourceType: "official_moe",
+      title: `מרחב פדגוגי — עברית חינוך לשוני: דף התוכנית הכללי (ייחוס ביקורת לכיתה ${he})`,
+      url: "https://pop.education.gov.il/tchumey_daat/ivrit_chinhch_leshony/yesodi/pedagogy-hebrew-linguistic-education/curriculum/",
+      checkedAt: SOURCE_REGISTRY_CHECKED_AT,
+      appliesToGrades: [g],
+      appliesToTopics: ["literacy", "language_knowledge", "oral_written"],
+      sourceQualityLevel: "exact_subject_curriculum_source",
+      confidenceAfterAudit: "low",
+      isOfficialMoEPublished: true,
+      providesGradeLevelDetail: false,
+      providesTopicLevelDetail: true,
+      providesSkillOrDepthDetail: false,
+      needsHumanPedagogyReview: true,
+      actionNeeded:
+        "אותו דף POP כללי לכל הכיתות — להשלים עם טבלאות מפורטות במיידע או דפי כיתה ייעודיים כשפורסמו.",
+      notes:
+        "שורת ייחוס כיתתית לאוטומציה — אין כאן פירוט כיתתי מלא כמו PDF מתמטיקה לכל כיתה.",
+    };
+  }),
   {
     subject: "hebrew",
     sourceType: "internal_gap",
