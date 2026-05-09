@@ -7,6 +7,7 @@
 | **1** | Complete | Question inventory + baseline advisory audit (`latest.*`). |
 | **2** | Complete | Topic normalization layer, structured Israeli primary map (grades 1–6), richer classifications, topic rollup, map coverage reports. |
 | **3** | Complete | Calibration of risk scoring + depth heuristics (advisory flags), optional `sourceRefs` on map topics, focused review reports (English early grades, geometry sequencing, coverage gaps, duplicates), richer rollup suspicion rules. |
+| **3.5** | Complete | Remediation planner merges Phase 3 artifacts into prioritized queues (`remediation-plan.*`) — planning only, no bank edits. |
 
 No question banks, UI, or Hebrew learner-facing copy are modified by these tools.
 
@@ -23,6 +24,20 @@ Outputs are **reports only**. They do not change runtime behaviour or gate build
 - **Risk scoring guides manual review.** The “Top 50 highest-risk” queue uses classification tiers plus depth/dedup/span signals so reviewers see sequencing and duplication concerns first — not every plain `aligned` row.
 - **`sourceRefs` may be broad.** Entries can point at general MoE/RAMA portals or internal conservative notes. A broad reference does **not** mean that specific stems were reviewed against that document line-by-line.
 - **Duplicate categories differ by origin.** Static bank collisions, deterministic generator samples, and cross-grade repeats must be read differently — see `duplicates-review.*` and Phase 3 duplicate tooling (do not bulk-delete from audit output alone).
+
+## Phase 3.5 — remediation plan (action queue, not content editing)
+
+- **What it is:** `remediation-plan.json` / `remediation-plan.md` combine `latest.json`, `question-inventory.json`, focused reports, `coverage-gaps-by-grade.json`, and `duplicates-review.json` into **prioritized remediation items** with suggested actions.
+- **What it is not:** It does **not** modify question banks, UI, or Hebrew learner copy. It is a **work queue** for humans before any content phase.
+- **How to read `remediation-plan.md`:**
+  - Start with **Top 25 overall**, then **subject-balanced Top 25** sections so Moledet-heavy overall noise does not hide English / science / geometry work.
+  - Use **Coverage gap action list** for thin subject×grade cells — these are **backlog to add questions**, not automatic edits to existing stems.
+  - Use **Duplicate cleanup** lists: **static** vs **generator** paths differ (see below).
+  - Use **Do not touch yet** for generator-only sampling warnings — treat as low urgency unless paired with static collisions.
+- **`remove_duplicate` vs `ignore_generator_sample`:**
+  - Prefer **`ignore_generator_sample`** when the collision is **only** among `generator_sample` rows or labeled intentional variants — deterministic harness noise.
+  - Prefer **`remove_duplicate` / `split_by_grade_depth`** when **static** banks share the same stem across grades without intentional depth progression (see `likely_problem_duplicates`).
+- **Low coverage:** Means **add_more_questions** for that grade/subject band — it does **not** imply existing items are wrong; it signals insufficient inventory breadth for safe runtime diversity.
 
 ## Topic normalization (Phase 2)
 
@@ -96,7 +111,13 @@ npm run audit:curriculum:focused
 npm run audit:curriculum:duplicates
 ```
 
-**Full Phase 2+3 QA chain**
+**Remediation plan (Phase 3.5)**
+
+```bash
+npm run audit:curriculum:remediation
+```
+
+**Full Phase 2+3+3.5 QA chain**
 
 ```bash
 npm run qa:curriculum-audit
@@ -114,6 +135,7 @@ npm run qa:curriculum-audit
 | `geometry-sequencing-review.json` / `.md` | Geometry strand density by grade (Phase 3). |
 | `coverage-gaps-by-grade.json` / `.md` | Thin subject×grade cells (Phase 3). |
 | `duplicates-review.json` / `.md` | Generator vs static duplicates and cross-grade stems (Phase 3). |
+| `remediation-plan.json` / `.md` | Prioritized remediation queues + coverage/duplicate action lists (Phase 3.5). |
 
 ## Manual review: high-risk topics
 
@@ -122,4 +144,5 @@ npm run qa:curriculum-audit
 3. Open **`latest.md`** — top 50 risk queue (classification + **depth flags** + dup peers); prioritize `needs_human_review`, `aligned_low_confidence`, depth-flagged sequencing rows, then `too_advanced`.
 4. Use **`english-early-grades-review.md`** and **`geometry-sequencing-review.md`** for strand sequencing checks (Phase 3).
 5. Use **`coverage-gaps-by-grade.md`** and **`duplicates-review.md`** for thin cells and generator vs static collisions (Phase 3).
-6. For English grades 1–2, confirm grammar items are tagged as enrichment/exposure in the map—not assumed as core reading comprehension.
+6. Open **`remediation-plan.md`** for Phase 3.5 prioritized queues before scheduling content work (Phase 3.5).
+7. For English grades 1–2, confirm grammar items are tagged as enrichment/exposure in the map—not assumed as core reading comprehension.
