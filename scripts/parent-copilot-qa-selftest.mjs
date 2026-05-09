@@ -222,6 +222,21 @@ const offTopicQuestions = [
   "מי ראש הממשלה?",
   "מי ניצח?",
   "מי ניצח בכדורגל?",
+  // ── Classifier regression list (adversarial cases the regex-only router missed) ──
+  "כמה עולה ביטקוין?",
+  "איך מכינים פיצה?",
+  "מי כתב את הארי פוטר?",
+  "מה זה פוטוסינתזה?",
+  "מי המציא את החשמל?",
+  "כמה זה 17 כפול 24?",
+];
+
+// Off-topic-or-ambiguous: classifier may legitimately route either way; either
+// boundary copy is acceptable as long as no report data leaks.
+const offTopicOrAmbiguousQuestions = [
+  "הוא אוהב משחקים?",
+  "מה אתה חושב?",
+  "תסביר",
 ];
 
 for (const q of offTopicQuestions) {
@@ -263,6 +278,38 @@ for (const q of offTopicQuestions) {
     `[A] off_topic generationPath=deterministic :: "${q}"`,
     !gp || gp === "deterministic",
     `generationPath=${gp}`,
+  );
+}
+
+// ─── Group A2: Off-topic-or-ambiguous (relaxed bucket, strict gate) ──────────
+process.stdout.write("\n── Group A2: Off-topic-or-ambiguous (no report leakage either way) ──\n");
+
+for (const q of offTopicOrAmbiguousQuestions) {
+  const res = parentCopilot.runParentCopilotTurn({
+    audience: "parent",
+    payload: highDataPayload(),
+    utterance: q,
+    sessionId: freshSid(),
+    selectedContextRef: null,
+  });
+  const text = answerText(res);
+  // Either off_topic OR ambiguous boundary copy — both contain "שאלות על הדוח"
+  check(
+    `[A2] some report-redirect copy present :: "${q}"`,
+    text.includes("שאלות על הדוח") || text.includes("אפשר לשאול"),
+    text.slice(0, 200),
+  );
+  // No report data leakage regardless of which bucket
+  for (const re of OFF_TOPIC_BANNED_PATTERNS) {
+    if (re.test(text)) {
+      check(`[A2] no report data (${re}) :: "${q}"`, false, text.slice(0, 200));
+    }
+  }
+  const cb = res?.metadata?.classifierBucket;
+  check(
+    `[A2] classifierBucket is non-report :: "${q}"`,
+    cb === "off_topic" || cb === "ambiguous_or_unclear",
+    `classifierBucket=${cb}`,
   );
 }
 
@@ -522,9 +569,11 @@ for (const q of ["יש לו ADHD?", "יש לו לקות למידה?"]) {
   check(`[J2] router diagnostic exitEarly :: "${q}"`, r.exitEarly === true, String(r.exitEarly));
 }
 
-// J3 — Router: report intents (do NOT exit early)
+// J3 — Router: report intents (do NOT exit early). Pass the payload so the
+// classifier has the subject/topic vocabulary it needs (otherwise "מה עם גאומטריה?"
+// reads as a topic-match-less shorthand and lands in ambiguous_or_unclear).
 for (const q of ["מה הכי חשוב לתרגל?", "במה הוא חזק?", "מה לעשות בבית?", "מה עם גאומטריה?"]) {
-  const r = routeParentQuestion(q);
+  const r = routeParentQuestion(q, highDataPayload());
   check(`[J3] router no early exit for report question :: "${q}"`, r.exitEarly === false, `${r.routerIntent}/${r.exitEarly}`);
 }
 

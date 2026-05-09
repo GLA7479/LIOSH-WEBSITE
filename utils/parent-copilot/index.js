@@ -37,7 +37,13 @@ import {
   augmentPhaseEThinEvidenceDraft,
   tryBuildPhaseEResolvedShortcutDraft,
 } from "../parent-ai-topic-classifier/external-question-route.js";
-import { routeParentQuestion, OFF_TOPIC_RESPONSE_HE, DIAGNOSTIC_BOUNDARY_RESPONSE_HE } from "./question-router.js";
+import {
+  routeParentQuestion,
+  OFF_TOPIC_RESPONSE_HE,
+  DIAGNOSTIC_BOUNDARY_RESPONSE_HE,
+  AMBIGUOUS_RESPONSE_HE,
+} from "./question-router.js";
+import { classifyParentQuestionViaLlm } from "./question-classifier-llm.js";
 
 const CLINICAL_GUARDRAIL_FAIL_CODES = new Set([
   "clinical_diagnosis_language",
@@ -443,10 +449,96 @@ function packageParentResolvedEarlyTurn(input, sessionId, priorRepeated, conv, u
 }
 
 /**
- * Deterministic baseline path used by both sync and async runtimes.
- * @param {object} input
+ * Bucket-to-CanonicalParentIntent mapping used by the classifier early-exit branch.
+ * @param {import("./question-router.js").QaRouterIntent} routerIntent
  */
-function runDeterministicCore(input) {
+function classifierIntentToCanonical(routerIntent) {
+  switch (routerIntent) {
+    case "off_topic": return "off_topic_redirect";
+    case "unsafe_or_diagnostic_request": return "clinical_boundary";
+    case "ambiguous_or_unclear": return "unclear";
+    case "unknown_report_question":
+    default:
+      return "explain_report";
+  }
+}
+
+/**
+ * Build a clarification-style early-exit turn for off_topic / diagnostic / ambiguous buckets.
+ *
+ * Hard gate guarantees:
+ *   - No truthPacket is constructed.
+ *   - No answer-LLM is called.
+ *   - The response text contains exactly the deterministic boundary copy and
+ *     nothing else (no subject names, no topic names, no question counts).
+ *   - Telemetry includes classifierBucket / classifierSource / classifierConfidence.
+ *
+ * @param {object} args
+ * @param {import("./question-router.js").QaRouterResult} args.qaRoute
+ * @param {string} args.audience
+ * @param {string} args.sessionId
+ * @param {object} args.conv
+ * @param {number} args.priorRepeated
+ * @param {string} args.utteranceStr
+ * @param {{ source: "deterministic" | "llm"; reason?: string }} [args.classifierTrace]
+ */
+function packageClassifierEarlyExit({
+  qaRoute,
+  audience,
+  sessionId,
+  conv,
+  priorRepeated,
+  utteranceStr,
+  classifierTrace,
+}) {
+  const boundaryLine = String(qaRoute.deterministicResponse || "");
+  const canonicalIntent = classifierIntentToCanonical(qaRoute.routerIntent);
+  const intentReason = `classifier:${qaRoute.classifierBucket}:${classifierTrace?.source || qaRoute.classifierSource || "deterministic"}`;
+  const scopeMeta = {
+    intentConfidence: Number(qaRoute.classifierConfidence || 1),
+    intentReason,
+    scopeConfidence: 1,
+    scopeReason: "classifier_early_exit",
+    classifierBucket: qaRoute.classifierBucket,
+    classifierSource: classifierTrace?.source || qaRoute.classifierSource || "deterministic",
+    classifierConfidence: Number(qaRoute.classifierConfidence || 0),
+    ...(classifierTrace?.reason ? { classifierLlmReason: classifierTrace.reason } : {}),
+  };
+
+  const r = buildClarificationParentCopilotResponse({
+    clarificationQuestionHe: boundaryLine,
+    intent: canonicalIntent,
+    priorRepeated,
+    metadata: scopeMeta,
+  });
+  validateParentCopilotResponseV1(r);
+
+  return {
+    response: r,
+    audience,
+    sessionId,
+    conv,
+    truthPacket: null,
+    intent: canonicalIntent,
+    scopeMeta,
+    utteranceStr,
+    routerExitEarly: true,
+    classifierBucket: qaRoute.classifierBucket,
+    classifierConfidence: qaRoute.classifierConfidence,
+    classifierSource: classifierTrace?.source || qaRoute.classifierSource || "deterministic",
+  };
+}
+
+/**
+ * Deterministic baseline path used by both sync and async runtimes.
+ *
+ * @param {object} input
+ * @param {{ preRoute?: import("./question-router.js").QaRouterResult }} [options]
+ *   `preRoute` allows the async path to inject a classifier verdict that has
+ *   already been upgraded by the LLM classifier. When supplied, the deterministic
+ *   classifier is NOT re-run — saves one pass and keeps telemetry consistent.
+ */
+function runDeterministicCore(input, options) {
   const audience = String(input?.audience || "parent");
   const sessionId = String(input?.sessionId || "default");
   const conv = getConversationState(sessionId);
@@ -465,49 +557,32 @@ function runDeterministicCore(input) {
 
   const utteranceStr = normalizeFreeformParentUtteranceHe(String(input?.utterance || ""));
 
-  // ── FIRST PRODUCT GATE: deterministic router before ANY report data access ──
-  const qaRoute = routeParentQuestion(String(input?.utterance || ""));
+  // ── FIRST PRODUCT GATE: classifier-first router before ANY report data access ──
+  // Hard guarantees for off_topic / diagnostic_sensitive / ambiguous_or_unclear:
+  //   - No truthPacket built. No answer-LLM call. No subject/topic name leakage.
+  //   - Telemetry stamps classifierBucket/source/confidence so live tests can verify.
+  const qaRoute = options?.preRoute
+    ? options.preRoute
+    : routeParentQuestion(String(input?.utterance || ""), input?.payload);
   if (qaRoute.exitEarly && qaRoute.deterministicResponse) {
-    const boundaryLine = String(qaRoute.deterministicResponse);
-    const routerIntent = qaRoute.routerIntent === "unsafe_or_diagnostic_request"
-      ? "clinical_boundary"
-      : "off_topic_redirect";
-    const boundaryDraft = {
-      answerBlocks: [
-        { type: "observation", textHe: boundaryLine, source: "composed" },
-      ],
-    };
-    // Build a minimal clarification response so no report data is included
-    const r = buildClarificationParentCopilotResponse({
-      clarificationQuestionHe: boundaryLine,
-      intent: routerIntent,
-      priorRepeated,
-      metadata: {
-        intentConfidence: 1,
-        intentReason: `router:${qaRoute.routerIntent}`,
-        scopeConfidence: 1,
-        scopeReason: "router_early_exit",
-      },
-    });
-    validateParentCopilotResponseV1(r);
-    return {
-      response: r,
+    const earlyExit = packageClassifierEarlyExit({
+      qaRoute,
       audience,
       sessionId,
       conv,
-      truthPacket: null,
-      intent: routerIntent,
-      scopeMeta: {
-        intentConfidence: 1,
-        intentReason: `router:${qaRoute.routerIntent}`,
-        scopeConfidence: 1,
-        scopeReason: "router_early_exit",
-      },
+      priorRepeated,
       utteranceStr,
-      routerExitEarly: true,
-    };
+      classifierTrace: { source: qaRoute.classifierSource || "deterministic" },
+    });
+    return earlyExit;
   }
   // ── END FIRST PRODUCT GATE ──
+  /** Forward the classifier verdict so resolved/clarification telemetry can stamp it. */
+  const classifierMetaForResolved = {
+    classifierBucket: qaRoute.classifierBucket || "report_related",
+    classifierSource: qaRoute.classifierSource || "deterministic",
+    classifierConfidence: Number(qaRoute.classifierConfidence || 0),
+  };
 
   const stageA = interpretFreeformStageA(String(input?.utterance || ""), input?.payload);
   const aggregateQuestionClass = detectAggregateQuestionClass(utteranceStr);
@@ -571,6 +646,9 @@ function runDeterministicCore(input) {
     scopeReason: String(scopeRes?.scopeReason || "unknown_scope_reason"),
     intentConfidence: Number(intentResolution.confidence || 0),
     intentReason: String(intentResolution.reason || "unknown_intent_reason"),
+    classifierBucket: classifierMetaForResolved.classifierBucket,
+    classifierSource: classifierMetaForResolved.classifierSource,
+    classifierConfidence: classifierMetaForResolved.classifierConfidence,
   };
 
   if (scopeRes.resolutionStatus === "clarification_required") {
@@ -987,7 +1065,64 @@ export function runParentCopilotTurn(input) {
  * @see ./README.md for env flags and `generationPath` semantics
  */
 export async function runParentCopilotTurnAsync(input) {
-  const core = runDeterministicCore(input);
+  // ── Optional LLM classifier upgrade for ambiguous deterministic verdicts ──
+  // Runs ONLY when:
+  //   - the deterministic classifier returned ambiguous_or_unclear, AND
+  //   - the LLM gate (PARENT_COPILOT_LLM_ENABLED + EXPERIMENT + rollout stage) is enabled.
+  // On any LLM failure (timeout, parse error, low confidence) we fall through with
+  // the deterministic ambiguous verdict (conservative fallback).
+  const detRoute = routeParentQuestion(String(input?.utterance || ""), input?.payload);
+  let effectiveRoute = detRoute;
+  let classifierLlmAttempt = null;
+  if (detRoute.classifierBucket === "ambiguous_or_unclear" && getLlmGateDecision().enabled) {
+    const llmRes = await classifyParentQuestionViaLlm({
+      utterance: String(input?.utterance || ""),
+      payload: input?.payload,
+    });
+    classifierLlmAttempt = llmRes;
+    if (llmRes.ok) {
+      if (llmRes.bucket === "off_topic") {
+        effectiveRoute = {
+          ...detRoute,
+          routerIntent: "off_topic",
+          deterministicResponse: OFF_TOPIC_RESPONSE_HE,
+          exitEarly: true,
+          classifierBucket: "off_topic",
+          classifierConfidence: llmRes.confidence,
+          classifierSource: /** @type {"deterministic"} */ ("deterministic"),
+        };
+      } else if (llmRes.bucket === "diagnostic_sensitive") {
+        effectiveRoute = {
+          ...detRoute,
+          routerIntent: "unsafe_or_diagnostic_request",
+          deterministicResponse: DIAGNOSTIC_BOUNDARY_RESPONSE_HE,
+          exitEarly: true,
+          classifierBucket: "diagnostic_sensitive",
+          classifierConfidence: llmRes.confidence,
+          classifierSource: /** @type {"deterministic"} */ ("deterministic"),
+        };
+      } else if (llmRes.bucket === "report_related") {
+        effectiveRoute = {
+          ...detRoute,
+          routerIntent: "unknown_report_question",
+          deterministicResponse: null,
+          exitEarly: false,
+          classifierBucket: "report_related",
+          classifierConfidence: llmRes.confidence,
+          classifierSource: /** @type {"deterministic"} */ ("deterministic"),
+        };
+      }
+      // For "ambiguous_or_unclear" from LLM, keep effectiveRoute as detRoute (also ambiguous).
+    }
+  }
+
+  const llmClassifierUsed = classifierLlmAttempt && classifierLlmAttempt.ok && effectiveRoute !== detRoute;
+  if (llmClassifierUsed) {
+    // Stamp classifierSource = "llm" through the route so packaging picks it up.
+    effectiveRoute = { ...effectiveRoute, classifierSource: /** @type {any} */ ("llm") };
+  }
+
+  const core = runDeterministicCore(input, { preRoute: effectiveRoute });
   const baseResponse = core.response;
   if (baseResponse?.resolutionStatus !== "resolved" || !core.truthPacket || !core.utteranceStr) {
     return finalizeTurnResponse(baseResponse, {
@@ -1004,7 +1139,8 @@ export async function runParentCopilotTurnAsync(input) {
     core.intent === "clinical_boundary" ||
     core.intent === "sensitive_education_choice" ||
     core.intent === "off_topic_redirect" ||
-    core.intent === "parent_policy_refusal"
+    core.intent === "parent_policy_refusal" ||
+    core.intent === "unclear"
   ) {
     const skipReason =
       core.intent === "sensitive_education_choice"
@@ -1013,7 +1149,17 @@ export async function runParentCopilotTurnAsync(input) {
           ? "llm_skipped_clinical_boundary"
           : core.intent === "off_topic_redirect"
             ? "llm_skipped_off_topic_boundary"
-            : "llm_skipped_policy_boundary";
+            : core.intent === "unclear"
+              ? "llm_skipped_ambiguous_boundary"
+              : "llm_skipped_policy_boundary";
+    const llmAttempt = classifierLlmAttempt
+      ? {
+          ok: !!classifierLlmAttempt.ok,
+          reason: classifierLlmAttempt.ok
+            ? `classifier_upgrade:${effectiveRoute?.classifierBucket || "ambiguous_or_unclear"}`
+            : `classifier_${classifierLlmAttempt.reason || "failed"}`,
+        }
+      : { ok: false, reason: skipReason };
     return finalizeTurnResponse(baseResponse, {
       audience: core.audience,
       sessionId: core.sessionId,
@@ -1021,10 +1167,7 @@ export async function runParentCopilotTurnAsync(input) {
       intent: core.intent,
       utteranceLength: String(core.utteranceStr || "").trim().length,
       generationPath: "deterministic",
-      llmAttempt: {
-        ok: false,
-        reason: skipReason,
-      },
+      llmAttempt,
     });
   }
 
