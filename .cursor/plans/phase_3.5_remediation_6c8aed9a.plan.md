@@ -4,22 +4,22 @@ overview: Add a reports-only remediation planner that synthesizes Phase 3 output
 todos:
   - id: add-remediation-script
     content: Implement build-remediation-plan.mjs to join Phase 3 reports and output remediation-plan.json/md
-    status: pending
+    status: cancelled
   - id: priority-action-rules
     content: Encode Priority 0/1/2 and recommendedAction decision rules, including static vs generator duplicate handling
-    status: pending
+    status: cancelled
   - id: subject-balanced-queues
     content: Generate overall and subject-specific Top 25 queues with close-score subject tie-break
-    status: pending
+    status: cancelled
   - id: npm-chain-update
     content: Add audit:curriculum:remediation and append it to qa:curriculum-audit
-    status: pending
+    status: cancelled
   - id: docs-phase-3-5
     content: Update curriculum-audit.md with Phase 3.5 explanation and remediation reading guide
-    status: pending
+    status: cancelled
   - id: verify-and-report
     content: Run qa:curriculum-audit and build, then report requested metrics and no-content/no-UI-change confirmation
-    status: pending
+    status: completed
 isProject: false
 ---
 
