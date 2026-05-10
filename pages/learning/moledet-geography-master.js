@@ -528,25 +528,24 @@ useEffect(() => {
   });
   useEffect(() => {
     let mounted = true;
-    fetch("/api/student/me", { credentials: "include" })
-      .then((r) => (r.ok ? r.json() : null))
-      .then((data) => {
-        if (!mounted || !data || typeof data !== "object") return;
-        const fullName =
-          data.full_name ||
-          data.fullName ||
-          data.preferred_name ||
-          data.preferredName ||
-          "";
+    fetch("/api/student/me", { credentials: "same-origin" })
+      .then((res) => res.json().catch(() => ({})))
+      .then((payload) => {
+        if (!mounted) return;
+        const rawBal = payload?.student?.coin_balance;
+        const bal =
+          typeof rawBal === "number" && !Number.isNaN(rawBal) ? rawBal : 0;
+        setChildCoinBalance(bal);
+        if (!payload?.ok || !payload?.student?.id) return;
+        const student = payload.student;
+        const fullName = String(student.full_name || "").trim();
         if (fullName) {
           setPlayerName(fullName);
           try {
             localStorage.setItem("mleo_player_name", fullName);
           } catch {}
         }
-        const rawGrade =
-          data.grade_level ?? data.gradeLevel ?? data.grade ?? data.grade_key ?? data.gradeKey;
-        const gradeKey = normalizeGradeLevelToKey(rawGrade);
+        const gradeKey = normalizeGradeLevelToKey(student.grade_level);
         if (gradeKey) {
           setGrade(gradeKey);
           const gradeNumberFromDb = gradeKeyToNumber(gradeKey);
@@ -554,13 +553,10 @@ useEffect(() => {
             setGradeNumber(gradeNumberFromDb);
           }
         }
-        const coins =
-          data.coin_balance ?? data.coinBalance ?? data.coins ?? null;
-        if (coins != null && Number.isFinite(Number(coins))) {
-          setChildCoinBalance(Number(coins));
-        }
       })
-      .catch(() => {});
+      .catch(() => {
+        if (mounted) setChildCoinBalance(0);
+      });
     return () => {
       mounted = false;
     };
