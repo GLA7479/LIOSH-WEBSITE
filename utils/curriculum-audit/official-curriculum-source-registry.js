@@ -451,6 +451,27 @@ export const OFFICIAL_CURRICULUM_SOURCE_REGISTRY = [
   },
   {
     subject: "science",
+    sourceType: "official_pdf",
+    title:
+      "Science & technology — elementary curriculum framework (2016), owner workspace copy (science Curriculum2016.docx)",
+    url: "תוכנית משרד החינוך/science Curriculum2016.docx",
+    checkedAt: SOURCE_REGISTRY_CHECKED_AT,
+    appliesToGrades: [1, 2, 3, 4, 5, 6],
+    appliesToTopics: ["life", "materials", "energy", "earth", "inquiry", "technology"],
+    sourceQualityLevel: "exact_subject_curriculum_source",
+    confidenceAfterAudit: "medium",
+    isOfficialMoEPublished: true,
+    providesGradeLevelDetail: false,
+    providesTopicLevelDetail: true,
+    providesSkillOrDepthDetail: true,
+    needsHumanPedagogyReview: true,
+    actionNeeded:
+      "להצליב עם דפי POP ועם פריסת כיתות במסמך — הקובץ הוא DOCX מקומי לעיגון בעלים; לא לערוך במסגרת פיתוח אוטומטי.",
+    notes:
+      "מסמך DOCX השמור בתיקיית תוכניות המאגר; משמש כמקור ייחוס לסגירת מדעים — פורמט Word, לא PDF.",
+  },
+  {
+    subject: "science",
     sourceType: "internal_gap",
     title: "טבלת פריסת נושאים רשמית לפי כיתה (מדע וטכנולוגיה) — לא קושרה כאן",
     url: "",

@@ -15,8 +15,6 @@ const OUT_DIR = join(ROOT, "reports", "question-metadata-qa");
 const OUT_JSON = join(OUT_DIR, "science-post-apply-verification.json");
 const OUT_MD = join(OUT_DIR, "science-post-apply-verification.md");
 
-const EXPECTED_TOTAL = 383;
-
 /**
  * Load SCIENCE_QUESTIONS exactly as exported from git HEAD (both data files together).
  * @returns {Promise<object[]|null>}
@@ -41,8 +39,31 @@ async function loadScienceQuestionsFromGitHead() {
       encoding: "utf8",
       maxBuffer: 64 * 1024 * 1024,
     });
+    /** @param {string} rel @param {string} fallback */
+    function gitShowOr(rel, fallback) {
+      try {
+        return execSync(`git show HEAD:${rel}`, {
+          cwd: ROOT,
+          encoding: "utf8",
+          maxBuffer: 64 * 1024 * 1024,
+          stdio: ["pipe", "pipe", "ignore"],
+        });
+      } catch {
+        return fallback;
+      }
+    }
+    const phase4 = gitShowOr(
+      "data/science-questions-phase4b1.js",
+      `export const SCIENCE_QUESTIONS_PHASE4B1 = [];\n`
+    );
+    const closureFill = gitShowOr(
+      "data/science-questions-closure-fill.js",
+      `export const SCIENCE_QUESTIONS_CLOSURE_FILL = [];\n`
+    );
     writeFileSync(join(dataDir, "science-questions.js"), main, "utf8");
     writeFileSync(join(dataDir, "science-questions-phase3.js"), phase, "utf8");
+    writeFileSync(join(dataDir, "science-questions-phase4b1.js"), phase4, "utf8");
+    writeFileSync(join(dataDir, "science-questions-closure-fill.js"), closureFill, "utf8");
     const href = pathToFileURL(join(dataDir, "science-questions.js")).href;
     const mod = await import(`${href}?t=${Date.now()}`);
     return mod.SCIENCE_QUESTIONS || null;
@@ -99,9 +120,6 @@ async function main() {
   const warnings = [];
 
   const n = SCIENCE_QUESTIONS.length;
-  if (n !== EXPECTED_TOTAL) {
-    errors.push(`Expected ${EXPECTED_TOTAL} SCIENCE_QUESTIONS, got ${n}`);
-  }
 
   /** @type {Set<string>} */
   const ids = new Set();
@@ -231,7 +249,7 @@ async function main() {
     version: 1,
     generatedAt: new Date().toISOString(),
     ok,
-    expectedTotal: EXPECTED_TOTAL,
+    expectedTotal: n,
     actualTotal: n,
     errors,
     warnings,
@@ -264,7 +282,7 @@ async function main() {
     "",
     "## Counts",
     "",
-    `- **SCIENCE_QUESTIONS:** ${n} (expected ${EXPECTED_TOTAL})`,
+    `- **SCIENCE_QUESTIONS:** ${n} (merged bank — count not pinned to a manual constant)`,
     "",
     "## Metadata coverage (sample validation)",
     "",

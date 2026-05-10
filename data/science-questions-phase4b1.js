@@ -300,7 +300,7 @@ export const SCIENCE_QUESTIONS_PHASE4B1 = [
         "concept_confusion",
         "fact_recall_gap"
       ],
-      "difficulty": "intermediate"
+      "difficulty": "standard"
     }
   },
   {
@@ -333,7 +333,7 @@ export const SCIENCE_QUESTIONS_PHASE4B1 = [
         "concept_confusion",
         "fact_recall_gap"
       ],
-      "difficulty": "intermediate"
+      "difficulty": "standard"
     }
   },
   {
@@ -366,7 +366,7 @@ export const SCIENCE_QUESTIONS_PHASE4B1 = [
         "concept_confusion",
         "fact_recall_gap"
       ],
-      "difficulty": "intermediate"
+      "difficulty": "standard"
     }
   },
   {
@@ -399,7 +399,7 @@ export const SCIENCE_QUESTIONS_PHASE4B1 = [
         "concept_confusion",
         "fact_recall_gap"
       ],
-      "difficulty": "intermediate"
+      "difficulty": "standard"
     }
   },
   {
@@ -432,7 +432,7 @@ export const SCIENCE_QUESTIONS_PHASE4B1 = [
         "concept_confusion",
         "fact_recall_gap"
       ],
-      "difficulty": "intermediate"
+      "difficulty": "standard"
     }
   },
   {
@@ -465,7 +465,7 @@ export const SCIENCE_QUESTIONS_PHASE4B1 = [
         "concept_confusion",
         "fact_recall_gap"
       ],
-      "difficulty": "intermediate"
+      "difficulty": "standard"
     }
   },
   {
@@ -498,7 +498,7 @@ export const SCIENCE_QUESTIONS_PHASE4B1 = [
         "concept_confusion",
         "fact_recall_gap"
       ],
-      "difficulty": "intermediate"
+      "difficulty": "standard"
     }
   },
   {
@@ -531,7 +531,7 @@ export const SCIENCE_QUESTIONS_PHASE4B1 = [
         "concept_confusion",
         "fact_recall_gap"
       ],
-      "difficulty": "intermediate"
+      "difficulty": "standard"
     }
   },
   {
@@ -1059,7 +1059,7 @@ export const SCIENCE_QUESTIONS_PHASE4B1 = [
         "concept_confusion",
         "fact_recall_gap"
       ],
-      "difficulty": "intermediate"
+      "difficulty": "standard"
     }
   },
   {
@@ -1092,7 +1092,7 @@ export const SCIENCE_QUESTIONS_PHASE4B1 = [
         "concept_confusion",
         "fact_recall_gap"
       ],
-      "difficulty": "intermediate"
+      "difficulty": "standard"
     }
   },
   {
@@ -1125,7 +1125,7 @@ export const SCIENCE_QUESTIONS_PHASE4B1 = [
         "concept_confusion",
         "fact_recall_gap"
       ],
-      "difficulty": "intermediate"
+      "difficulty": "standard"
     }
   },
   {
@@ -1158,7 +1158,7 @@ export const SCIENCE_QUESTIONS_PHASE4B1 = [
         "concept_confusion",
         "fact_recall_gap"
       ],
-      "difficulty": "intermediate"
+      "difficulty": "standard"
     }
   },
   {
@@ -1191,7 +1191,7 @@ export const SCIENCE_QUESTIONS_PHASE4B1 = [
         "concept_confusion",
         "fact_recall_gap"
       ],
-      "difficulty": "intermediate"
+      "difficulty": "standard"
     }
   },
   {
@@ -1224,7 +1224,7 @@ export const SCIENCE_QUESTIONS_PHASE4B1 = [
         "concept_confusion",
         "fact_recall_gap"
       ],
-      "difficulty": "intermediate"
+      "difficulty": "standard"
     }
   },
   {
@@ -1257,7 +1257,7 @@ export const SCIENCE_QUESTIONS_PHASE4B1 = [
         "concept_confusion",
         "fact_recall_gap"
       ],
-      "difficulty": "intermediate"
+      "difficulty": "standard"
     }
   },
   {
@@ -1290,7 +1290,7 @@ export const SCIENCE_QUESTIONS_PHASE4B1 = [
         "concept_confusion",
         "fact_recall_gap"
       ],
-      "difficulty": "intermediate"
+      "difficulty": "standard"
     }
   },
   {
@@ -2011,7 +2011,7 @@ export const SCIENCE_QUESTIONS_PHASE4B1 = [
         "concept_confusion",
         "fact_recall_gap"
       ],
-      "difficulty": "intermediate"
+      "difficulty": "standard"
     }
   },
   {
@@ -2046,7 +2046,7 @@ export const SCIENCE_QUESTIONS_PHASE4B1 = [
         "concept_confusion",
         "fact_recall_gap"
       ],
-      "difficulty": "intermediate"
+      "difficulty": "standard"
     }
   },
   {
@@ -2081,7 +2081,7 @@ export const SCIENCE_QUESTIONS_PHASE4B1 = [
         "concept_confusion",
         "fact_recall_gap"
       ],
-      "difficulty": "intermediate"
+      "difficulty": "standard"
     }
   },
   {
@@ -2116,7 +2116,7 @@ export const SCIENCE_QUESTIONS_PHASE4B1 = [
         "concept_confusion",
         "fact_recall_gap"
       ],
-      "difficulty": "intermediate"
+      "difficulty": "standard"
     }
   },
   {
@@ -2151,7 +2151,7 @@ export const SCIENCE_QUESTIONS_PHASE4B1 = [
         "concept_confusion",
         "fact_recall_gap"
       ],
-      "difficulty": "intermediate"
+      "difficulty": "standard"
     }
   },
   {
@@ -2186,7 +2186,7 @@ export const SCIENCE_QUESTIONS_PHASE4B1 = [
         "concept_confusion",
         "fact_recall_gap"
       ],
-      "difficulty": "intermediate"
+      "difficulty": "standard"
     }
   },
   {
@@ -2221,7 +2221,7 @@ export const SCIENCE_QUESTIONS_PHASE4B1 = [
         "concept_confusion",
         "fact_recall_gap"
       ],
-      "difficulty": "intermediate"
+      "difficulty": "standard"
     }
   },
   {
@@ -2256,7 +2256,7 @@ export const SCIENCE_QUESTIONS_PHASE4B1 = [
         "concept_confusion",
         "fact_recall_gap"
       ],
-      "difficulty": "intermediate"
+      "difficulty": "standard"
     }
   },
   {
@@ -2291,7 +2291,7 @@ export const SCIENCE_QUESTIONS_PHASE4B1 = [
         "concept_confusion",
         "fact_recall_gap"
       ],
-      "difficulty": "intermediate"
+      "difficulty": "standard"
     }
   },
   {
@@ -2326,7 +2326,7 @@ export const SCIENCE_QUESTIONS_PHASE4B1 = [
         "concept_confusion",
         "fact_recall_gap"
       ],
-      "difficulty": "intermediate"
+      "difficulty": "standard"
     }
   },
   {
@@ -2361,7 +2361,7 @@ export const SCIENCE_QUESTIONS_PHASE4B1 = [
         "concept_confusion",
         "fact_recall_gap"
       ],
-      "difficulty": "intermediate"
+      "difficulty": "standard"
     }
   },
   {
@@ -2984,7 +2984,7 @@ export const SCIENCE_QUESTIONS_PHASE4B1 = [
         "concept_confusion",
         "fact_recall_gap"
       ],
-      "difficulty": "intermediate"
+      "difficulty": "standard"
     }
   },
   {
@@ -3018,7 +3018,7 @@ export const SCIENCE_QUESTIONS_PHASE4B1 = [
         "concept_confusion",
         "fact_recall_gap"
       ],
-      "difficulty": "intermediate"
+      "difficulty": "standard"
     }
   },
   {
@@ -3052,7 +3052,7 @@ export const SCIENCE_QUESTIONS_PHASE4B1 = [
         "concept_confusion",
         "fact_recall_gap"
       ],
-      "difficulty": "intermediate"
+      "difficulty": "standard"
     }
   },
   {
@@ -3086,7 +3086,7 @@ export const SCIENCE_QUESTIONS_PHASE4B1 = [
         "concept_confusion",
         "fact_recall_gap"
       ],
-      "difficulty": "intermediate"
+      "difficulty": "standard"
     }
   },
   {
@@ -3120,7 +3120,7 @@ export const SCIENCE_QUESTIONS_PHASE4B1 = [
         "concept_confusion",
         "fact_recall_gap"
       ],
-      "difficulty": "intermediate"
+      "difficulty": "standard"
     }
   },
   {
@@ -3154,7 +3154,7 @@ export const SCIENCE_QUESTIONS_PHASE4B1 = [
         "concept_confusion",
         "fact_recall_gap"
       ],
-      "difficulty": "intermediate"
+      "difficulty": "standard"
     }
   },
   {

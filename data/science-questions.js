@@ -3,6 +3,7 @@
 // Metadata enrichment (safe pass): subskill via params.subtype when no patternFamily/conceptTag; params.cognitiveLevel; params.expectedErrorTypes; params.difficulty (canonical); prerequisiteSkillIds only for explicit high-confidence respiration link (no sequential-topic guesses).
 import { SCIENCE_QUESTIONS_PHASE3 } from "./science-questions-phase3.js";
 import { SCIENCE_QUESTIONS_PHASE4B1 } from "./science-questions-phase4b1.js";
+import { SCIENCE_QUESTIONS_CLOSURE_FILL } from "./science-questions-closure-fill.js";
 
 export const SCIENCE_QUESTIONS = [
   {
@@ -10822,4 +10823,4 @@ export const SCIENCE_QUESTIONS = [
       "difficulty": "basic"
     }
   }
-].concat(SCIENCE_QUESTIONS_PHASE3).concat(SCIENCE_QUESTIONS_PHASE4B1);
+].concat(SCIENCE_QUESTIONS_PHASE3).concat(SCIENCE_QUESTIONS_PHASE4B1).concat(SCIENCE_QUESTIONS_CLOSURE_FILL);
