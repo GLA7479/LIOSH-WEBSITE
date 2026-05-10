@@ -2018,7 +2018,7 @@ useEffect(() => {
         >
           <div className="text-center mb-3">
             <div className="flex items-center justify-center gap-2 mb-0.5">
-              <h1 className="text-2xl font-extrabold text-white">
+              <h1 className="text-2xl md:text-3xl lg:text-4xl font-extrabold text-white">
                 🗺️ מולדת וגיאוגרפיה
               </h1>
               <button

@@ -2411,6 +2411,23 @@ useEffect(() => {
     ? nqx("question", currentQuestion.question ?? "")
     : "";
 
+  const hasValidAudioStem =
+    Boolean(currentQuestion?.params?.audioStem) &&
+    validateAudioStem(currentQuestion.params.audioStem);
+  const normalizedAudioHeadingLabel = String(disQuestionLabel || "")
+    .replace(/\s+/g, " ")
+    .trim();
+  /** Hide standalone "שמע" heading when audio control moved to toolbar (not duplicate big title). */
+  const suppressAudioOnlyShamaLabel =
+    hasValidAudioStem &&
+    /^שמע[\s.:]*$/u.test(normalizedAudioHeadingLabel);
+  const normalizedAudioHeadingBody = String(disQuestionBody || "")
+    .replace(/\s+/g, " ")
+    .trim();
+  const suppressAudioOnlyShamaBody =
+    hasValidAudioStem &&
+    /^שמע[\s.:]*$/u.test(normalizedAudioHeadingBody);
+
   const questionTextForPressure = (
     currentQuestion?.questionLabel ||
     currentQuestion?.exerciseText ||
@@ -2461,6 +2478,18 @@ useEffect(() => {
       ? "w-full shrink-0 min-h-[210px] md:min-h-[245px] flex flex-col items-center justify-center px-2"
       : "w-full shrink-0 min-h-[230px] md:min-h-[260px] flex flex-col items-center justify-center px-2";
 
+  /** Less dead space below toolbar when audio controls live above this stem */
+  const questionSlotClassForStem =
+    hasValidAudioStem && gameActive
+      ? questionPressureBucket === "veryLong"
+        ? "w-full shrink-0 min-h-[120px] md:min-h-[150px] flex flex-col items-center justify-start px-1"
+        : questionPressureBucket === "long"
+        ? "w-full shrink-0 min-h-[135px] md:min-h-[168px] flex flex-col items-center justify-start px-1.5"
+        : questionPressureBucket === "medium"
+        ? "w-full shrink-0 min-h-[150px] md:min-h-[185px] flex flex-col items-center justify-start px-2"
+        : "w-full shrink-0 min-h-[165px] md:min-h-[200px] flex flex-col items-center justify-start px-2"
+      : questionSlotClassByPressure;
+
   const questionLineHeightByPressure =
     questionPressureBucket === "veryLong"
       ? 1.22
@@ -2479,12 +2508,12 @@ useEffect(() => {
 
   const answerCardTextClass =
     answerPressureBucket === "veryLong"
-      ? "text-base leading-snug px-3 py-3 min-h-[5rem]"
+      ? "text-base leading-snug px-3 py-3 min-h-[4.75rem]"
       : answerPressureBucket === "long"
-      ? "text-lg leading-snug px-4 py-4 min-h-[5.25rem]"
+      ? "text-base leading-snug px-3.5 py-3.5 min-h-[5rem]"
       : answerPressureBucket === "medium"
-      ? "text-xl leading-snug px-5 py-5 min-h-[5.5rem]"
-      : "text-2xl leading-snug px-6 py-6";
+      ? "text-lg leading-snug px-4 py-4 min-h-[5.25rem]"
+      : "text-xl leading-snug px-5 py-5 min-h-[5.5rem]";
 
   const useNarrowMobileAnswerFallback =
     answerPressureBucket === "veryLong" ||
@@ -2501,7 +2530,7 @@ useEffect(() => {
       ? "w-full max-w-[320px] px-3 py-3 rounded-lg bg-black/40 border border-white/20 text-white text-lg font-bold text-center disabled:opacity-50"
       : questionPressureBucket === "long"
       ? "w-full max-w-[320px] px-3.5 py-3.5 rounded-lg bg-black/40 border border-white/20 text-white text-xl font-bold text-center disabled:opacity-50"
-      : "w-full max-w-[320px] px-4 py-4 rounded-lg bg-black/40 border border-white/20 text-white text-2xl font-bold text-center disabled:opacity-50";
+      : "w-full max-w-[320px] px-4 py-3.5 rounded-lg bg-black/40 border border-white/20 text-white text-xl font-bold text-center disabled:opacity-50";
   const typingRowClass =
     questionPressureBucket === "veryLong" ? "flex gap-1.5 justify-center" : "flex gap-2 justify-center";
 
@@ -2728,54 +2757,74 @@ useEffect(() => {
             </button>
           </div>
 
-          {/* בחירת מצב (Learning / Challenge) */}
-          <div
-            className="mx-auto flex items-center justify-center gap-1.5 md:gap-2.5 lg:gap-3 mb-3 md:mb-4 w-full max-w-lg md:max-w-3xl lg:max-w-4xl xl:max-w-5xl flex-wrap px-1 md:px-2"
-            dir="rtl"
-          >
-            {["learning", "challenge", "speed", "marathon"].map((m) => (
-              <button
-                key={m}
-                onClick={() => {
-                  setMode(m);
-                  setGameActive(false);
-                  setFeedback(null);
-                }}
-                className={`h-8 md:h-10 lg:h-11 px-3 md:px-4 lg:px-5 rounded-lg text-xs md:text-sm lg:text-base font-bold transition-all flex-shrink-0 ${
-                  mode === m
-                    ? "bg-emerald-500/80 text-white"
-                    : "bg-white/10 text-white/70 hover:bg-white/20"
-                }`}
-              >
-                {MODES[m].name}
-              </button>
-            ))}
-            <div className="inline-flex items-center gap-1.5 md:gap-2.5 lg:gap-3 shrink-0">
-              <button
-                type="button"
-                onClick={() => {
-                  setMode("practice");
-                  setGameActive(false);
-                  setFeedback(null);
-                }}
-                className={`h-8 md:h-10 lg:h-11 px-3 md:px-4 lg:px-5 rounded-lg text-xs md:text-sm lg:text-base font-bold transition-all flex-shrink-0 ${
-                  mode === "practice"
-                    ? "bg-emerald-500/80 text-white"
-                    : "bg-white/10 text-white/70 hover:bg-white/20"
-                }`}
-              >
-                {MODES.practice.name}
-              </button>
-              <div
-                className="hidden md:inline-flex items-center justify-center gap-1.5 md:gap-2 shrink-0 rounded-lg border border-amber-400/45 bg-black/35 md:h-10 lg:h-11 md:px-4 lg:px-5 md:text-sm lg:text-base font-bold tabular-nums shadow-sm"
-                title="מטבעות משחק"
-              >
-                <span className="text-white">מטבעות:</span>
-                <span dir="ltr" className="text-amber-100">
-                  {childCoinBalance}
-                </span>
+          {/* בחירת מצב (Learning / Challenge) + נגן שמע קומפקטי מתחת */}
+          <div className="mx-auto mb-1.5 md:mb-2 w-full max-w-lg md:max-w-3xl lg:max-w-4xl xl:max-w-5xl px-1 md:px-2">
+            <div
+              className="flex items-center justify-center gap-1.5 md:gap-2.5 lg:gap-3 flex-wrap"
+              dir="rtl"
+            >
+              {["learning", "challenge", "speed", "marathon"].map((m) => (
+                <button
+                  key={m}
+                  onClick={() => {
+                    setMode(m);
+                    setGameActive(false);
+                    setFeedback(null);
+                  }}
+                  className={`h-8 md:h-10 lg:h-11 px-3 md:px-4 lg:px-5 rounded-lg text-xs md:text-sm lg:text-base font-bold transition-all flex-shrink-0 ${
+                    mode === m
+                      ? "bg-emerald-500/80 text-white"
+                      : "bg-white/10 text-white/70 hover:bg-white/20"
+                  }`}
+                >
+                  {MODES[m].name}
+                </button>
+              ))}
+              <div className="inline-flex items-center gap-1.5 md:gap-2.5 lg:gap-3 shrink-0">
+                <button
+                  type="button"
+                  onClick={() => {
+                    setMode("practice");
+                    setGameActive(false);
+                    setFeedback(null);
+                  }}
+                  className={`h-8 md:h-10 lg:h-11 px-3 md:px-4 lg:px-5 rounded-lg text-xs md:text-sm lg:text-base font-bold transition-all flex-shrink-0 ${
+                    mode === "practice"
+                      ? "bg-emerald-500/80 text-white"
+                      : "bg-white/10 text-white/70 hover:bg-white/20"
+                  }`}
+                >
+                  {MODES.practice.name}
+                </button>
+                <div
+                  className="hidden md:inline-flex items-center justify-center gap-1.5 md:gap-2 shrink-0 rounded-lg border border-amber-400/45 bg-black/35 md:h-10 lg:h-11 md:px-4 lg:px-5 md:text-sm lg:text-base font-bold tabular-nums shadow-sm"
+                  title="מטבעות משחק"
+                >
+                  <span className="text-white">מטבעות:</span>
+                  <span dir="ltr" className="text-amber-100">
+                    {childCoinBalance}
+                  </span>
+                </div>
               </div>
             </div>
+            {gameActive &&
+              currentQuestion?.params?.audioStem &&
+              validateAudioStem(currentQuestion.params.audioStem) && (
+                <div className="flex justify-start w-full mt-2 md:mt-1" dir="rtl">
+                  <HebrewAudioBuild1Panel
+                    stem={currentQuestion.params.audioStem}
+                    gameActive={gameActive && !selectedAnswer}
+                    grade={grade}
+                    topic={
+                      currentQuestion.topic ||
+                      currentQuestion.operation ||
+                      "reading"
+                    }
+                    guidedMode={isHebrewAudioRecordedManual}
+                    onGuidedNeutralDone={finishAudioRecordedManualNeutral}
+                  />
+                </div>
+              )}
           </div>
 
           {/* הודעות מיוחדות */}
@@ -3519,22 +3568,7 @@ useEffect(() => {
                     </div>
                   )}
 
-                  <div data-testid="hebrew-question-stem" className={questionSlotClassByPressure}>
-                  {currentQuestion?.params?.audioStem &&
-                    validateAudioStem(currentQuestion.params.audioStem) && (
-                      <HebrewAudioBuild1Panel
-                        stem={currentQuestion.params.audioStem}
-                        gameActive={gameActive && !selectedAnswer}
-                        grade={grade}
-                        topic={
-                          currentQuestion.topic ||
-                          currentQuestion.operation ||
-                          "reading"
-                        }
-                        guidedMode={isHebrewAudioRecordedManual}
-                        onGuidedNeutralDone={finishAudioRecordedManualNeutral}
-                      />
-                    )}
+                  <div data-testid="hebrew-question-stem" className={questionSlotClassForStem}>
                   {/* ויזואליזציה של מספרים (כיתות א'-ג') */}
                   {(grade === "g1" || grade === "g2" || grade === "g3") && (currentQuestion.operation === "addition" || currentQuestion.operation === "subtraction") && (
                     <div className="mb-4 flex gap-6 items-center justify-center flex-wrap" style={{ direction: "ltr" }}>
@@ -3702,8 +3736,9 @@ useEffect(() => {
                   {/* הפרדה בין שורת השאלה לשורת התרגיל */}
                   {currentQuestion.questionLabel && currentQuestion.exerciseText ? (
                     <>
+                      {!suppressAudioOnlyShamaLabel && (
                       <p
-                        className={`text-2xl text-center text-white ${questionBottomSpacingClass} break-words overflow-wrap-anywhere max-w-full px-2`}
+                        className={`text-xl md:text-2xl text-center text-white ${questionBottomSpacingClass} break-words overflow-wrap-anywhere max-w-full px-2`}
                         style={{
                           direction: currentQuestion.isStory ? "rtl" : "rtl",
                           unicodeBidi: "plaintext",
@@ -3717,6 +3752,7 @@ useEffect(() => {
                       >
                         {disQuestionLabel}
                       </p>
+                      )}
                       
                       {/* כפתור החלפה מאוזן/מאונך - רק אם התרגיל יכול להיות מאונך */}
                       {canDisplayVertically && (
@@ -3735,7 +3771,7 @@ useEffect(() => {
                       {isVerticalDisplay && canDisplayVertically ? (
                         <div className={`${questionBottomSpacingClass} flex justify-center w-full max-w-full px-2`}>
                           <pre
-                            className="text-3xl text-center text-white font-bold font-mono whitespace-pre break-words overflow-wrap-anywhere max-w-full"
+                            className="text-2xl md:text-3xl text-center text-white font-bold font-mono whitespace-pre break-words overflow-wrap-anywhere max-w-full"
                             style={{
                               direction: "ltr",
                               unicodeBidi: "plaintext",
@@ -3748,7 +3784,7 @@ useEffect(() => {
                         </div>
                       ) : (
                         <p
-                          className={`text-4xl text-center text-white font-bold mb-4 break-words overflow-wrap-anywhere max-w-full px-2 ${
+                          className={`text-2xl md:text-3xl lg:text-4xl text-center text-white font-bold mb-4 break-words overflow-wrap-anywhere max-w-full px-2 ${
                             currentQuestion.operation === "sequences" ? "whitespace-normal" : ""
                           }`}
                           style={{
@@ -3785,7 +3821,7 @@ useEffect(() => {
                       {isVerticalDisplay && canDisplayVertically ? (
                         <div className={`${questionBottomSpacingClass} flex justify-center w-full max-w-full px-2`}>
                           <pre
-                            className="text-3xl text-center text-white font-bold font-mono whitespace-pre break-words overflow-wrap-anywhere max-w-full"
+                            className="text-2xl md:text-3xl text-center text-white font-bold font-mono whitespace-pre break-words overflow-wrap-anywhere max-w-full"
                             style={{
                               direction: "ltr",
                               unicodeBidi: "plaintext",
@@ -3798,7 +3834,7 @@ useEffect(() => {
                         </div>
                       ) : (
                         <p
-                          className={`text-4xl text-center text-white font-bold ${questionBottomSpacingClass} break-words overflow-wrap-anywhere max-w-full px-2`}
+                          className={`text-2xl md:text-3xl lg:text-4xl text-center text-white font-bold ${questionBottomSpacingClass} break-words overflow-wrap-anywhere max-w-full px-2`}
                           style={{
                             direction: "ltr",
                             unicodeBidi: "plaintext",
@@ -3815,8 +3851,9 @@ useEffect(() => {
                       )}
                     </>
                   ) : (
+                    !suppressAudioOnlyShamaBody ? (
                     <div
-                      className={`text-4xl font-black text-white ${questionBottomSpacingClass} text-center break-words overflow-wrap-anywhere max-w-full px-2`}
+                      className={`text-2xl md:text-3xl lg:text-4xl font-black text-white ${questionBottomSpacingClass} text-center break-words overflow-wrap-anywhere max-w-full px-2`}
                       style={{
                         direction: currentQuestion.isStory ? "rtl" : "ltr",
                         unicodeBidi: "plaintext",
@@ -3830,6 +3867,7 @@ useEffect(() => {
                     >
                       {disQuestionBody}
                     </div>
+                    ) : null
                   )}
                   
 
@@ -3874,12 +3912,9 @@ useEffect(() => {
                       </div>
                     </div>
                   ) : isHebrewAudioRecordedManual ? (
-                    <div className="w-full mb-3 px-2 py-4 rounded-xl bg-slate-800/60 border border-white/10 text-center text-sm text-white/85">
-                      השלימו את ההקלטה בפאנל האודיו למעלה (או דלגו אם אין מיקרופון).
-                      <div className="text-xs text-white/55 mt-2">
-                        אין ציון אוטומטי לדיבור — רק שמירה לבדיקה ידנית.
-                      </div>
-                    </div>
+                    <p className="w-full mb-2 text-center text-[11px] text-white/55 px-2">
+                      השלמה מהפאנל למעלה.
+                    </p>
                   ) : (
                     <div
                       className={`grid gap-3 w-full mb-3 ${

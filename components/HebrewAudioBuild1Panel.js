@@ -12,6 +12,8 @@ import {
 import { resolveScoreOrReviewRoute } from "../utils/audio-task-contract";
 
 /**
+ * Compact toolbar audio controls only — no transcript UI in the student learning screen.
+ *
  * @param {{
  *   stem: import("../utils/audio-task-contract.js").AudioStem,
  *   gameActive: boolean,
@@ -30,7 +32,6 @@ export default function HebrewAudioBuild1Panel({
   onGuidedNeutralDone,
 }) {
   const [replayCount, setReplayCount] = useState(0);
-  const [showTranscript, setShowTranscript] = useState(true);
   const [busy, setBusy] = useState(false);
   const [statusMsg, setStatusMsg] = useState("");
   const ctrlRef = useRef(null);
@@ -186,58 +187,55 @@ export default function HebrewAudioBuild1Panel({
     setTimeout(() => onGuidedNeutralDone(), 600);
   }, [busy, gameActive, guidedMode, onGuidedNeutralDone]);
 
+  const playTitle =
+    statusMsg && statusMsg !== "משמיעים…" && statusMsg !== "מכינים שמע…"
+      ? statusMsg
+      : `נגן שמע (${replayCount}/${stem.max_replays})`;
+
   return (
-    <div
-      className="w-full max-w-lg mx-auto mb-3 p-3 rounded-xl border border-cyan-500/40 bg-cyan-950/40 text-cyan-50"
-      dir="rtl"
-    >
-      <div className="text-xs font-bold text-cyan-200/90 mb-2">
-        שמע / אודיו · {stem.task_mode}
-      </div>
-      <div className="flex flex-wrap gap-2 items-center justify-center mb-2">
-        <button
-          type="button"
-          onClick={playStem}
-          disabled={!gameActive || busy}
-          className="px-4 py-2 rounded-lg bg-cyan-600/80 hover:bg-cyan-600 disabled:opacity-50 text-sm font-bold"
-        >
-          נגן ({replayCount}/{stem.max_replays})
-        </button>
-        <button
-          type="button"
-          onClick={() => setShowTranscript((v) => !v)}
-          className="px-3 py-2 rounded-lg bg-white/10 hover:bg-white/15 text-xs font-bold"
-        >
-          {showTranscript ? "הסתר תמלול" : "הצג תמלול"}
-        </button>
-      </div>
-      {showTranscript && (
-        <p className="text-xs text-white/80 text-center mb-2 whitespace-pre-wrap break-words">
-          {stem.transcript}
-        </p>
-      )}
+    <div className="inline-flex flex-wrap items-center justify-start gap-1 md:gap-1.5" dir="rtl">
+      <span className="sr-only" aria-live="polite">
+        שמע · מצב משימה {stem.task_mode}
+      </span>
+      <button
+        type="button"
+        onClick={playStem}
+        disabled={!gameActive || busy}
+        className="inline-flex items-center justify-center gap-1.5 h-8 md:h-10 px-2 md:px-3 rounded-lg bg-cyan-600/85 hover:bg-cyan-600 disabled:opacity-50 text-[11px] md:text-xs font-bold text-white border border-cyan-400/35 shadow-sm shrink-0 tabular-nums"
+        title={playTitle}
+        aria-label={playTitle}
+      >
+        <span aria-hidden>🔊</span>
+        <span>נגן</span>
+        <span dir="ltr">
+          ({replayCount}/{stem.max_replays})
+        </span>
+      </button>
       {guidedMode && (
-        <div className="flex flex-col gap-2 items-center mt-2">
+        <>
           <button
             type="button"
             onClick={runGuidedCapture}
             disabled={!gameActive || busy}
-            className="px-4 py-2 rounded-lg bg-emerald-600/80 hover:bg-emerald-600 disabled:opacity-50 text-sm font-bold w-full max-w-xs"
+            className="h-8 md:h-10 px-2 rounded-lg bg-emerald-600/85 hover:bg-emerald-600 disabled:opacity-50 text-[11px] md:text-xs font-bold text-white shrink-0"
+            title={`הקלטה עד ${stem.max_duration_sec} שנ׳`}
           >
-            הקלטה קצרה (עד {stem.max_duration_sec} שנ׳)
+            הקלטה
           </button>
           <button
             type="button"
             onClick={skipGuided}
             disabled={!gameActive || busy}
-            className="px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/15 text-xs font-bold"
+            className="h-8 md:h-10 px-2 rounded-lg bg-white/12 hover:bg-white/18 text-[11px] md:text-xs font-bold text-white shrink-0"
           >
-            דילוג (בלי מיקרופון)
+            דילוג
           </button>
-        </div>
+        </>
       )}
       {statusMsg ? (
-        <p className="text-center text-xs text-amber-100/95 mt-2">{statusMsg}</p>
+        <span className="sr-only" aria-live="assertive">
+          {statusMsg}
+        </span>
       ) : null}
     </div>
   );
