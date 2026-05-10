@@ -91,6 +91,7 @@ export default async function handler(req, res) {
       student_id: studentId,
       code_hash: codeHash,
       pin_hash: pinHash,
+      login_username: username,
       is_active: true,
       expires_at: null,
       revoked_at: null,

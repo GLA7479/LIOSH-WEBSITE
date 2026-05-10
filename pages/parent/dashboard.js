@@ -13,6 +13,10 @@ const GRADE_OPTIONS = [
   { value: "grade_6", label: "כיתה ו׳" },
 ];
 
+function gradeLabelFromValue(value) {
+  return GRADE_OPTIONS.find((g) => g.value === value)?.label || value || "—";
+}
+
 function normalizeBalance(student) {
   const rel = student?.student_coin_balances;
   if (Array.isArray(rel)) return rel[0] || null;
@@ -32,7 +36,8 @@ export default function ParentDashboardPage() {
   const [newName, setNewName] = useState("");
   const [newGrade, setNewGrade] = useState("");
   const [credentialsByStudentId, setCredentialsByStudentId] = useState({});
-  const [credentialsSavedByStudentId, setCredentialsSavedByStudentId] = useState({});
+  /** One-time display after creating or resetting credentials (new PIN shown once). */
+  const [credentialConfirmation, setCredentialConfirmation] = useState(null);
 
   const [editById, setEditById] = useState({});
 
@@ -186,13 +191,70 @@ export default function ParentDashboardPage() {
     if (!res.ok) {
       setMessage(payload.error || "שמירת פרטי כניסה נכשלה");
     } else {
-      setCredentialsSavedByStudentId((prev) => ({
+      setCredentialConfirmation({
+        studentId,
+        username: payload.username || username,
+        pin,
+      });
+      setCredentialsByStudentId((prev) => ({
         ...prev,
-        [studentId]: true,
+        [studentId]: { ...(prev[studentId] || {}), username: "", pin: "" },
       }));
       setMessage("");
+      await fetchStudents(session);
     }
     setBusy(false);
+  };
+
+  const savePinReset = async (studentId, loginUsername) => {
+    if (!session?.access_token) return;
+    const pin = String(credentialsByStudentId[studentId]?.pin || "").trim();
+    if (!loginUsername) {
+      setMessage("חסר שם משתמש לכרטיס");
+      return;
+    }
+    if (!/^\d{4}$/.test(pin)) {
+      setMessage("יש להזין PIN חדש בארבע ספרות");
+      return;
+    }
+
+    setBusy(true);
+    setMessage("");
+
+    const res = await fetch("/api/parent/create-student-access-code", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${session.access_token}`,
+      },
+      body: JSON.stringify({ studentId, username: loginUsername, pin }),
+    });
+    const payload = await res.json();
+    if (!res.ok) {
+      setMessage(payload.error || "שינוי ה-PIN נכשל");
+    } else {
+      setCredentialConfirmation({
+        studentId,
+        username: payload.username || loginUsername,
+        pin,
+      });
+      setCredentialsByStudentId((prev) => ({
+        ...prev,
+        [studentId]: { ...(prev[studentId] || {}), pin: "" },
+      }));
+      setMessage("");
+      await fetchStudents(session);
+    }
+    setBusy(false);
+  };
+
+  const copyUsername = async (username) => {
+    try {
+      await navigator.clipboard.writeText(username);
+      setMessage("שם המשתמש הועתק ללוח");
+    } catch (_e) {
+      setMessage("לא ניתן להעתיק אוטומטית — העתיקו ידנית");
+    }
   };
 
   const logout = async () => {
@@ -263,9 +325,19 @@ export default function ParentDashboardPage() {
               isActive: Boolean(student.is_active),
             };
             const balance = normalizeBalance(student);
+            const loginUsername = student.login_username || null;
+            const showConfirmationHere =
+              credentialConfirmation && credentialConfirmation.studentId === student.id;
             return (
               <div key={student.id} className="rounded border border-white/15 p-4 bg-black/30 space-y-2">
-                <div className="text-sm text-white/60">ID: {student.id}</div>
+                <div className="space-y-1">
+                  <div className="font-semibold text-white">
+                    {edit.fullName || student.full_name || "ילד"}
+                  </div>
+                  <div className="text-sm text-white/75">
+                    כיתה: {gradeLabelFromValue(edit.gradeLevel || student.grade_level)}
+                  </div>
+                </div>
                 <input
                   className="w-full rounded bg-black/40 border border-white/20 px-3 py-2"
                   value={edit.fullName}
@@ -318,58 +390,144 @@ export default function ParentDashboardPage() {
                   שמור
                 </button>
 
-                <div className="mt-2 rounded border border-white/15 p-3 bg-black/30 space-y-2">
+                <div className="mt-2 rounded border border-white/15 p-3 bg-black/30 space-y-3">
                   <div className="font-semibold">פרטי כניסת תלמיד</div>
-                  <div>
-                    <label className="text-sm text-white/80">שם משתמש לתלמיד</label>
-                    <input
-                      className="mt-1 w-full rounded bg-black/40 border border-white/20 px-3 py-2"
-                      value={credentialsByStudentId[student.id]?.username || ""}
-                      onChange={(e) =>
-                        setCredentialsByStudentId((prev) => ({
-                          ...prev,
-                          [student.id]: {
-                            ...(prev[student.id] || {}),
-                            username: e.target.value,
-                          },
-                        }))
-                      }
-                      placeholder="לדוגמה: noam123"
-                    />
-                  </div>
-                  <div>
-                    <label className="text-sm text-white/80">PIN לתלמיד</label>
-                    <input
-                      className="mt-1 w-full rounded bg-black/40 border border-white/20 px-3 py-2"
-                      value={credentialsByStudentId[student.id]?.pin || ""}
-                      onChange={(e) =>
-                        setCredentialsByStudentId((prev) => ({
-                          ...prev,
-                          [student.id]: {
-                            ...(prev[student.id] || {}),
-                            pin: e.target.value,
-                          },
-                        }))
-                      }
-                      placeholder="4 ספרות"
-                      inputMode="numeric"
-                      type="password"
-                      maxLength={4}
-                    />
-                  </div>
-                  <button
-                    className="rounded bg-sky-400 text-black px-3 py-2 font-semibold disabled:opacity-60"
-                    disabled={busy}
-                    onClick={() => saveStudentCredentials(student.id)}
-                    type="button"
-                  >
-                    שמירת פרטי כניסה
-                  </button>
-                  {credentialsSavedByStudentId[student.id] ? (
-                    <div className="text-emerald-300 text-sm">
-                      פרטי הכניסה נשמרו. מסור לילד את שם המשתמש וה-PIN.
-                  </div>
+
+                  {showConfirmationHere ? (
+                    <div className="rounded border border-emerald-500/40 bg-emerald-950/40 p-3 space-y-2 text-sm">
+                      <div className="font-semibold text-emerald-200">
+                        חשוב לשמור את הפרטים — ה-PIN לא יוצג שוב.
+                      </div>
+                      <div>
+                        שם משתמש: <strong className="text-white">{credentialConfirmation.username}</strong>
+                      </div>
+                      <div>
+                        PIN חדש: <strong className="text-white">{credentialConfirmation.pin}</strong>
+                      </div>
+                      <button
+                        type="button"
+                        className="rounded bg-white/15 px-3 py-1 text-xs"
+                        onClick={() => setCredentialConfirmation(null)}
+                      >
+                        סגירה
+                      </button>
+                    </div>
                   ) : null}
+
+                  {loginUsername ? (
+                    <div className="space-y-2">
+                      <div className="flex flex-wrap items-center gap-2 text-sm">
+                        <span>
+                          שם משתמש: <strong className="text-white">{loginUsername}</strong>
+                        </span>
+                        <button
+                          type="button"
+                          className="rounded bg-white/10 px-2 py-1 text-xs"
+                          onClick={() => copyUsername(loginUsername)}
+                        >
+                          העתק שם משתמש
+                        </button>
+                      </div>
+                      <div className="text-sm">
+                        PIN: {student.has_active_access_code ? "מוגדר" : "לא מוגדר"}
+                      </div>
+                      <div>
+                        <label className="text-sm text-white/80">PIN חדש (איפוס / שינוי)</label>
+                        <input
+                          className="mt-1 w-full rounded bg-black/40 border border-white/20 px-3 py-2"
+                          value={credentialsByStudentId[student.id]?.pin || ""}
+                          onChange={(e) =>
+                            setCredentialsByStudentId((prev) => ({
+                              ...prev,
+                              [student.id]: {
+                                ...(prev[student.id] || {}),
+                                pin: e.target.value.replace(/\D/g, "").slice(0, 4),
+                              },
+                            }))
+                          }
+                          placeholder="4 ספרות"
+                          inputMode="numeric"
+                          type="password"
+                          autoComplete="new-password"
+                          maxLength={4}
+                        />
+                      </div>
+                      <button
+                        className="rounded bg-sky-400 text-black px-3 py-2 font-semibold disabled:opacity-60"
+                        disabled={busy}
+                        onClick={() => savePinReset(student.id, loginUsername)}
+                        type="button"
+                      >
+                        איפוס PIN / שינוי PIN
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="space-y-2">
+                      <div className="text-sm text-amber-200/95">שם משתמש: טרם נקבע שם משתמש</div>
+                      <div className="text-sm">
+                        PIN: {student.has_active_access_code ? "מוגדר" : "לא מוגדר"}
+                      </div>
+                      <p className="text-xs text-white/60">
+                        יש להגדיר שם משתמש ו-PIN לכניסת התלמיד. אם כבר קיימת כניסה ישנה, הגדרה זו תחליף אותה.
+                      </p>
+                      <div>
+                        <label className="text-sm text-white/80">שם משתמש לתלמיד</label>
+                        <input
+                          className="mt-1 w-full rounded bg-black/40 border border-white/20 px-3 py-2"
+                          value={credentialsByStudentId[student.id]?.username || ""}
+                          onChange={(e) =>
+                            setCredentialsByStudentId((prev) => ({
+                              ...prev,
+                              [student.id]: {
+                                ...(prev[student.id] || {}),
+                                username: e.target.value,
+                              },
+                            }))
+                          }
+                          placeholder="לדוגמה: noam123"
+                          autoComplete="off"
+                        />
+                      </div>
+                      <div>
+                        <label className="text-sm text-white/80">PIN לתלמיד</label>
+                        <input
+                          className="mt-1 w-full rounded bg-black/40 border border-white/20 px-3 py-2"
+                          value={credentialsByStudentId[student.id]?.pin || ""}
+                          onChange={(e) =>
+                            setCredentialsByStudentId((prev) => ({
+                              ...prev,
+                              [student.id]: {
+                                ...(prev[student.id] || {}),
+                                pin: e.target.value.replace(/\D/g, "").slice(0, 4),
+                              },
+                            }))
+                          }
+                          placeholder="4 ספרות"
+                          inputMode="numeric"
+                          type="password"
+                          autoComplete="new-password"
+                          maxLength={4}
+                        />
+                      </div>
+                      <button
+                        className="rounded bg-sky-400 text-black px-3 py-2 font-semibold disabled:opacity-60"
+                        disabled={busy}
+                        onClick={() => saveStudentCredentials(student.id)}
+                        type="button"
+                      >
+                        קביעת שם משתמש ו-PIN
+                      </button>
+                    </div>
+                  )}
+
+                  <div className="pt-2 border-t border-white/10">
+                    <Link
+                      href={`/parent/student-report?studentId=${encodeURIComponent(student.id)}`}
+                      className="inline-flex rounded bg-violet-500/90 text-white px-3 py-2 text-sm font-semibold hover:bg-violet-500"
+                    >
+                      דוח הורים
+                    </Link>
+                  </div>
                 </div>
               </div>
             );
