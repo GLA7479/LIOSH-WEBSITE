@@ -49,6 +49,8 @@ export function normalizeInventoryTopic(input) {
       return normalizeScience(rawTopic, rawSubtopic);
     case "moledet-geography":
       return normalizeGeography(rawTopic, rawSubtopic);
+    case "geography":
+      return normalizeGeography(rawTopic, rawSubtopic);
     default:
       return {
         rawTopic,
