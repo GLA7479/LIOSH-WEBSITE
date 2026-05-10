@@ -96,6 +96,91 @@ function loadInventoryRecords() {
   }
 }
 
+function poolBucketFromAuditPoolKey(pk) {
+  const m = String(pk || "").match(/^G(\d)_(EASY|MEDIUM|HARD)_QUESTIONS:([^#]+)#/);
+  return m ? `G${m[1]}_${m[2]}_${m[3]}` : "";
+}
+
+/**
+ * Classify duplicate stem hashes:
+ * - **A (blocking):** same normalized stem text appears more than once within the same static pool bucket
+ *   (grade × EASY|MEDIUM|HARD × topic).
+ * - **B (advisory):** duplicate hash only because the same question appears across buckets (e.g. easy vs medium,
+ *   or mirrored prompts across grades) — different inventory rows, usually different runtime draws.
+ * - **C (audit):** same stemHash but different `textPreview` → audit normalization collision (rare).
+ */
+function classifyMoledetGeoStemDuplicates(records) {
+  const geo = records.filter((r) => r.subject === "moledet-geography" || r.subject === "geography");
+  /** @type {Map<string, object[]>} */
+  const byHash = new Map();
+  for (const r of geo) {
+    const h = r.stemHash;
+    if (!h) continue;
+    if (!byHash.has(h)) byHash.set(h, []);
+    byHash.get(h).push(r);
+  }
+
+  let duplicateStemHashGroupCount = 0;
+  let realProductDuplicateBlockers = 0;
+  let advisoryTemplateDuplicateGroups = 0;
+  let auditArtifactDuplicateGroups = 0;
+  /** @type {object[]} */
+  const blockingExamples = [];
+  /** @type {object[]} */
+  const artifactExamples = [];
+
+  for (const [h, rows] of byHash.entries()) {
+    if (rows.length <= 1) continue;
+    duplicateStemHashGroupCount++;
+
+    const previews = new Set(rows.map((r) => String(r.textPreview || "").trim()).filter(Boolean));
+    if (previews.size > 1) {
+      auditArtifactDuplicateGroups++;
+      if (artifactExamples.length < 10) artifactExamples.push({ stemHash: h, previewCount: previews.size });
+      continue;
+    }
+
+    /** @type {Map<string, number>} */
+    const bucketCounts = new Map();
+    for (const r of rows) {
+      const b = poolBucketFromAuditPoolKey(r.auditPoolKey);
+      if (!b) continue;
+      bucketCounts.set(b, (bucketCounts.get(b) || 0) + 1);
+    }
+    const intrapoolDup = [...bucketCounts.values()].some((c) => c > 1);
+    if (intrapoolDup) {
+      realProductDuplicateBlockers++;
+      if (blockingExamples.length < 18) {
+        blockingExamples.push({
+          stemHash: h,
+          stemPreview: rows[0]?.textPreview ?? "",
+          duplicateBuckets: [...bucketCounts.entries()].filter(([, c]) => c > 1),
+        });
+      }
+    } else {
+      advisoryTemplateDuplicateGroups++;
+    }
+  }
+
+  const varietyGatePassed = realProductDuplicateBlockers === 0;
+
+  return {
+    duplicateStemHashGroupCount,
+    realProductDuplicateBlockers,
+    advisoryTemplateDuplicateGroups,
+    auditArtifactDuplicateGroups,
+    varietyGatePassed,
+    blockingExamples,
+    artifactExamples,
+    classificationNotes: [
+      "Class A (blocking): intrapool duplicate — identical stem twice in the same G_LEVEL_TOPIC bank array.",
+      "Class B (advisory): duplicate stem hash across buckets only (cross-pool / cross-grade reuse); usually acceptable.",
+      "Class C (audit): same stemHash with differing previews — stem normalization collision in audit (investigate if >0).",
+      "stemPatternRatio uses digit-stripped stem templates from static pools — low ratio often reflects drill templates, not identical student-visible stems.",
+    ],
+  };
+}
+
 function aggregateInventoryGeography(records) {
   const geo = records.filter((r) => r.subject === "moledet-geography" || r.subject === "geography");
   /** @type {Map<string, number>} */
@@ -125,6 +210,7 @@ function aggregateInventoryGeography(records) {
 
   const duplicateStemHashes = [...stemDupHits.entries()].filter(([, c]) => c > 1).length;
   const thinBuckets = [...byGradeTopicDiff.entries()].filter(([, c]) => c < 3);
+  const dupBreakdown = classifyMoledetGeoStemDuplicates(records);
 
   return {
     geographyRowCount: geo.length,
@@ -132,9 +218,41 @@ function aggregateInventoryGeography(records) {
     countsByGradeTopicDifficulty: Object.fromEntries([...byGradeTopicDiff.entries()].slice(0, 500)),
     countsTruncated: byGradeTopicDiff.size > 500,
     duplicateStemHashCount: duplicateStemHashes,
+    duplicateStemHashGroupCount: dupBreakdown.duplicateStemHashGroupCount,
+    realProductDuplicateBlockers: dupBreakdown.realProductDuplicateBlockers,
+    advisoryTemplateDuplicateGroups: dupBreakdown.advisoryTemplateDuplicateGroups,
+    auditArtifactDuplicateGroups: dupBreakdown.auditArtifactDuplicateGroups,
+    varietyGatePassed: dupBreakdown.varietyGatePassed,
+    duplicateClassificationExamples: {
+      blockingIntrapool: dupBreakdown.blockingExamples,
+      auditArtifact: dupBreakdown.artifactExamples,
+    },
+    duplicateClassificationNotes: dupBreakdown.classificationNotes,
     thinInventoryBuckets: thinBuckets.slice(0, 120),
     thinInventoryBucketCount: thinBuckets.length,
   };
+}
+
+function worstStemVarietyBuckets(stemVarietyByGradeTopic, threshold = 0.5) {
+  /** @type {Array<{ gradeKey: string, topic: string, stemPatternRatio: number, sampleCount: number, uniqueStemPatterns: number }>} */
+  const rows = [];
+  for (const [gk, topics] of Object.entries(stemVarietyByGradeTopic || {})) {
+    for (const [topic, stats] of Object.entries(topics || {})) {
+      const ratio = stats?.stemPatternRatio ?? 0;
+      if (ratio < threshold) {
+        rows.push({
+          gradeKey: gk,
+          topic,
+          stemPatternRatio: ratio,
+          sampleCount: stats?.sampleCount ?? 0,
+          uniqueStemPatterns: stats?.uniqueStemPatterns ?? 0,
+          maxRepeatSamePattern: stats?.maxRepeatSamePattern ?? 0,
+        });
+      }
+    }
+  }
+  rows.sort((a, b) => a.stemPatternRatio - b.stemPatternRatio || b.sampleCount - a.sampleCount);
+  return rows.slice(0, 24);
 }
 
 function poolExportName(gNum, uiLevel) {
@@ -205,6 +323,8 @@ async function main() {
     stemVarietyByGradeTopic[gk] = stemVarietyByGradeAndTopic(gk);
   }
 
+  const stemVarietyWeakBuckets = worstStemVarietyBuckets(stemVarietyByGradeTopic, 0.5);
+
   const rgPath = join(OUT_DIR, "moledet-geography-runtime-gate-export.json");
   let runtimeGateSummary = null;
   try {
@@ -250,13 +370,20 @@ async function main() {
       `Moledet/Geography thin runtime buckets (grade × topic × UI level): ${runtimeThin.blockingThinRuntimeCount} blocking — see runtimeCoverage.blockingThinRuntimeBuckets.`
     );
   }
+  if (!invAgg.varietyGatePassed) {
+    remainingBlockers.push(
+      `Variety gate: ${invAgg.realProductDuplicateBlockers} intrapool duplicate stem group(s) — real product repetition within the same bank bucket (see duplicateClassificationExamples.blockingIntrapool).`
+    );
+  }
 
-  const automatedInfrastructureClosed = inventoryCriticalOk && runtimeVsOk && poolGateOk;
+  const automatedInfrastructureClosed =
+    inventoryCriticalOk && runtimeVsOk && poolGateOk && invAgg.varietyGatePassed;
 
   const moledetGeographyClosedForAutomatedDevelopmentStage =
     automatedInfrastructureClosed &&
     remainingBlockers.length === 0 &&
-    runtimeThin.blockingThinRuntimeCount === 0;
+    runtimeThin.blockingThinRuntimeCount === 0 &&
+    invAgg.varietyGatePassed;
 
   const payload = {
     generatedAt: new Date().toISOString(),
@@ -274,6 +401,7 @@ async function main() {
       notes: [
         "Curriculum map confidence for moledet-geography remains advisory (moledet.bank.*).",
         "Stem variety is computed from static geography bank pools per grade/topic.",
+        "Duplicate stem hashes are split into intrapool blockers vs cross-bucket advisory vs audit artifacts — see inventory.duplicateClassificationNotes.",
       ],
     },
     registrySummary,
@@ -285,6 +413,7 @@ async function main() {
     runtimeVsOfficialRowsNeedingReview: rvBad,
     gradeTopicAlignment: gradeTopicRows,
     stemVarietyByGradeTopic,
+    stemVarietyWeakBuckets,
     runtimeGateSummary,
     runtimeCoverage: {
       policyNote:
@@ -298,6 +427,11 @@ async function main() {
     summary: {
       thinInventoryBucketCount: invAgg.thinInventoryBucketCount,
       duplicateStemHashCount: invAgg.duplicateStemHashCount,
+      duplicateStemHashGroupCount: invAgg.duplicateStemHashGroupCount,
+      realProductDuplicateBlockers: invAgg.realProductDuplicateBlockers,
+      advisoryTemplateDuplicateGroups: invAgg.advisoryTemplateDuplicateGroups,
+      auditArtifactDuplicateGroups: invAgg.auditArtifactDuplicateGroups,
+      varietyGatePassed: invAgg.varietyGatePassed,
       runtimeVsMismatchRatio: rvTotal ? Math.round(rvRatio * 1000) / 1000 : 0,
       blockingThinRuntimeCount: runtimeThin.blockingThinRuntimeCount,
     },
@@ -306,6 +440,7 @@ async function main() {
       runtimeVsOfficialCatalogGatePassed: runtimeVsOk,
       moledetGeographyRuntimeGatePassed: poolGateOk,
       runtimeThinBucketsGatePassed: runtimeThin.blockingThinRuntimeCount === 0,
+      varietyGatePassed: invAgg.varietyGatePassed,
       automatedInfrastructureClosed,
       moledetGeographyClosedForAutomatedDevelopmentStage,
       fullOwnerMoEClosed: ownerSignedOff && moledetGeographyClosedForAutomatedDevelopmentStage,
@@ -336,6 +471,23 @@ async function main() {
   md.push(`- Missing critical metadata: ${payload.inventory.missingCriticalMetadataRows}`);
   md.push(`- Thin inventory buckets (<3 scanner rows): ${payload.inventory.thinInventoryBucketCount}`);
   md.push(`- **Blocking runtime thin buckets:** ${runtimeThin.blockingThinRuntimeCount}`);
+  md.push("");
+  md.push("## Duplicate / variety (inventory)");
+  md.push(`- Duplicate stem-hash groups (inventory rows sharing a stemHash): **${payload.summary.duplicateStemHashCount}**`);
+  md.push(`- **Class A — intrapool / real product duplicate blocker groups:** ${payload.summary.realProductDuplicateBlockers}`);
+  md.push(`- **Class B — advisory (cross-bucket only) duplicate-hash groups:** ${payload.summary.advisoryTemplateDuplicateGroups}`);
+  md.push(`- **Class C — audit artifact groups (same hash, different previews):** ${payload.summary.auditArtifactDuplicateGroups}`);
+  md.push(`- **Variety gate passed:** ${payload.summary.varietyGatePassed ? "yes" : "no"}`);
+  md.push("");
+  md.push("## Stem pattern ratio weak buckets (static banks, &lt; 0.50)");
+  if (!stemVarietyWeakBuckets.length) md.push("- None under threshold.");
+  else {
+    for (const w of stemVarietyWeakBuckets.slice(0, 12)) {
+      md.push(
+        `- ${w.gradeKey} / ${w.topic}: ratio=${w.stemPatternRatio}, samples=${w.sampleCount}, uniquePatterns=${w.uniqueStemPatterns}`
+      );
+    }
+  }
   md.push("");
   md.push("## Runtime vs curriculum map");
   md.push(`- Rows needing review: ${rvBad} / ${rvTotal}`);

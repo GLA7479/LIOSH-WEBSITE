@@ -8511,7 +8511,7 @@ export const G2_MEDIUM_QUESTIONS = {
       ]
     },
     {
-      "question": "מה זה מפה יבשתית?",
+      "question": "מה רואים במפה יבשתית של העולם?",
       "answers": [
         "מפה של יבשה",
         "מפה של ים",
@@ -8571,7 +8571,7 @@ export const G2_MEDIUM_QUESTIONS = {
       ]
     },
     {
-      "question": "מה זה מפה ימית?",
+      "question": "מה רואים במפה ימית של חופים וימים?",
       "answers": [
         "מפה מהים",
         "מפה מהקרקע",
@@ -11815,7 +11815,7 @@ export const G2_HARD_QUESTIONS = {
       ]
     },
     {
-      "question": "מה זה מפות מתקדמות?",
+      "question": "מה מאפיין מפות מתקדמות לעומת מפה פשוטה?",
       "answers": [
         "מפות מפורטות",
         "מפות פשוטות",
