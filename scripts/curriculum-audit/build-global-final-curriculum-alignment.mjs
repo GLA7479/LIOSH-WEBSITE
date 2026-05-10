@@ -163,8 +163,27 @@ function extractClosureSummary(closure) {
   };
 }
 
+function aggregateFullOwnerMoEClosed(closureBySubject) {
+  const m = closureBySubject.math?.closureQuestions;
+  const g = closureBySubject.geometry?.closureQuestions;
+  const h = closureBySubject.hebrew?.closureQuestions;
+  const e = closureBySubject.english?.closureQuestions;
+  const sc = closureBySubject.science?.closureQuestions;
+  const mg = closureBySubject["moledet-geography"]?.closureQuestions;
+  const mathOk = m?.isMathFullyClosedForDevelopmentStage === true;
+  const geoOk = g?.isGeometryFullyClosedForDevelopmentStage === true;
+  const heOk = h?.isHebrewFullyClosedIncludingOwnerSignoff === true;
+  const enOk = e?.fullOwnerMoEClosed === true;
+  const scOk = sc?.fullOwnerMoEClosed === true;
+  const mgOk = mg?.fullOwnerMoEClosed === true;
+  return Boolean(mathOk && geoOk && heOk && enOk && scOk && mgOk);
+}
+
 async function main() {
   await mkdir(OUT_DIR, { recursive: true });
+
+  const hardeningPath = join(OUT_DIR, "global-coverage-variety-hardening.json");
+  const hardeningReport = loadJson(hardeningPath);
 
   const invPath = join(OUT_DIR, "question-inventory.json");
   const invRaw = loadJson(invPath);
@@ -231,10 +250,30 @@ async function main() {
       ? "GLOBAL_ALIGNMENT_PASS"
       : "GLOBAL_ALIGNMENT_BLOCKED";
 
+  const globalAlignmentPassed = blockers.length === 0;
+  const globalCoverageVarietyPassed =
+    hardeningReport?.globalCoverageVarietyPassed ??
+    hardeningReport?.verdict?.globalCoverageVarietyPassed ??
+    null;
+  const diagnosticReadinessPrecheckPassed = !metadataWeak?.length;
+  const fullOwnerMoEClosed = aggregateFullOwnerMoEClosed(closureBySubject);
+
+  const hm = hardeningReport?.duplicateMetrics;
+  const mathDupHm = hm?.math;
+  const geoDupHm = hm?.geometry;
+
   const payload = {
     generatedAt: new Date().toISOString(),
     phase: "global-final-curriculum-alignment",
     verdict,
+    verdicts: {
+      globalAlignmentPassed,
+      globalCoverageVarietyPassed,
+      diagnosticReadinessPrecheckPassed,
+      fullOwnerMoEClosed,
+      notes:
+        "globalCoverageVarietyPassed is produced by audit:curriculum:global-coverage-variety-hardening (runs immediately before this script in qa:curriculum-audit). fullOwnerMoEClosed requires owner PDF/POP signoff flags true on every subject closure artifact.",
+    },
     curriculumPageScan: curriculumScan,
     inventory: {
       recordCount: records.length,
@@ -253,23 +292,52 @@ async function main() {
       thinBucketsUnder3: globalThinSubject.find((x) => x.subject === s.id)?.thinBucketsUnder3Rows ?? 0,
     })),
     mixedModeSafety,
-    duplicateRepetitionBySubject: SUBJECTS.map((s) => ({
-      subject: s.id,
-      duplicateStemHashCount:
-        closureBySubject[s.id]?.summarySnippet?.duplicateStemHashCount ??
-        closureBySubject[s.id]?.inventorySnippet?.duplicateStemHashCount ??
-        null,
-      realProductDuplicateBlockers: closureBySubject[s.id]?.summarySnippet?.realProductDuplicateBlockers ?? null,
-      varietyGatePassed: closureBySubject[s.id]?.summarySnippet?.varietyGatePassed ?? null,
-    })),
+    duplicateRepetitionBySubject: SUBJECTS.map((s) => {
+      const base = {
+        subject: s.id,
+        duplicateStemHashCount:
+          closureBySubject[s.id]?.summarySnippet?.duplicateStemHashCount ??
+          closureBySubject[s.id]?.inventorySnippet?.duplicateStemHashCount ??
+          null,
+        realProductDuplicateBlockers: closureBySubject[s.id]?.summarySnippet?.realProductDuplicateBlockers ?? null,
+        advisoryTemplateDuplicates: null,
+        varietyGatePassed: closureBySubject[s.id]?.summarySnippet?.varietyGatePassed ?? null,
+        notAvailableReason: null,
+      };
+      if (s.id === "math" && mathDupHm) {
+        return {
+          ...base,
+          duplicateStemHashCount: mathDupHm.duplicateStemHashCount,
+          realProductDuplicateBlockers: mathDupHm.realProductDuplicateBlockers,
+          advisoryTemplateDuplicates: mathDupHm.advisoryTemplateDuplicates,
+          varietyGatePassed: mathDupHm.varietyGatePassed ?? base.varietyGatePassed,
+          notAvailableReason: mathDupHm.notAvailableReason,
+        };
+      }
+      if (s.id === "geometry" && geoDupHm) {
+        return {
+          ...base,
+          duplicateStemHashCount: geoDupHm.duplicateStemHashCount,
+          realProductDuplicateBlockers: geoDupHm.realProductDuplicateBlockers,
+          advisoryTemplateDuplicates: geoDupHm.advisoryTemplateDuplicates,
+          varietyGatePassed: geoDupHm.varietyGatePassed ?? base.varietyGatePassed,
+          notAvailableReason: geoDupHm.notAvailableReason,
+        };
+      }
+      return base;
+    }),
     metadataDiagnosticReadiness: {
       inventoryMissingCriticalBySubject: inventorySummary.bySubject,
       note:
         "Full diagnostic/parent-report readiness requires non-null topic/skill/difficulty — track closure reports per subject for gate detail.",
     },
     blockers,
-    advisories,
+    advisories:
+      hardeningReport && globalCoverageVarietyPassed === false
+        ? [...advisories, "global-coverage-variety-hardening reported realProductThinBlockers > 0 — see global-coverage-variety-hardening.json."]
+        : advisories,
     closureArtifactsExpected: SUBJECTS.map((s) => s.closureFile),
+    globalCoverageVarietyHardeningRef: "reports/curriculum-audit/global-coverage-variety-hardening.json",
   };
 
   await writeFile(join(OUT_DIR, "global-final-curriculum-alignment.json"), JSON.stringify(payload, null, 2), "utf8");
@@ -280,6 +348,14 @@ async function main() {
   md.push(`Generated: ${payload.generatedAt}`);
   md.push("");
   md.push(`## Verdict: **${verdict}**`);
+  md.push("");
+  md.push("## Verdict flags");
+  md.push(`- globalAlignmentPassed: **${payload.verdicts.globalAlignmentPassed}**`);
+  md.push(
+    `- globalCoverageVarietyPassed: **${payload.verdicts.globalCoverageVarietyPassed === null ? "n/a (run global-coverage-variety-hardening first)" : payload.verdicts.globalCoverageVarietyPassed}**`
+  );
+  md.push(`- diagnosticReadinessPrecheckPassed: **${payload.verdicts.diagnosticReadinessPrecheckPassed}**`);
+  md.push(`- fullOwnerMoEClosed: **${payload.verdicts.fullOwnerMoEClosed}**`);
   md.push("");
   md.push("## Curriculum page");
   md.push(`- Geometry query param supported: ${curriculumScan.blocks.geometrySubjectParamSupported ? "yes" : "no"}`);
