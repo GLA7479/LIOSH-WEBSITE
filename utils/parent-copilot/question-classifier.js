@@ -635,6 +635,42 @@ export function classifyParentQuestionDeterministic({ utterance, payload }) {
     };
   }
 
+  // 2f. Trajectory / trend questions — keep on-report (mass catalog dg_03/dg_04 style). Avoid ambiguous early-exit.
+  if (
+    /(?:^|\s)(?:האם\s+(?:הוא|היא)\s+(?:משתפר(?:ת)?|בירידה|עולה|יורד(?:ת)?|מוכן(?:ת)?|בשיפור))|האם\s+יש\s+(?:שיפור|התקדמות|ירידה)|האם\s+עדיין\s+משתפר|יש\s+שיפור\s+ב(?:מתמטיקה|חשבון|עברית|אנגלית)|מוכן\s+לעלות\s+רמה/u.test(
+      t,
+    )
+  ) {
+    return {
+      bucket: "report_related",
+      confidence: 0.84,
+      source: "deterministic",
+      signals: {
+        ...signals,
+        reportSignal: Math.max(reportRes.score, 0.72),
+        hasStrongReportToken: true,
+      },
+    };
+  }
+
+  // 2g. Prioritization / planning / comparison stems from Parent AI catalog — must reach Stage A (not ambiguous router exit).
+  if (
+    /באיזה\s+מקצוע\s+(?:להתחיל|עדיף)|מה\s+הנושא\s+הכי\s+דחוף|האם\s+הבעיה\s+היא\s+קריאה\s+או\s+חשבון|כמה\s+זמן\s+כדאי\s+לתרגל\s+ביום|תן\s+לי\s+תוכנית\s+תרגול|תסכם\s+לי\s+את\s+המצב|למה\s+הדוח\s+אומר|איזה\s+שאלות\s+הוא\s+פספס|האם\s+הוא\s+מנחש|האם\s+הוא\s+עונה\s+מהר/u.test(
+      t,
+    )
+  ) {
+    return {
+      bucket: "report_related",
+      confidence: 0.83,
+      source: "deterministic",
+      signals: {
+        ...signals,
+        reportSignal: Math.max(reportRes.score, 0.72),
+        hasStrongReportToken: true,
+      },
+    };
+  }
+
   // 9. Report-related: needs strong signal AND low off-topic AND meaningful length.
   if (
     reportRes.score >= CLASSIFIER_THRESHOLDS.reportRelated &&

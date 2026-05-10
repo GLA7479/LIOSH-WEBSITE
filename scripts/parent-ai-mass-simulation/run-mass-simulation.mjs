@@ -12,7 +12,7 @@
  *   MASS_REPORT_LIMIT, MASS_PDF_LIMIT
  *   MASS_PARENT_AI_QUESTION_LIMIT — global budget distributed fairly across students (must be > 0 for Parent AI; 0 skips all turns and fails quality gates).
  *     When MASS_PARENT_AI_CATEGORY_BALANCED=1, the runner may raise this automatically so each student can receive at least (MASS_PARENT_AI_CATEGORY_MIN × number of catalog categories) turns (full category coverage).
- *   MASS_PARENT_AI_CATEGORY_BALANCED=1
+ *   MASS_PARENT_AI_CATEGORY_BALANCED — default ON (set to "0" for legacy data_grounded-only sequencing)
  *   MASS_PARENT_AI_CATEGORY_MIN (default 1)
  *   QA_BASE_URL / MASS_PDF_BASE_URL — required for PDF export (Next server), default http://localhost:3001 (Node fetch to 127.0.0.1 can be flaky on some Windows setups)
  *   MASS_PDF_STUDENT_TIMEOUT_MS — wall-clock cap per student PDF pack (default 600000)
@@ -172,7 +172,7 @@ async function main() {
   const pdfLimit = envInt("MASS_PDF_LIMIT", 100);
   const parentAiGlobalLimit = envInt("MASS_PARENT_AI_QUESTION_LIMIT", 500);
   const questionSourceMode = envStr("MASS_QUESTION_SOURCE", "hybrid").toLowerCase();
-  const categoryBalanced = process.env.MASS_PARENT_AI_CATEGORY_BALANCED === "1";
+  const categoryBalanced = process.env.MASS_PARENT_AI_CATEGORY_BALANCED !== "0";
   const categoryMin = envInt("MASS_PARENT_AI_CATEGORY_MIN", 1);
 
   const baseUrl = envStr("QA_BASE_URL", envStr("MASS_PDF_BASE_URL", "http://localhost:3001"));

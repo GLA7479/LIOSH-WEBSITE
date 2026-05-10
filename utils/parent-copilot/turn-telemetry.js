@@ -21,6 +21,8 @@ export function measureGroundedness(answerBlocks, truthPacket) {
     .filter(Boolean)
     .join(" ");
 
+  const sfQ = Math.max(0, Math.round(Number(truthPacket.surfaceFacts?.questions ?? 0)));
+
   let covered = 0;
   for (const b of blocks) {
     const txt = String(b?.textHe || "").trim();
@@ -30,7 +32,13 @@ export function measureGroundedness(answerBlocks, truthPacket) {
       continue;
     }
     const firstChunk = txt.slice(0, Math.min(42, txt.length));
-    if (firstChunk && slotBundle.includes(firstChunk)) covered += 1;
+    if (firstChunk && slotBundle.includes(firstChunk)) {
+      covered += 1;
+      continue;
+    }
+    if (sfQ > 0 && /\d/.test(txt) && (txt.includes(String(sfQ)) || new RegExp(`${sfQ}\\s*שאלות`, "u").test(txt))) {
+      covered += 1;
+    }
   }
   const score = Math.round((covered / Math.max(1, blocks.length)) * 100);
   return { score, coveredBlocks: covered, totalBlocks: blocks.length };

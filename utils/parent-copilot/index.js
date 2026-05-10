@@ -34,6 +34,7 @@ import { tryBuildParentShortFollowupDraft } from "./short-followup-composer.js";
 import { tryBuildComparisonPracticalFollowupDraft } from "./comparison-practical-continuity.js";
 import { compactParentAnswerBlocks } from "./answer-compaction.js";
 import { maxGlobalReportQuestionCount, STRONG_GLOBAL_QUESTION_FLOOR } from "./report-volume-context.js";
+import { augmentHighVolumeEvidenceAnchorDraft } from "./data-grounded-evidence-augmentation.js";
 import { semanticIntentForMetadata } from "./semantic-intent-labels.js";
 import {
   tryBuildPhaseEClarificationBypassDraft,
@@ -955,6 +956,8 @@ function runDeterministicCore(input, options) {
     });
   }
 
+  draft = { ...draft, answerBlocks: normalizeAnswerBlocksHe(draft.answerBlocks) };
+  draft = augmentHighVolumeEvidenceAnchorDraft(draft, truthPacket, input.payload, { plannerIntent });
   draft = { ...draft, answerBlocks: normalizeAnswerBlocksHe(draft.answerBlocks) };
   // Do NOT augment boundary or off-topic drafts with report data.
   // Do NOT add thin-evidence augmentation when global answer count is already high —

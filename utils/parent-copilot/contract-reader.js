@@ -242,6 +242,43 @@ export function listSyntheticAggregateAnchoredTopicRows(payload) {
     };
     out.push({ subject: sid, tr: syntheticTr });
   }
+  if (!out.length && hasAggregatePracticeEvidence(payload)) {
+    const os = payload?.overallSnapshot && typeof payload.overallSnapshot === "object" ? payload.overallSnapshot : {};
+    const summary = payload?.summary && typeof payload.summary === "object" ? payload.summary : {};
+    const tq = Math.max(
+      0,
+      Math.round(Number(os.totalQuestions ?? summary.totalAnswers ?? summary.totalQuestions ?? 0)),
+    );
+    const acc = Math.max(0, Math.min(100, Math.round(Number(os.accuracy ?? summary.accuracy ?? 0))));
+    if (tq > 0) {
+      const cannotConcludeYet = tq < 10 || acc < 38;
+      const syntheticTr = {
+        topicRowKey: "aggregate-executive-summary",
+        topicKey: "aggregate-executive-summary",
+        displayName: "סיכום כללי של התרגול",
+        questions: tq,
+        q: tq,
+        accuracy: acc,
+        contractsV1: {
+          narrative: {
+            contractVersion: "v1",
+            textSlots: {
+              observation: `בתקופה שנבחרה נענו כ־${tq} שאלות, עם דיוק כולל של כ־${acc}%. זהו סיכום כללי של התרגול שנאסף עד עכשיו.`,
+              interpretation: `בשלב הזה אפשר להתייחס בעיקר להיקף התרגול ולדיוק הכללי, לפני שמסיקים מסקנות מפורטות לפי מקצוע או נושא.`,
+              uncertainty: cannotConcludeYet
+                ? "עדיין אין מספיק נתונים כדי להסיק מסקנה חזקה. כדאי לבדוק שוב אחרי עוד תרגול."
+                : "ייתכן שיהיה פער בין מה שמרגישים בבית לבין מה שמופיע בדוח, לכן כדאי להמשיך לעקוב לאורך כמה ימי תרגול.",
+            },
+          },
+          readiness: { readiness: tq >= 28 ? "ready" : tq >= 12 ? "forming" : "insufficient" },
+          confidence: { confidenceBand: acc >= 78 ? "high" : acc >= 58 ? "medium" : "low" },
+          decision: { cannotConcludeYet },
+        },
+        __copilotSyntheticAggregate: true,
+      };
+      out.push({ subject: "math", tr: syntheticTr });
+    }
+  }
   return out;
 }
 

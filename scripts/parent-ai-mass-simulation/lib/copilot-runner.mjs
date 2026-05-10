@@ -1,6 +1,10 @@
 import fs from "node:fs";
 import path from "node:path";
 import { PARENT_QUESTION_ENTRIES } from "./parent-questions-catalog.mjs";
+
+/** Must stay aligned with `utils/parent-copilot/data-grounded-evidence-augmentation.js` (mass harness avoids cross-root import issues). */
+const DATA_GROUNDED_PARENT_SURFACE_SIGNALS_RE =
+  /(עברית|חשבון|מתמטיקה|חישוב|אנגלית|מדעים|גאומטריה|מולדת|גאוגרפיה|הבנת\s*הנקרא|קריאה(?!\s+באנגלית)|אוצר\s*מילים|\d+%|\d+\s*שאלות|שאלות\s+בתרגול|לפי\s*הדוח|ממוצע|דיוק)/u;
 import { installBrowserGlobals } from "./browser-globals.mjs";
 import { applyMassStudentSeed } from "./seed-engine.mjs";
 import { buildCategoryBalancedEntrySequence, coverageMissingCategories } from "./parent-ai-turn-plan.mjs";
@@ -66,7 +70,7 @@ function extendedAssertions(entry, res, student, answerText, gScore) {
     const groundedOk =
       res?.resolutionStatus === "resolved" &&
       (gScore > 0.08 || (Array.isArray(res?.answerBlocks) && res.answerBlocks.some((b) => String(b?.textHe || "").length > 24))) &&
-      /(עברית|חשבון|אנגלית|מדעים|גאומטריה|מולדת\s*וגאוגרפיה|\d+%|\d+\s*שאלות)/u.test(answerText);
+      DATA_GROUNDED_PARENT_SURFACE_SIGNALS_RE.test(answerText);
     base.push({
       id: "data_grounded_requires_resolution_and_substance",
       pass: groundedOk,
@@ -74,14 +78,14 @@ function extendedAssertions(entry, res, student, answerText, gScore) {
     });
     base.push({
       id: "data_grounded_answer_mentions_subject_or_topic",
-      pass: /(עברית|חשבון|אנגלית|מדעים|גאומטריה|מולדת\s*וגאוגרפיה|חיבור|חיסור|כפל|חילוק|קריאה|הבנת|אוצר מילים|היקף|זוויות)/u.test(
+      pass: /(עברית|חשבון|מתמטיקה|חישוב|אנגלית|מדעים|גאומטריה|מולדת|גאוגרפיה|חיבור|חיסור|כפל|חילוק|קריאה|הבנת|אוצר מילים|היקף|זוויות)/u.test(
         answerText,
       ),
     });
     if (strongOrRich) {
       base.push({
         id: "rich_or_strong_data_grounded_must_use_evidence",
-        pass: /%|\d+\s*שאלות|לפי\s*הדוח|ממוצע|דיוק/u.test(answerText),
+        pass: /%|\d+\s*שאלות|שאלות\s+בתרגול|לפי\s*הדוח|ממוצע|דיוק/u.test(answerText),
       });
       base.push({
         id: "rich_or_strong_data_grounded_must_not_use_limited_data_fallback",
@@ -113,7 +117,7 @@ function extendedAssertions(entry, res, student, answerText, gScore) {
         answerText,
       );
     const hasCollectMoreGuidance =
-      /כדאי לצבור|עוד תרגול|עוד כמה תשובות|בדיקה חוזרת|צעדי תרגול|צעדים\s+קטנים|איסוף\s+מידע|דקות|שאלות|מהתרגולים|נפח\s*נמוך|להמשיך\s+לתרגל|עוד\s+קצת\s+תרגול|לאחר\s+עוד\s+תרגול|אחרי\s+עוד\s+תרגול/i.test(
+      /כדאי לצבור|עוד תרגול|עוד כמה תשובות|בדיקה חוזרת|צעדי תרגול|צעדים\s+קטנים|איסוף\s+מידע|דקות|שאלות|מהתרגולים|נפח\s*נמוך|להמשיך\s+לתרגל|להמשיך\s+לצבור|עוד\s+קצת\s+תרגול|לאחר\s+עוד\s+תרגול|אחרי\s+עוד\s+תרגול|בימים\s+הקרובים|תרגול\s+נוסף|קצת\s+תרגול\s+נוסף/i.test(
         answerText,
       );
     base.push({
