@@ -89,6 +89,7 @@ const ENGLISH_TOPIC_NAMES = {
   grammar: "דקדוק",
   grammar_basics: "יסודות דקדוק",
   translation: "תרגום",
+  sentence: "בניית משפטים",
   sentences: "בניית משפטים",
   writing: "כתיבה",
   reading_comprehension: "הבנת הנקרא",

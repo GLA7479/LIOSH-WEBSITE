@@ -442,7 +442,6 @@ export function resolveDiagnosticUnitSkillAlignment(unit, context = {}) {
     }
     if (!indexHasExactPair(context.metadataIndex, "science", skillId, subskillId)) {
       warnings.push("alignment_science_pair_not_in_metadata_index");
-      return { ...empty(), warnings: [...warnings] };
     }
     return {
       subject,

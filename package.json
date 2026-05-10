@@ -174,6 +174,7 @@
     "test:parent-report-phase1": "tsx scripts/parent-report-phase1-selftest.mjs",
     "test:topic-next-step-phase2": "tsx scripts/topic-next-step-phase2.test.mjs",
     "test:topic-next-step-engine-scenarios": "tsx scripts/topic-next-step-engine-scenarios.mjs",
+    "diagnostic-alignment:reports": "tsx scripts/diagnostic-alignment/build-diagnostic-alignment-reports.mjs",
     "test:diagnostic-engine-v2-harness": "tsx scripts/diagnostic-engine-v2-harness.mjs",
     "test:ai-hybrid-harness": "tsx scripts/ai-hybrid-harness.mjs",
     "ai-hybrid:review-export": "tsx scripts/ai-hybrid-review-case-export.ts",

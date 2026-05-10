@@ -242,8 +242,16 @@ export function composeAnswerDraft(plan, truthPacket, coachingCtx = null) {
     }
   }
 
-  // ── what_to_do_this_week / what_to_do_today: ensure concrete step plan is shown ──
-  if (intentMain === "what_to_do_this_week" || intentMain === "what_to_do_today") {
+  // ── what_to_do_this_week / what_to_do_today: fast-path concrete plan only when recommendation contract allows practice framing ──
+  const dlEarly = truthPacket?.derivedLimits || {};
+  const recommendationContractOk =
+    dlEarly.recommendationEligible === true &&
+    String(dlEarly.recommendationIntensityCap || "RI0") !== "RI0";
+
+  if (
+    (intentMain === "what_to_do_this_week" || intentMain === "what_to_do_today") &&
+    recommendationContractOk
+  ) {
     const slotsWk = truthPacket?.contracts?.narrative?.textSlots || {};
     const obsWk = String(slotsWk.observation || "").trim();
     const interpWk = String(slotsWk.interpretation || "").trim();

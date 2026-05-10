@@ -85,9 +85,9 @@ export function planConversation(intent, truthPacket, hints = null) {
         if (continuityRepeat || rot % 2 === 1) blocks.push("meaning", "next_step", "caution");
         else blocks.push("observation", "next_step", "meaning");
       } else if (continuityRepeat || rot % 2 === 1) {
-        blocks.push("observation", "next_step", "uncertainty_reason");
+        blocks.push("observation", "uncertainty_reason", "meaning");
       } else {
-        blocks.push("observation", "meaning", "next_step");
+        blocks.push("observation", "meaning", "uncertainty_reason");
       }
       break;
     case "why_not_advance":

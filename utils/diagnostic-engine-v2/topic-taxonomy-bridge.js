@@ -60,6 +60,8 @@ const ENGLISH_TOPIC_TO_IDS = {
   grammar: ["E-02", "E-04"],
   translation: ["E-03"],
   sentences: ["E-06"],
+  /** Audit/inventory uses grammar category id `sentence` for sentence pools — alias of UI topic `sentences`. */
+  sentence: ["E-06"],
   writing: ["E-07"],
   mixed: ["E-01"],
 };
