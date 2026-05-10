@@ -34,6 +34,14 @@ function htmlVisibleText(html) {
   return noScripts.replace(/<[^>]+>/g, " ").replace(/\s+/g, " ").trim();
 }
 
+/**
+ * Warning codes that remain in QUALITY_FLAGS / audit output as advisories but must not
+ * downgrade AI_RESPONSE_QUALITY_AUDIT.finalStatus to NEEDS_REVIEW. Only add codes here
+ * when the harness is known to be noisy while real product failures still use severity "fail".
+ * Owner review before expanding this set.
+ */
+const ADVISORY_ONLY_WARNING_CODES = new Set(["audit_report_md_html_divergence"]);
+
 /** Mirrors quality-runner — parent-facing strings from detailed.json only (no raw schema keys). */
 function loadShortMdParentBlob(outputRoot, studentId) {
   if (!outputRoot || !studentId) return "";
@@ -1077,6 +1085,19 @@ export async function runAiResponseQualityAudit(ctx) {
   /** Unified warning tally: rubric (per-answer) + harness gate warnings — matches QUALITY_FLAGS.warningCount intent. */
   const totalWarnings = warningsFromAnswerRubric + gateWarningCount;
 
+  const blockingWarningsFromRubric = answerRecords.reduce(
+    (n, r) =>
+      n +
+      r.issues.filter(
+        (i) => i.severity === "warning" && !ADVISORY_ONLY_WARNING_CODES.has(i.code),
+      ).length,
+    0,
+  );
+  const blockingWarningsFromGate = gateIssues.filter(
+    (g) => g.level === "warning" && !ADVISORY_ONLY_WARNING_CODES.has(g.code),
+  ).length;
+  const blockingWarningsTotal = blockingWarningsFromRubric + blockingWarningsFromGate;
+
   const gateFailureCount = gateIssues.filter((g) => g.level === "fail").length;
 
   const warningCodeCounts = new Map();
@@ -1097,12 +1118,12 @@ export async function runAiResponseQualityAudit(ctx) {
     .map(([code, count]) => ({
       code,
       count,
-      nonBlockingFormat: code === "audit_report_md_html_divergence",
+      nonBlockingFormat: ADVISORY_ONLY_WARNING_CODES.has(code),
     }));
 
   let finalStatus = "PASS";
   if (gateFailureCount > 0) finalStatus = "FAIL";
-  else if (totalWarnings > 0) finalStatus = "NEEDS_REVIEW";
+  else if (blockingWarningsTotal > 0) finalStatus = "NEEDS_REVIEW";
 
   const worstExamples = [...answerRecords]
     .flatMap((r) =>
@@ -1135,6 +1156,10 @@ export async function runAiResponseQualityAudit(ctx) {
       formatMarkupWarningNote:
         "אזהרות audit_report_md_html_divergence אינן חוסמות מוצר: השוואת hash בין MD ל-HTML רגישה ל-markup/ריווח ולא משקפת בהכרח פער תוכן.",
       gateFailuresAdded: gateFailureCount,
+      blockingWarningsTotal,
+      blockingWarningsFromRubric,
+      blockingWarningsFromGate,
+      advisoryOnlyWarningsTotal: Math.max(0, totalWarnings - blockingWarningsTotal),
       finalStatus,
     },
     failuresByType,
@@ -1214,6 +1239,8 @@ export function writeAiResponseQualityAuditMarkdown(outputRoot, auditPayload) {
     `- total failures (issues): **${s.totalFailures}**`,
     `- total warnings: **${s.totalWarnings}** (מתוכם מרוביקת תשובות: **${s.warningsFromAnswerRubric}**, מ־gate דוחות: **${s.warningsFromReportGate}**)`,
     `- non-blocking format/markup (MD↔HTML hash): **${s.nonBlockingFormatWarnings}** — ${s.formatMarkupWarningNote}`,
+    `- blocking warnings (affect final status): **${s.blockingWarningsTotal}** (rubric: **${s.blockingWarningsFromRubric}**, gate: **${s.blockingWarningsFromGate}**)`,
+    `- advisory-only warnings (listed but do not downgrade status): **${s.advisoryOnlyWarningsTotal}**`,
     `- gate failures (harness): **${s.gateFailuresAdded}**`,
     `- **Final status: ${s.finalStatus}**`,
     "",
