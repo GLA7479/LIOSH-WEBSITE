@@ -127,14 +127,28 @@ import {
   mergePlannerSessionClientMeta,
 } from "../../lib/learning-client/adaptive-planner-recommended-practice";
 import {
-  fetchStudentDefaults,
   gradeKeyToNumber,
+  normalizeGradeLevelToKey,
 } from "../../lib/learning-student-defaults";
 
 /** Passed into compareGeometryLearnerAnswer — not defaulted inside answer-compare. */
 const GEOMETRY_NUMERIC_SCALE_FLOOR = 1e-6;
 const GEOMETRY_NUMERIC_RELATIVE_FACTOR = 1e-5;
 const GEOMETRY_NUMERIC_MIN_TOLERANCE = 1e-9;
+
+/** Lobby monthly prizes: storage keys unchanged; visible labels aligned with Math. */
+const LOBBY_MONTHLY_REWARD_DISPLAY_BY_KEY = {
+  ROBUX: "10K מטבעות משחק",
+  VBUCKS: "30K מטבעות משחק",
+  CLASH_ROYALE: "60K מטבעות משחק",
+  MINECOINS: "100K מטבעות משחק",
+};
+const LOBBY_MONTHLY_PRIZE_COIN_ICON = "🪙";
+
+function lobbyMonthlyRewardDisplayLabel(key) {
+  if (!key) return "";
+  return LOBBY_MONTHLY_REWARD_DISPLAY_BY_KEY[key] || getRewardLabel(key);
+}
 
 const AVATAR_OPTIONS = [
   "👤",
@@ -325,24 +339,35 @@ const [playerName, setPlayerName] = useState(() => {
   });
 useEffect(() => {
   let mounted = true;
-  fetchStudentDefaults()
-    .then((defaults) => {
-      if (!mounted || !defaults) return;
-      if (defaults.fullName) {
-        setPlayerName(defaults.fullName);
+  fetch("/api/student/me", { credentials: "same-origin" })
+    .then((res) => res.json().catch(() => ({})))
+    .then((payload) => {
+      if (!mounted) return;
+      const rawBal = payload?.student?.coin_balance;
+      const bal =
+        typeof rawBal === "number" && !Number.isNaN(rawBal) ? rawBal : 0;
+      setChildCoinBalance(bal);
+      if (!payload?.ok || !payload?.student?.id) return;
+      const student = payload.student;
+      const fullName = String(student.full_name || "").trim();
+      if (fullName) {
+        setPlayerName(fullName);
         try {
-          safeSetItem("mleo_player_name", defaults.fullName);
+          safeSetItem("mleo_player_name", fullName);
         } catch {}
       }
-      if (defaults.gradeKey) {
-        setGrade(defaults.gradeKey);
-        const gradeNumberFromDb = gradeKeyToNumber(defaults.gradeKey);
+      const gradeKey = normalizeGradeLevelToKey(student.grade_level);
+      if (gradeKey) {
+        setGrade(gradeKey);
+        const gradeNumberFromDb = gradeKeyToNumber(gradeKey);
         if (gradeNumberFromDb) {
           setGradeNumber(gradeNumberFromDb);
         }
       }
     })
-    .catch(() => {});
+    .catch(() => {
+      if (mounted) setChildCoinBalance(0);
+    });
   return () => {
     mounted = false;
   };
@@ -354,6 +379,8 @@ const [monthlyProgress, setMonthlyProgress] = useState({
 const [goalPercent, setGoalPercent] = useState(0);
 const [minutesRemaining, setMinutesRemaining] = useState(MONTHLY_MINUTES_TARGET);
 const [rewardChoice, setRewardChoice] = useState(null);
+/** Display-only: `payload.student.coin_balance` from GET /api/student/me. */
+const [childCoinBalance, setChildCoinBalance] = useState(0);
 const [showRewardCelebration, setShowRewardCelebration] = useState(false);
 const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
 
@@ -2019,7 +2046,7 @@ useEffect(() => {
         >
           <div className="text-center mb-3">
             <div className="flex items-center justify-center gap-2 mb-0.5">
-              <h1 className="text-2xl font-extrabold text-white">
+              <h1 className="text-2xl md:text-3xl lg:text-4xl font-extrabold text-white">
                 📐 גיאומטריה
               </h1>
               <button
@@ -2037,90 +2064,122 @@ useEffect(() => {
                 {sound.soundsEnabled && sound.musicEnabled ? "🔊" : "🔇"}
               </button>
             </div>
-            <p className="text-white/70 text-xs">
+            <p className="text-white/70 text-xs md:text-sm">
               {playerName || "שחקן"} • {GRADES[grade]?.name || ""} • {LEVELS[level].name} • {getTopicName(topic)} • {MODES[mode].name}
             </p>
           </div>
 
           <div
             ref={controlsRef}
-            className="grid grid-cols-8 gap-0.5 mb-3 w-full max-w-lg"
+            className="mx-auto grid grid-cols-8 gap-0.5 md:gap-1 lg:gap-1.5 mb-3 w-full max-w-lg md:max-w-3xl lg:max-w-4xl xl:max-w-5xl"
           >
-            <div className="bg-black/30 border border-white/10 rounded-lg py-1.5 px-0.5 text-center flex flex-col justify-center min-h-[50px]">
-              <div className="text-[9px] text-white/60 leading-tight mb-0.5">ניקוד</div>
-              <div className="text-sm font-bold text-emerald-400 leading-tight">{score}</div>
+            <div className="bg-black/30 border border-white/10 rounded-lg py-1.5 px-0.5 md:py-2 md:px-1 lg:px-1.5 text-center flex flex-col items-stretch justify-start min-h-[50px] md:min-h-[58px] lg:min-h-[62px]">
+              <div className="flex shrink-0 items-center justify-center mb-0.5 md:mb-1 md:min-h-[26px] lg:min-h-[28px] px-0.5">
+                <div className="text-[9px] md:text-[12px] lg:text-sm text-white/78 md:text-white/85 lg:text-white/90 leading-tight">ניקוד</div>
+              </div>
+              <div className="flex flex-1 items-center justify-center min-h-0">
+                <div className="text-sm md:text-lg lg:text-xl font-bold text-emerald-300 md:text-emerald-300 lg:text-emerald-200 leading-tight">{score}</div>
+              </div>
             </div>
-            <div className="bg-black/30 border border-white/10 rounded-lg py-1.5 px-0.5 text-center flex flex-col justify-center min-h-[50px]">
-              <div className="text-[9px] text-white/60 leading-tight mb-0.5">רצף</div>
-              <div className="text-sm font-bold text-amber-400 leading-tight">🔥{streak}</div>
+            <div className="bg-black/30 border border-white/10 rounded-lg py-1.5 px-0.5 md:py-2 md:px-1 lg:px-1.5 text-center flex flex-col items-stretch justify-start min-h-[50px] md:min-h-[58px] lg:min-h-[62px]">
+              <div className="flex shrink-0 items-center justify-center mb-0.5 md:mb-1 md:min-h-[26px] lg:min-h-[28px] px-0.5">
+                <div className="text-[9px] md:text-[12px] lg:text-sm text-white/78 md:text-white/85 lg:text-white/90 leading-tight">רצף</div>
+              </div>
+              <div className="flex flex-1 items-center justify-center min-h-0">
+                <div className="text-sm md:text-lg lg:text-xl font-bold text-amber-300 md:text-amber-300 lg:text-amber-200 leading-tight">🔥{streak}</div>
+              </div>
             </div>
-            <div className="bg-black/30 border border-white/10 rounded-lg py-1.5 px-0.5 text-center flex flex-col justify-center min-h-[50px]">
-              <div className="text-[9px] text-white/60 leading-tight mb-0.5">כוכבים</div>
-              <div className="text-sm font-bold text-yellow-400 leading-tight">⭐{stars}</div>
+            <div className="bg-black/30 border border-white/10 rounded-lg py-1.5 px-0.5 md:py-2 md:px-1 lg:px-1.5 text-center flex flex-col items-stretch justify-start min-h-[50px] md:min-h-[58px] lg:min-h-[62px]">
+              <div className="flex shrink-0 items-center justify-center mb-0.5 md:mb-1 md:min-h-[26px] lg:min-h-[28px] px-0.5">
+                <div className="text-[9px] md:text-[12px] lg:text-sm text-white/78 md:text-white/85 lg:text-white/90 leading-tight">כוכבים</div>
+              </div>
+              <div className="flex flex-1 items-center justify-center min-h-0">
+                <div className="text-sm md:text-lg lg:text-xl font-bold text-yellow-300 md:text-yellow-300 lg:text-yellow-200 leading-tight">⭐{stars}</div>
+              </div>
             </div>
-            <div className="bg-black/30 border border-white/10 rounded-lg py-1.5 px-0.5 text-center flex flex-col justify-center min-h-[50px]">
-              <div className="text-[9px] text-white/60 leading-tight mb-0.5">רמה</div>
-              <div className="text-sm font-bold text-purple-400 leading-tight">רמה {playerLevel}</div>
+            <div className="bg-black/30 border border-white/10 rounded-lg py-1.5 px-0.5 md:py-2 md:px-1 lg:px-1.5 text-center flex flex-col items-stretch justify-start min-h-[50px] md:min-h-[58px] lg:min-h-[62px]">
+              <div className="flex shrink-0 items-center justify-center mb-0.5 md:mb-1 md:min-h-[26px] lg:min-h-[28px] px-0.5">
+                <div className="text-[9px] md:text-[12px] lg:text-sm text-white/78 md:text-white/85 lg:text-white/90 leading-tight">רמה</div>
+              </div>
+              <div className="flex flex-1 items-center justify-center min-h-0">
+                <div className="text-sm md:text-lg lg:text-xl font-bold text-purple-300 md:text-purple-300 lg:text-purple-200 leading-tight">רמה {playerLevel}</div>
+              </div>
             </div>
-            <div className="bg-black/30 border border-white/10 rounded-lg py-1.5 px-0.5 text-center flex flex-col justify-center min-h-[50px]">
-              <div className="text-[9px] text-white/60 leading-tight mb-0.5">✅</div>
-              <div className="text-sm font-bold text-green-400 leading-tight">{correct}</div>
+            <div className="bg-black/30 border border-white/10 rounded-lg py-1.5 px-0.5 md:py-2 md:px-1 lg:px-1.5 text-center flex flex-col items-stretch justify-start min-h-[50px] md:min-h-[58px] lg:min-h-[62px]">
+              <div className="flex shrink-0 items-center justify-center mb-0.5 md:mb-1 md:min-h-[26px] lg:min-h-[28px] px-0.5">
+                <div className="text-[9px] md:text-[12px] lg:text-sm text-white/78 md:text-white/85 lg:text-white/90 leading-tight">✅</div>
+              </div>
+              <div className="flex flex-1 items-center justify-center min-h-0">
+                <div className="text-sm md:text-lg lg:text-xl font-bold text-green-300 md:text-green-300 lg:text-green-200 leading-tight">{correct}</div>
+              </div>
             </div>
-            <div className="bg-black/30 border border-white/10 rounded-lg py-1.5 px-0.5 text-center flex flex-col justify-center min-h-[50px]">
-              <div className="text-[9px] text-white/60 leading-tight mb-0.5">חיים</div>
-              <div className="text-sm font-bold text-rose-400 leading-tight">
-                {mode === "challenge" ? `${lives} ❤️` : "∞"}
+            <div className="bg-black/30 border border-white/10 rounded-lg py-1.5 px-0.5 md:py-2 md:px-1 lg:px-1.5 text-center flex flex-col items-stretch justify-start min-h-[50px] md:min-h-[58px] lg:min-h-[62px]">
+              <div className="flex shrink-0 items-center justify-center mb-0.5 md:mb-1 md:min-h-[26px] lg:min-h-[28px] px-0.5">
+                <div className="text-[9px] md:text-[12px] lg:text-sm text-white/78 md:text-white/85 lg:text-white/90 leading-tight">חיים</div>
+              </div>
+              <div className="flex flex-1 items-center justify-center min-h-0">
+                <div className="text-sm md:text-lg lg:text-xl font-bold text-rose-300 md:text-rose-300 lg:text-rose-200 leading-tight">
+                  {mode === "challenge" ? `${lives} ❤️` : "∞"}
+                </div>
               </div>
             </div>
             <div
-              className={`rounded-lg py-1.5 px-0.5 text-center flex flex-col justify-center min-h-[50px] ${
+              className={`rounded-lg py-1.5 px-0.5 md:py-2 md:px-1 lg:px-1.5 text-center flex flex-col items-stretch justify-start min-h-[50px] md:min-h-[58px] lg:min-h-[62px] ${
                 gameActive && (mode === "challenge" || mode === "speed") && timeLeft <= 5
                   ? "bg-red-500/30 border-2 border-red-400 animate-pulse"
                   : "bg-black/30 border border-white/10"
               }`}
             >
-              <div className="text-[9px] text-white/60 leading-tight mb-0.5">⏰ טיימר</div>
-              <div
-                className={`text-sm font-black leading-tight ${
-                  gameActive && (mode === "challenge" || mode === "speed") && timeLeft <= 5
-                    ? "text-red-400"
-                    : gameActive && (mode === "challenge" || mode === "speed")
-                    ? "text-yellow-400"
-                    : "text-white/60"
-                }`}
-              >
-                {gameActive
-                  ? mode === "challenge" || mode === "speed"
-                    ? timeLeft ?? "--"
-                    : "∞"
-                  : "--"}
+              <div className="flex shrink-0 items-center justify-center mb-0.5 md:mb-1 md:min-h-[26px] lg:min-h-[28px] px-0.5">
+                <div className="text-[9px] md:text-[12px] lg:text-sm text-white/78 md:text-white/85 lg:text-white/90 leading-tight">⏰ טיימר</div>
+              </div>
+              <div className="flex flex-1 items-center justify-center min-h-0">
+                <div
+                  className={`text-sm md:text-lg lg:text-xl font-black leading-tight ${
+                    gameActive && (mode === "challenge" || mode === "speed") && timeLeft <= 5
+                      ? "text-red-400"
+                      : gameActive && (mode === "challenge" || mode === "speed")
+                      ? "text-yellow-400"
+                      : "text-white/78 md:text-white/85 lg:text-white/90"
+                  }`}
+                >
+                  {gameActive
+                    ? mode === "challenge" || mode === "speed"
+                      ? timeLeft ?? "--"
+                      : "∞"
+                    : "--"}
+                </div>
               </div>
             </div>
             <button
               onClick={() => setShowPlayerProfile(true)}
-              className="bg-black/30 border border-white/10 rounded-lg py-1.5 px-0.5 text-center flex flex-col justify-center min-h-[50px] hover:bg-purple-500/20 transition-all cursor-pointer"
+              className="bg-black/30 border border-white/10 rounded-lg py-1.5 px-0.5 md:py-2 md:px-1 lg:px-1.5 text-center flex flex-col items-stretch justify-start min-h-[50px] md:min-h-[58px] lg:min-h-[62px] hover:bg-purple-500/20 transition-all cursor-pointer"
               title="פרופיל שחקן"
             >
-              <div className="text-[9px] text-white/60 leading-tight mb-0.5">אווטר</div>
-              <div className="text-lg font-bold leading-tight">
-                {playerAvatarImage ? (
-                  <img 
-                    src={playerAvatarImage} 
-                    alt="אווטר" 
-                    className="w-6 h-6 rounded-full object-cover mx-auto"
+              <div className="flex shrink-0 items-center justify-center mb-0.5 md:mb-1 md:min-h-[26px] lg:min-h-[28px] px-0.5">
+                <div className="text-[9px] md:text-[12px] lg:text-sm text-white/78 md:text-white/85 lg:text-white/90 leading-tight">אווטר</div>
+              </div>
+              <div className="flex flex-1 items-center justify-center min-h-0">
+                <div className="text-lg md:text-2xl lg:text-3xl font-bold leading-tight">
+                  {playerAvatarImage ? (
+                    <img 
+                      src={playerAvatarImage} 
+                      alt="אווטר" 
+                      className="w-6 h-6 md:w-7 md:h-7 lg:w-8 lg:h-8 rounded-full object-cover mx-auto"
                   />
                 ) : (
                   playerAvatar
                 )}
+                </div>
               </div>
             </button>
           </div>
 
           <div
-            className="flex items-center justify-center gap-1.5 mb-3 w-full max-w-lg flex-wrap px-1"
+            className="mx-auto flex items-center justify-center gap-1.5 md:gap-2.5 lg:gap-3 mb-3 md:mb-4 w-full max-w-lg md:max-w-3xl lg:max-w-4xl xl:max-w-5xl flex-wrap px-1 md:px-2"
             dir="rtl"
           >
-            {Object.keys(MODES).map((m) => (
+            {["learning", "challenge", "speed", "marathon"].map((m) => (
               <button
                 key={m}
                 onClick={() => {
@@ -2128,7 +2187,7 @@ useEffect(() => {
                   setGameActive(false);
                   setFeedback(null);
                 }}
-                className={`h-8 px-3 rounded-lg text-xs font-bold transition-all flex-shrink-0 ${
+                className={`h-8 md:h-10 lg:h-11 px-3 md:px-4 lg:px-5 rounded-lg text-xs md:text-sm lg:text-base font-bold transition-all flex-shrink-0 ${
                   mode === m
                     ? "bg-emerald-500/80 text-white"
                     : "bg-white/10 text-white/70 hover:bg-white/20"
@@ -2137,6 +2196,32 @@ useEffect(() => {
                 {MODES[m].name}
               </button>
             ))}
+            <div className="inline-flex items-center gap-1.5 md:gap-2.5 lg:gap-3 shrink-0">
+              <button
+                type="button"
+                onClick={() => {
+                  setMode("practice");
+                  setGameActive(false);
+                  setFeedback(null);
+                }}
+                className={`h-8 md:h-10 lg:h-11 px-3 md:px-4 lg:px-5 rounded-lg text-xs md:text-sm lg:text-base font-bold transition-all flex-shrink-0 ${
+                  mode === "practice"
+                    ? "bg-emerald-500/80 text-white"
+                    : "bg-white/10 text-white/70 hover:bg-white/20"
+                }`}
+              >
+                {MODES.practice.name}
+              </button>
+              <div
+                className="hidden md:inline-flex items-center justify-center gap-1.5 md:gap-2 shrink-0 rounded-lg border border-amber-400/45 bg-black/35 md:h-10 lg:h-11 md:px-4 lg:px-5 md:text-sm lg:text-base font-bold tabular-nums shadow-sm"
+                title="מטבעות משחק"
+              >
+                <span className="text-white">מטבעות:</span>
+                <span dir="ltr" className="text-amber-100">
+                  {childCoinBalance}
+                </span>
+              </div>
+            </div>
           </div>
 
           {showStreakReward && (
@@ -2194,30 +2279,21 @@ useEffect(() => {
           )}
 
           {!gameActive ? (
-            <div className="flex flex-col flex-1 min-h-0 w-full max-w-lg items-center justify-start">
-              <div
-                className="flex flex-nowrap items-center gap-2 mb-3 w-full max-w-lg px-0.5 overflow-x-auto [-webkit-overflow-scrolling:touch] [scrollbar-width:thin]"
-                dir="rtl"
-              >
-                <input
-                  type="text"
+            <div className="flex flex-col flex-1 min-h-0 w-full max-w-lg md:max-w-3xl lg:max-w-4xl xl:max-w-5xl items-center justify-start md:gap-1">
+              <div className="w-full flex justify-center mb-3 md:mb-4 overflow-x-auto [-webkit-overflow-scrolling:touch] [scrollbar-width:thin] px-0.5">
+                <div
+                  className="inline-flex flex-nowrap items-center justify-center gap-2 md:gap-2.5 lg:gap-3 w-max max-w-full min-w-0"
+                  dir="rtl"
+                >
+                <div
                   data-testid="geometry-player-name"
-                  value={playerName}
-                  onChange={(e) => {
-                    const newName = e.target.value;
-                    setPlayerName(newName);
-                    if (typeof window !== "undefined") {
-                      try {
-                        safeSetItem("mleo_player_name", newName);
-                      } catch {}
-                    }
-                  }}
-                  placeholder="שם שחקן"
-                  className="h-10 shrink-0 w-[3.5rem] px-1.5 rounded-lg bg-black/30 border border-white/20 text-white text-xs font-bold placeholder:text-white/40 box-border"
-                  maxLength={15}
+                  className="h-10 md:h-11 shrink-0 w-[3.5rem] md:w-[8.5rem] lg:w-[9.25rem] px-1.5 md:px-3 lg:px-3.5 rounded-lg bg-black/30 border border-white/20 text-white text-xs md:text-sm font-bold box-border flex items-center justify-center overflow-hidden text-ellipsis whitespace-nowrap select-none pointer-events-none min-w-0"
                   dir={playerName && /[\u0590-\u05FF]/.test(playerName) ? "rtl" : "ltr"}
-                  style={{ textAlign: playerName && /[\u0590-\u05FF]/.test(playerName) ? "right" : "left" }}
-                />
+                  title={playerName.trim() ? playerName.trim() : undefined}
+                  aria-label={playerName.trim() ? `שם תלמיד: ${playerName.trim()}` : "שם תלמיד לא זמין"}
+                >
+                  {playerName.trim() ? playerName.trim() : "שחקן"}
+                </div>
                 <select
                   value={grade}
                   title={GRADES[grade]?.name}
@@ -2255,7 +2331,7 @@ useEffect(() => {
                     // מאפס את רשימת השאלות האחרונות כדי שלא תהיה לולאה בניסיון למצוא "שאלה חדשה"
                     setRecentQuestions(new Set());
                   }}
-                  className="h-10 shrink-0 min-w-0 w-[5.25rem] max-w-[5.5rem] rounded-lg bg-black/30 border border-white/20 text-white text-xs font-bold px-2 box-border overflow-hidden text-ellipsis whitespace-nowrap"
+                  className="h-10 md:h-11 shrink-0 min-w-0 w-[5.75rem] max-w-[6.25rem] md:w-[6.5rem] md:max-w-[7rem] rounded-lg bg-black/30 border border-white/20 text-white text-xs md:text-sm font-bold px-2 box-border overflow-hidden text-ellipsis whitespace-nowrap"
                 >
                   {Object.keys(GRADES).map((g) => (
                     <option key={g} value={g}>
@@ -2270,7 +2346,7 @@ useEffect(() => {
                     setLevel(e.target.value);
                     setGameActive(false);
                   }}
-                  className="h-10 shrink-0 min-w-0 w-[5rem] max-w-[5.5rem] rounded-lg bg-black/30 border border-white/20 text-white text-xs font-bold px-2 box-border overflow-hidden text-ellipsis whitespace-nowrap"
+                  className="h-10 md:h-11 shrink-0 min-w-0 w-[5rem] max-w-[5.5rem] md:w-[5.75rem] md:max-w-[6.25rem] rounded-lg bg-black/30 border border-white/20 text-white text-xs md:text-sm font-bold px-2 box-border overflow-hidden text-ellipsis whitespace-nowrap"
                 >
                   {Object.keys(LEVELS).map((lvl) => (
                     <option key={lvl} value={lvl}>
@@ -2278,14 +2354,14 @@ useEffect(() => {
                     </option>
                   ))}
                 </select>
-                <div className="flex flex-1 min-w-0 items-center gap-1.5 shrink">
+                <div className="flex flex-1 min-w-0 md:flex-none md:max-w-[min(22rem,42vw)] items-center gap-1.5 md:gap-2 shrink">
                   {topic === "mixed" && (
                     <button
                       type="button"
                       onClick={() => {
                         setShowMixedSelector(true);
                       }}
-                      className="h-10 w-10 shrink-0 rounded-lg bg-blue-500/80 hover:bg-blue-500 border border-white/20 text-white text-sm font-bold flex items-center justify-center box-border"
+                      className="h-10 w-10 md:h-11 md:w-11 shrink-0 rounded-lg bg-blue-500/80 hover:bg-blue-500 border border-white/20 text-white text-sm md:text-base font-bold flex items-center justify-center box-border"
                       title="ערוך נושאים למיקס"
                     >
                       ⚙️
@@ -2307,7 +2383,7 @@ useEffect(() => {
                         setShowMixedSelector(false);
                       }
                     }}
-                    className="h-10 min-w-0 flex-1 max-w-[18rem] rounded-lg bg-black/30 border border-white/20 text-white text-xs font-bold px-2 box-border overflow-hidden text-ellipsis whitespace-nowrap"
+                    className="h-10 md:h-11 min-w-0 w-full md:w-[min(22rem,42vw)] md:max-w-[22rem] rounded-lg bg-black/30 border border-white/20 text-white text-xs md:text-sm font-bold px-2 box-border overflow-hidden text-ellipsis whitespace-nowrap"
                   >
                     {(GRADES[grade]?.topics || []).map((t) => (
                       <option key={t} value={t}>
@@ -2316,30 +2392,47 @@ useEffect(() => {
                     ))}
                   </select>
                 </div>
+                </div>
               </div>
 
-              <div className="grid grid-cols-4 gap-1.5 mb-3 w-full max-w-lg" dir="rtl">
-                <div className="bg-black/25 border border-white/15 rounded-lg px-1 py-2 min-h-[4.5rem] flex flex-col items-center justify-center gap-1 min-w-0 shadow-sm">
-                  <span className="text-[10px] text-white/60 text-center leading-tight max-w-full px-0.5 line-clamp-2">שיא ניקוד</span>
-                  <span className="text-base font-bold text-emerald-400 tabular-nums leading-tight">{bestScore}</span>
+              <div className="grid grid-cols-4 gap-1.5 md:gap-2 lg:gap-2.5 mb-3 md:mb-4 w-full max-w-lg md:max-w-3xl lg:max-w-4xl xl:max-w-5xl mx-auto" dir="rtl">
+                <div className="bg-black/25 border border-white/15 rounded-lg md:rounded-xl px-1 py-2 md:px-2 md:py-3 min-h-[4.5rem] md:min-h-[5.25rem] lg:min-h-[5.75rem] flex flex-col items-stretch justify-start gap-1 md:gap-1.5 min-w-0 shadow-sm">
+                  <div className="flex shrink-0 items-center justify-center md:min-h-[28px] lg:min-h-[30px] px-0.5">
+                    <span className="text-[10px] md:text-[13px] lg:text-sm text-white/78 md:text-white/85 lg:text-white/90 text-center leading-tight max-w-full line-clamp-2">שיא ניקוד</span>
+                  </div>
+                  <div className="flex flex-1 items-center justify-center min-h-0">
+                    <span className="text-base md:text-xl lg:text-2xl font-bold text-emerald-300 md:text-emerald-300 lg:text-emerald-200 tabular-nums leading-tight">{bestScore}</span>
+                  </div>
                 </div>
-                <div className="bg-black/25 border border-white/15 rounded-lg px-1 py-2 min-h-[4.5rem] flex flex-col items-center justify-center gap-1 min-w-0 shadow-sm">
-                  <span className="text-[10px] text-white/60 text-center leading-tight max-w-full px-0.5 line-clamp-2">שיא רצף</span>
-                  <span className="text-base font-bold text-amber-400 tabular-nums leading-tight">{bestStreak}</span>
+                <div className="bg-black/25 border border-white/15 rounded-lg md:rounded-xl px-1 py-2 md:px-2 md:py-3 min-h-[4.5rem] md:min-h-[5.25rem] lg:min-h-[5.75rem] flex flex-col items-stretch justify-start gap-1 md:gap-1.5 min-w-0 shadow-sm">
+                  <div className="flex shrink-0 items-center justify-center md:min-h-[28px] lg:min-h-[30px] px-0.5">
+                    <span className="text-[10px] md:text-[13px] lg:text-sm text-white/78 md:text-white/85 lg:text-white/90 text-center leading-tight max-w-full line-clamp-2">שיא רצף</span>
+                  </div>
+                  <div className="flex flex-1 items-center justify-center min-h-0">
+                    <span className="text-base md:text-xl lg:text-2xl font-bold text-amber-300 md:text-amber-300 lg:text-amber-200 tabular-nums leading-tight">{bestStreak}</span>
+                  </div>
                 </div>
-                <div className="bg-black/25 border border-white/15 rounded-lg px-1 py-2 min-h-[4.5rem] flex flex-col items-center justify-center gap-1 min-w-0 shadow-sm">
-                  <span className="text-[10px] text-white/60 text-center leading-tight max-w-full px-0.5 line-clamp-2">דיוק</span>
-                  <span className="text-base font-bold text-blue-400 tabular-nums leading-tight">{accuracy}%</span>
+                <div className="bg-black/25 border border-white/15 rounded-lg md:rounded-xl px-1 py-2 md:px-2 md:py-3 min-h-[4.5rem] md:min-h-[5.25rem] lg:min-h-[5.75rem] flex flex-col items-stretch justify-start gap-1 md:gap-1.5 min-w-0 shadow-sm">
+                  <div className="flex shrink-0 items-center justify-center md:min-h-[28px] lg:min-h-[30px] px-0.5">
+                    <span className="text-[10px] md:text-[13px] lg:text-sm text-white/78 md:text-white/85 lg:text-white/90 text-center leading-tight max-w-full line-clamp-2">דיוק</span>
+                  </div>
+                  <div className="flex flex-1 items-center justify-center min-h-0">
+                    <span className="text-base md:text-xl lg:text-2xl font-bold text-blue-300 md:text-blue-300 lg:text-blue-200 tabular-nums leading-tight">{accuracy}%</span>
+                  </div>
                 </div>
-                <div className="bg-black/25 border border-white/15 rounded-lg px-1 py-2 min-h-[4.5rem] flex flex-col items-center justify-center gap-1.5 min-w-0 shadow-sm">
-                  <span className="text-[10px] text-white/60 text-center leading-tight">אתגרים</span>
-                  <button
-                    type="button"
-                    onClick={() => setShowDailyChallenge(true)}
-                    className="h-8 w-full max-w-[4rem] px-2 rounded-md bg-blue-500/85 hover:bg-blue-500 text-white text-xs font-bold"
-                  >
-                    פתיחה
-                  </button>
+                <div className="bg-black/25 border border-white/15 rounded-lg md:rounded-xl px-1 py-2 md:px-2 md:py-3 min-h-[4.5rem] md:min-h-[5.25rem] lg:min-h-[5.75rem] flex flex-col items-stretch justify-start gap-1 md:gap-1.5 min-w-0 shadow-sm">
+                  <div className="flex shrink-0 items-center justify-center md:min-h-[28px] lg:min-h-[30px] px-0.5">
+                    <span className="text-[10px] md:text-[13px] lg:text-sm text-white/78 md:text-white/85 lg:text-white/90 text-center leading-tight">אתגרים</span>
+                  </div>
+                  <div className="flex flex-1 items-center justify-center min-h-0">
+                    <button
+                      type="button"
+                      onClick={() => setShowDailyChallenge(true)}
+                      className="h-7 md:h-8 w-full max-w-[3.5rem] md:max-w-[4rem] px-1.5 md:px-2 rounded-md bg-blue-500/85 hover:bg-blue-500 text-white text-[11px] md:text-sm lg:text-base font-bold"
+                    >
+                      פתיחה
+                    </button>
+                  </div>
                 </div>
               </div>
 
@@ -2348,29 +2441,31 @@ useEffect(() => {
                 onRecommendedPractice={handleAdaptivePlannerRecommendedPractice}
               />
 
-              <div className="bg-white/5 border border-white/10 rounded-md px-1 pt-1 pb-1 mb-3 w-full max-w-lg opacity-90">
-                <div className="flex items-center justify-between text-[9px] text-white/55 mb-0.5 leading-tight">
+              <div className="bg-white/5 border border-white/10 rounded-md md:rounded-lg px-2 pt-2.5 pb-3 md:px-4 md:py-4 lg:py-5 mb-3 md:mb-4 w-full max-w-lg md:max-w-3xl lg:max-w-4xl xl:max-w-5xl mx-auto opacity-90 md:min-h-[12.5rem] lg:min-h-[13rem]">
+                <div className="flex items-center justify-between text-[10px] md:text-xs lg:text-sm text-white/82 md:text-white/90 lg:text-white/95 mb-1 md:mb-1.5 lg:mb-2 leading-tight font-semibold md:font-bold">
                   <span>🎁 מסע פרס חודשי</span>
                   <span>
                     {Math.round(monthlyProgress.totalMinutes)} / {MONTHLY_MINUTES_TARGET} דק׳
                   </span>
                 </div>
-                <p className="text-[9px] text-white/55 mb-0.5 text-center leading-tight">
+                <p className="text-[10px] md:text-xs lg:text-sm text-white/82 md:text-white/88 lg:text-white/92 mb-1 md:mb-1.5 lg:mb-2 text-center leading-snug">
                   {minutesRemaining > 0
                     ? `נותרו עוד ${Math.round(minutesRemaining)} דק׳ (~${Math.ceil(
                         Math.round(minutesRemaining) / 60
                       )} ש׳)`
                     : "🎉 יעד הושלם! בקשו מההורה לבחור פרס."}
                 </p>
-                <div className="w-full bg-white/10 rounded-full h-1.5 overflow-hidden mb-2">
+                <div className="w-full bg-white/10 rounded-full h-1.5 md:h-2 overflow-hidden mb-2.5 md:mb-3">
                   <div
-                    className="h-1.5 bg-emerald-400 rounded-full transition-all"
+                    className="h-1.5 md:h-2 bg-emerald-400 rounded-full transition-all"
                     style={{ width: `${goalPercent}%` }}
                   />
                 </div>
-                <div className="grid grid-cols-4 gap-1.5 w-full">
+                <div className="grid grid-cols-4 gap-2 md:gap-2 lg:gap-2.5 w-full">
                   {REWARD_OPTIONS.map((option) => {
-                    const rewardParts = splitRewardAmountLabel(option.label);
+                    const displayLabel = lobbyMonthlyRewardDisplayLabel(option.key);
+                    const rewardParts = splitRewardAmountLabel(displayLabel);
+                    const prizePicked = rewardChoice === option.key;
                     return (
                     <button
                       type="button"
@@ -2379,20 +2474,36 @@ useEffect(() => {
                         saveRewardChoice(yearMonthRef.current, option.key);
                         setRewardChoice(option.key);
                       }}
-                      className={`rounded-lg border py-2 px-1 min-h-[4.25rem] bg-black/35 flex flex-col items-center justify-center gap-1 min-w-0 transition-colors ${
-                        rewardChoice === option.key
+                      className={`rounded-lg border py-2.5 px-1.5 md:py-2.5 md:px-2 lg:py-3 lg:px-2.5 min-h-[4.85rem] md:min-h-[5.5rem] lg:min-h-[6rem] bg-black/35 flex flex-col items-center justify-center gap-1.5 md:gap-1.5 min-w-0 transition-colors ${
+                        prizePicked
                           ? "border-emerald-400 text-emerald-200 bg-emerald-500/20"
-                          : "border-white/15 text-white/70 hover:border-white/30"
+                          : "border-white/15 text-white hover:border-white/40"
                       }`}
                     >
-                      <span className="text-lg leading-none shrink-0">{option.icon}</span>
+                      <span className="text-xl md:text-xl lg:text-2xl leading-none shrink-0" aria-hidden>
+                        {LOBBY_MONTHLY_PRIZE_COIN_ICON}
+                      </span>
                       {rewardParts.amount != null ? (
                         <>
-                          <span className="text-xs font-extrabold tabular-nums leading-none text-emerald-100" dir="ltr">{rewardParts.amount}</span>
-                          <span className="text-[9px] font-semibold leading-snug text-center text-white/90 px-0.5 line-clamp-2" dir="ltr">{rewardParts.name}</span>
+                          <span className="text-xs md:text-sm font-extrabold tabular-nums leading-none text-emerald-100" dir="ltr">{rewardParts.amount}</span>
+                          <span
+                            className={`text-[9px] md:text-[11px] lg:text-xs font-semibold leading-snug text-center px-0.5 md:px-1 line-clamp-2 ${
+                              prizePicked ? "text-emerald-100" : "text-white"
+                            }`}
+                            dir="ltr"
+                          >
+                            {rewardParts.name}
+                          </span>
                         </>
                       ) : (
-                        <span className="text-[10px] font-semibold leading-snug text-center px-0.5" dir="ltr">{rewardParts.full}</span>
+                        <span
+                          className={`text-[10px] md:text-xs lg:text-sm font-semibold leading-snug text-center px-0.5 md:px-1 line-clamp-3 ${
+                            prizePicked ? "text-emerald-100" : "text-white"
+                          }`}
+                          dir="rtl"
+                        >
+                          {rewardParts.full}
+                        </span>
                       )}
                     </button>
                     );
@@ -2400,48 +2511,51 @@ useEffect(() => {
                 </div>
               </div>
 
-              <div className="mt-auto mb-2 w-full pt-3 flex flex-col items-center gap-2">
-              <div className="flex items-center justify-center gap-1.5 w-full max-w-lg flex-wrap px-1">
+              <div className="mt-auto mb-2 w-full pt-3 md:pt-4 flex flex-col items-center gap-2 md:gap-3">
+              <div className="flex items-center justify-center gap-1.5 md:gap-2.5 w-full max-w-lg md:max-w-3xl lg:max-w-4xl xl:max-w-5xl flex-wrap px-1 md:px-2 mx-auto">
                 <button
                   type="button"
                   data-testid="geometry-start-game"
                   onClick={startGame}
                   disabled={!playerName.trim()}
-                  className="h-9 px-4 rounded-lg bg-emerald-500/80 hover:bg-emerald-500 disabled:bg-gray-500/50 disabled:cursor-not-allowed font-bold text-xs"
+                  className="h-9 md:h-10 px-4 md:px-5 rounded-lg bg-emerald-500/80 hover:bg-emerald-500 disabled:bg-gray-500/50 disabled:cursor-not-allowed font-bold text-xs md:text-sm"
                 >
                   ▶️ התחל
                 </button>
                 <button
                   onClick={() => setShowLeaderboard(true)}
-                  className="h-9 px-3 rounded-lg bg-orange-500/80 hover:bg-orange-500 font-bold text-xs"
+                  className="h-9 md:h-10 px-3 md:px-4 rounded-lg bg-orange-500/80 hover:bg-orange-500 font-bold text-xs md:text-sm"
                 >
                   🏆 לוח תוצאות
                 </button>
               </div>
 
               {/* כפתורים עזרה ותרגול ממוקד */}
-              <div className="w-full max-w-lg flex justify-center gap-2 flex-wrap">
+              <div className="w-full max-w-lg md:max-w-3xl lg:max-w-4xl xl:max-w-5xl flex justify-center gap-2 md:gap-2.5 flex-wrap mx-auto px-1 md:px-2">
                 <button
                   onClick={() => setShowHowTo(true)}
-                  className="px-4 py-2 rounded-lg bg-cyan-500/80 hover:bg-cyan-500 text-xs font-bold text-white shadow-sm"
+                  className="px-4 py-2 md:px-5 md:py-2.5 rounded-lg bg-cyan-500/80 hover:bg-cyan-500 text-xs md:text-sm font-bold text-white shadow-sm"
                 >
                   ❓ איך לומדים גאומטריה כאן?
                 </button>
                 <button
                   onClick={() => setShowReferenceModal(true)}
-                  className="px-4 py-2 rounded-lg bg-purple-500/80 hover:bg-purple-500 text-xs font-bold text-white shadow-sm"
+                  className="px-4 py-2 md:px-5 md:py-2.5 rounded-lg bg-purple-500/80 hover:bg-purple-500 text-xs md:text-sm font-bold text-white shadow-sm"
                 >
                   📚 לוח עזרה
                 </button>
-                <button
-                  onClick={() => router.push("/learning/parent-report")}
-                  className="px-4 py-2 rounded-lg bg-teal-500/80 hover:bg-teal-500 text-xs font-bold text-white shadow-sm"
+                <div
+                  className="md:hidden inline-flex items-center justify-center gap-1.5 shrink-0 rounded-lg border border-amber-400/45 bg-black/35 px-3 py-2 text-xs font-bold tabular-nums shadow-sm text-white"
+                  title="מטבעות משחק"
                 >
-                  📊 דוח להורים
-                </button>
+                  <span>מטבעות:</span>
+                  <span dir="ltr" className="text-amber-100">
+                    {childCoinBalance}
+                  </span>
+                </div>
                 <button
                   onClick={() => setShowPracticeOptions(true)}
-                  className="px-4 py-2 rounded-lg bg-pink-500/80 hover:bg-pink-500 text-xs font-bold text-white shadow-sm"
+                  className="px-4 py-2 md:px-5 md:py-2.5 rounded-lg bg-pink-500/80 hover:bg-pink-500 text-xs md:text-sm font-bold text-white shadow-sm"
                 >
                   🎯 תרגול ממוקד
                   {mistakes.length > 0 ? ` (${mistakes.length})` : ""}
@@ -2477,7 +2591,7 @@ useEffect(() => {
               {currentQuestion && (
                 <div
                   ref={gameRef}
-                  className="relative w-full max-w-lg flex flex-col items-center justify-start mb-2 flex-1"
+                  className="relative w-full max-w-lg md:max-w-3xl lg:max-w-4xl xl:max-w-4xl flex flex-col items-center justify-start mb-2 flex-1 mx-auto"
                   style={{ height: "var(--game-h, 400px)", minHeight: "300px" }}
                 >
                   {/* שכבת הודעות לא דוחפת פריסה */}
