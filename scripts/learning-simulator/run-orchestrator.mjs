@@ -90,6 +90,11 @@ const QUICK_STEPS = [
 /** Inserted after engine truth on full orchestrator only (deterministic; keeps quick fast). */
 const ENGINE_LAYER_FRAMEWORK_STEPS = [
   {
+    id: "coverageCatalogFrameworkPrereq",
+    script: "qa:learning-simulator:coverage",
+    label: "Coverage catalog (819 cells) — prereq for framework stress scenarios",
+  },
+  {
     id: "diagnosticFramework",
     script: "qa:learning-simulator:diagnostic-framework",
     label: "Professional diagnostic framework QA (mock contracts)",
@@ -185,7 +190,6 @@ const ENGINE_PROFESSIONALIZATION_STEPS = [
 /** Full gate only: matrix smoke → catalog → classification → scenario map (after Phase 4 artifacts exist). */
 const FULL_MATRIX_QA = [
   { id: "matrixSmoke", script: "qa:learning-simulator:matrix-smoke", label: "Matrix smoke (sampled cells → aggregate)" },
-  { id: "coverageCatalog", script: "qa:learning-simulator:coverage", label: "Coverage catalog (819 cells)" },
   { id: "unsupportedCells", script: "qa:learning-simulator:unsupported", label: "Unsupported cells classification" },
   {
     id: "contentGapAudit",

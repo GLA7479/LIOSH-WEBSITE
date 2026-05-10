@@ -250,7 +250,8 @@ export function composeAnswerDraft(plan, truthPacket, coachingCtx = null) {
 
   if (
     (intentMain === "what_to_do_this_week" || intentMain === "what_to_do_today") &&
-    recommendationContractOk
+    recommendationContractOk &&
+    !(hasIntelligenceSignals && ivWeak === "none")
   ) {
     const slotsWk = truthPacket?.contracts?.narrative?.textSlots || {};
     const obsWk = String(slotsWk.observation || "").trim();
@@ -326,11 +327,7 @@ export function composeAnswerDraft(plan, truthPacket, coachingCtx = null) {
         continue;
       }
       if (act) {
-        const skipWhenIvSaysNoWeakTopic =
-          hasIntelligenceSignals &&
-          ivWeak === "none" &&
-          intent !== "what_to_do_today" &&
-          intent !== "what_to_do_this_week";
+        const skipWhenIvSaysNoWeakTopic = hasIntelligenceSignals && ivWeak === "none";
         if (!skipWhenIvSaysNoWeakTopic) {
           answerBlocks.push({ type: "next_step", textHe: act, source: "contract_slot" });
         }
