@@ -308,8 +308,40 @@ function normalizeHebrew(rawTopic, rawSubtopic) {
 
 /** @returns {NormalizedTopic} */
 function normalizeEnglish(rawTopic, rawSubtopic) {
-  const cat = slug(rawTopic);
+  let cat = slug(rawTopic);
   const pool = slug(rawSubtopic);
+  if (cat === "sentences") cat = "sentence";
+
+  if (cat === "vocabulary") {
+    return {
+      rawTopic,
+      rawSubtopic,
+      normalizedTopicKey: `english.vocabulary_translation.${pool || "general"}`,
+      normalizedTopicLabelHe: "אוצר מילים ומילולי",
+      normalizationConfidence: pool ? "high" : "medium",
+      normalizationNotes: "Vocabulary games map to lexis / translation strand.",
+    };
+  }
+  if (cat === "writing") {
+    return {
+      rawTopic,
+      rawSubtopic,
+      normalizedTopicKey: `english.sentence_writing_patterns.${pool || "writing"}`,
+      normalizedTopicLabelHe: "כתיבה ודפוסי משפט",
+      normalizationConfidence: "medium",
+      normalizationNotes: "Writing / typing modes align with sentence-writing strand.",
+    };
+  }
+  if (cat === "mixed") {
+    return {
+      rawTopic,
+      rawSubtopic,
+      normalizedTopicKey: "english.mixed_practice",
+      normalizedTopicLabelHe: "אנגלית — ערבוב נושאים",
+      normalizationConfidence: "medium",
+      normalizationNotes: "Mixed practice — audit often skips or treats as composite.",
+    };
+  }
 
   if (cat === "grammar") {
     return {

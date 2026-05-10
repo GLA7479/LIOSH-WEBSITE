@@ -374,6 +374,27 @@ export const OFFICIAL_CURRICULUM_SOURCE_REGISTRY = [
   },
   {
     subject: "english",
+    sourceType: "official_pdf",
+    title:
+      "English as a foreign language — Curriculum framework (2020), owner workspace copy (Curriculum2020.pdf)",
+    url: "תוכנית משרד החינוך/english Curriculum2020.pdf",
+    checkedAt: SOURCE_REGISTRY_CHECKED_AT,
+    appliesToGrades: [1, 2, 3, 4, 5, 6],
+    appliesToTopics: ["listening_speaking", "lexis", "grammar", "reading", "writing", "can_do"],
+    sourceQualityLevel: "exact_subject_curriculum_source",
+    confidenceAfterAudit: "medium",
+    isOfficialMoEPublished: true,
+    providesGradeLevelDetail: false,
+    providesTopicLevelDetail: true,
+    providesSkillOrDepthDetail: true,
+    needsHumanPedagogyReview: true,
+    actionNeeded:
+      "להצליב מול דפי POP ומול מיפוי המוצר — הקובץ הוא עותק מקומי לעיגון בעלים ולא מחליף ביקורת ידנית.",
+    notes:
+      "מסמך PDF השמור בתיקיית תוכניות המאגר; משמש כמקור ייחוס לסגירת אנגלית — לא לערוך את הקובץ במסגרת פיתוח אוטומטי.",
+  },
+  {
+    subject: "english",
     sourceType: "internal_gap",
     title: "מיפוי נושא בריכת דקדוק מול פסקאות Can-do לפי כיתה — לא ממופה אוטומטית במאגר",
     url: "",
