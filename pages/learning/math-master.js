@@ -2782,72 +2782,104 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
             ref={controlsRef}
             className="mx-auto grid grid-cols-8 gap-0.5 md:gap-1 lg:gap-1.5 mb-3 w-full max-w-lg md:max-w-3xl lg:max-w-4xl xl:max-w-5xl"
           >
-            <div className="bg-black/30 border border-white/10 rounded-lg py-1.5 px-0.5 md:py-2 md:px-1 lg:px-1.5 text-center flex flex-col justify-center min-h-[50px] md:min-h-[58px] lg:min-h-[62px]">
-              <div className="text-[9px] md:text-[10px] lg:text-[11px] text-white/60 md:text-white/85 lg:text-white/90 leading-tight mb-0.5">ניקוד</div>
-              <div className="text-sm md:text-base lg:text-lg font-bold text-emerald-400 md:text-emerald-300 lg:text-emerald-200 leading-tight">{score}</div>
+            <div className="bg-black/30 border border-white/10 rounded-lg py-1.5 px-0.5 md:py-2 md:px-1 lg:px-1.5 text-center flex flex-col items-stretch justify-start min-h-[50px] md:min-h-[58px] lg:min-h-[62px]">
+              <div className="flex shrink-0 items-center justify-center mb-0.5 md:mb-1 md:min-h-[26px] lg:min-h-[28px] px-0.5">
+                <div className="text-[9px] md:text-[12px] lg:text-sm text-white/60 md:text-white/85 lg:text-white/90 leading-tight">ניקוד</div>
+              </div>
+              <div className="flex flex-1 items-center justify-center min-h-0">
+                <div className="text-sm md:text-lg lg:text-xl font-bold text-emerald-400 md:text-emerald-300 lg:text-emerald-200 leading-tight">{score}</div>
+              </div>
             </div>
-            <div className="bg-black/30 border border-white/10 rounded-lg py-1.5 px-0.5 md:py-2 md:px-1 lg:px-1.5 text-center flex flex-col justify-center min-h-[50px] md:min-h-[58px] lg:min-h-[62px]">
-              <div className="text-[9px] md:text-[10px] lg:text-[11px] text-white/60 md:text-white/85 lg:text-white/90 leading-tight mb-0.5">רצף</div>
-              <div className="text-sm md:text-base lg:text-lg font-bold text-amber-400 md:text-amber-300 lg:text-amber-200 leading-tight">🔥{streak}</div>
+            <div className="bg-black/30 border border-white/10 rounded-lg py-1.5 px-0.5 md:py-2 md:px-1 lg:px-1.5 text-center flex flex-col items-stretch justify-start min-h-[50px] md:min-h-[58px] lg:min-h-[62px]">
+              <div className="flex shrink-0 items-center justify-center mb-0.5 md:mb-1 md:min-h-[26px] lg:min-h-[28px] px-0.5">
+                <div className="text-[9px] md:text-[12px] lg:text-sm text-white/60 md:text-white/85 lg:text-white/90 leading-tight">רצף</div>
+              </div>
+              <div className="flex flex-1 items-center justify-center min-h-0">
+                <div className="text-sm md:text-lg lg:text-xl font-bold text-amber-400 md:text-amber-300 lg:text-amber-200 leading-tight">🔥{streak}</div>
+              </div>
             </div>
-            <div className="bg-black/30 border border-white/10 rounded-lg py-1.5 px-0.5 md:py-2 md:px-1 lg:px-1.5 text-center flex flex-col justify-center min-h-[50px] md:min-h-[58px] lg:min-h-[62px]">
-              <div className="text-[9px] md:text-[10px] lg:text-[11px] text-white/60 md:text-white/85 lg:text-white/90 leading-tight mb-0.5">כוכבים</div>
-              <div className="text-sm md:text-base lg:text-lg font-bold text-yellow-400 md:text-yellow-300 lg:text-yellow-200 leading-tight">⭐{stars}</div>
+            <div className="bg-black/30 border border-white/10 rounded-lg py-1.5 px-0.5 md:py-2 md:px-1 lg:px-1.5 text-center flex flex-col items-stretch justify-start min-h-[50px] md:min-h-[58px] lg:min-h-[62px]">
+              <div className="flex shrink-0 items-center justify-center mb-0.5 md:mb-1 md:min-h-[26px] lg:min-h-[28px] px-0.5">
+                <div className="text-[9px] md:text-[12px] lg:text-sm text-white/60 md:text-white/85 lg:text-white/90 leading-tight">כוכבים</div>
+              </div>
+              <div className="flex flex-1 items-center justify-center min-h-0">
+                <div className="text-sm md:text-lg lg:text-xl font-bold text-yellow-400 md:text-yellow-300 lg:text-yellow-200 leading-tight">⭐{stars}</div>
+              </div>
             </div>
-            <div className="bg-black/30 border border-white/10 rounded-lg py-1.5 px-0.5 md:py-2 md:px-1 lg:px-1.5 text-center flex flex-col justify-center min-h-[50px] md:min-h-[58px] lg:min-h-[62px]">
-              <div className="text-[9px] md:text-[10px] lg:text-[11px] text-white/60 md:text-white/85 lg:text-white/90 leading-tight mb-0.5">רמה</div>
-              <div className="text-sm md:text-base lg:text-lg font-bold text-purple-400 md:text-purple-300 lg:text-purple-200 leading-tight">רמה {playerLevel}</div>
+            <div className="bg-black/30 border border-white/10 rounded-lg py-1.5 px-0.5 md:py-2 md:px-1 lg:px-1.5 text-center flex flex-col items-stretch justify-start min-h-[50px] md:min-h-[58px] lg:min-h-[62px]">
+              <div className="flex shrink-0 items-center justify-center mb-0.5 md:mb-1 md:min-h-[26px] lg:min-h-[28px] px-0.5">
+                <div className="text-[9px] md:text-[12px] lg:text-sm text-white/60 md:text-white/85 lg:text-white/90 leading-tight">רמה</div>
+              </div>
+              <div className="flex flex-1 items-center justify-center min-h-0">
+                <div className="text-sm md:text-lg lg:text-xl font-bold text-purple-400 md:text-purple-300 lg:text-purple-200 leading-tight">רמה {playerLevel}</div>
+              </div>
             </div>
-            <div className="bg-black/30 border border-white/10 rounded-lg py-1.5 px-0.5 md:py-2 md:px-1 lg:px-1.5 text-center flex flex-col justify-center min-h-[50px] md:min-h-[58px] lg:min-h-[62px]">
-              <div className="text-[9px] md:text-[10px] lg:text-[11px] text-white/60 md:text-white/85 lg:text-white/90 leading-tight mb-0.5">✅</div>
-              <div className="text-sm md:text-base lg:text-lg font-bold text-green-400 md:text-green-300 lg:text-green-200 leading-tight">{correct}</div>
+            <div className="bg-black/30 border border-white/10 rounded-lg py-1.5 px-0.5 md:py-2 md:px-1 lg:px-1.5 text-center flex flex-col items-stretch justify-start min-h-[50px] md:min-h-[58px] lg:min-h-[62px]">
+              <div className="flex shrink-0 items-center justify-center mb-0.5 md:mb-1 md:min-h-[26px] lg:min-h-[28px] px-0.5">
+                <div className="text-[9px] md:text-[12px] lg:text-sm text-white/60 md:text-white/85 lg:text-white/90 leading-tight">✅</div>
+              </div>
+              <div className="flex flex-1 items-center justify-center min-h-0">
+                <div className="text-sm md:text-lg lg:text-xl font-bold text-green-400 md:text-green-300 lg:text-green-200 leading-tight">{correct}</div>
+              </div>
             </div>
-            <div className="bg-black/30 border border-white/10 rounded-lg py-1.5 px-0.5 md:py-2 md:px-1 lg:px-1.5 text-center flex flex-col justify-center min-h-[50px] md:min-h-[58px] lg:min-h-[62px]">
-              <div className="text-[9px] md:text-[10px] lg:text-[11px] text-white/60 md:text-white/85 lg:text-white/90 leading-tight mb-0.5">חיים</div>
-              <div className="text-sm md:text-base lg:text-lg font-bold text-rose-400 md:text-rose-300 lg:text-rose-200 leading-tight">
-                {mode === "challenge" ? `${lives} ❤️` : "∞"}
+            <div className="bg-black/30 border border-white/10 rounded-lg py-1.5 px-0.5 md:py-2 md:px-1 lg:px-1.5 text-center flex flex-col items-stretch justify-start min-h-[50px] md:min-h-[58px] lg:min-h-[62px]">
+              <div className="flex shrink-0 items-center justify-center mb-0.5 md:mb-1 md:min-h-[26px] lg:min-h-[28px] px-0.5">
+                <div className="text-[9px] md:text-[12px] lg:text-sm text-white/60 md:text-white/85 lg:text-white/90 leading-tight">חיים</div>
+              </div>
+              <div className="flex flex-1 items-center justify-center min-h-0">
+                <div className="text-sm md:text-lg lg:text-xl font-bold text-rose-400 md:text-rose-300 lg:text-rose-200 leading-tight">
+                  {mode === "challenge" ? `${lives} ❤️` : "∞"}
+                </div>
               </div>
             </div>
             <div
-              className={`rounded-lg py-1.5 px-0.5 md:py-2 md:px-1 lg:px-1.5 text-center flex flex-col justify-center min-h-[50px] md:min-h-[58px] lg:min-h-[62px] ${
+              className={`rounded-lg py-1.5 px-0.5 md:py-2 md:px-1 lg:px-1.5 text-center flex flex-col items-stretch justify-start min-h-[50px] md:min-h-[58px] lg:min-h-[62px] ${
                 gameActive && (mode === "challenge" || mode === "speed") && timeLeft <= 5
                   ? "bg-red-500/30 border-2 border-red-400 animate-pulse"
                   : "bg-black/30 border border-white/10"
               }`}
             >
-              <div className="text-[9px] md:text-[10px] lg:text-[11px] text-white/60 md:text-white/85 lg:text-white/90 leading-tight mb-0.5">⏰ טיימר</div>
-              <div
-                className={`text-sm md:text-base lg:text-lg font-black leading-tight ${
-                  gameActive && (mode === "challenge" || mode === "speed") && timeLeft <= 5
-                    ? "text-red-400"
-                    : gameActive && (mode === "challenge" || mode === "speed")
-                    ? "text-yellow-400"
-                    : "text-white/60 md:text-white/85 lg:text-white/90"
-                }`}
-              >
-                {gameActive
-                  ? mode === "challenge" || mode === "speed"
-                    ? timeLeft ?? "--"
-                    : "∞"
-                  : "--"}
+              <div className="flex shrink-0 items-center justify-center mb-0.5 md:mb-1 md:min-h-[26px] lg:min-h-[28px] px-0.5">
+                <div className="text-[9px] md:text-[12px] lg:text-sm text-white/60 md:text-white/85 lg:text-white/90 leading-tight">⏰ טיימר</div>
+              </div>
+              <div className="flex flex-1 items-center justify-center min-h-0">
+                <div
+                  className={`text-sm md:text-lg lg:text-xl font-black leading-tight ${
+                    gameActive && (mode === "challenge" || mode === "speed") && timeLeft <= 5
+                      ? "text-red-400"
+                      : gameActive && (mode === "challenge" || mode === "speed")
+                      ? "text-yellow-400"
+                      : "text-white/60 md:text-white/85 lg:text-white/90"
+                  }`}
+                >
+                  {gameActive
+                    ? mode === "challenge" || mode === "speed"
+                      ? timeLeft ?? "--"
+                      : "∞"
+                    : "--"}
+                </div>
               </div>
             </div>
             <button
               onClick={() => setShowPlayerProfile(true)}
-              className="bg-black/30 border border-white/10 rounded-lg py-1.5 px-0.5 md:py-2 md:px-1 lg:px-1.5 text-center flex flex-col justify-center min-h-[50px] md:min-h-[58px] lg:min-h-[62px] hover:bg-purple-500/20 transition-all cursor-pointer"
+              className="bg-black/30 border border-white/10 rounded-lg py-1.5 px-0.5 md:py-2 md:px-1 lg:px-1.5 text-center flex flex-col items-stretch justify-start min-h-[50px] md:min-h-[58px] lg:min-h-[62px] hover:bg-purple-500/20 transition-all cursor-pointer"
               title="פרופיל שחקן"
             >
-              <div className="text-[9px] md:text-[10px] lg:text-[11px] text-white/60 md:text-white/85 lg:text-white/90 leading-tight mb-0.5">אווטר</div>
-              <div className="text-lg md:text-xl lg:text-2xl font-bold leading-tight">
-                {playerAvatarImage ? (
-                  <img 
-                    src={playerAvatarImage} 
-                    alt="אווטר" 
-                    className="w-6 h-6 md:w-7 md:h-7 lg:w-8 lg:h-8 rounded-full object-cover mx-auto"
-                  />
-                ) : (
-                  playerAvatar
-                )}
+              <div className="flex shrink-0 items-center justify-center mb-0.5 md:mb-1 md:min-h-[26px] lg:min-h-[28px] px-0.5">
+                <div className="text-[9px] md:text-[12px] lg:text-sm text-white/60 md:text-white/85 lg:text-white/90 leading-tight">אווטר</div>
+              </div>
+              <div className="flex flex-1 items-center justify-center min-h-0">
+                <div className="text-lg md:text-2xl lg:text-3xl font-bold leading-tight">
+                  {playerAvatarImage ? (
+                    <img 
+                      src={playerAvatarImage} 
+                      alt="אווטר" 
+                      className="w-6 h-6 md:w-7 md:h-7 lg:w-8 lg:h-8 rounded-full object-cover mx-auto"
+                    />
+                  ) : (
+                    playerAvatar
+                  )}
+                </div>
               </div>
             </button>
           </div>
@@ -3405,27 +3437,43 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
               </div>
 
               <div className="grid grid-cols-4 gap-1.5 md:gap-2 lg:gap-2.5 mb-3 md:mb-4 w-full max-w-lg md:max-w-3xl lg:max-w-4xl xl:max-w-5xl mx-auto" dir="rtl">
-                <div className="bg-black/25 border border-white/15 rounded-lg md:rounded-xl px-1 py-2 md:px-2 md:py-3 min-h-[4.5rem] md:min-h-[5.25rem] lg:min-h-[5.75rem] flex flex-col items-center justify-center gap-1 md:gap-1.5 min-w-0 shadow-sm">
-                  <span className="text-[10px] md:text-xs text-white/60 md:text-white/85 lg:text-white/90 text-center leading-tight max-w-full px-0.5 line-clamp-2">שיא ניקוד</span>
-                  <span className="text-base md:text-lg font-bold text-emerald-400 md:text-emerald-300 lg:text-emerald-200 tabular-nums leading-tight">{bestScore}</span>
+                <div className="bg-black/25 border border-white/15 rounded-lg md:rounded-xl px-1 py-2 md:px-2 md:py-3 min-h-[4.5rem] md:min-h-[5.25rem] lg:min-h-[5.75rem] flex flex-col items-stretch justify-start gap-1 md:gap-1.5 min-w-0 shadow-sm">
+                  <div className="flex shrink-0 items-center justify-center md:min-h-[28px] lg:min-h-[30px] px-0.5">
+                    <span className="text-[10px] md:text-[13px] lg:text-sm text-white/60 md:text-white/85 lg:text-white/90 text-center leading-tight max-w-full line-clamp-2">שיא ניקוד</span>
+                  </div>
+                  <div className="flex flex-1 items-center justify-center min-h-0">
+                    <span className="text-base md:text-xl lg:text-2xl font-bold text-emerald-400 md:text-emerald-300 lg:text-emerald-200 tabular-nums leading-tight">{bestScore}</span>
+                  </div>
                 </div>
-                <div className="bg-black/25 border border-white/15 rounded-lg md:rounded-xl px-1 py-2 md:px-2 md:py-3 min-h-[4.5rem] md:min-h-[5.25rem] lg:min-h-[5.75rem] flex flex-col items-center justify-center gap-1 md:gap-1.5 min-w-0 shadow-sm">
-                  <span className="text-[10px] md:text-xs text-white/60 md:text-white/85 lg:text-white/90 text-center leading-tight max-w-full px-0.5 line-clamp-2">שיא רצף</span>
-                  <span className="text-base md:text-lg font-bold text-amber-400 md:text-amber-300 lg:text-amber-200 tabular-nums leading-tight">{bestStreak}</span>
+                <div className="bg-black/25 border border-white/15 rounded-lg md:rounded-xl px-1 py-2 md:px-2 md:py-3 min-h-[4.5rem] md:min-h-[5.25rem] lg:min-h-[5.75rem] flex flex-col items-stretch justify-start gap-1 md:gap-1.5 min-w-0 shadow-sm">
+                  <div className="flex shrink-0 items-center justify-center md:min-h-[28px] lg:min-h-[30px] px-0.5">
+                    <span className="text-[10px] md:text-[13px] lg:text-sm text-white/60 md:text-white/85 lg:text-white/90 text-center leading-tight max-w-full line-clamp-2">שיא רצף</span>
+                  </div>
+                  <div className="flex flex-1 items-center justify-center min-h-0">
+                    <span className="text-base md:text-xl lg:text-2xl font-bold text-amber-400 md:text-amber-300 lg:text-amber-200 tabular-nums leading-tight">{bestStreak}</span>
+                  </div>
                 </div>
-                <div className="bg-black/25 border border-white/15 rounded-lg md:rounded-xl px-1 py-2 md:px-2 md:py-3 min-h-[4.5rem] md:min-h-[5.25rem] lg:min-h-[5.75rem] flex flex-col items-center justify-center gap-1 md:gap-1.5 min-w-0 shadow-sm">
-                  <span className="text-[10px] md:text-xs text-white/60 md:text-white/85 lg:text-white/90 text-center leading-tight max-w-full px-0.5 line-clamp-2">דיוק</span>
-                  <span className="text-base md:text-lg font-bold text-blue-400 md:text-blue-300 lg:text-blue-200 tabular-nums leading-tight">{accuracy}%</span>
+                <div className="bg-black/25 border border-white/15 rounded-lg md:rounded-xl px-1 py-2 md:px-2 md:py-3 min-h-[4.5rem] md:min-h-[5.25rem] lg:min-h-[5.75rem] flex flex-col items-stretch justify-start gap-1 md:gap-1.5 min-w-0 shadow-sm">
+                  <div className="flex shrink-0 items-center justify-center md:min-h-[28px] lg:min-h-[30px] px-0.5">
+                    <span className="text-[10px] md:text-[13px] lg:text-sm text-white/60 md:text-white/85 lg:text-white/90 text-center leading-tight max-w-full line-clamp-2">דיוק</span>
+                  </div>
+                  <div className="flex flex-1 items-center justify-center min-h-0">
+                    <span className="text-base md:text-xl lg:text-2xl font-bold text-blue-400 md:text-blue-300 lg:text-blue-200 tabular-nums leading-tight">{accuracy}%</span>
+                  </div>
                 </div>
-                <div className="bg-black/25 border border-white/15 rounded-lg md:rounded-xl px-1 py-2 md:px-2 md:py-3 min-h-[4.5rem] md:min-h-[5.25rem] lg:min-h-[5.75rem] flex flex-col items-center justify-center gap-1.5 min-w-0 shadow-sm">
-                  <span className="text-[10px] md:text-xs text-white/60 md:text-white/85 lg:text-white/90 text-center leading-tight">אתגרים</span>
-                  <button
-                    type="button"
-                    onClick={() => setShowDailyChallenge(true)}
-                    className="h-7 md:h-8 w-full max-w-[3.5rem] md:max-w-[4rem] px-1.5 md:px-2 rounded-md bg-blue-500/85 hover:bg-blue-500 text-white text-[11px] md:text-xs font-bold"
-                  >
-                    פתיחה
-                  </button>
+                <div className="bg-black/25 border border-white/15 rounded-lg md:rounded-xl px-1 py-2 md:px-2 md:py-3 min-h-[4.5rem] md:min-h-[5.25rem] lg:min-h-[5.75rem] flex flex-col items-stretch justify-start gap-1 md:gap-1.5 min-w-0 shadow-sm">
+                  <div className="flex shrink-0 items-center justify-center md:min-h-[28px] lg:min-h-[30px] px-0.5">
+                    <span className="text-[10px] md:text-[13px] lg:text-sm text-white/60 md:text-white/85 lg:text-white/90 text-center leading-tight">אתגרים</span>
+                  </div>
+                  <div className="flex flex-1 items-center justify-center min-h-0">
+                    <button
+                      type="button"
+                      onClick={() => setShowDailyChallenge(true)}
+                      className="h-7 md:h-8 w-full max-w-[3.5rem] md:max-w-[4rem] px-1.5 md:px-2 rounded-md bg-blue-500/85 hover:bg-blue-500 text-white text-[11px] md:text-sm lg:text-base font-bold"
+                    >
+                      פתיחה
+                    </button>
+                  </div>
                 </div>
               </div>
 
