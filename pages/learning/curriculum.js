@@ -21,6 +21,13 @@ import {
   MOLEDET_GEOGRAPHY_GRADES,
   MOLEDET_GEOGRAPHY_GRADE_ORDER,
 } from "../../data/moledet-geography-curriculum";
+import {
+  GRADES as GEOMETRY_GRADES,
+  TOPICS as GEOMETRY_TOPIC_META,
+  topicDescriptionForCurriculumPage,
+} from "../../utils/geometry-constants";
+
+const GEOMETRY_GRADE_ORDER = ["g1", "g2", "g3", "g4", "g5", "g6"];
 
 export default function Curriculum() {
   useIOSViewportFix();
@@ -29,12 +36,13 @@ export default function Curriculum() {
     ? router.query.subject[0]
     : router.query.subject;
   const normalizedSubject = (subjectParam || "math").toString().toLowerCase();
-  const supportedSubjects = ["math", "english", "science", "hebrew", "moledet-geography"];
+  const supportedSubjects = ["math", "geometry", "english", "science", "hebrew", "moledet-geography"];
   const subject = supportedSubjects.includes(normalizedSubject) ? normalizedSubject : "math";
   const isEnglish = subject === "english";
   const isScience = subject === "science";
   const isHebrew = subject === "hebrew";
   const isMoledetGeography = subject === "moledet-geography";
+  const isGeometry = subject === "geometry";
   const englishGrades = ENGLISH_GRADE_ORDER.map((key) => ENGLISH_GRADES[key]);
   const scienceGrades = SCIENCE_GRADE_ORDER.map((key) => SCIENCE_GRADES[key]);
   const hebrewGrades = HEBREW_GRADE_ORDER.map((key) => HEBREW_GRADES[key]);
@@ -42,6 +50,7 @@ export default function Curriculum() {
   
   const subjectTitles = {
     math: "מתמטיקה",
+    geometry: "הנדסה",
     english: "אנגלית",
     science: "מדעים",
     hebrew: "שפה עברית",
@@ -54,7 +63,9 @@ export default function Curriculum() {
     english:
       "מיפוי לפי מבנה דף האנגלית באתר ומול מסגרת POP של אנגלית יסודי, עם הצלבה לעותק התוכנית (Curriculum2020.pdf) בתיקיית חומרי הלימוד. חתימת בעלים או ביקורת ידנית סופית מול כל פרק בתוכנית עדיין לא הושלמה — אין טענה לאישור משרד מלא או לכיסוי שורה־שורה של כל פרק.",
     science:
-      "התאמה מלאה לתוכנית \"מדע וטכנולוגיה\" של משרד החינוך (כיתות א׳–ו׳) – לפי תחומי דעת, חקר והתנסות.",
+      "מיפוי לפי מבנה דף המדעים באתר ומול מסגרת תוכנית מדע וטכנולוגיה (POP), עם בקרות אתר והצלבה למקורות. אין טענה לאישור משרד מלא או לכיסוי כל פרק — חתימת בעלים וביקורת ידנית עדיין נדרשות לטענה מלאה.",
+    geometry:
+      "מיפוי לפי מבנה דף ההנדסה באתר ומול מסגרת תוכנית המתמטיקה (מדידות וגאומטריה) ובקרות האתר. אין טענה לאישור משרד מלא או לכיסוי PDF כיתתי שלם עד להשלמת ביקורת ידנית.",
     hebrew:
       "מיפוי לפי מבנה דף השפה העברית באתר (נושאים וכיתות) — נבדק מול מסגרת POP של עברית חינוך לשוני ובקרות האתר. אין כאן טענה לאישור בעלים מלא או לכיסוי PDF כיתתי שלם עד להשלמת ביקורת ידנית.",
     "moledet-geography":
@@ -345,6 +356,53 @@ export default function Curriculum() {
                   </div>
                 </div>
               ))}
+            </div>
+          ) : isGeometry ? (
+            <div className="bg-white/5 rounded-2xl border border-white/10 p-6" dir="rtl">
+              <div className="bg-blue-500/20 border-r-4 border-blue-500 p-4 rounded-lg mb-6">
+                <h3 className="text-xl font-bold mb-2">מבנה הנדסה באתר</h3>
+                <ul className="list-disc pr-6 space-y-2 text-sm text-white/85">
+                  <li>
+                    <strong>6 כיתות</strong> (א׳–ו׳) — הרשימות למטה תואמות את בחירת הנושא בדף ההנדסה ואת מדיניות
+                    הנושאים בגנרטור
+                  </li>
+                  <li>
+                    <strong>3 רמות קושי</strong> לכל כיתה: קל, בינוני, קשה — כפי שמוגדר בדף התרגול
+                  </li>
+                  <li>
+                    <strong>ערבוב</strong>: נשען רק על נושאים המורשים לאותה כיתה (לא עוקף מגבלות כיתה או נושא חסום)
+                  </li>
+                </ul>
+              </div>
+              {GEOMETRY_GRADE_ORDER.map((gk) => {
+                const grade = GEOMETRY_GRADES[gk];
+                const topicKeys = (grade?.topics || []).filter((t) => t !== "mixed");
+                return (
+                  <div
+                    key={gk}
+                    className="bg-blue-500/15 border-r-4 border-blue-400 p-4 rounded-lg mb-6"
+                  >
+                    <h2 className="text-2xl font-bold mb-3">{grade.name}</h2>
+                    <h3 className="text-lg font-semibold mb-2">נושאים זמינים בדף ההנדסה</h3>
+                    <ul className="list-disc pr-6 space-y-2 text-sm text-white/85">
+                      {topicKeys.map((topicKey) => (
+                        <li key={`${gk}-${topicKey}`}>
+                          <strong>{GEOMETRY_TOPIC_META[topicKey]?.name || topicKey}</strong>
+                          {" — "}
+                          {topicDescriptionForCurriculumPage(gk, topicKey) ||
+                            GEOMETRY_TOPIC_META[topicKey]?.description ||
+                            ""}
+                        </li>
+                      ))}
+                      <li>
+                        <strong>{GEOMETRY_TOPIC_META.mixed?.name || "ערבוב"}</strong>
+                        {" — "}
+                        תרגול מעורב מתוך הנושאים המורשים לכיתה זו בלבד
+                      </li>
+                    </ul>
+                  </div>
+                );
+              })}
             </div>
           ) : (
             <div className="bg-white/5 rounded-2xl border border-white/10 p-6" dir="rtl">
