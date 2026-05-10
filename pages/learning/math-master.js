@@ -2784,50 +2784,50 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
           >
             <div className="bg-black/30 border border-white/10 rounded-lg py-1.5 px-0.5 md:py-2 md:px-1 lg:px-1.5 text-center flex flex-col items-stretch justify-start min-h-[50px] md:min-h-[58px] lg:min-h-[62px]">
               <div className="flex shrink-0 items-center justify-center mb-0.5 md:mb-1 md:min-h-[26px] lg:min-h-[28px] px-0.5">
-                <div className="text-[9px] md:text-[12px] lg:text-sm text-white/60 md:text-white/85 lg:text-white/90 leading-tight">ניקוד</div>
+                <div className="text-[9px] md:text-[12px] lg:text-sm text-white/78 md:text-white/85 lg:text-white/90 leading-tight">ניקוד</div>
               </div>
               <div className="flex flex-1 items-center justify-center min-h-0">
-                <div className="text-sm md:text-lg lg:text-xl font-bold text-emerald-400 md:text-emerald-300 lg:text-emerald-200 leading-tight">{score}</div>
+                <div className="text-sm md:text-lg lg:text-xl font-bold text-emerald-300 md:text-emerald-300 lg:text-emerald-200 leading-tight">{score}</div>
               </div>
             </div>
             <div className="bg-black/30 border border-white/10 rounded-lg py-1.5 px-0.5 md:py-2 md:px-1 lg:px-1.5 text-center flex flex-col items-stretch justify-start min-h-[50px] md:min-h-[58px] lg:min-h-[62px]">
               <div className="flex shrink-0 items-center justify-center mb-0.5 md:mb-1 md:min-h-[26px] lg:min-h-[28px] px-0.5">
-                <div className="text-[9px] md:text-[12px] lg:text-sm text-white/60 md:text-white/85 lg:text-white/90 leading-tight">רצף</div>
+                <div className="text-[9px] md:text-[12px] lg:text-sm text-white/78 md:text-white/85 lg:text-white/90 leading-tight">רצף</div>
               </div>
               <div className="flex flex-1 items-center justify-center min-h-0">
-                <div className="text-sm md:text-lg lg:text-xl font-bold text-amber-400 md:text-amber-300 lg:text-amber-200 leading-tight">🔥{streak}</div>
+                <div className="text-sm md:text-lg lg:text-xl font-bold text-amber-300 md:text-amber-300 lg:text-amber-200 leading-tight">🔥{streak}</div>
               </div>
             </div>
             <div className="bg-black/30 border border-white/10 rounded-lg py-1.5 px-0.5 md:py-2 md:px-1 lg:px-1.5 text-center flex flex-col items-stretch justify-start min-h-[50px] md:min-h-[58px] lg:min-h-[62px]">
               <div className="flex shrink-0 items-center justify-center mb-0.5 md:mb-1 md:min-h-[26px] lg:min-h-[28px] px-0.5">
-                <div className="text-[9px] md:text-[12px] lg:text-sm text-white/60 md:text-white/85 lg:text-white/90 leading-tight">כוכבים</div>
+                <div className="text-[9px] md:text-[12px] lg:text-sm text-white/78 md:text-white/85 lg:text-white/90 leading-tight">כוכבים</div>
               </div>
               <div className="flex flex-1 items-center justify-center min-h-0">
-                <div className="text-sm md:text-lg lg:text-xl font-bold text-yellow-400 md:text-yellow-300 lg:text-yellow-200 leading-tight">⭐{stars}</div>
+                <div className="text-sm md:text-lg lg:text-xl font-bold text-yellow-300 md:text-yellow-300 lg:text-yellow-200 leading-tight">⭐{stars}</div>
               </div>
             </div>
             <div className="bg-black/30 border border-white/10 rounded-lg py-1.5 px-0.5 md:py-2 md:px-1 lg:px-1.5 text-center flex flex-col items-stretch justify-start min-h-[50px] md:min-h-[58px] lg:min-h-[62px]">
               <div className="flex shrink-0 items-center justify-center mb-0.5 md:mb-1 md:min-h-[26px] lg:min-h-[28px] px-0.5">
-                <div className="text-[9px] md:text-[12px] lg:text-sm text-white/60 md:text-white/85 lg:text-white/90 leading-tight">רמה</div>
+                <div className="text-[9px] md:text-[12px] lg:text-sm text-white/78 md:text-white/85 lg:text-white/90 leading-tight">רמה</div>
               </div>
               <div className="flex flex-1 items-center justify-center min-h-0">
-                <div className="text-sm md:text-lg lg:text-xl font-bold text-purple-400 md:text-purple-300 lg:text-purple-200 leading-tight">רמה {playerLevel}</div>
+                <div className="text-sm md:text-lg lg:text-xl font-bold text-purple-300 md:text-purple-300 lg:text-purple-200 leading-tight">רמה {playerLevel}</div>
               </div>
             </div>
             <div className="bg-black/30 border border-white/10 rounded-lg py-1.5 px-0.5 md:py-2 md:px-1 lg:px-1.5 text-center flex flex-col items-stretch justify-start min-h-[50px] md:min-h-[58px] lg:min-h-[62px]">
               <div className="flex shrink-0 items-center justify-center mb-0.5 md:mb-1 md:min-h-[26px] lg:min-h-[28px] px-0.5">
-                <div className="text-[9px] md:text-[12px] lg:text-sm text-white/60 md:text-white/85 lg:text-white/90 leading-tight">✅</div>
+                <div className="text-[9px] md:text-[12px] lg:text-sm text-white/78 md:text-white/85 lg:text-white/90 leading-tight">✅</div>
               </div>
               <div className="flex flex-1 items-center justify-center min-h-0">
-                <div className="text-sm md:text-lg lg:text-xl font-bold text-green-400 md:text-green-300 lg:text-green-200 leading-tight">{correct}</div>
+                <div className="text-sm md:text-lg lg:text-xl font-bold text-green-300 md:text-green-300 lg:text-green-200 leading-tight">{correct}</div>
               </div>
             </div>
             <div className="bg-black/30 border border-white/10 rounded-lg py-1.5 px-0.5 md:py-2 md:px-1 lg:px-1.5 text-center flex flex-col items-stretch justify-start min-h-[50px] md:min-h-[58px] lg:min-h-[62px]">
               <div className="flex shrink-0 items-center justify-center mb-0.5 md:mb-1 md:min-h-[26px] lg:min-h-[28px] px-0.5">
-                <div className="text-[9px] md:text-[12px] lg:text-sm text-white/60 md:text-white/85 lg:text-white/90 leading-tight">חיים</div>
+                <div className="text-[9px] md:text-[12px] lg:text-sm text-white/78 md:text-white/85 lg:text-white/90 leading-tight">חיים</div>
               </div>
               <div className="flex flex-1 items-center justify-center min-h-0">
-                <div className="text-sm md:text-lg lg:text-xl font-bold text-rose-400 md:text-rose-300 lg:text-rose-200 leading-tight">
+                <div className="text-sm md:text-lg lg:text-xl font-bold text-rose-300 md:text-rose-300 lg:text-rose-200 leading-tight">
                   {mode === "challenge" ? `${lives} ❤️` : "∞"}
                 </div>
               </div>
@@ -2840,7 +2840,7 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
               }`}
             >
               <div className="flex shrink-0 items-center justify-center mb-0.5 md:mb-1 md:min-h-[26px] lg:min-h-[28px] px-0.5">
-                <div className="text-[9px] md:text-[12px] lg:text-sm text-white/60 md:text-white/85 lg:text-white/90 leading-tight">⏰ טיימר</div>
+                <div className="text-[9px] md:text-[12px] lg:text-sm text-white/78 md:text-white/85 lg:text-white/90 leading-tight">⏰ טיימר</div>
               </div>
               <div className="flex flex-1 items-center justify-center min-h-0">
                 <div
@@ -2849,7 +2849,7 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                       ? "text-red-400"
                       : gameActive && (mode === "challenge" || mode === "speed")
                       ? "text-yellow-400"
-                      : "text-white/60 md:text-white/85 lg:text-white/90"
+                      : "text-white/78 md:text-white/85 lg:text-white/90"
                   }`}
                 >
                   {gameActive
@@ -2866,7 +2866,7 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
               title="פרופיל שחקן"
             >
               <div className="flex shrink-0 items-center justify-center mb-0.5 md:mb-1 md:min-h-[26px] lg:min-h-[28px] px-0.5">
-                <div className="text-[9px] md:text-[12px] lg:text-sm text-white/60 md:text-white/85 lg:text-white/90 leading-tight">אווטר</div>
+                <div className="text-[9px] md:text-[12px] lg:text-sm text-white/78 md:text-white/85 lg:text-white/90 leading-tight">אווטר</div>
               </div>
               <div className="flex flex-1 items-center justify-center min-h-0">
                 <div className="text-lg md:text-2xl lg:text-3xl font-bold leading-tight">
@@ -2886,7 +2886,7 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
 
           {/* בחירת מצב (Learning / Challenge) */}
           <div
-            className="mx-auto flex items-center justify-center gap-1.5 md:gap-2 mb-3 md:mb-4 w-full max-w-lg md:max-w-3xl lg:max-w-4xl xl:max-w-5xl flex-wrap px-1 md:px-2"
+            className="mx-auto flex items-center justify-center gap-1.5 md:gap-2.5 lg:gap-3 mb-3 md:mb-4 w-full max-w-lg md:max-w-3xl lg:max-w-4xl xl:max-w-5xl flex-wrap px-1 md:px-2"
             dir="rtl"
           >
             {["learning", "challenge", "speed", "marathon"].map((m) => (
@@ -2897,7 +2897,7 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                   setGameActive(false);
                   setFeedback(null);
                 }}
-                className={`h-8 md:h-9 px-3 md:px-4 rounded-lg text-xs md:text-sm font-bold transition-all flex-shrink-0 ${
+                className={`h-8 md:h-10 lg:h-11 px-3 md:px-4 lg:px-5 rounded-lg text-xs md:text-sm lg:text-base font-bold transition-all flex-shrink-0 ${
                   mode === m
                     ? "bg-emerald-500/80 text-white"
                     : "bg-white/10 text-white/70 hover:bg-white/20"
@@ -2906,7 +2906,7 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                 {MODES[m].name}
               </button>
             ))}
-            <div className="inline-flex items-center gap-1.5 md:gap-2 shrink-0">
+            <div className="inline-flex items-center gap-1.5 md:gap-2.5 lg:gap-3 shrink-0">
               <button
                 type="button"
                 onClick={() => {
@@ -2914,7 +2914,7 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                   setGameActive(false);
                   setFeedback(null);
                 }}
-                className={`h-8 md:h-9 px-3 md:px-4 rounded-lg text-xs md:text-sm font-bold transition-all flex-shrink-0 ${
+                className={`h-8 md:h-10 lg:h-11 px-3 md:px-4 lg:px-5 rounded-lg text-xs md:text-sm lg:text-base font-bold transition-all flex-shrink-0 ${
                   mode === "practice"
                     ? "bg-emerald-500/80 text-white"
                     : "bg-white/10 text-white/70 hover:bg-white/20"
@@ -2923,7 +2923,7 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                 {MODES.practice.name}
               </button>
               <div
-                className="hidden md:inline-flex items-center justify-center gap-1.5 shrink-0 rounded-lg border border-amber-400/45 bg-black/35 px-3 py-1.5 lg:px-3.5 lg:py-2 text-sm lg:text-base font-bold tabular-nums shadow-sm"
+                className="hidden md:inline-flex items-center justify-center gap-1.5 md:gap-2 shrink-0 rounded-lg border border-amber-400/45 bg-black/35 md:h-10 lg:h-11 md:px-4 lg:px-5 md:text-sm lg:text-base font-bold tabular-nums shadow-sm"
                 title="מטבעות משחק"
               >
                 <span className="text-white">מטבעות:</span>
@@ -3439,31 +3439,31 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
               <div className="grid grid-cols-4 gap-1.5 md:gap-2 lg:gap-2.5 mb-3 md:mb-4 w-full max-w-lg md:max-w-3xl lg:max-w-4xl xl:max-w-5xl mx-auto" dir="rtl">
                 <div className="bg-black/25 border border-white/15 rounded-lg md:rounded-xl px-1 py-2 md:px-2 md:py-3 min-h-[4.5rem] md:min-h-[5.25rem] lg:min-h-[5.75rem] flex flex-col items-stretch justify-start gap-1 md:gap-1.5 min-w-0 shadow-sm">
                   <div className="flex shrink-0 items-center justify-center md:min-h-[28px] lg:min-h-[30px] px-0.5">
-                    <span className="text-[10px] md:text-[13px] lg:text-sm text-white/60 md:text-white/85 lg:text-white/90 text-center leading-tight max-w-full line-clamp-2">שיא ניקוד</span>
+                    <span className="text-[10px] md:text-[13px] lg:text-sm text-white/78 md:text-white/85 lg:text-white/90 text-center leading-tight max-w-full line-clamp-2">שיא ניקוד</span>
                   </div>
                   <div className="flex flex-1 items-center justify-center min-h-0">
-                    <span className="text-base md:text-xl lg:text-2xl font-bold text-emerald-400 md:text-emerald-300 lg:text-emerald-200 tabular-nums leading-tight">{bestScore}</span>
+                    <span className="text-base md:text-xl lg:text-2xl font-bold text-emerald-300 md:text-emerald-300 lg:text-emerald-200 tabular-nums leading-tight">{bestScore}</span>
                   </div>
                 </div>
                 <div className="bg-black/25 border border-white/15 rounded-lg md:rounded-xl px-1 py-2 md:px-2 md:py-3 min-h-[4.5rem] md:min-h-[5.25rem] lg:min-h-[5.75rem] flex flex-col items-stretch justify-start gap-1 md:gap-1.5 min-w-0 shadow-sm">
                   <div className="flex shrink-0 items-center justify-center md:min-h-[28px] lg:min-h-[30px] px-0.5">
-                    <span className="text-[10px] md:text-[13px] lg:text-sm text-white/60 md:text-white/85 lg:text-white/90 text-center leading-tight max-w-full line-clamp-2">שיא רצף</span>
+                    <span className="text-[10px] md:text-[13px] lg:text-sm text-white/78 md:text-white/85 lg:text-white/90 text-center leading-tight max-w-full line-clamp-2">שיא רצף</span>
                   </div>
                   <div className="flex flex-1 items-center justify-center min-h-0">
-                    <span className="text-base md:text-xl lg:text-2xl font-bold text-amber-400 md:text-amber-300 lg:text-amber-200 tabular-nums leading-tight">{bestStreak}</span>
+                    <span className="text-base md:text-xl lg:text-2xl font-bold text-amber-300 md:text-amber-300 lg:text-amber-200 tabular-nums leading-tight">{bestStreak}</span>
                   </div>
                 </div>
                 <div className="bg-black/25 border border-white/15 rounded-lg md:rounded-xl px-1 py-2 md:px-2 md:py-3 min-h-[4.5rem] md:min-h-[5.25rem] lg:min-h-[5.75rem] flex flex-col items-stretch justify-start gap-1 md:gap-1.5 min-w-0 shadow-sm">
                   <div className="flex shrink-0 items-center justify-center md:min-h-[28px] lg:min-h-[30px] px-0.5">
-                    <span className="text-[10px] md:text-[13px] lg:text-sm text-white/60 md:text-white/85 lg:text-white/90 text-center leading-tight max-w-full line-clamp-2">דיוק</span>
+                    <span className="text-[10px] md:text-[13px] lg:text-sm text-white/78 md:text-white/85 lg:text-white/90 text-center leading-tight max-w-full line-clamp-2">דיוק</span>
                   </div>
                   <div className="flex flex-1 items-center justify-center min-h-0">
-                    <span className="text-base md:text-xl lg:text-2xl font-bold text-blue-400 md:text-blue-300 lg:text-blue-200 tabular-nums leading-tight">{accuracy}%</span>
+                    <span className="text-base md:text-xl lg:text-2xl font-bold text-blue-300 md:text-blue-300 lg:text-blue-200 tabular-nums leading-tight">{accuracy}%</span>
                   </div>
                 </div>
                 <div className="bg-black/25 border border-white/15 rounded-lg md:rounded-xl px-1 py-2 md:px-2 md:py-3 min-h-[4.5rem] md:min-h-[5.25rem] lg:min-h-[5.75rem] flex flex-col items-stretch justify-start gap-1 md:gap-1.5 min-w-0 shadow-sm">
                   <div className="flex shrink-0 items-center justify-center md:min-h-[28px] lg:min-h-[30px] px-0.5">
-                    <span className="text-[10px] md:text-[13px] lg:text-sm text-white/60 md:text-white/85 lg:text-white/90 text-center leading-tight">אתגרים</span>
+                    <span className="text-[10px] md:text-[13px] lg:text-sm text-white/78 md:text-white/85 lg:text-white/90 text-center leading-tight">אתגרים</span>
                   </div>
                   <div className="flex flex-1 items-center justify-center min-h-0">
                     <button
@@ -3482,27 +3482,27 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                 onRecommendedPractice={handleAdaptivePlannerRecommendedPractice}
               />
               
-              <div className="bg-white/5 border border-white/10 rounded-md md:rounded-lg px-1 pt-1 pb-1 md:px-4 md:py-4 lg:py-5 mb-3 md:mb-4 w-full max-w-lg md:max-w-3xl lg:max-w-4xl xl:max-w-5xl mx-auto opacity-90 md:min-h-[12.5rem] lg:min-h-[13rem]">
-                <div className="flex items-center justify-between text-[9px] md:text-xs lg:text-sm text-white/55 md:text-white/90 lg:text-white/95 mb-0.5 md:mb-1.5 lg:mb-2 leading-tight font-semibold md:font-bold">
+              <div className="bg-white/5 border border-white/10 rounded-md md:rounded-lg px-2 pt-2.5 pb-3 md:px-4 md:py-4 lg:py-5 mb-3 md:mb-4 w-full max-w-lg md:max-w-3xl lg:max-w-4xl xl:max-w-5xl mx-auto opacity-90 md:min-h-[12.5rem] lg:min-h-[13rem]">
+                <div className="flex items-center justify-between text-[10px] md:text-xs lg:text-sm text-white/82 md:text-white/90 lg:text-white/95 mb-1 md:mb-1.5 lg:mb-2 leading-tight font-semibold md:font-bold">
                   <span>🎁 מסע פרס חודשי</span>
                   <span>
                     {Math.round(monthlyProgress.totalMinutes)} / {MONTHLY_MINUTES_TARGET} דק׳
                   </span>
                 </div>
-                <p className="text-[9px] md:text-xs lg:text-sm text-white/55 md:text-white/88 lg:text-white/92 mb-0.5 md:mb-1.5 lg:mb-2 text-center leading-snug">
+                <p className="text-[10px] md:text-xs lg:text-sm text-white/82 md:text-white/88 lg:text-white/92 mb-1 md:mb-1.5 lg:mb-2 text-center leading-snug">
                   {minutesRemaining > 0
                     ? `נותרו עוד ${Math.round(minutesRemaining)} דק׳ (~${Math.ceil(
                         Math.round(minutesRemaining) / 60
                       )} ש׳)`
                     : "🎉 יעד הושלם! בקשו מההורה לבחור פרס."}
                 </p>
-                <div className="w-full bg-white/10 rounded-full h-1.5 md:h-2 overflow-hidden mb-2 md:mb-3">
+                <div className="w-full bg-white/10 rounded-full h-1.5 md:h-2 overflow-hidden mb-2.5 md:mb-3">
                   <div
                     className="h-1.5 md:h-2 bg-emerald-400 rounded-full transition-all"
                     style={{ width: `${goalPercent}%` }}
                   />
                 </div>
-                <div className="grid grid-cols-4 gap-1.5 md:gap-2 lg:gap-2.5 w-full">
+                <div className="grid grid-cols-4 gap-2 md:gap-2 lg:gap-2.5 w-full">
                   {REWARD_OPTIONS.map((option) => {
                     const displayLabel = mathMonthlyRewardDisplayLabel(option.key);
                     const rewardParts = splitRewardAmountLabel(displayLabel);
@@ -3515,13 +3515,13 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                         saveRewardChoice(yearMonthRef.current, option.key);
                         setRewardChoice(option.key);
                       }}
-                      className={`rounded-lg border py-2 px-1 md:py-2.5 md:px-2 lg:py-3 lg:px-2.5 min-h-[4.25rem] md:min-h-[5.5rem] lg:min-h-[6rem] bg-black/35 flex flex-col items-center justify-center gap-1 md:gap-1.5 min-w-0 transition-colors ${
+                      className={`rounded-lg border py-2.5 px-1.5 md:py-2.5 md:px-2 lg:py-3 lg:px-2.5 min-h-[4.85rem] md:min-h-[5.5rem] lg:min-h-[6rem] bg-black/35 flex flex-col items-center justify-center gap-1.5 md:gap-1.5 min-w-0 transition-colors ${
                         prizePicked
                           ? "border-emerald-400 text-emerald-200 bg-emerald-500/20"
-                          : "border-white/15 text-white/95 hover:border-white/40"
+                          : "border-white/15 text-white hover:border-white/40"
                       }`}
                     >
-                      <span className="text-lg md:text-xl lg:text-2xl leading-none shrink-0" aria-hidden>
+                      <span className="text-xl md:text-xl lg:text-2xl leading-none shrink-0" aria-hidden>
                         {MATH_MONTHLY_PRIZE_COIN_ICON}
                       </span>
                       {rewardParts.amount != null ? (
@@ -3529,7 +3529,7 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                           <span className="text-xs md:text-sm font-extrabold tabular-nums leading-none text-emerald-100" dir="ltr">{rewardParts.amount}</span>
                           <span
                             className={`text-[9px] md:text-[11px] lg:text-xs font-semibold leading-snug text-center px-0.5 md:px-1 line-clamp-2 ${
-                              prizePicked ? "text-emerald-100" : "text-white/95"
+                              prizePicked ? "text-emerald-100" : "text-white"
                             }`}
                             dir="ltr"
                           >
@@ -3539,7 +3539,7 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                       ) : (
                         <span
                           className={`text-[10px] md:text-xs lg:text-sm font-semibold leading-snug text-center px-0.5 md:px-1 line-clamp-3 ${
-                            prizePicked ? "text-emerald-100" : "text-white/95"
+                            prizePicked ? "text-emerald-100" : "text-white"
                           }`}
                           dir="rtl"
                         >
@@ -3591,12 +3591,15 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                 >
                   📚 לוח עזרה
                 </button>
-                <button
-                  onClick={() => router.push("/learning/parent-report")}
-                  className="px-4 py-2 md:px-5 md:py-2.5 rounded-lg bg-teal-500/80 hover:bg-teal-500 text-xs md:text-sm font-bold text-white shadow-sm"
+                <div
+                  className="md:hidden inline-flex items-center justify-center gap-1.5 shrink-0 rounded-lg border border-amber-400/45 bg-black/35 px-3 py-2 text-xs font-bold tabular-nums shadow-sm text-white"
+                  title="מטבעות משחק"
                 >
-                  📊 דוח להורים
-                </button>
+                  <span>מטבעות:</span>
+                  <span dir="ltr" className="text-amber-100">
+                    {childCoinBalance}
+                  </span>
+                </div>
                 <button
                   onClick={() => setShowPracticeOptions(true)}
                   className="px-4 py-2 md:px-5 md:py-2.5 rounded-lg bg-pink-500/80 hover:bg-pink-500 text-xs md:text-sm font-bold text-white shadow-sm"
