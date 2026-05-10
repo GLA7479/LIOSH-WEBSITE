@@ -4,20 +4,20 @@ import { useState } from "react";
 import DevCoinTopupNav from "./layout/DevCoinTopupNav";
 
 const menuLinksBase = [
-  { href: "/", label: "Home" },
+  { href: "/", label: "בית" },
   { href: "/parent/login", label: "כניסת הורים" },
   { href: "/student/login", label: "כניסת תלמיד" },
-  { href: "/game", label: "Games" },
-  { href: "/offline", label: "Offline" },
-  { href: "/learning", label: "Learning" },
-  { href: "/about", label: "About" },
-  { href: "/gallery", label: "Gallery" },
-  { href: "/contact", label: "Contact" },
+  { href: "/game", label: "משחקים" },
+  { href: "/offline", label: "לא מקוון" },
+  { href: "/learning", label: "לימודים" },
+  { href: "/about", label: "אודות" },
+  { href: "/gallery", label: "גלריה" },
+  { href: "/contact", label: "צור קשר" },
 ];
 
 const engineReviewNav =
   process.env.NEXT_PUBLIC_ENABLE_ENGINE_REVIEW_ADMIN === "true"
-    ? [{ href: "/learning/dev/engine-review", label: "Engine review" }]
+    ? [{ href: "/learning/dev/engine-review", label: "סקירת מנוע" }]
     : [];
 
 const menuLinks = [...menuLinksBase, ...engineReviewNav];
@@ -44,6 +44,7 @@ export default function Layout({ children }) {
   const pathname = router.pathname || "";
   /** RTL for Hebrew-primary flows (marketing pages stay default/LTR). */
   const layoutRtlHebrew =
+    pathname === "/" ||
     pathname.startsWith("/parent") ||
     pathname === "/student/login" ||
     pathname.startsWith("/student/home") ||
@@ -62,7 +63,7 @@ export default function Layout({ children }) {
           >
             <img
               src="/images/coin.png"
-              alt="Leo Kids Logo"
+              alt="לוגו LEO KIDS"
               className="w-8 h-8 object-contain"
               style={{ transform: "scale(1.9)" }}
             />
@@ -85,7 +86,7 @@ export default function Layout({ children }) {
           <button
             className="md:hidden px-3 py-2 rounded-lg border border-white/20 hover:bg-white/10 transition"
             onClick={() => setMenuOpen((prev) => !prev)}
-            aria-label="Toggle Menu"
+            aria-label="פתיחת תפריט"
           >
             ☰
           </button>
@@ -98,12 +99,12 @@ export default function Layout({ children }) {
           <div className="absolute top-4 right-4 bg-black/60 border border-white/10 rounded-2xl p-4 w-64">
             <div className="flex items-center justify-between mb-3">
               <span className="text-sm uppercase tracking-[0.3em] text-white/60">
-                Menu
+                תפריט
               </span>
               <button
                 onClick={closeMenu}
                 className="text-white/70 hover:text-white text-lg"
-                aria-label="Close Menu"
+                aria-label="סגור תפריט"
               >
                 ✕
               </button>
@@ -129,7 +130,7 @@ export default function Layout({ children }) {
       <footer className="border-t border-white/10 bg-black/40 mt-10">
         <div className="max-w-6xl mx-auto px-4 py-4 text-xs text-white/60 flex flex-wrap gap-4 justify-between items-center">
           <span>
-            © {new Date().getFullYear()} LEO K · Fun games & learning for kids
+            © {new Date().getFullYear()} LEO K · משחקים ולמידה לילדים
           </span>
         </div>
       </footer>

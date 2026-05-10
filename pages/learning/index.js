@@ -5,45 +5,45 @@ import { useIOSViewportFix } from "../../hooks/useIOSViewportFix";
 const LEARNING_GAMES = [
   {
     slug: "math-master",
-    title: "Math Master",
+    title: "חשבון",
     emoji: "🧮",
-    grades: "Grades 1–6",
-    blurb: "Practice addition, subtraction, multiplication, division and more by grade.",
+    grades: "כיתות א׳–ו׳",
+    blurb: "תרגול חיבור, חיסור, כפל, חילוק ועוד לפי כיתה.",
   },
   {
     slug: "geometry-master",
-    title: "Geometry Master",
+    title: "גיאומטריה",
     emoji: "📐",
-    grades: "Grades 3–8",
-    blurb: "Areas, perimeters, volume, angles, Pythagoras and shapes with explanations.",
+    grades: "כיתות א׳–ו׳",
+    blurb: "שטחים, היקפים, נפח, זוויות, פיתגורס וצורות — עם הסברים.",
   },
   {
     slug: "english-master",
-    title: "English Master",
+    title: "אנגלית",
     emoji: "🇬🇧",
-    grades: "Grades 1–6",
-    blurb: "Vocabulary, grammar, translation and sentence building with Hebrew support.",
+    grades: "כיתות א׳–ו׳",
+    blurb: "אוצר מילים, דקדוק, תרגום ובניית משפטים עם תמיכה בעברית.",
   },
   {
     slug: "science-master",
-    title: "Science Master",
+    title: "מדעים",
     emoji: "🔬",
-    grades: "Grades 1–6",
-    blurb: "Body, animals, plants, space, matter, weather, forces and more with explanations.",
+    grades: "כיתות א׳–ו׳",
+    blurb: "גוף, בעלי חיים, צמחים, חלל, חומר, מזג אוויר, כוחות ועוד — עם הסברים.",
   },
   {
     slug: "hebrew-master",
-    title: "Hebrew Master",
+    title: "עברית",
     emoji: "📚",
-    grades: "Grades 1–6",
-    blurb: "Practice Hebrew language, vocabulary, grammar, reading comprehension and more by grade.",
+    grades: "כיתות א׳–ו׳",
+    blurb: "תרגול שפה, אוצר מילים, דקדוק, הבנת הנקרא ועוד לפי כיתה.",
   },
   {
     slug: "moledet-geography-master",
-    title: "Moledet & Geography Master",
+    title: "מולדת וגיאוגרפיה",
     emoji: "🗺️",
-    grades: "Grades 1–6",
-    blurb: "Learn about homeland, society, citizenship and geography with interactive exercises.",
+    grades: "כיתות א׳–ו׳",
+    blurb: "מולדת, חברה, אזרחות וגיאוגרפיה בתרגילים אינטראקטיביים.",
   },
 ];
 
@@ -60,7 +60,7 @@ export default function LearningHub({ showDevStudentSimulator }) {
   useIOSViewportFix();
   return (
     <Layout>
-      <main className="min-h-screen bg-gradient-to-b from-[#120b1f] to-[#1b1430] text-white px-4 py-10">
+      <main className="min-h-screen bg-gradient-to-b from-[#120b1f] to-[#1b1430] text-white px-4 py-10" dir="rtl">
         <div className="max-w-5xl mx-auto space-y-6">
           <div className="flex flex-wrap justify-between items-center gap-3">
             <div className="flex flex-wrap items-center gap-2">
@@ -68,28 +68,22 @@ export default function LearningHub({ showDevStudentSimulator }) {
                 href="/"
                 className="inline-flex items-center px-4 py-2 rounded-full bg-white/10 border border-white/20 text-sm font-semibold tracking-widest"
               >
-                ← Home
-              </Link>
-              <Link
-                href="/student/arcade"
-                className="inline-flex items-center px-4 py-2 rounded-full bg-amber-500/15 border border-amber-400/35 text-sm font-semibold text-amber-100 hover:bg-amber-500/25 transition"
-              >
-                משחקים
+                בית ←
               </Link>
             </div>
             <p className="text-xs uppercase tracking-[0.3em] text-white/60">
-              Learning Zone
+              אזור לימודים
             </p>
           </div>
 
           <header className="text-center space-y-3">
             <p className="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-white/10 text-sm tracking-wider uppercase text-amber-300 font-semibold">
-              📚 Practice · Repeat · Improve
+              📚 תרגול · חזרה · שיפור
             </p>
-            <h1 className="text-3xl md:text-4xl font-black">Learning Games Hub</h1>
+            <h1 className="text-3xl md:text-4xl font-black">מרכז משחקי הלימוד</h1>
             <p className="text-sm md:text-base text-white/70 max-w-2xl mx-auto">
-              Choose a subject and start playing – each game is built for different grades,
-              with scores, levels and question explanations.
+              בחרו מקצוע והתחילו לשחק — לכל משחק התאמה לכיתות שונות, ציונים,
+              רמות והסברים לשאלות.
             </p>
           </header>
 
@@ -109,8 +103,8 @@ export default function LearningHub({ showDevStudentSimulator }) {
                 </div>
                 <p className="text-sm text-white/70 flex-1">{g.blurb}</p>
                 <span className="mt-4 inline-flex items-center gap-2 text-xs font-semibold text-amber-200">
-                  Start learning
-                  <span>→</span>
+                  <span>←</span>
+                  התחל ללמוד
                 </span>
               </Link>
             ))}
@@ -136,7 +130,7 @@ export default function LearningHub({ showDevStudentSimulator }) {
                 href="/learning/dev-student-simulator"
                 className="block rounded-2xl border border-indigo-300/40 bg-indigo-500/10 hover:bg-indigo-500/20 transition p-4 text-center"
               >
-                <h2 className="font-bold text-lg">Dev Student Simulator</h2>
+                <h2 className="font-bold text-lg">סימולטור תלמידים (פיתוח)</h2>
                 <p className="text-sm text-white/70">סימולטור תלמידים לפיתוח</p>
               </Link>
             </section>

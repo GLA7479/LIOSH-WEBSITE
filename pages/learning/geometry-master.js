@@ -1268,8 +1268,8 @@ useEffect(() => {
             safeSetJson(STORAGE_KEY + "_progress", saved);
           } catch {}
         }
-      } else if (newStreak === 50 && !badges.includes("🌟 Master")) {
-        const newBadge = "🌟 Master";
+      } else if (newStreak === 50 && !badges.includes("🌟 אלוף") && !badges.includes("🌟 מאסטר") && !badges.includes("🌟 Master")) {
+        const newBadge = "🌟 אלוף";
         setBadges((prev) => [...prev, newBadge]);
         setShowBadge(newBadge);
         sound.playSound("badge-earned");
@@ -2002,7 +2002,7 @@ useEffect(() => {
                 onClick={backSafe}
                 className="min-w-[60px] px-3 py-1 rounded-lg text-sm font-bold bg-white/5 border border-white/10 hover:bg-white/10"
               >
-                BACK
+                חזרה
               </button>
             </div>
           </div>
@@ -2020,7 +2020,7 @@ useEffect(() => {
           <div className="text-center mb-3">
             <div className="flex items-center justify-center gap-2 mb-0.5">
               <h1 className="text-2xl font-extrabold text-white">
-                📐 Geometry Master
+                📐 גיאומטריה
               </h1>
               <button
                 onClick={() => {
@@ -2060,7 +2060,7 @@ useEffect(() => {
             </div>
             <div className="bg-black/30 border border-white/10 rounded-lg py-1.5 px-0.5 text-center flex flex-col justify-center min-h-[50px]">
               <div className="text-[9px] text-white/60 leading-tight mb-0.5">רמה</div>
-              <div className="text-sm font-bold text-purple-400 leading-tight">Lv.{playerLevel}</div>
+              <div className="text-sm font-bold text-purple-400 leading-tight">רמה {playerLevel}</div>
             </div>
             <div className="bg-black/30 border border-white/10 rounded-lg py-1.5 px-0.5 text-center flex flex-col justify-center min-h-[50px]">
               <div className="text-[9px] text-white/60 leading-tight mb-0.5">✅</div>
@@ -3341,11 +3341,11 @@ useEffect(() => {
                     </div>
                     <div className="bg-black/30 border border-white/10 rounded-lg p-3">
                       <div className="text-xs text-white/60 mb-1">רמה</div>
-                      <div className="text-xl font-bold text-purple-400">Lv.{playerLevel}</div>
+                      <div className="text-xl font-bold text-purple-400">רמה {playerLevel}</div>
                       {/* XP Progress Bar */}
                       <div className="mt-2">
                         <div className="flex justify-between text-xs text-white/60 mb-1">
-                          <span>XP</span>
+                          <span>נק׳ ניסיון</span>
                           <span>{xp} / {playerLevel * 100}</span>
                         </div>
                         <div className="w-full bg-black/50 rounded-full h-2">
