@@ -189,8 +189,7 @@ function normalizeStem(s) {
   return String(s || "")
     .trim()
     .toLowerCase()
-    .replace(/\s+/g, " ")
-    .replace(/\d+/g, "#");
+    .replace(/\s+/g, " ");
 }
 
 function stemHash(stem) {

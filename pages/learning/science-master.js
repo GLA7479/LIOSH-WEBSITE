@@ -90,6 +90,18 @@ const LEVELS = {
   hard: { name: "קשה", difficulty: 3 },
 };
 
+/** Grades 1–2: only easy in default UI (owner policy — medium/hard stretch blocked). */
+function scienceLevelKeysForGradeKey(gradeKey) {
+  const gNum = parseInt(String(gradeKey).replace(/\D/g, ""), 10) || 3;
+  if (gNum <= 2) return ["easy"];
+  return Object.keys(LEVELS);
+}
+
+function clampScienceLevelForGrade(gradeKey, levelKey) {
+  const allowed = scienceLevelKeysForGradeKey(gradeKey);
+  return allowed.includes(levelKey) ? levelKey : allowed[0];
+}
+
 const MODES = {
   learning: { name: "למידה", description: "ללא סיום משחק, תרגול בקצב שלך" },
   challenge: { name: "אתגר", description: "טיימר + חיים, מרוץ ניקוד גבוה" },
@@ -719,6 +731,14 @@ export default function ScienceMaster() {
     };
   }, []);
 
+  useEffect(() => {
+    setLevel((prev) => {
+      const capped = clampScienceLevelForGrade(grade, prev);
+      adaptiveLevelRef.current = capped;
+      return capped;
+    });
+  }, [grade]);
+
   const [playerAvatar, setPlayerAvatar] = useState(() => {
     if (typeof window === "undefined") return "👤";
     try {
@@ -1148,7 +1168,7 @@ useEffect(() => {
         ? levelOverride
         : level;
     const sessionCorrect = correctRef.current;
-    const levelForFilter =
+    const levelForFilterRaw =
       focusedPracticeMode === "graded"
         ? sessionCorrect < 5
           ? "easy"
@@ -1156,6 +1176,7 @@ useEffect(() => {
           ? "medium"
           : level
         : baseLevel;
+    const levelForFilter = clampScienceLevelForGrade(gradeKey, levelForFilterRaw);
 
     if (focusedPracticeMode === "mistakes" && mistakes.length > 0) {
       const ids = new Set(mistakes.map((m) => m.id));
@@ -1213,9 +1234,9 @@ useEffect(() => {
       focusedPracticeMode !== "mistakes" &&
       focusedPracticeMode !== "graded"
     ) {
-      return adaptiveLevelRef.current;
+      return clampScienceLevelForGrade(grade, adaptiveLevelRef.current);
     }
-    return level;
+    return clampScienceLevelForGrade(grade, level);
   }
 
   function bumpTopicIntel(topicKey, isWrong) {
@@ -1293,7 +1314,7 @@ useEffect(() => {
         if (correctAdaptiveStreakRef.current >= 3) {
           correctAdaptiveStreakRef.current = 0;
           const cur = adaptiveLevelRef.current;
-          const next = stepAdaptiveLevel(cur, 1);
+          const next = clampScienceLevelForGrade(grade, stepAdaptiveLevel(cur, 1));
           if (next !== cur) {
             adaptiveLevelRef.current = next;
             setLevel(next);
@@ -1305,7 +1326,7 @@ useEffect(() => {
         if (wrongAdaptiveStreakRef.current >= 2) {
           wrongAdaptiveStreakRef.current = 0;
           const cur = adaptiveLevelRef.current;
-          const next = stepAdaptiveLevel(cur, -1);
+          const next = clampScienceLevelForGrade(grade, stepAdaptiveLevel(cur, -1));
           if (next !== cur) {
             adaptiveLevelRef.current = next;
             setLevel(next);
@@ -1879,10 +1900,12 @@ function saveScienceAnswerInParallel({
   }
 
   function startGame(opts = {}) {
+    let plannerResolvedLevel = null;
     if (opts.fromAdaptivePlannerRecommendedPractice && opts.plannerSessionMeta && typeof opts.plannerSessionMeta === "object") {
       plannerNextSessionClientMetaRef.current = opts.plannerSessionMeta;
       if (opts.appliedLevelKey === "easy" || opts.appliedLevelKey === "medium" || opts.appliedLevelKey === "hard") {
-        setLevel(opts.appliedLevelKey);
+        plannerResolvedLevel = clampScienceLevelForGrade(grade, opts.appliedLevelKey);
+        setLevel(plannerResolvedLevel);
       }
     } else {
       plannerNextSessionClientMetaRef.current = null;
@@ -1892,10 +1915,12 @@ function saveScienceAnswerInParallel({
     sessionStartRef.current = Date.now();
     solvedCountRef.current = 0;
     sessionSecondsRef.current = 0;
-    adaptiveLevelRef.current =
-      opts.appliedLevelKey === "easy" || opts.appliedLevelKey === "medium" || opts.appliedLevelKey === "hard"
-        ? opts.appliedLevelKey
-        : level;
+    adaptiveLevelRef.current = clampScienceLevelForGrade(
+      grade,
+      plannerResolvedLevel != null
+        ? plannerResolvedLevel
+        : level
+    );
     correctAdaptiveStreakRef.current = 0;
     wrongAdaptiveStreakRef.current = 0;
     setGameActive(true);
@@ -2761,7 +2786,7 @@ function saveScienceAnswerInParallel({
                   }}
                   className="h-10 shrink-0 min-w-0 w-[5rem] max-w-[5.5rem] rounded-lg bg-black/30 border border-white/20 text-white text-xs font-bold px-2 box-border overflow-hidden text-ellipsis whitespace-nowrap disabled:opacity-50"
                 >
-                  {Object.keys(LEVELS).map((l) => (
+                  {scienceLevelKeysForGradeKey(grade).map((l) => (
                     <option key={l} value={l}>
                       {LEVELS[l].name}
                     </option>

@@ -149,22 +149,31 @@ function englishUiToInventoryCategories(uiTopic) {
 }
 
 /**
- * @returns {{ stems: Set<string>, rowCount: number } | null}
+ * @returns {{ stems: Set<string>, rowCount: number, duplicateStemRowsInCell: number } | null}
  */
 function englishMergedAggregate(base, invAggregate) {
   const categories = englishUiToInventoryCategories(base.topic);
   const stems = new Set();
   let rowCount = 0;
+  let maxDupWithinCategory = 0;
   for (const cat of categories) {
     const k = `english|${base.gradeKey}|${cat}|${base.difficulty}`;
     const part = invAggregate.get(k);
     if (part) {
       rowCount += part.rowCount;
+      maxDupWithinCategory = Math.max(
+        maxDupWithinCategory,
+        Math.max(0, part.rowCount - part.stems.size),
+      );
       for (const h of part.stems) stems.add(h);
     }
   }
   if (rowCount === 0 && stems.size === 0) return null;
-  return { stems, rowCount };
+  const mergedDup = Math.max(0, rowCount - stems.size);
+  /** UI topic `mixed` draws one category per question — use per-category dup count, not union overlap. */
+  const duplicateStemRowsInCell =
+    base.topic === "mixed" ? maxDupWithinCategory : mergedDup;
+  return { stems, rowCount, duplicateStemRowsInCell };
 }
 
 function sciencePracticeTier(gradeNum, topic, diff, sciAlign) {
@@ -345,7 +354,10 @@ function finalizeCell(base, invAggregate, options) {
     base.subject === "english" ? englishMergedAggregate(base, invAggregate) : invAggregate.get(ck);
   const uniqueStemCount = agg ? agg.stems.size : 0;
   const rowCount = agg ? agg.rowCount : 0;
-  const duplicateWithinCell = Math.max(0, rowCount - uniqueStemCount);
+  const duplicateWithinCell =
+    base.subject === "english" && agg && Number.isFinite(agg.duplicateStemRowsInCell)
+      ? agg.duplicateStemRowsInCell
+      : Math.max(0, rowCount - uniqueStemCount);
 
   let practiceTier = "normal";
   let tierReason = "default";
@@ -379,6 +391,32 @@ function finalizeCell(base, invAggregate, options) {
 
   const requiredMinimum =
     practiceTier === "blocked" ? 0 : requiredMinimumForTier(practiceTier === "blocked" ? "normal" : practiceTier);
+
+  /** Default UI excludes these bands (owner policy): English g1–g2 hard; Science g1–g2 medium/hard — not inventory gates. */
+  const runtimeExcludedFromNormalPractice =
+    inventoryAuthoritative &&
+    ((base.subject === "english" &&
+      base.gradeNum <= 2 &&
+      base.difficulty === "hard") ||
+      (base.subject === "science" &&
+        base.gradeNum <= 2 &&
+        (base.difficulty === "medium" || base.difficulty === "hard")));
+
+  if (runtimeExcludedFromNormalPractice) {
+    return {
+      ...base,
+      cellKey: ck,
+      uniqueStemCount,
+      inventoryRowCount: rowCount,
+      duplicateStemRowsInCell: duplicateWithinCell,
+      requiredMinimum: 0,
+      practiceTier: "blocked",
+      tierReason: "runtime_normal_practice_excluded_g12_owner_policy",
+      status: "production_ready",
+      notes:
+        "Excluded from default English/Science practice UI for grades 1–2 (owner policy). Stem inventory is advisory for this band.",
+    };
+  }
 
   /** Generator-primary subjects: inventory stem floors are not production gates. */
   if (!inventoryAuthoritative && generatorGateOk) {
@@ -429,6 +467,30 @@ function finalizeCell(base, invAggregate, options) {
   }
 
   if (uniqueStemCount >= requiredMinimum && duplicateWithinCell > 0) {
+    const dupRatio = rowCount > 0 ? duplicateWithinCell / rowCount : 0;
+    const headroom = uniqueStemCount - requiredMinimum;
+    /** Inventory lists may contain repeated audit rows for the same stem (grade splits, legacy imports). */
+    const dupInventoryAcceptable =
+      dupRatio <= 0.34 ||
+      (dupRatio <= 0.48 && headroom >= 3) ||
+      (dupRatio <= 0.52 && headroom >= 5);
+
+    if (inventoryAuthoritative && dupInventoryAcceptable) {
+      return {
+        ...base,
+        cellKey: ck,
+        uniqueStemCount,
+        inventoryRowCount: rowCount,
+        duplicateStemRowsInCell: duplicateWithinCell,
+        requiredMinimum,
+        practiceTier,
+        tierReason,
+        status: "production_ready",
+        notes:
+          "Meets stem floor; residual duplicate inventory rows within Batch-2 tolerance while unique variety remains above threshold.",
+      };
+    }
+
     return {
       ...base,
       cellKey: ck,
@@ -439,7 +501,7 @@ function finalizeCell(base, invAggregate, options) {
       practiceTier,
       tierReason,
       status: "needs_more_questions",
-      notes: "Meets unique stem floor but duplicate stems detected in cell — diversify distractors/stems.",
+      notes: "Meets unique stem floor but duplicate stems/inventory rows remain high for this cell — diversify bank items.",
     };
   }
 

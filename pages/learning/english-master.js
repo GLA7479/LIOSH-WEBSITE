@@ -94,6 +94,18 @@ const LEVELS = {
   hard: { name: "קשה", maxWords: 15, complexity: "advanced" },
 };
 
+/** Grades 1–2: hard band excluded from default practice UI (owner policy). */
+function englishLevelKeysForGradeKey(gradeKey) {
+  const gNum = parseInt(String(gradeKey).replace(/\D/g, ""), 10) || 3;
+  if (gNum <= 2) return ["easy", "medium"];
+  return Object.keys(LEVELS);
+}
+
+function clampEnglishLevelForGrade(gradeKey, levelKey) {
+  const allowed = englishLevelKeysForGradeKey(gradeKey);
+  return allowed.includes(levelKey) ? levelKey : allowed[allowed.length - 1];
+}
+
 const TOPICS = {
   vocabulary: { name: "אוצר מילים", description: "Vocabulary practice", icon: "📚" },
   grammar: { name: "דקדוק", description: "Grammar focus", icon: "✏️" },
@@ -1362,6 +1374,17 @@ const refreshMonthlyProgress = useCallback(() => {
   }, []);
 
   useEffect(() => {
+    setLevel((prev) => clampEnglishLevelForGrade(grade, prev));
+  }, [grade]);
+
+  useEffect(() => {
+    const allowed = englishLevelKeysForGradeKey(grade);
+    if (!allowed.includes(leaderboardLevel)) {
+      setLeaderboardLevel(allowed[0]);
+    }
+  }, [grade, leaderboardLevel]);
+
+  useEffect(() => {
     clearActiveDiagnosticState(
       englishPendingDiagnosticProbeRef,
       englishHypothesisLedgerRef
@@ -1482,6 +1505,7 @@ const refreshMonthlyProgress = useCallback(() => {
     const nextGradeKey = GRADE_ORDER[numeric - 1] || "g3";
     setGradeNumber(numeric);
     setGrade(nextGradeKey);
+    setLevel((prev) => clampEnglishLevelForGrade(nextGradeKey, prev));
     setGameActive(false);
   };
 
@@ -1538,7 +1562,7 @@ const refreshMonthlyProgress = useCallback(() => {
       setGradeNumber(gradeIdx + 1);
     }
     setGrade(gradeKey);
-    setLevel(levelKey);
+    setLevel(clampEnglishLevelForGrade(gradeKey, levelKey));
     setTopic(topicKey);
     setMode("learning");
     setGameActive(false);
@@ -2012,6 +2036,8 @@ const refreshMonthlyProgress = useCallback(() => {
         correct < 5 ? "easy" : correct < 15 ? "medium" : level;
     }
 
+    levelForQuestion = clampEnglishLevelForGrade(gradeForQuestion, levelForQuestion);
+
     if (mode === "practice") {
       switch (practiceFocus) {
         case "vocab_core":
@@ -2123,7 +2149,7 @@ const refreshMonthlyProgress = useCallback(() => {
     if (opts.fromAdaptivePlannerRecommendedPractice && opts.plannerSessionMeta && typeof opts.plannerSessionMeta === "object") {
       plannerNextSessionClientMetaRef.current = opts.plannerSessionMeta;
       if (opts.appliedLevelKey === "easy" || opts.appliedLevelKey === "medium" || opts.appliedLevelKey === "hard") {
-        setLevel(opts.appliedLevelKey);
+        setLevel(clampEnglishLevelForGrade(grade, opts.appliedLevelKey));
       }
     } else {
       plannerNextSessionClientMetaRef.current = null;
@@ -3027,7 +3053,7 @@ const refreshMonthlyProgress = useCallback(() => {
                   }}
                   className="h-10 shrink-0 min-w-0 w-[5rem] max-w-[5.5rem] rounded-lg bg-black/30 border border-white/20 text-white text-xs font-bold px-2 box-border overflow-hidden text-ellipsis whitespace-nowrap"
                 >
-                  {Object.keys(LEVELS).map((lvl) => (
+                  {englishLevelKeysForGradeKey(grade).map((lvl) => (
                     <option key={lvl} value={lvl}>
                       {LEVELS[lvl].name}
                     </option>
@@ -3406,7 +3432,7 @@ const refreshMonthlyProgress = useCallback(() => {
                 </div>
 
                 <div className="flex gap-2 mb-4 justify-center">
-                  {Object.keys(LEVELS).map((lvl) => (
+                  {englishLevelKeysForGradeKey(grade).map((lvl) => (
                     <button
                       key={lvl}
                       onClick={() => {
