@@ -11,6 +11,7 @@ import {
   buildClinicalBoundaryAnswerDraft,
   clinicalBoundaryJoinedFingerprintHe,
   sensitiveEducationChoiceJoinedFingerprintHe,
+  ensureHomePracticePracticalMagnitudeDraft,
 } from "./answer-composer.js";
 import { detectAggregateQuestionClass } from "./semantic-question-class.js";
 import { buildSemanticAggregateDraft } from "./semantic-aggregate-answers.js";
@@ -439,7 +440,13 @@ function packageParentResolvedEarlyTurn(input, sessionId, priorRepeated, conv, u
   }
 
   draft = enforceThinDataScarcityLead(draft, truthPacket, plannerIntent, input?.payload);
-  const responseIntentEarly = isClinicalBoundaryDraft(draft) ? "clinical_boundary" : plannerIntent;
+  const responseIntentEarly = isClinicalBoundaryDraft(draft)
+    ? "clinical_boundary"
+    : isSensitiveEducationChoiceDraft(draft)
+      ? "sensitive_education_choice"
+      : plannerIntent;
+  draft = ensureHomePracticePracticalMagnitudeDraft(draft, responseIntentEarly, truthPacket);
+  draft = { ...draft, answerBlocks: normalizeAnswerBlocksHe(draft.answerBlocks) };
 
   const answerBlockTypes = draft.answerBlocks.map((b) => b.type);
   const answerBodyTextHe = draft.answerBlocks.map((b) => b.textHe).join(" ").trim();
@@ -1033,6 +1040,9 @@ function runDeterministicCore(input, options) {
     : isSensitiveEducationChoiceDraft(draft)
       ? "sensitive_education_choice"
       : plannerIntent;
+
+  draft = ensureHomePracticePracticalMagnitudeDraft(draft, responseIntent, truthPacket);
+  draft = { ...draft, answerBlocks: normalizeAnswerBlocksHe(draft.answerBlocks) };
 
   const answerBlockTypes = draft.answerBlocks.map((b) => b.type);
   const answerBodyTextHe = draft.answerBlocks.map((b) => b.textHe).join(" ").trim();

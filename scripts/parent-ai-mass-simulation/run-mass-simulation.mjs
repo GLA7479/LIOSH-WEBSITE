@@ -10,7 +10,8 @@
  *   MASS_QUESTION_TARGET (default 20000)
  *   MASS_QUESTION_SOURCE — synthetic | hybrid | real (default hybrid)
  *   MASS_REPORT_LIMIT, MASS_PDF_LIMIT
- *   MASS_PARENT_AI_QUESTION_LIMIT — global budget distributed fairly across students (must be > 0 for Parent AI; 0 skips all turns and fails quality gates)
+ *   MASS_PARENT_AI_QUESTION_LIMIT — global budget distributed fairly across students (must be > 0 for Parent AI; 0 skips all turns and fails quality gates).
+ *     When MASS_PARENT_AI_CATEGORY_BALANCED=1, the runner may raise this automatically so each student can receive at least (MASS_PARENT_AI_CATEGORY_MIN × number of catalog categories) turns (full category coverage).
  *   MASS_PARENT_AI_CATEGORY_BALANCED=1
  *   MASS_PARENT_AI_CATEGORY_MIN (default 1)
  *   QA_BASE_URL / MASS_PDF_BASE_URL — required for PDF export (Next server), default http://localhost:3001 (Node fetch to 127.0.0.1 can be flaky on some Windows setups)
@@ -25,6 +26,7 @@ import { fileURLToPath, pathToFileURL } from "node:url";
 import { generateStudents, writeStudentFiles } from "./lib/student-generator.mjs";
 import { simulateQuestionRuns, aggregateQuestionStats } from "./lib/question-simulator.mjs";
 import { allocateFair } from "./lib/allocation.mjs";
+import { PARENT_QUESTION_CATEGORIES } from "./lib/parent-questions-catalog.mjs";
 import { runParentAiSimulation } from "./lib/copilot-runner.mjs";
 import { writeParentReportsAndProductPdfs } from "./lib/report-export.mjs";
 import {
@@ -221,7 +223,18 @@ async function main() {
       "[mass-sim] MASS_PARENT_AI_QUESTION_LIMIT is 0 or unset — no Parent AI turns will run; quality gates will fail (parent_ai_zero_interactions).",
     );
   }
-  const parentAiTurnsByStudent = allocateFair(parentAiGlobalLimit, students.length);
+  let effectiveParentAiLimit = parentAiGlobalLimit;
+  if (categoryBalanced && students.length > 0 && effectiveParentAiLimit > 0) {
+    const minTurnsPerStudent = Math.max(1, categoryMin) * PARENT_QUESTION_CATEGORIES.length;
+    const minGlobalForCoverage = students.length * minTurnsPerStudent;
+    if (effectiveParentAiLimit < minGlobalForCoverage) {
+      console.warn(
+        `[mass-sim] Raising Parent AI budget from ${effectiveParentAiLimit} to ${minGlobalForCoverage} (${minTurnsPerStudent} turns/student × ${students.length} students; ${PARENT_QUESTION_CATEGORIES.length} categories × categoryMin=${categoryMin}).`,
+      );
+      effectiveParentAiLimit = minGlobalForCoverage;
+    }
+  }
+  const parentAiTurnsByStudent = allocateFair(effectiveParentAiLimit, students.length);
 
   const { generateDetailedParentReport } = await import(pathToFileURL(path.join(ROOT, "utils/detailed-parent-report.js")).href);
   const { runParentCopilotTurn } = await import(pathToFileURL(path.join(ROOT, "utils/parent-copilot/index.js")).href);
@@ -277,7 +290,7 @@ async function main() {
     reportStudentIds: reportIds,
     pdfLimit,
     categoryCoverage,
-    parentAiQuestionLimit: parentAiGlobalLimit,
+    parentAiQuestionLimit: effectiveParentAiLimit,
   });
 
   if (pdfLimit > 0) {
@@ -470,7 +483,8 @@ async function main() {
       MASS_QUESTION_SOURCE: questionSourceMode,
       MASS_REPORT_LIMIT: reportLimit,
       MASS_PDF_LIMIT: pdfLimit,
-      MASS_PARENT_AI_QUESTION_LIMIT: parentAiGlobalLimit,
+      MASS_PARENT_AI_QUESTION_LIMIT: effectiveParentAiLimit,
+      MASS_PARENT_AI_QUESTION_LIMIT_REQUESTED: parentAiGlobalLimit,
       MASS_PARENT_AI_CATEGORY_BALANCED: categoryBalanced ? "1" : "0",
       MASS_PARENT_AI_CATEGORY_MIN: categoryMin,
       QA_BASE_URL: baseUrl,

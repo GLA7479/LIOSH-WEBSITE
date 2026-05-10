@@ -207,6 +207,7 @@
     "qa:overnight-parent-ai:soak": "node scripts/overnight-parent-ai-soak.mjs",
     "qa:overnight-parent-ai:smoke": "node scripts/overnight-parent-ai-audit.mjs --smoke",
     "qa:parent-copilot:mass": "tsx scripts/parent-copilot-qa-mass-simulation.mjs",
+    "qa:parent-ai:mass-smoke": "tsx scripts/parent-ai-mass-simulation/run-parent-ai-mass-smoke.mjs",
     "qa:parent-copilot:live-sample": "tsx scripts/parent-copilot-qa-mass-simulation.mjs --live",
     "qa:parent-copilot:live-stress": "tsx scripts/parent-copilot-qa-mass-simulation.mjs --live --stress --max-live-turns 80 --delay-ms 5000 --include-fallback-stress",
     "qa:parent-copilot:live-soak": "tsx scripts/parent-copilot-qa-live-soak.mjs --target-turns 120 --batch-size 10 --delay-ms 20000 --resume --include-fallback-stress",

@@ -128,9 +128,11 @@ function extendedAssertions(entry, res, student, answerText, gScore) {
   }
 
   if (entry.category === "unrelated_off_topic") {
-    const redirect = /נתוני הלמידה|דוח הלמידה|דוח\s*הלמידה|תרגול\s*של\s*הילד|מתמקד|במסגרת הכלי|לא ניתן|מחוץ|לא יכול|עוזרים בתחום|בתוך החוויה/i.test(
-      answerText,
-    );
+    // Align with shipped OFF_TOPIC_RESPONSE_HE / composer off-topic blocks ("על הדוח…", "שאלות על הדוח").
+    const redirect =
+      /נתוני הלמידה|דוח הלמידה|דוח\s*הלמידה|תרגול\s*של\s*הילד|מתמקד|במסגרת הכלי|לא ניתן|מחוץ|לא יכול|עוזרים בתחום|בתוך החוויה|שאלות\s+על\s+הדוח|תקדמות\s*הלמידה|על\s+הדוח\s+והתקדמות/i.test(
+        answerText,
+      );
     const genericOnly = /אין כרגע מספיק תרגול בנושאים בדוח כדי לענות/i.test(answerText);
     const evidenceDump =
       /לפי רשימת המקורות המעוגנים|לפי מה שמוצג עכשיו בדוח, אלה המקצועות|זה מה שהדוח נותן כרגע/u.test(answerText);
@@ -264,10 +266,20 @@ function extendedAssertions(entry, res, student, answerText, gScore) {
       pass: !badMathForProfile,
       detail: badMathForProfile ? "צעדים שמצביעים על חשבון למרות שפרופיל החולשה אינו מתמטיקה." : undefined,
     });
-    base.push({
-      id: "action_plan_must_include_numbered_or_clear_steps",
-      pass: /\d\)\s/u.test(answerText) && (answerText.match(/\d\)/g) || []).length >= 3,
-    });
+    {
+      const parenSteps = (answerText.match(/\d\)/g) || []).length;
+      const hasNumberedParens = /\d\)\s/u.test(answerText) && parenSteps >= 3;
+      // Accept concrete prose plans from truth slots (e.g. "מחר: … דקות … שאלות …") without digit parens.
+      const prosePlanTriple =
+        /מחר\s*:/u.test(answerText) &&
+        /(דקות|דקה)/u.test(answerText) &&
+        /(שאלות|תרגול)/u.test(answerText) &&
+        (/ואז|ואחר\s*כך|ולבסוף|בקשו\s*מהילד|להסביר/u.test(answerText) || answerText.split(/\n/).filter((x) => String(x).trim().length > 8).length >= 2);
+      base.push({
+        id: "action_plan_must_include_numbered_or_clear_steps",
+        pass: hasNumberedParens || prosePlanTriple,
+      });
+    }
     if (strongOrRich) {
       base.push({
         id: "action_plan_must_not_claim_insufficient_basis_for_rich_or_strong",

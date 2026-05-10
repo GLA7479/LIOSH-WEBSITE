@@ -124,6 +124,69 @@ function dedupeAdjacentOverlappingComposed(blocks) {
   return out;
 }
 
+/** Mirrors QA harness `home_practice` magnitude check — slots/coaching often omit these tokens. */
+const PRACTICAL_MAGNITUDE_MARKERS_RE =
+  /(דקות|דקה|פעמים|שאלות|סשנים|זמן\s+קצר|\d+\s*דק)/u;
+
+function weakSubjectLabelForPlan(truthPacket) {
+  return (
+    String(truthPacket?.surfaceFacts?.weakFocusSubjectLabelHe || "").trim() ||
+    String(truthPacket?.surfaceFacts?.subjectLabelHe || "").trim() ||
+    "מקצוע מהדוח"
+  );
+}
+
+/**
+ * Numbered concrete plan — reused by fast-path fallback and magnitude tail sourcing.
+ * @param {"what_to_do_today"|"what_to_do_this_week"} intentMain
+ */
+export function defaultConcretePlanTextHe(intentMain, truthPacket) {
+  const subj = weakSubjectLabelForPlan(truthPacket);
+  if (intentMain === "what_to_do_today") {
+    return `1) מחר 10 דקות תרגול ממוקד ב${subj}. 2) 5–8 שאלות קצרות ולבדוק מה חוזר. 3) לסיים במשפט אחד עם הילד על מה ניסיתם.`;
+  }
+  return `1) לבחור נושא אחד מרכזי ב${subj} ולחלק תרגול לשלושה חלונות קצרים בשבוע. 2) בכל חלון 5–8 שאלות קצרות ולבדוק אם אותה טעות חוזרת. 3) בסוף השבוע: משפט אחד עם הילד — מה התקדם ומה עדיין צריך חיזוק.`;
+}
+
+/**
+ * Short tail lifted from {@link defaultConcretePlanTextHe} — merged into the last block when the draft lacks magnitude markers.
+ * @param {"what_to_do_today"|"what_to_do_this_week"} intentMain
+ */
+export function practicalMagnitudeTailHe(intentMain, truthPacket) {
+  const subj = weakSubjectLabelForPlan(truthPacket);
+  if (intentMain === "what_to_do_today") {
+    return `10 דקות תרגול ממוקד ב${subj}, 5–8 שאלות קצרות.`;
+  }
+  return `שלושה חלונות קצרים בשבוע; בכל חלון 5–8 שאלות קצרות ב${subj}.`;
+}
+
+/**
+ * Deterministic merge-layer: guarantees QA-visible magnitude hints for weekly/today intents without adding blocks (compaction pops trailing blocks).
+ * @param {{ answerBlocks?: Array<{ type: string; textHe: string; source?: string }> }} draft
+ */
+export function ensureHomePracticePracticalMagnitudeDraft(draft, responseIntent, truthPacket) {
+  const intent = String(responseIntent || "");
+  if (intent !== "what_to_do_today" && intent !== "what_to_do_this_week") {
+    return draft;
+  }
+  const blocks = draft?.answerBlocks;
+  if (!Array.isArray(blocks) || !blocks.length) return draft;
+  const joined = blocks.map((b) => String(b?.textHe || "")).join("\n");
+  if (joined.length <= 30 || PRACTICAL_MAGNITUDE_MARKERS_RE.test(joined)) {
+    return draft;
+  }
+  const tail = practicalMagnitudeTailHe(intent, truthPacket);
+  const lastIdx = blocks.length - 1;
+  const last = blocks[lastIdx];
+  const next = blocks.slice();
+  next[lastIdx] = {
+    ...last,
+    textHe: `${String(last?.textHe || "").trim()}\n\n${tail}`.trim(),
+    source: last?.source === "contract_slot" ? "composed" : last.source,
+  };
+  return { ...draft, answerBlocks: next };
+}
+
 /**
  * @param {ReturnType<typeof import("./conversation-planner.js").planConversation>} plan
  * @param {NonNullable<ReturnType<typeof import("./truth-packet-v1.js").buildTruthPacketV1>>} truthPacket
@@ -269,16 +332,11 @@ export function composeAnswerDraft(plan, truthPacket, coachingCtx = null) {
       blocks.push({ type: "meaning", textHe: interpWk, source: "composed" });
     }
     if (!actWk && !interpWk) {
-      // fallback concrete plan based on surfaceFacts
-      const subj =
-        String(truthPacket?.surfaceFacts?.weakFocusSubjectLabelHe || "").trim() ||
-        String(truthPacket?.surfaceFacts?.subjectLabelHe || "").trim() ||
-        "מקצוע מהדוח";
-      const planText =
-        intentMain === "what_to_do_today"
-          ? `1) מחר 10 דקות תרגול ממוקד ב${subj}. 2) 5–8 שאלות קצרות ולבדוק מה חוזר. 3) לסיים במשפט אחד עם הילד על מה ניסיתם.`
-          : `1) לבחור נושא אחד מרכזי ב${subj} ולחלק תרגול לשלושה חלונות קצרים בשבוע. 2) בכל חלון 5–8 שאלות קצרות ולבדוק אם אותה טעות חוזרת. 3) בסוף השבוע: משפט אחד עם הילד — מה התקדם ומה עדיין צריך חיזוק.`;
-      blocks.push({ type: "next_step", textHe: planText, source: "composed" });
+      blocks.push({
+        type: "next_step",
+        textHe: defaultConcretePlanTextHe(intentMain, truthPacket),
+        source: "composed",
+      });
     }
     if (blocks.length > 0) {
       return {

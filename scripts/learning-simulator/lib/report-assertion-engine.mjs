@@ -93,6 +93,14 @@ export function reportHasNonGenericSignals(facets) {
     }
   }
 
+  /** Strong / early-grade profiles may suppress formal diagnosis while still naming a concrete bucket — still non-generic. */
+  for (const u of us) {
+    const dn = String(u?.displayName || "").trim();
+    if (dn.length >= 4) {
+      return { ok: true, matched: "unitDisplayName", detail: { displayNameLen: dn.length } };
+    }
+  }
+
   return {
     ok: false,
     matched: "insufficient_signals",

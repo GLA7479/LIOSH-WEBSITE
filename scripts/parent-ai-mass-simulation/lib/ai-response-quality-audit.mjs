@@ -442,7 +442,14 @@ function rubricForAnswer(row, detailed, ctx) {
     }
     case "action_plan": {
       const steps = (ans.match(/\d+\)/g) || []).length;
-      if (steps < 2 && !/[12]\)/u.test(ans)) {
+      const hasNumberedSteps = steps >= 2 || /[12]\)/u.test(ans);
+      const prosePlanTriple =
+        /מחר\s*:/u.test(ans) &&
+        /(דקות|דקה)/u.test(ans) &&
+        /(שאלות|תרגול)/u.test(ans) &&
+        (/ואז|ואחר\s*כך|ולבסוף|בקשו\s*מהילד|להסביר/u.test(ans) ||
+          ans.split(/\n/).filter((x) => String(x).trim().length > 8).length >= 2);
+      if (!hasNumberedSteps && !prosePlanTriple) {
         issues.push({
           severity: "fail",
           type: "category_mismatch",

@@ -218,6 +218,18 @@ async function waitForHttpOk(url, timeoutMs) {
   return false;
 }
 
+async function looksLikeNextDevApp(baseUrl) {
+  try {
+    const root = String(baseUrl || "").replace(/\/$/, "");
+    const r = await fetch(`${root}/learning`, { redirect: "follow" });
+    if (!r.ok) return false;
+    const html = await r.text();
+    return html.includes("__NEXT_DATA__") || /\/_next\/static\//.test(html);
+  } catch {
+    return false;
+  }
+}
+
 function startDevServer(listenPort) {
   const p = listenPort ?? PORT;
   const env = { ...process.env, PORT: String(p) };
@@ -346,7 +358,15 @@ async function main() {
   let serverStarted = false;
   /** @type {string} */
   let activeBaseUrl = BASE_URL;
-  const serverAlreadyUp = await waitForHttpOk(activeBaseUrl, 2500);
+  const trustExistingListener =
+    process.env.RENDER_GATE_TRUST_EXISTING_SERVER === "1" || process.env.PDF_GATE_TRUST_EXISTING_SERVER === "1";
+  let serverAlreadyUp = false;
+  if (trustExistingListener) {
+    serverAlreadyUp = await waitForHttpOk(activeBaseUrl, 2500);
+    if (serverAlreadyUp && !(await looksLikeNextDevApp(activeBaseUrl))) {
+      serverAlreadyUp = false;
+    }
+  }
   if (!serverAlreadyUp && AUTO_SERVER) {
     const bootPort = await findFreePort();
     activeBaseUrl = `http://127.0.0.1:${bootPort}`;
@@ -435,8 +455,11 @@ async function main() {
         preferCSSPageSize: true,
       });
       const proofTxt = (await extractPdfText(Buffer.from(proofBuf))).replace(/\s+/g, " ");
-      if (!/תובנה\s+להורה/u.test(proofTxt)) {
-        failures.push("Phase C.1: Playwright print PDF missing Parent AI heading (תובנה להורה).");
+      /** Structured insight uses `סיכום חכם להורה`; legacy single-paragraph uses `תובנה להורה` — same slot (.parent-report-parent-ai-insight). */
+      if (!/(תובנה\s+להורה|סיכום\s+חכם\s+להורה)/u.test(proofTxt)) {
+        failures.push(
+          "Phase C.1: Playwright print PDF missing Parent AI insight heading (תובנה להורה or סיכום חכם להורה).",
+        );
       }
       if (proofTxt.includes("שאלה על הדוח")) {
         failures.push("Phase C.1: Parent Copilot placeholder leaked into Playwright print PDF.");

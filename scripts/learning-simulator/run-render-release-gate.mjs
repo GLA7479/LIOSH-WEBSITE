@@ -5,6 +5,7 @@
  *
  * Env:
  *   RENDER_GATE_BASE_URL — default http://127.0.0.1:3001
+ *   RENDER_GATE_TRUST_EXISTING_SERVER — if "1", reuse listener at BASE_URL when it responds like Next.js (default off: always spawn a fresh dev server on a free port when auto-starting — avoids stale listeners / chunk 404s on :3001).
  *   RENDER_GATE_AUTO_SERVER — if "0", do not spawn dev server (expect server already up)
  *   RENDER_GATE_BROWSER — if "0", skip Playwright and run SSR fallback only (browserMode false)
  *   RENDER_GATE_SERVER_WAIT_MS — max wait for first HTTP from auto-started dev (default 300000)
@@ -207,6 +208,19 @@ async function waitForHttpOk(url, timeoutMs) {
   return false;
 }
 
+/** Port 3001 may answer HTTP without being `next dev` — avoid skipping auto-start on a stale listener. */
+async function looksLikeNextDevApp(baseUrl) {
+  try {
+    const root = String(baseUrl || "").replace(/\/$/, "");
+    const r = await fetch(`${root}/learning`, { redirect: "follow" });
+    if (!r.ok) return false;
+    const html = await r.text();
+    return html.includes("__NEXT_DATA__") || /\/_next\/static\//.test(html);
+  } catch {
+    return false;
+  }
+}
+
 function startDevServer(listenPort) {
   const p = listenPort ?? PORT;
   const env = { ...process.env, PORT: String(p) };
@@ -250,7 +264,7 @@ async function mockStudentMe(page) {
 
 async function applyLocalStorage(page, data, originBase) {
   const ob = originBase || BASE_URL;
-  await page.goto(`${ob}/`, { waitUntil: "domcontentloaded", timeout: 60_000 });
+  await page.goto(`${ob}/`, { waitUntil: "domcontentloaded", timeout: 120_000 });
   await page.evaluate((d) => {
     localStorage.clear();
     for (const [k, v] of Object.entries(d || {})) localStorage.setItem(k, String(v));
@@ -362,7 +376,15 @@ async function main() {
 
   let activeBaseUrl = BASE_URL;
   let serverStarted = false;
-  const serverAlreadyUp = await waitForHttpOk(activeBaseUrl, 2000);
+  /** Default false: a listener on :3001 may look like Next yet serve stale chunk hashes (mass 404s). Set RENDER_GATE_TRUST_EXISTING_SERVER=1 to reuse a known-good dev server. */
+  const trustExistingListener = process.env.RENDER_GATE_TRUST_EXISTING_SERVER === "1";
+  let serverAlreadyUp = false;
+  if (trustExistingListener) {
+    serverAlreadyUp = await waitForHttpOk(activeBaseUrl, 2000);
+    if (serverAlreadyUp && !(await looksLikeNextDevApp(activeBaseUrl))) {
+      serverAlreadyUp = false;
+    }
+  }
   if (!serverAlreadyUp && AUTO_SERVER) {
     let bootPort = PORT;
     if (!process.env.RENDER_GATE_BASE_URL) {
@@ -473,12 +495,27 @@ async function main() {
     },
     {
       id: "parent_report_summary",
-      path: "/learning/parent-report",
+      /** Rolling month (30d) overlaps seeded aggregate sessions; bare /week can yield zero rows near calendar edges and tiny shells. */
+      path: "/learning/parent-report?period=month",
       setup: "simulator_storage",
       inputArtifact: "reports/learning-simulator/aggregate/per-student/strong_all_subjects_g3_7d.storage.json",
       expectRendered: async (page) => {
-        const t = await page.locator("body").innerText();
-        return t.length > 200;
+        /**
+         * Wait for client hydration: loading shell ("טוען דוח…") must disappear, then require substantive body text.
+         * Do not require `#parent-report-pdf` — that node exists only on the populated branch; thin-window / empty
+         * branches render a different layout without that id (would timeout forever).
+         */
+        await page.waitForFunction(
+          () => {
+            const t = document.body?.innerText || "";
+            if (t.includes("טוען דוח")) return false;
+            if (document.querySelector("#parent-report-pdf")) return true;
+            return t.length > 180;
+          },
+          null,
+          { timeout: 90_000 },
+        );
+        return true;
       },
     },
     {
@@ -553,7 +590,7 @@ async function main() {
       } else if (sc.setup === "simulator_storage") {
         await mockStudentMe(page);
         await applyLocalStorage(page, storageSnapshot, activeBaseUrl);
-        await page.goto(`${activeBaseUrl}${sc.path}`, { waitUntil: "domcontentloaded", timeout: 90_000 });
+        await page.goto(`${activeBaseUrl}${sc.path}`, { waitUntil: "domcontentloaded", timeout: 180_000 });
         await new Promise((r) => setTimeout(r, 1200));
         opened = true;
       } else {

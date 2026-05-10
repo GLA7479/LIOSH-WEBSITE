@@ -116,6 +116,7 @@ const STRONG_REPORT_INTENTS = [
   /מה.{0,8}לתרגל/u, /מה.{0,8}לעשות.{0,8}בבית/u,
   // Home-practice / next-step framing (keep aligned with semantic-question-class recommendation_action)
   /מה\s+לעשות\s+היום/u,
+  /מה\s+לעשות\s+מחר/u,
   /מה\s+לעשות\s+השבוע/u,
   /מה\s+לעשות\s+בשבוע/u,
   /מה\s+לעשות\s+בשבוע\s+הקרוב/u,
@@ -152,6 +153,10 @@ const STRONG_REPORT_INTENTS = [
   /כמה\s+פעמים\s+בשבוע/u,
   /^איך\s+לתרגל/u,
   /איך\s+לעזור\s+בבית/u,
+  // Catalog-aligned report questions that must reach Stage A (avoid classifier ambiguous early-exit)
+  /תסביר\s+לי\s+כמו\s+להורה/u,
+  /האם\s+אפשר\s+להסיק\s+מסקנות/u,
+  /תן\s+לי\s+רק\s+3\s+נקודות/u,
 ];
 
 /**
@@ -536,7 +541,22 @@ export function classifyParentQuestionDeterministic({ utterance, payload }) {
     };
   }
 
-  // 2. Off-topic: clear category match AND no strong report token.
+  // 2. Subject/status inquiry framed as child + report scope ("מה מצב הילד … בנושא X") —
+  // must beat hobbies/off-topic lexicon hits (e.g. שחמט/מוזיקה in OFF_TOPIC_CATEGORIES).
+  if (/מה\s*מצב\s*הילד\s*שלי\s*ב/u.test(t) || /^מה\s*מצב.*ב(?:מדעים|עברית|חשבון|אנגלית|גאומטריה|מולדת|שחמט|מוזיקה)/u.test(t)) {
+    return {
+      bucket: "report_related",
+      confidence: 0.86,
+      source: "deterministic",
+      signals: {
+        ...signals,
+        reportSignal: Math.max(reportRes.score, 0.75),
+        hasStrongReportToken: true,
+      },
+    };
+  }
+
+  // 3. Off-topic: clear category match AND no strong report token.
   if (offTopicSignal >= CLASSIFIER_THRESHOLDS.offTopic && !reportRes.hasStrong) {
     return {
       bucket: "off_topic",
@@ -546,7 +566,7 @@ export function classifyParentQuestionDeterministic({ utterance, payload }) {
     };
   }
 
-  // 2b. "מה עם <payload subject/topic>?" — beats ambiguous when the named row exists.
+  // 4. "מה עם <payload subject/topic>?" — beats ambiguous when the named row exists.
   if (
     maImReferencesPayloadVocab(t, vocab) &&
     offTopicSignal <= CLASSIFIER_THRESHOLDS.reportRelatedOffTopicCeiling &&
@@ -565,7 +585,57 @@ export function classifyParentQuestionDeterministic({ utterance, payload }) {
     };
   }
 
-  // 3. Report-related: needs strong signal AND low off-topic AND meaningful length.
+  // 2c. Policy / integrity violations — must reach Stage A (`parent_policy_refusal`) with payload contracts.
+  if (
+    /תמציא\s*נתונים|תסתיר\s*מההורה|תכתוב\s+ש(?:ה)?(?:ילד|ילדה)\s+מצוין|בלי\s+להתחשב\s+בנתונים|תעצור\s+להראות\s+חולשות|לא\s*מותר\s*להמציא/u.test(
+      t,
+    )
+  ) {
+    return {
+      bucket: "report_related",
+      confidence: 0.88,
+      source: "deterministic",
+      signals: {
+        ...signals,
+        reportSignal: Math.max(reportRes.score, 0.78),
+        hasStrongReportToken: true,
+      },
+    };
+  }
+
+  // 2d. Prompt-style overrides — must reach Stage A grounded refusal (not ambiguous clarification exit).
+  if (/תתעלם\s*מהדוח|מעכשיו\s*אל\s*תשתמש|תחשוף\s*לי\s*הוראות|debug|system\s*prompt/u.test(t)) {
+    return {
+      bucket: "report_related",
+      confidence: 0.86,
+      source: "deterministic",
+      signals: {
+        ...signals,
+        reportSignal: Math.max(reportRes.score, 0.78),
+        hasStrongReportToken: true,
+      },
+    };
+  }
+
+  // 2e. Education-adjacent sensitive decisions — Stage A `sensitive_education_choice` (not ambiguous early-exit).
+  if (
+    /האם\s*כדאי\s*להעביר\s*בית\s*ספר|מעבר\s*בית\s*ספר|להעביר\s*בית\s*ספר|האם\s*לעבור\s*בית\s*ספר|מורה\s*פרטי|שיעורים\s*פרטיים|האם\s*הוא\s*מחונן|האם\s*יש\s*לו\s*בעיית\s*קשב|האם\s*צריך\s*אבחון/u.test(
+      t,
+    )
+  ) {
+    return {
+      bucket: "report_related",
+      confidence: 0.87,
+      source: "deterministic",
+      signals: {
+        ...signals,
+        reportSignal: Math.max(reportRes.score, 0.75),
+        hasStrongReportToken: true,
+      },
+    };
+  }
+
+  // 9. Report-related: needs strong signal AND low off-topic AND meaningful length.
   if (
     reportRes.score >= CLASSIFIER_THRESHOLDS.reportRelated &&
     offTopicSignal <= CLASSIFIER_THRESHOLDS.reportRelatedOffTopicCeiling &&
