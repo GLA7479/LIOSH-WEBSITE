@@ -1,4 +1,4 @@
-import { useLayoutEffect } from "react";
+import { useEffect } from "react";
 
 /**
  * Dev only: remove controlling SW + wipe Cache Storage so stale `/_next/static`
@@ -6,7 +6,7 @@ import { useLayoutEffect } from "react";
  * Runs once per mount (typically once per full page load). No UI.
  */
 export default function DevServiceWorkerCleanup() {
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (process.env.NODE_ENV === "production") return undefined;
 
     let cancelled = false;
