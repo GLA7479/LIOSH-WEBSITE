@@ -1817,6 +1817,7 @@ export default function ParentReport() {
                   pathname: "/learning/parent-report-detailed",
                   query: detailedReportQuery,
                 }}
+                prefetch={false}
                 className="inline-flex px-4 py-2 rounded-lg text-sm font-bold bg-violet-500/35 border border-violet-300/45 hover:bg-violet-500/50 text-white transition-all"
               >
                 דוח מקיף לתקופה

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import Layout from "../../components/Layout";
+import { syncStudentLocalStorageIdentity } from "../../lib/learning-student-local-sync";
 
 export default function StudentHomePage() {
   const router = useRouter();
@@ -20,6 +21,7 @@ export default function StudentHomePage() {
           router.replace("/student/login");
           return;
         }
+        syncStudentLocalStorageIdentity(payload.student);
         setStudent(payload.student);
       })
       .catch(() => {

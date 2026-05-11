@@ -2,6 +2,7 @@ import { useState } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import Layout from "../../components/Layout";
+import { syncStudentLocalStorageIdentity } from "../../lib/learning-student-local-sync";
 
 export default function StudentLoginPage() {
   const router = useRouter();
@@ -32,6 +33,7 @@ export default function StudentLoginPage() {
     try {
       const res = await fetch("/api/student/login", {
         method: "POST",
+        credentials: "same-origin",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ username, pin }),
       });
@@ -39,6 +41,9 @@ export default function StudentLoginPage() {
       if (!res.ok) {
         setMessage(payload.error || "כניסה נכשלה");
         return;
+      }
+      if (payload?.student?.id) {
+        syncStudentLocalStorageIdentity(payload.student);
       }
       router.push(resolveNextTarget());
     } catch (_e) {

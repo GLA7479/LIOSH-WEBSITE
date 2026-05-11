@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
+import { syncStudentLocalStorageIdentity } from "../../lib/learning-student-local-sync";
 
 /** מותר לשמור ב־next= אחרי login — ללא open redirect */
 function isSafeNextPath(path) {
@@ -25,6 +26,7 @@ export default function StudentAccessGate({ children }) {
         const payload = await res.json().catch(() => ({}));
         if (!mounted) return;
         if (res.ok && payload?.student?.id) {
+          syncStudentLocalStorageIdentity(payload.student);
           setState("ok");
           return;
         }

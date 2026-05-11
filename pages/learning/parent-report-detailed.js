@@ -1384,6 +1384,7 @@ export default function ParentReportDetailedPage() {
             <div className="flex flex-wrap items-center justify-between gap-2">
               <Link
                 href={backHref}
+                prefetch={false}
                 className="inline-flex px-4 py-2 rounded-lg text-sm font-bold bg-white/10 border border-white/20 hover:bg-white/20 text-white transition-all"
               >
                 ← חזרה לדוח המקוצר
@@ -1705,6 +1706,7 @@ export default function ParentReportDetailedPage() {
                 </button>
                 <Link
                   href={backHref}
+                  prefetch={false}
                   className="inline-flex items-center justify-center px-4 py-2.5 rounded-lg text-sm font-bold bg-white/10 border border-white/20 hover:bg-white/20 text-white transition-all text-center"
                 >
                   חזרה לדוח המקוצר
