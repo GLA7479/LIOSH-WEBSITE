@@ -42,13 +42,19 @@ export default function Layout({ children }) {
   const closeMenu = () => setMenuOpen(false);
 
   const pathname = router.pathname || "";
-  /** RTL for Hebrew-primary flows (marketing pages stay default/LTR). */
+  /** RTL for Hebrew-primary flows — keeps header/logo order stable (same as parent/student hubs). */
   const layoutRtlHebrew =
     pathname === "/" ||
     pathname.startsWith("/parent") ||
     pathname === "/student/login" ||
     pathname.startsWith("/student/home") ||
-    pathname === "/learning";
+    pathname.startsWith("/student/arcade") ||
+    pathname === "/learning" ||
+    pathname === "/game" ||
+    pathname.startsWith("/offline") ||
+    pathname.startsWith("/gallery") ||
+    pathname.startsWith("/contact") ||
+    pathname.startsWith("/about");
 
   return (
     <div

@@ -1,6 +1,7 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Head from "next/head";
 import Link from "next/link";
+import Layout from "../../components/Layout";
 
 const ENTRY_OPTIONS = [
   { label: "10", value: 10 },
@@ -408,11 +409,11 @@ export default function StudentArcadePage() {
     hlStatus === "waiting" ? "ממתין לשחקן נוסף" : hlStatus === "active" ? "המשחק פעיל" : hlStatus;
 
   return (
-    <>
+    <Layout>
       <Head>
         <title>משחקים — LEO K</title>
       </Head>
-      <div className="min-h-screen bg-zinc-950 px-4 py-8 text-zinc-100">
+      <div className="min-h-[calc(100vh-56px)] bg-zinc-950 px-4 py-8 text-zinc-100" dir="rtl">
         <div className="mx-auto max-w-lg space-y-5">
           <header className="flex flex-wrap items-center justify-between gap-3 border-b border-zinc-700 pb-4">
             <div className="min-w-0 flex-1">
@@ -764,6 +765,6 @@ export default function StudentArcadePage() {
           ) : null}
         </div>
       </div>
-    </>
+    </Layout>
   );
 }
