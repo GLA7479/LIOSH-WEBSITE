@@ -1,10 +1,20 @@
 import { getLearningSupabaseServiceRoleClient } from "../../../lib/learning-supabase/server";
+import { devStudentIdentityPayload } from "../../../lib/dev-student-identity-api";
+import { isStudentIdentityDebugEnabled } from "../../../lib/student-identity-debug-flag";
 import {
   clearStudentSessionCookie,
   getAuthenticatedStudentSession,
 } from "../../../lib/learning-supabase/student-auth";
 
 export default async function handler(req, res) {
+  // Authenticated identity must never be served from a shared or disk cache — otherwise
+  // after switching students (new session cookie), a stale cached GET can return the
+  // previous child and client sync logic would overwrite the correct identity.
+  res.setHeader("Cache-Control", "private, no-store, no-cache, must-revalidate");
+  res.setHeader("Pragma", "no-cache");
+  res.setHeader("Expires", "0");
+  res.setHeader("Vary", "Cookie");
+
   if (req.method !== "GET") {
     return res.status(405).json({ ok: false, error: "Method not allowed" });
   }
@@ -29,15 +39,22 @@ export default async function handler(req, res) {
     const balance =
       Array.isArray(rel) ? rel[0]?.balance ?? 0 : rel?.balance ?? 0;
 
+    const bodyStudent = {
+      id: student.id,
+      full_name: student.full_name,
+      grade_level: student.grade_level,
+      is_active: student.is_active,
+      coin_balance: balance,
+    };
+    const debugStudentIdentity = devStudentIdentityPayload("student-me-api", student);
+    if (isStudentIdentityDebugEnabled() && debugStudentIdentity) {
+      console.info("[LIOSH student identity] API", debugStudentIdentity);
+    }
+
     return res.status(200).json({
       ok: true,
-      student: {
-        id: student.id,
-        full_name: student.full_name,
-        grade_level: student.grade_level,
-        is_active: student.is_active,
-        coin_balance: balance,
-      },
+      student: bodyStudent,
+      ...(debugStudentIdentity ? { debugStudentIdentity } : {}),
     });
   } catch (_e) {
     clearStudentSessionCookie(res);

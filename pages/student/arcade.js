@@ -157,7 +157,7 @@ export default function StudentArcadePage() {
 
   const refresh = useCallback(async () => {
     const [meRes, balRes, gamesRes] = await Promise.all([
-      fetch("/api/student/me"),
+      fetch("/api/student/me", { credentials: "same-origin", cache: "no-store" }),
       fetch("/api/arcade/balance"),
       fetch("/api/arcade/games"),
     ]);

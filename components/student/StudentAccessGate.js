@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { syncStudentLocalStorageIdentity } from "../../lib/learning-student-local-sync";
+import { isStudentIdentityDiagnosticsEnabled } from "../../lib/dev-student-identity-client";
 
 /** מותר לשמור ב־next= אחרי login — ללא open redirect */
 function isSafeNextPath(path) {
@@ -21,12 +22,26 @@ export default function StudentAccessGate({ children }) {
     if (!router.isReady) return undefined;
     let mounted = true;
     const pathForNext = router.asPath || "/learning";
-    fetch("/api/student/me", { credentials: "same-origin" })
+    fetch("/api/student/me", { credentials: "same-origin", cache: "no-store" })
       .then(async (res) => {
         const payload = await res.json().catch(() => ({}));
         if (!mounted) return;
         if (res.ok && payload?.student?.id) {
-          syncStudentLocalStorageIdentity(payload.student);
+          if (isStudentIdentityDiagnosticsEnabled()) {
+            console.log("[StudentAccessGate] /me student", {
+              id: payload.student?.id,
+              fullName: payload.student?.full_name,
+              gradeLevel: payload.student?.grade_level,
+              debug: payload.debugStudentIdentity,
+            });
+          }
+          syncStudentLocalStorageIdentity(payload.student, "StudentAccessGate after /me");
+          if (isStudentIdentityDiagnosticsEnabled()) {
+            console.log("[StudentAccessGate] localStorage after sync", {
+              liosh_active_student_id: localStorage.getItem("liosh_active_student_id"),
+              mleo_player_name: localStorage.getItem("mleo_player_name"),
+            });
+          }
           setState("ok");
           return;
         }
@@ -61,4 +76,3 @@ export default function StudentAccessGate({ children }) {
 
   return children;
 }
-

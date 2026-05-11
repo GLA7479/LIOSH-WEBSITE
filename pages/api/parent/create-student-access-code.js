@@ -3,6 +3,7 @@ import {
   hashStudentSecret,
   normalizeStudentPin,
 } from "../../../lib/learning-supabase/student-auth";
+import { isStudentIdentityDebugEnabled } from "../../../lib/student-identity-debug-flag";
 import {
   getLearningSupabaseServerUserClient,
   getLearningSupabaseServiceRoleClient,
@@ -75,19 +76,22 @@ export default async function handler(req, res) {
       return res.status(409).json({ ok: false, error: "שם המשתמש כבר תפוס" });
     }
 
-    const { error: revokeErr } = await supabase
+    // Mutations run with service role after explicit ownership checks above.
+    // Revoke every non-revoked row for this student (handles duplicate-active rows and RLS edge cases).
+    const nowIso = new Date().toISOString();
+    const { error: revokeErr } = await serviceRole
       .from("student_access_codes")
       .update({
         is_active: false,
-        revoked_at: new Date().toISOString(),
+        revoked_at: nowIso,
       })
       .eq("student_id", studentId)
-      .eq("is_active", true);
+      .is("revoked_at", null);
     if (revokeErr) {
-      return res.status(403).json({ ok: false, error: "Could not revoke previous code" });
+      return res.status(500).json({ ok: false, error: "Could not revoke previous code" });
     }
 
-    const { error: insErr } = await supabase.from("student_access_codes").insert({
+    const { error: insErr } = await serviceRole.from("student_access_codes").insert({
       student_id: studentId,
       code_hash: codeHash,
       pin_hash: pinHash,
@@ -97,7 +101,14 @@ export default async function handler(req, res) {
       revoked_at: null,
     });
     if (insErr) {
-      return res.status(403).json({ ok: false, error: "Could not create access code" });
+      return res.status(500).json({ ok: false, error: "Could not create access code" });
+    }
+
+    if (isStudentIdentityDebugEnabled()) {
+      console.info("[create-student-access-code] saved credential", {
+        studentId,
+        username,
+      });
     }
 
     return res.status(200).json({

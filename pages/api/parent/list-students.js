@@ -41,10 +41,11 @@ export default async function handler(req, res) {
       const serviceClient = getLearningSupabaseServiceRoleClient();
       const { data: activeCodes, error: codesErr } = await serviceClient
         .from("student_access_codes")
-        .select("student_id,login_username,is_active,revoked_at")
+        .select("student_id,login_username,is_active,revoked_at,created_at")
         .in("student_id", ids)
         .eq("is_active", true)
-        .is("revoked_at", null);
+        .is("revoked_at", null)
+        .order("created_at", { ascending: false });
 
       if (codesErr) {
         return res.status(403).json({ ok: false, error: "Could not load student credentials" });
@@ -54,15 +55,24 @@ export default async function handler(req, res) {
         const sid = row.student_id;
         if (!sid) continue;
         activeStudentIds.add(sid);
+      }
+
+      // Newest-first order: first non-empty login_username wins (duplicate-active edge case).
+      for (const row of activeCodes || []) {
+        const sid = row.student_id;
+        if (!sid) continue;
         const u =
           typeof row.login_username === "string" && row.login_username.trim()
             ? row.login_username.trim()
             : null;
-        const prev = loginByStudentId[sid];
-        if (prev === undefined) {
+        if (!u) continue;
+        if (loginByStudentId[sid] === undefined) {
           loginByStudentId[sid] = u;
-        } else if (!prev && u) {
-          loginByStudentId[sid] = u;
+        }
+      }
+      for (const sid of activeStudentIds) {
+        if (loginByStudentId[sid] === undefined) {
+          loginByStudentId[sid] = null;
         }
       }
     }

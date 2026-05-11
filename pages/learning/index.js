@@ -1,6 +1,8 @@
+import { useEffect } from "react";
 import Layout from "../../components/Layout";
 import Link from "next/link";
 import { useIOSViewportFix } from "../../hooks/useIOSViewportFix";
+import { isStudentIdentityDiagnosticsEnabled } from "../../lib/dev-student-identity-client";
 
 const LEARNING_GAMES = [
   {
@@ -58,6 +60,34 @@ export async function getServerSideProps() {
 
 export default function LearningHub({ showDevStudentSimulator }) {
   useIOSViewportFix();
+
+  useEffect(() => {
+    if (!isStudentIdentityDiagnosticsEnabled()) return undefined;
+    console.log("[learning/index] localStorage on mount", {
+      liosh_active_student_id: localStorage.getItem("liosh_active_student_id"),
+      mleo_player_name: localStorage.getItem("mleo_player_name"),
+    });
+    fetch("/api/student/me", { credentials: "same-origin", cache: "no-store" })
+      .then((r) => r.json().catch(() => ({})))
+      .then((payload) => {
+        console.log("[learning/index] GET /api/student/me", {
+          ok: payload?.ok === true,
+          id: payload.student?.id,
+          fullName: payload.student?.full_name,
+          gradeLevel: payload.student?.grade_level,
+          debug: payload.debugStudentIdentity,
+        });
+        console.log("[learning/index] localStorage after /me response", {
+          liosh_active_student_id: localStorage.getItem("liosh_active_student_id"),
+          mleo_player_name: localStorage.getItem("mleo_player_name"),
+        });
+      })
+      .catch((err) => {
+        console.log("[learning/index] GET /api/student/me failed", String(err?.message || err));
+      });
+    return undefined;
+  }, []);
+
   return (
     <Layout>
       <main className="min-h-screen bg-gradient-to-b from-[#120b1f] to-[#1b1430] text-white px-4 py-10" dir="rtl">

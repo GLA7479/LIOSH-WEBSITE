@@ -173,7 +173,7 @@ export default function ParentDashboardPage() {
     setBusy(false);
   };
 
-  const saveStudentCredentials = async (studentId) => {
+  const saveStudentCredentials = async (studentId, childFullName) => {
     if (!session?.access_token) return;
     const form = credentialsByStudentId[studentId] || {};
     const username = String(form.username || "").trim();
@@ -182,6 +182,17 @@ export default function ParentDashboardPage() {
     if (!username || !pin) {
       setMessage("יש להזין שם משתמש ו-PIN");
       return;
+    }
+
+    if (
+      process.env.NODE_ENV !== "production" &&
+      process.env.NEXT_PUBLIC_DEBUG_STUDENT_IDENTITY === "true"
+    ) {
+      console.log("[parent-dashboard] saving credentials", {
+        studentId,
+        childName: childFullName ?? "",
+        username,
+      });
     }
 
     setBusy(true);
@@ -214,7 +225,7 @@ export default function ParentDashboardPage() {
     setBusy(false);
   };
 
-  const savePinReset = async (studentId, loginUsername) => {
+  const savePinReset = async (studentId, loginUsername, childFullName) => {
     if (!session?.access_token) return;
     const pin = String(credentialsByStudentId[studentId]?.pin || "").trim();
     if (!loginUsername) {
@@ -224,6 +235,17 @@ export default function ParentDashboardPage() {
     if (!/^\d{4}$/.test(pin)) {
       setMessage("יש להזין PIN חדש בארבע ספרות");
       return;
+    }
+
+    if (
+      process.env.NODE_ENV !== "production" &&
+      process.env.NEXT_PUBLIC_DEBUG_STUDENT_IDENTITY === "true"
+    ) {
+      console.log("[parent-dashboard] resetting PIN", {
+        studentId,
+        childName: childFullName ?? "",
+        username: loginUsername,
+      });
     }
 
     setBusy(true);
@@ -536,7 +558,7 @@ export default function ParentDashboardPage() {
                       <button
                         className="rounded bg-sky-400 text-black px-3 py-2 font-semibold disabled:opacity-60"
                         disabled={busy}
-                        onClick={() => savePinReset(student.id, loginUsername)}
+                        onClick={() => savePinReset(student.id, loginUsername, student.full_name)}
                         type="button"
                       >
                         איפוס PIN / שינוי PIN
@@ -593,7 +615,7 @@ export default function ParentDashboardPage() {
                       <button
                         className="rounded bg-sky-400 text-black px-3 py-2 font-semibold disabled:opacity-60"
                         disabled={busy}
-                        onClick={() => saveStudentCredentials(student.id)}
+                        onClick={() => saveStudentCredentials(student.id, student.full_name)}
                         type="button"
                       >
                         קביעת שם משתמש ו-PIN

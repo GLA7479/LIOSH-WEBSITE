@@ -1,4 +1,6 @@
 import { getLearningSupabaseServiceRoleClient } from "../../../lib/learning-supabase/server";
+import { devStudentIdentityPayload } from "../../../lib/dev-student-identity-api";
+import { isStudentIdentityDebugEnabled } from "../../../lib/student-identity-debug-flag";
 import {
   clearStudentSessionCookie,
   generateStudentSessionToken,
@@ -15,10 +17,14 @@ export default async function handler(req, res) {
     return res.status(405).json({ ok: false, error: "Method not allowed" });
   }
 
-  const username = normalizeStudentUsername(req.body?.username);
+  res.setHeader("Cache-Control", "private, no-store, no-cache, must-revalidate");
+  res.setHeader("Pragma", "no-cache");
+  res.setHeader("Expires", "0");
+
+  const usernameNormalized = normalizeStudentUsername(req.body?.username);
   const codeFallback = normalizeStudentCode(req.body?.code);
   const pin = normalizeStudentPin(req.body?.pin);
-  const credential = username || codeFallback;
+  const credential = usernameNormalized || codeFallback;
   if (!credential || pin.length !== 4) {
     return res.status(400).json({ ok: false, error: "שם משתמש או PIN לא תקינים" });
   }
@@ -31,12 +37,11 @@ export default async function handler(req, res) {
 
     const { data: accessCode, error: codeErr } = await supabase
       .from("student_access_codes")
-      .select("id,student_id,is_active,revoked_at,expires_at")
+      .select("id,student_id,is_active,revoked_at,expires_at,login_username,created_at")
       .eq("code_hash", codeHash)
       .eq("pin_hash", pinHash)
       .eq("is_active", true)
       .is("revoked_at", null)
-      .or(`expires_at.is.null,expires_at.gt.${nowIso}`)
       .order("created_at", { ascending: false })
       .limit(1)
       .maybeSingle();
@@ -44,6 +49,28 @@ export default async function handler(req, res) {
     if (codeErr || !accessCode?.id) {
       clearStudentSessionCookie(res);
       return res.status(401).json({ ok: false, error: "שם משתמש או PIN שגויים" });
+    }
+
+    if (accessCode.expires_at) {
+      const expMs = new Date(accessCode.expires_at).getTime();
+      if (!Number.isFinite(expMs) || expMs <= Date.now()) {
+        clearStudentSessionCookie(res);
+        return res.status(401).json({ ok: false, error: "שם משתמש או PIN שגויים" });
+      }
+    }
+
+    const storedUsername = normalizeStudentUsername(accessCode.login_username || "");
+    if (usernameNormalized && storedUsername && storedUsername !== usernameNormalized) {
+      clearStudentSessionCookie(res);
+      return res.status(401).json({ ok: false, error: "שם משתמש או PIN שגויים" });
+    }
+
+    if (isStudentIdentityDebugEnabled()) {
+      console.info("[student-login-api] matched credential", {
+        submittedUsername: usernameNormalized || null,
+        matchedStudentId: accessCode.student_id,
+        accessCodeId: accessCode.id,
+      });
     }
 
     const { data: student, error: studentErr } = await supabase
@@ -77,7 +104,15 @@ export default async function handler(req, res) {
     }
 
     setStudentSessionCookie(res, token);
-    return res.status(200).json({ ok: true, student });
+    const debugStudentIdentity = devStudentIdentityPayload("student-login-api", student);
+    if (isStudentIdentityDebugEnabled() && debugStudentIdentity) {
+      console.info("[LIOSH student identity] API", debugStudentIdentity);
+    }
+    return res.status(200).json({
+      ok: true,
+      student,
+      ...(debugStudentIdentity ? { debugStudentIdentity } : {}),
+    });
   } catch (_e) {
     clearStudentSessionCookie(res);
     return res.status(500).json({ ok: false, error: "שגיאת שרת" });

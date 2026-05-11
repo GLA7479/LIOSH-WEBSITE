@@ -528,7 +528,7 @@ useEffect(() => {
   });
   useEffect(() => {
     let mounted = true;
-    fetch("/api/student/me", { credentials: "same-origin" })
+    fetch("/api/student/me", { credentials: "same-origin", cache: "no-store" })
       .then((res) => res.json().catch(() => ({})))
       .then((payload) => {
         if (!mounted) return;

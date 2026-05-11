@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import Link from "next/link";
 import Layout from "../../components/Layout";
 import { syncStudentLocalStorageIdentity } from "../../lib/learning-student-local-sync";
+import { isStudentIdentityDiagnosticsEnabled } from "../../lib/dev-student-identity-client";
 
 export default function StudentLoginPage() {
   const router = useRouter();
@@ -31,6 +32,10 @@ export default function StudentLoginPage() {
     setMessage("");
 
     try {
+      if (isStudentIdentityDiagnosticsEnabled()) {
+        console.log("[student-login-page] submitting username", username);
+      }
+
       const res = await fetch("/api/student/login", {
         method: "POST",
         credentials: "same-origin",
@@ -42,9 +47,27 @@ export default function StudentLoginPage() {
         setMessage(payload.error || "כניסה נכשלה");
         return;
       }
-      if (payload?.student?.id) {
-        syncStudentLocalStorageIdentity(payload.student);
+
+      if (isStudentIdentityDiagnosticsEnabled()) {
+        console.log("[student-login-page] login response student", {
+          id: payload.student?.id,
+          fullName: payload.student?.full_name,
+          gradeLevel: payload.student?.grade_level,
+          debug: payload.debugStudentIdentity,
+        });
       }
+
+      if (payload?.student?.id) {
+        syncStudentLocalStorageIdentity(payload.student, "student-login-page after login");
+      }
+
+      if (isStudentIdentityDiagnosticsEnabled()) {
+        console.log("[student-login-page] localStorage after sync", {
+          liosh_active_student_id: localStorage.getItem("liosh_active_student_id"),
+          mleo_player_name: localStorage.getItem("mleo_player_name"),
+        });
+      }
+
       router.push(resolveNextTarget());
     } catch (_e) {
       setMessage("שגיאת רשת");
@@ -99,4 +122,3 @@ export default function StudentLoginPage() {
     </Layout>
   );
 }
-

@@ -113,6 +113,7 @@ import {
   gradeKeyToNumber,
   normalizeGradeLevelToKey,
 } from "../../lib/learning-student-defaults";
+import { isStudentIdentityDiagnosticsEnabled } from "../../lib/dev-student-identity-client";
 import { normalizeMistakeEvent } from "../../utils/mistake-event.js";
 import { inferNormalizedTags } from "../../utils/fast-diagnostic-engine/infer-tags.js";
 import {
@@ -699,7 +700,7 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
   });
   useEffect(() => {
     let mounted = true;
-    fetch("/api/student/me", { credentials: "same-origin" })
+    fetch("/api/student/me", { credentials: "same-origin", cache: "no-store" })
       .then((res) => res.json().catch(() => ({})))
       .then((payload) => {
         if (!mounted) return;
@@ -723,6 +724,19 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
           if (gradeNumberFromDb) {
             setGradeNumber(gradeNumberFromDb);
           }
+        }
+        if (isStudentIdentityDiagnosticsEnabled()) {
+          console.log("[math-master] GET /api/student/me", {
+            id: payload.student?.id,
+            fullName: payload.student?.full_name,
+            gradeLevel: payload.student?.grade_level,
+            debug: payload.debugStudentIdentity,
+            fullNameAppliedToState: fullName,
+          });
+          console.log("[math-master] localStorage after /me handler", {
+            liosh_active_student_id: localStorage.getItem("liosh_active_student_id"),
+            mleo_player_name: localStorage.getItem("mleo_player_name"),
+          });
         }
       })
       .catch(() => {

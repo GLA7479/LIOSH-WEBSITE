@@ -827,7 +827,7 @@ export default function ParentReport() {
       return undefined;
     }
     let cancelled = false;
-    fetch("/api/student/me", { credentials: "include" })
+    fetch("/api/student/me", { credentials: "include", cache: "no-store" })
       .then((r) => r.json())
       .then((data) => {
         if (cancelled || !data?.ok || !data?.student?.id) return;

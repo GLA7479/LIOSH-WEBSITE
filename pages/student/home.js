@@ -3,6 +3,7 @@ import { useRouter } from "next/router";
 import Link from "next/link";
 import Layout from "../../components/Layout";
 import { syncStudentLocalStorageIdentity } from "../../lib/learning-student-local-sync";
+import { isStudentIdentityDiagnosticsEnabled } from "../../lib/dev-student-identity-client";
 
 export default function StudentHomePage() {
   const router = useRouter();
@@ -13,7 +14,7 @@ export default function StudentHomePage() {
     if (!router.isReady) return undefined;
     let mounted = true;
 
-    fetch("/api/student/me", { credentials: "same-origin" })
+    fetch("/api/student/me", { credentials: "same-origin", cache: "no-store" })
       .then(async (res) => {
         const payload = await res.json().catch(() => ({}));
         if (!mounted) return;
@@ -21,7 +22,25 @@ export default function StudentHomePage() {
           router.replace("/student/login");
           return;
         }
-        syncStudentLocalStorageIdentity(payload.student);
+
+        if (isStudentIdentityDiagnosticsEnabled()) {
+          console.log("[student/home] GET /api/student/me", {
+            id: payload.student?.id,
+            fullName: payload.student?.full_name,
+            gradeLevel: payload.student?.grade_level,
+            debug: payload.debugStudentIdentity,
+          });
+        }
+
+        syncStudentLocalStorageIdentity(payload.student, "student/home after /me");
+
+        if (isStudentIdentityDiagnosticsEnabled()) {
+          console.log("[student/home] localStorage after sync", {
+            liosh_active_student_id: localStorage.getItem("liosh_active_student_id"),
+            mleo_player_name: localStorage.getItem("mleo_player_name"),
+          });
+        }
+
         setStudent(payload.student);
       })
       .catch(() => {
@@ -33,6 +52,17 @@ export default function StudentHomePage() {
       mounted = false;
     };
   }, [router.isReady]);
+
+  useEffect(() => {
+    if (!student || !isStudentIdentityDiagnosticsEnabled()) return undefined;
+    console.log("[student/home] React state (resolved)", {
+      id: student.id,
+      fullName: student.full_name,
+      gradeLevel: student.grade_level,
+      coin_balance: student.coin_balance,
+    });
+    return undefined;
+  }, [student]);
 
   const onLogout = async () => {
     setMessage("");
@@ -68,11 +98,7 @@ export default function StudentHomePage() {
         </p>
         <p className="text-white/80">כיתה: {student.grade_level || "-"}</p>
         <p className="text-white/80">יתרת מטבעות: {student.coin_balance ?? 0}</p>
-        <button
-          className="rounded bg-white/10 px-3 py-2"
-          onClick={onLogout}
-          type="button"
-        >
+        <button className="rounded bg-white/10 px-3 py-2" onClick={onLogout} type="button">
           יציאה
         </button>
         <p className="text-white/70">
@@ -88,4 +114,3 @@ export default function StudentHomePage() {
     </Layout>
   );
 }
-
