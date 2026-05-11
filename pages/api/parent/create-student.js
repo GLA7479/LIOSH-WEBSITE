@@ -24,6 +24,21 @@ export default async function handler(req, res) {
       return res.status(401).json({ ok: false, error: "Invalid session" });
     }
 
+    const { count: existingCount, error: countErr } = await supabase
+      .from("students")
+      .select("*", { count: "exact", head: true })
+      .eq("parent_id", userData.user.id);
+
+    if (countErr) {
+      return res.status(403).json({ ok: false, error: "לא ניתן לבדוק את מספר הילדים" });
+    }
+    if ((existingCount ?? 0) >= 3) {
+      return res.status(400).json({
+        ok: false,
+        error: "ניתן להוסיף עד 3 ילדים בלבד לחשבון הורה",
+      });
+    }
+
     const payload = {
       parent_id: userData.user.id,
       full_name: fullName,

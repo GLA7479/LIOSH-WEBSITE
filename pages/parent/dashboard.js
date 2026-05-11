@@ -23,6 +23,8 @@ function normalizeBalance(student) {
   return rel || null;
 }
 
+const MAX_CHILDREN = 3;
+
 export default function ParentDashboardPage() {
   const router = useRouter();
   const supabaseRef = useRef(null);
@@ -40,6 +42,8 @@ export default function ParentDashboardPage() {
   const [credentialConfirmation, setCredentialConfirmation] = useState(null);
 
   const [editById, setEditById] = useState({});
+  const [deleteModalStudent, setDeleteModalStudent] = useState(null);
+  const [deleteConfirmName, setDeleteConfirmName] = useState("");
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -102,6 +106,10 @@ export default function ParentDashboardPage() {
   const createStudent = async (e) => {
     e.preventDefault();
     if (!session?.access_token) return;
+    if (students.length >= MAX_CHILDREN) {
+      setMessage("ניתן להוסיף עד 3 ילדים בלבד לחשבון הורה");
+      return;
+    }
     if (!newGrade) {
       setMessage("יש לבחור כיתה");
       return;
@@ -248,6 +256,49 @@ export default function ParentDashboardPage() {
     setBusy(false);
   };
 
+  const confirmDeleteStudent = async () => {
+    if (!session?.access_token || !deleteModalStudent) return;
+    const expected = String(deleteModalStudent.full_name || "").trim();
+    if (String(deleteConfirmName).trim() !== expected) return;
+
+    const deletedId = deleteModalStudent.id;
+    setBusy(true);
+    setMessage("");
+    try {
+      const res = await fetch("/api/parent/delete-student", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${session.access_token}`,
+        },
+        body: JSON.stringify({ studentId: deletedId }),
+      });
+      const payload = await res.json();
+      if (!res.ok) {
+        setMessage(payload.error || "מחיקה נכשלה");
+      } else {
+        setDeleteModalStudent(null);
+        setDeleteConfirmName("");
+        setCredentialConfirmation((prev) => (prev?.studentId === deletedId ? null : prev));
+        setEditById((prev) => {
+          const next = { ...prev };
+          delete next[deletedId];
+          return next;
+        });
+        setCredentialsByStudentId((prev) => {
+          const next = { ...prev };
+          delete next[deletedId];
+          return next;
+        });
+        await fetchStudents(session);
+        setMessage("הילד נמחק לצמיתות");
+      }
+    } catch (_err) {
+      setMessage("שגיאת רשת במחיקה");
+    }
+    setBusy(false);
+  };
+
   const copyUsername = async (username) => {
     try {
       await navigator.clipboard.writeText(username);
@@ -288,20 +339,31 @@ export default function ParentDashboardPage() {
           </button>
         </div>
 
-        <form onSubmit={createStudent} className="space-y-2 rounded border border-white/15 p-4 bg-black/30">
+        <form
+          onSubmit={createStudent}
+          className={`space-y-2 rounded border border-white/15 p-4 bg-black/30 ${students.length >= MAX_CHILDREN ? "opacity-60" : ""}`}
+        >
           <h2 className="font-semibold">הוספת ילד</h2>
+          <p className="text-sm text-white/75">
+            ילדים בחשבון: {students.length} / {MAX_CHILDREN}
+          </p>
+          {students.length >= MAX_CHILDREN ? (
+            <p className="text-sm text-amber-200">הגעת למגבלת 3 ילדים לחשבון</p>
+          ) : null}
           <input
-            className="w-full rounded bg-black/40 border border-white/20 px-3 py-2"
+            className="w-full rounded bg-black/40 border border-white/20 px-3 py-2 disabled:opacity-50"
             value={newName}
             onChange={(e) => setNewName(e.target.value)}
             placeholder="שם הילד"
             required
+            disabled={busy || students.length >= MAX_CHILDREN}
           />
           <select
-            className="w-full rounded bg-black/40 border border-white/20 px-3 py-2"
+            className="w-full rounded bg-black/40 border border-white/20 px-3 py-2 disabled:opacity-50"
             value={newGrade}
             onChange={(e) => setNewGrade(e.target.value)}
             required
+            disabled={busy || students.length >= MAX_CHILDREN}
           >
             <option value="">בחר כיתה</option>
             {GRADE_OPTIONS.map((g) => (
@@ -310,7 +372,10 @@ export default function ParentDashboardPage() {
               </option>
             ))}
           </select>
-          <button className="rounded bg-amber-500 text-black px-3 py-2 font-semibold disabled:opacity-60" disabled={busy}>
+          <button
+            className="rounded bg-amber-500 text-black px-3 py-2 font-semibold disabled:opacity-60"
+            disabled={busy || students.length >= MAX_CHILDREN}
+          >
             הוסף ילד
           </button>
         </form>
@@ -381,14 +446,30 @@ export default function ParentDashboardPage() {
                 <div className="text-sm text-white/80">
                   יתרת מטבעות: {balance ? balance.balance : 0}
                 </div>
-                <button
-                  className="rounded bg-amber-500 text-black px-3 py-2 font-semibold disabled:opacity-60"
-                  disabled={busy}
-                  onClick={() => saveStudent(student.id)}
-                  type="button"
-                >
-                  שמור
-                </button>
+                <div className="flex flex-wrap gap-2 items-center">
+                  <button
+                    className="rounded bg-amber-500 text-black px-3 py-2 font-semibold disabled:opacity-60"
+                    disabled={busy}
+                    onClick={() => saveStudent(student.id)}
+                    type="button"
+                  >
+                    שמור
+                  </button>
+                  <button
+                    type="button"
+                    className="rounded border border-red-500/60 text-red-300 px-3 py-2 text-sm disabled:opacity-60 hover:bg-red-950/40"
+                    disabled={busy}
+                    onClick={() => {
+                      setDeleteConfirmName("");
+                      setDeleteModalStudent({
+                        id: student.id,
+                        full_name: student.full_name || "",
+                      });
+                    }}
+                  >
+                    מחיקת ילד
+                  </button>
+                </div>
 
                 <div className="mt-2 rounded border border-white/15 p-3 bg-black/30 space-y-3">
                   <div className="font-semibold">פרטי כניסת תלמיד</div>
@@ -546,6 +627,61 @@ export default function ParentDashboardPage() {
             חזרה ללמידה
           </Link>
         </p>
+
+        {deleteModalStudent ? (
+          <div
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 p-4"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="delete-child-title"
+          >
+            <div className="max-w-md w-full rounded-lg border border-red-500/35 bg-[#0f1629] p-4 space-y-3 shadow-xl">
+              <h3 id="delete-child-title" className="text-lg font-bold text-white">
+                מחיקת ילד לצמיתות
+              </h3>
+              <p className="text-sm text-white/85 leading-relaxed">
+                מחיקה זו תמחק לצמיתות את הילד, פרטי הכניסה, הסשנים, התשובות, הדוחות, המטבעות וכל הנתונים הקשורים אליו.
+                לא ניתן לשחזר פעולה זו.
+              </p>
+              <p className="text-xs text-white/65">
+                הקלידו את שם הילד בדיוק:{" "}
+                <strong className="text-white">{deleteModalStudent.full_name}</strong>
+              </p>
+              <input
+                className="w-full rounded bg-black/40 border border-white/20 px-3 py-2 text-white"
+                value={deleteConfirmName}
+                onChange={(e) => setDeleteConfirmName(e.target.value)}
+                placeholder="הקלדת שם לאישור"
+                dir="rtl"
+                autoComplete="off"
+              />
+              <div className="flex flex-wrap gap-2 justify-end pt-1">
+                <button
+                  type="button"
+                  className="rounded bg-white/10 px-4 py-2 text-sm text-white"
+                  onClick={() => {
+                    setDeleteModalStudent(null);
+                    setDeleteConfirmName("");
+                  }}
+                >
+                  ביטול
+                </button>
+                <button
+                  type="button"
+                  className="rounded bg-red-600 px-4 py-2 text-sm font-semibold text-white disabled:opacity-40"
+                  disabled={
+                    busy ||
+                    String(deleteConfirmName).trim() !==
+                      String(deleteModalStudent.full_name || "").trim()
+                  }
+                  onClick={() => void confirmDeleteStudent()}
+                >
+                  מחק לצמיתות
+                </button>
+              </div>
+            </div>
+          </div>
+        ) : null}
       </div>
     </Layout>
   );
