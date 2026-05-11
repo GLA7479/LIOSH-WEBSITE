@@ -29,6 +29,11 @@ import {
   enrichDetailedParentReportWithParentAi,
   getDeterministicDetailedParentAiExplanation,
 } from "../../utils/parent-report-ai/parent-report-ai-adapter";
+import { getLearningSupabaseBrowserClient } from "../../lib/learning-supabase/client";
+import {
+  runParentReportGenerationFromApiBody,
+  computeReportRangeForParentApi,
+} from "../../lib/learning-supabase/parent-dashboard-report-bridge.js";
 
 /**
  * מיפוי ויזואלי בלבד לפי recommendedNextStep מה־payload — לא משנה מנוע או תוכן.
@@ -200,6 +205,9 @@ function buildDetailedReportQueryFromQueryObject(query, mode) {
   if (typeof start === "string" && start) q.start = start;
   if (typeof end === "string" && end) q.end = end;
   if (next === "summary") q.mode = "summary";
+  const sid = query?.studentId;
+  if (typeof sid === "string" && sid.trim()) q.studentId = sid.trim();
+  if (query?.source === "parent") q.source = "parent";
   return q;
 }
 
@@ -211,6 +219,20 @@ export default function ParentReportDetailedPage() {
   const [displayMode, setDisplayMode] = useState("full");
   /** Same shape as short report `report.parentAiExplanation` — populated asynchronously. */
   const [parentAiExplanation, setParentAiExplanation] = useState(/** @type {null | { ok: true; text: string; source?: string }} */ (null));
+  const [parentReportError, setParentReportError] = useState("");
+
+  const isParentSource = useMemo(
+    () =>
+      router.isReady &&
+      router.query.source === "parent" &&
+      typeof router.query.studentId === "string" &&
+      router.query.studentId.trim().length > 0,
+    [router.isReady, router.query.source, router.query.studentId]
+  );
+  const parentStudentId = useMemo(
+    () => (isParentSource ? String(router.query.studentId).trim() : ""),
+    [isParentSource, router.query.studentId]
+  );
 
   const queryPeriod = typeof router.query.period === "string" ? router.query.period : "week";
   const queryStart = typeof router.query.start === "string" ? router.query.start : null;
@@ -223,11 +245,104 @@ export default function ParentReportDetailedPage() {
       q.start = queryStart;
       q.end = queryEnd;
     }
+    if (isParentSource && parentStudentId) {
+      q.studentId = parentStudentId;
+      q.source = "parent";
+    }
     return { pathname: "/learning/parent-report", query: q };
-  }, [queryPeriod, queryStart, queryEnd]);
+  }, [queryPeriod, queryStart, queryEnd, isParentSource, parentStudentId]);
 
   useEffect(() => {
     if (!router.isReady || typeof window === "undefined") return undefined;
+
+    if (isParentSource && parentStudentId) {
+      let cancelled = false;
+      setLoading(true);
+      setParentReportError("");
+
+      const run = async () => {
+        let p = queryPeriod;
+        let cs = null;
+        let ce = null;
+        if (p === "custom" && queryStart && queryEnd) {
+          cs = queryStart;
+          ce = queryEnd;
+        } else if (p !== "week" && p !== "month" && p !== "custom") {
+          p = "week";
+        }
+        if (p === "custom" && (!cs || !ce)) {
+          p = "week";
+          cs = null;
+          ce = null;
+        }
+
+        const customDates = p === "custom" && cs && ce;
+        const { from, to } = computeReportRangeForParentApi(p, Boolean(customDates), cs || "", ce || "");
+
+        try {
+          const supabase = getLearningSupabaseBrowserClient();
+          const { data: sessData } = await supabase.auth.getSession();
+          const token = sessData?.session?.access_token;
+          if (!token) {
+            if (!cancelled) {
+              setParentReportError("נדרשת התחברות כהורה — השתמשו בכניסת הורה ונסו שוב.");
+              setPayload(null);
+              setLoading(false);
+            }
+            return;
+          }
+
+          const qs = new URLSearchParams({ from, to });
+          const url = `/api/parent/students/${encodeURIComponent(parentStudentId)}/report-data?${qs}`;
+          const res = await fetch(url, { headers: { Authorization: `Bearer ${token}` } });
+          const body = await res.json().catch(() => ({}));
+          if (!res.ok || body?.ok === false) {
+            if (!cancelled) {
+              const msg =
+                res.status === 401
+                  ? "נדרשת התחברות מחדש כהורה."
+                  : res.status === 403 || res.status === 404
+                    ? "אין גישה לדוח של תלמיד זה."
+                    : typeof body?.error === "string"
+                      ? body.error
+                      : "לא ניתן לטעון את דוח ההורה.";
+              setParentReportError(msg);
+              setPayload(null);
+              setLoading(false);
+            }
+            return;
+          }
+
+          const uiPeriod = customDates ? "custom" : p;
+          const out = runParentReportGenerationFromApiBody(body, uiPeriod);
+          if (!out.ok || !out.detailed) {
+            if (!cancelled) {
+              setParentReportError("לא ניתן לבנות את הדוח המקיף מהנתונים שהתקבלו.");
+              setPayload(null);
+              setLoading(false);
+            }
+            return;
+          }
+          if (!cancelled) {
+            setPayload(out.detailed);
+            setParentReportError("");
+            setLoading(false);
+          }
+        } catch {
+          if (!cancelled) {
+            setParentReportError("שגיאת רשת בטעינת הדוח.");
+            setPayload(null);
+            setLoading(false);
+          }
+        }
+      };
+
+      void run();
+      return () => {
+        cancelled = true;
+      };
+    }
+
     const name = localStorage.getItem("mleo_player_name") || "";
     if (!name) {
       setPayload(null);
@@ -252,7 +367,7 @@ export default function ParentReportDetailedPage() {
     setPayload(data);
     setLoading(false);
     return undefined;
-  }, [router.isReady, queryPeriod, queryStart, queryEnd]);
+  }, [router.isReady, queryPeriod, queryStart, queryEnd, isParentSource, parentStudentId]);
 
   useEffect(() => {
     if (typeof window === "undefined") return undefined;
@@ -358,9 +473,39 @@ export default function ParentReportDetailedPage() {
     );
   }
 
+  if (isParentSource && parentReportError && !payload) {
+    return (
+      <Layout>
+        <div
+          className="min-h-screen bg-gradient-to-b from-[#0a0f1d] to-[#141928] flex flex-col items-center justify-center gap-4 p-6"
+          dir="rtl"
+        >
+          <p className="text-center text-red-300 max-w-md">{parentReportError}</p>
+          <div className="flex flex-wrap gap-3 justify-center">
+            <Link
+              href="/parent/login"
+              className="rounded-lg px-4 py-2 bg-amber-500 text-black font-semibold"
+            >
+              כניסת הורה
+            </Link>
+            <Link
+              href="/parent/dashboard"
+              className="rounded-lg px-4 py-2 bg-white/10 border border-white/20 text-white"
+            >
+              דשבורד הורים
+            </Link>
+          </div>
+        </div>
+      </Layout>
+    );
+  }
+
   const pi = payload?.periodInfo;
   const noPlayer =
-    typeof window !== "undefined" && !loading && !localStorage.getItem("mleo_player_name");
+    typeof window !== "undefined" &&
+    !loading &&
+    !(isParentSource && parentStudentId) &&
+    !localStorage.getItem("mleo_player_name");
   const allSubjectProfiles = Array.isArray(payload?.subjectProfiles) ? payload.subjectProfiles : [];
   const visibleSubjectProfiles = allSubjectProfiles.filter(
     (sp) => (Number(sp?.subjectQuestionCount) || 0) > 0

@@ -43,6 +43,11 @@ import {
   ResponsiveContainer,
 } from "recharts";
 import ParentReportShortContractPreview from "../../components/parent-report-short-contract-preview.jsx";
+import { getLearningSupabaseBrowserClient } from "../../lib/learning-supabase/client";
+import {
+  runParentReportGenerationFromApiBody,
+  computeReportRangeForParentApi,
+} from "../../lib/learning-supabase/parent-dashboard-report-bridge.js";
 
 function parentReportChartLabelFromAllItemKey(key, data) {
   const labelFrom = (subjectId, bucketLike) => {
@@ -718,6 +723,38 @@ export default function ParentReport() {
   const parentReportPdfRef = useRef(null);
   /** רוחב פנימי משוער לכרטיס גרף (עמודת PDF − ריפוד כרטיס) — למגרעת X דינמית */
   const [chartHostInnerWidthPx, setChartHostInnerWidthPx] = useState(0);
+  const [parentReportError, setParentReportError] = useState("");
+
+  const isParentSource = useMemo(
+    () =>
+      router.isReady &&
+      router.query.source === "parent" &&
+      typeof router.query.studentId === "string" &&
+      router.query.studentId.trim().length > 0,
+    [router.isReady, router.query.source, router.query.studentId]
+  );
+  const parentStudentId = useMemo(
+    () => (isParentSource ? String(router.query.studentId).trim() : ""),
+    [isParentSource, router.query.studentId]
+  );
+
+  const detailedReportQuery = useMemo(() => {
+    const base =
+      customDates && appliedStartDate && appliedEndDate
+        ? { period: "custom", start: appliedStartDate, end: appliedEndDate }
+        : { period };
+    if (isParentSource && parentStudentId) {
+      return { ...base, studentId: parentStudentId, source: "parent" };
+    }
+    return base;
+  }, [
+    customDates,
+    appliedStartDate,
+    appliedEndDate,
+    period,
+    isParentSource,
+    parentStudentId,
+  ]);
 
   // useEffect (לא useLayoutEffect) — נדרש ב-SSR של Next כדי למנוע אזהרת hydration / useLayoutEffect על השרת
   useEffect(() => {
@@ -778,11 +815,15 @@ export default function ParentReport() {
     };
   }, []);
 
-  /** Resolve student UUID for secured Copilot turns (cookie session → API ownership check). */
+  /** Resolve student UUID for secured Copilot turns (parent dashboard query or cookie session). */
   useEffect(() => {
     if (typeof window === "undefined") return undefined;
     if (!enableParentCopilotOnShort) {
       setCopilotStudentId(null);
+      return undefined;
+    }
+    if (isParentSource && parentStudentId) {
+      setCopilotStudentId(parentStudentId);
       return undefined;
     }
     let cancelled = false;
@@ -796,7 +837,7 @@ export default function ParentReport() {
     return () => {
       cancelled = true;
     };
-  }, [enableParentCopilotOnShort]);
+  }, [enableParentCopilotOnShort, isParentSource, parentStudentId]);
 
   const shortReportCopilotTurnRunner = useMemo(() => {
     if (!enableParentCopilotOnShort) return null;
@@ -835,8 +876,9 @@ export default function ParentReport() {
     if (typeof window === "undefined") return undefined;
     if (!router.isReady) return undefined;
 
-    const name = localStorage.getItem("mleo_player_name") || "";
-    setPlayerName(name);
+    const qpStudent =
+      typeof router.query.studentId === "string" ? router.query.studentId.trim() : "";
+    const fromParentDash = router.query.source === "parent" && qpStudent.length > 0;
 
     const today = new Date();
     const weekAgo = new Date(today.getTime() - 7 * 24 * 60 * 60 * 1000);
@@ -873,6 +915,18 @@ export default function ParentReport() {
     setAppliedStartDate(appliedS);
     setAppliedEndDate(appliedE);
 
+    if (fromParentDash) {
+      setPlayerName("");
+      setReport(null);
+      setShortContractTop(null);
+      setCopilotDetailedPayload(null);
+      setParentReportError("");
+      return undefined;
+    }
+
+    const name = localStorage.getItem("mleo_player_name") || "";
+    setPlayerName(name);
+
     if (name) {
       let data;
       let detailed;
@@ -891,7 +945,121 @@ export default function ParentReport() {
     }
     setLoading(false);
     return undefined;
-  }, [router.isReady, router.query.period, router.query.start, router.query.end]);
+  }, [
+    router.isReady,
+    router.query.period,
+    router.query.start,
+    router.query.end,
+    router.query.studentId,
+    router.query.source,
+  ]);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return undefined;
+    if (!router.isReady || !isParentSource || !parentStudentId) return undefined;
+
+    let cancelled = false;
+    setLoading(true);
+    setParentReportError("");
+
+    const run = async () => {
+      const { from, to } = computeReportRangeForParentApi(
+        period,
+        customDates,
+        appliedStartDate,
+        appliedEndDate
+      );
+      let supabase;
+      try {
+        supabase = getLearningSupabaseBrowserClient();
+      } catch {
+        if (!cancelled) {
+          setParentReportError("שגיאת הגדרות מערכת.");
+          setReport(null);
+          setCopilotDetailedPayload(null);
+          setLoading(false);
+        }
+        return;
+      }
+      const { data: sessData } = await supabase.auth.getSession();
+      const token = sessData?.session?.access_token;
+      if (!token) {
+        if (!cancelled) {
+          setParentReportError("נדרשת התחברות כהורה — השתמשו בכניסת הורה ונסו שוב.");
+          setReport(null);
+          setCopilotDetailedPayload(null);
+          setLoading(false);
+        }
+        return;
+      }
+
+      try {
+        const qs = new URLSearchParams({ from, to });
+        const url = `/api/parent/students/${encodeURIComponent(parentStudentId)}/report-data?${qs}`;
+        const res = await fetch(url, {
+          headers: { Authorization: `Bearer ${token}` },
+        });
+        const body = await res.json().catch(() => ({}));
+        if (!res.ok || body?.ok === false) {
+          if (!cancelled) {
+            const msg =
+              res.status === 401
+                ? "נדרשת התחברות מחדש כהורה."
+                : res.status === 403 || res.status === 404
+                  ? "אין גישה לדוח של תלמיד זה."
+                  : typeof body?.error === "string"
+                    ? body.error
+                    : "לא ניתן לטעון את דוח ההורה.";
+            setParentReportError(msg);
+            setReport(null);
+            setCopilotDetailedPayload(null);
+            setLoading(false);
+          }
+          return;
+        }
+
+        const uiPeriod = customDates ? "custom" : period;
+        const out = runParentReportGenerationFromApiBody(body, uiPeriod);
+        if (!out.ok || !out.base) {
+          if (!cancelled) {
+            setParentReportError("לא ניתן לבנות את הדוח מהנתונים שהתקבלו מהשרת.");
+            setReport(null);
+            setCopilotDetailedPayload(null);
+            setLoading(false);
+          }
+          return;
+        }
+        if (!cancelled) {
+          setReport(out.base);
+          setPlayerName(out.playerName);
+          setShortContractTop(out.detailed?.parentProductContractV1?.top || null);
+          setCopilotDetailedPayload(out.detailed && typeof out.detailed === "object" ? out.detailed : null);
+          setParentReportError("");
+          setLoading(false);
+        }
+      } catch {
+        if (!cancelled) {
+          setParentReportError("שגיאת רשת בטעינת הדוח.");
+          setReport(null);
+          setCopilotDetailedPayload(null);
+          setLoading(false);
+        }
+      }
+    };
+
+    void run();
+    return () => {
+      cancelled = true;
+    };
+  }, [
+    router.isReady,
+    isParentSource,
+    parentStudentId,
+    period,
+    customDates,
+    appliedStartDate,
+    appliedEndDate,
+  ]);
 
   const handleShowReport = () => {
     if (startDate && endDate && startDate <= endDate) {
@@ -903,6 +1071,7 @@ export default function ParentReport() {
   };
 
   useEffect(() => {
+    if (isParentSource) return undefined;
     if (typeof window !== "undefined" && playerName && !loading) {
       let data;
       if (customDates && appliedStartDate && appliedEndDate) {
@@ -919,7 +1088,8 @@ export default function ParentReport() {
         setCopilotDetailedPayload(detailed && typeof detailed === "object" ? detailed : null);
       }
     }
-  }, [period, customDates, appliedStartDate, appliedEndDate, playerName, loading]);
+    return undefined;
+  }, [isParentSource, period, customDates, appliedStartDate, appliedEndDate, playerName, loading]);
 
   useEffect(() => {
     if (typeof window === "undefined") return undefined;
@@ -993,6 +1163,30 @@ export default function ParentReport() {
           dir="rtl"
         >
           <div className="text-white text-xl">טוען דוח...</div>
+        </div>
+      </Layout>
+    );
+  }
+
+  if (isParentSource && parentReportError && !report) {
+    return (
+      <Layout>
+        <div
+          className="min-h-screen bg-gradient-to-b from-[#0a0f1d] to-[#141928] flex flex-col items-center justify-center gap-4 p-6"
+          dir="rtl"
+        >
+          <p className="text-center text-red-300 max-w-md">{parentReportError}</p>
+          <div className="flex flex-wrap gap-3 justify-center">
+            <Link
+              href="/parent/login"
+              className="rounded-lg px-4 py-2 bg-amber-500 text-black font-semibold"
+            >
+              כניסת הורה
+            </Link>
+            <Link href="/parent/dashboard" className="rounded-lg px-4 py-2 bg-white/10 border border-white/20 text-white">
+              דשבורד הורים
+            </Link>
+          </div>
         </div>
       </Layout>
     );
@@ -1621,10 +1815,7 @@ export default function ParentReport() {
               <Link
                 href={{
                   pathname: "/learning/parent-report-detailed",
-                  query:
-                    customDates && appliedStartDate && appliedEndDate
-                      ? { period: "custom", start: appliedStartDate, end: appliedEndDate }
-                      : { period },
+                  query: detailedReportQuery,
                 }}
                 className="inline-flex px-4 py-2 rounded-lg text-sm font-bold bg-violet-500/35 border border-violet-300/45 hover:bg-violet-500/50 text-white transition-all"
               >

@@ -522,7 +522,7 @@ export default function ParentDashboardPage() {
 
                   <div className="pt-2 border-t border-white/10">
                     <Link
-                      href={`/parent/student-report?studentId=${encodeURIComponent(student.id)}`}
+                      href={`/learning/parent-report?studentId=${encodeURIComponent(student.id)}&source=parent`}
                       className="inline-flex rounded bg-violet-500/90 text-white px-3 py-2 text-sm font-semibold hover:bg-violet-500"
                     >
                       דוח הורים
