@@ -13,9 +13,6 @@ const ENTRY_OPTIONS = [
 const SHOW_ARCADE_DEBUG =
   process.env.NODE_ENV !== "production" || process.env.NEXT_PUBLIC_ARCADE_DEBUG === "true";
 
-const CARD_CLASS =
-  "rounded-xl border border-zinc-300 bg-white p-4 text-zinc-900 shadow-sm [&_label]:text-zinc-900 [&_p]:text-zinc-800 [&_span]:text-zinc-900 [&_input]:text-zinc-900 [&_input]:bg-white";
-
 const POLL_MS = 5000;
 
 /** חדרים ציבוריים לריענון רשימה */
@@ -61,6 +58,9 @@ const MORE_ARCADE_LOBBY_ROWS = [
     playersLine: "שחקנים: עד 8",
   },
 ];
+
+const CARD_SHELL =
+  "flex h-full flex-col rounded-xl border border-white/10 bg-white/[0.04] p-3 shadow-lg shadow-black/20 backdrop-blur-sm sm:p-4";
 
 function playHrefForArcadeRoom(gameKey, roomId) {
   const q = encodeURIComponent(roomId);
@@ -109,11 +109,11 @@ function roomTypeLabel(rt) {
   return rt || "—";
 }
 
-function EntryCostSelector({ entryCost, setEntryCost, costDisabledReason, busy, className = "mt-4" }) {
+function EntryCostSelector({ entryCost, setEntryCost, costDisabledReason, busy, className = "mt-3" }) {
   return (
     <div className={className}>
-      <span className="mb-2 block text-sm font-semibold text-zinc-900">עלות כניסה</span>
-      <div className="flex flex-wrap gap-2">
+      <span className="mb-1.5 block text-[11px] font-semibold text-white/60">עלות כניסה</span>
+      <div className="flex flex-wrap gap-1.5">
         {ENTRY_OPTIONS.map((opt) => {
           const needMsg = costDisabledReason(opt.value);
           const selected = entryCost === opt.value;
@@ -124,18 +124,118 @@ function EntryCostSelector({ entryCost, setEntryCost, costDisabledReason, busy, 
               disabled={busy || Boolean(needMsg)}
               title={needMsg || undefined}
               onClick={() => setEntryCost(opt.value)}
-              className={`min-w-[3.5rem] rounded-lg border-2 px-3 py-2 text-sm font-bold transition ${
+              className={`min-w-[2.6rem] rounded-md border px-2 py-1.5 text-xs font-bold transition ${
                 selected
-                  ? "border-amber-600 bg-amber-400 text-zinc-900 shadow-inner"
+                  ? "border-amber-400/80 bg-amber-500/25 text-amber-100 shadow-inner"
                   : needMsg
-                    ? "cursor-not-allowed border-zinc-200 bg-zinc-100 text-zinc-500 line-through"
-                    : "border-zinc-400 bg-white text-zinc-900 hover:border-amber-500"
+                    ? "cursor-not-allowed border-white/10 bg-black/20 text-white/30 line-through"
+                    : "border-white/15 bg-black/25 text-white/90 hover:border-amber-400/50 hover:bg-white/[0.06]"
               }`}
             >
               {opt.label}
             </button>
           );
         })}
+      </div>
+    </div>
+  );
+}
+
+/**
+ * @param {object} props
+ * @param {string} props.title
+ * @param {string} props.blurb
+ * @param {string[]} props.bullets
+ * @param {string} props.gameKey
+ * @param {boolean} props.active
+ * @param {string | null} props.idleReason
+ * @param {number} props.entryCost
+ * @param {(n: number) => void} props.setEntryCost
+ * @param {(cost: number) => string | null} props.costDisabledReason
+ * @param {boolean} props.busy
+ * @param {() => void} props.onQuickGame
+ * @param {(roomType: string, gk?: string) => void} props.onCreateRoom
+ */
+function ArcadeGameCard({
+  title,
+  blurb,
+  bullets,
+  gameKey,
+  active,
+  idleReason,
+  entryCost,
+  setEntryCost,
+  costDisabledReason,
+  busy,
+  onQuickGame,
+  onCreateRoom,
+}) {
+  const quickLabel =
+    gameKey === "fourline" ? "משחק מהיר" : gameKey === "ludo" ? "משחק מהיר (לודו)" : `משחק מהיר (${title})`;
+
+  return (
+    <div className={CARD_SHELL}>
+      <div className="flex flex-wrap items-start justify-between gap-2 border-b border-white/10 pb-2">
+        <h2 className="text-base font-bold text-white sm:text-lg">{title}</h2>
+        <span
+          className={`shrink-0 rounded-full px-2 py-0.5 text-[10px] font-bold sm:text-xs ${
+            active ? "bg-emerald-500/25 text-emerald-200 ring-1 ring-emerald-500/40" : "bg-white/10 text-white/50"
+          }`}
+        >
+          {active ? "פעיל" : "לא זמין"}
+        </span>
+      </div>
+      <p className="mt-2 text-xs leading-snug text-white/70 sm:text-sm">{blurb}</p>
+      <ul className="mt-2 space-y-0.5 text-[11px] text-white/65 sm:text-xs">
+        {bullets.map((line) => (
+          <li key={line} className="flex gap-1.5">
+            <span className="text-amber-400/80">·</span>
+            <span>{line}</span>
+          </li>
+        ))}
+      </ul>
+      {idleReason && !active ? (
+        <p className="mt-2 rounded-md border border-amber-500/30 bg-amber-950/40 px-2 py-1.5 text-[11px] text-amber-100/95">
+          {idleReason}
+        </p>
+      ) : null}
+
+      <EntryCostSelector
+        entryCost={entryCost}
+        setEntryCost={setEntryCost}
+        costDisabledReason={costDisabledReason}
+        busy={busy}
+        className="mt-3"
+      />
+
+      <div className="mt-auto flex flex-col gap-2 pt-3">
+        <button
+          type="button"
+          disabled={busy || !active || Boolean(costDisabledReason(entryCost))}
+          title={costDisabledReason(entryCost) || (!active ? idleReason || undefined : undefined)}
+          onClick={onQuickGame}
+          className="w-full rounded-lg bg-amber-500 px-3 py-2 text-center text-sm font-bold text-zinc-950 shadow-md transition hover:bg-amber-400 disabled:cursor-not-allowed disabled:opacity-45"
+        >
+          {quickLabel}
+        </button>
+        <div className="grid grid-cols-2 gap-1.5">
+          <button
+            type="button"
+            disabled={busy || !active || Boolean(costDisabledReason(entryCost))}
+            onClick={() => onCreateRoom("public", gameKey)}
+            className="rounded-lg bg-white/10 px-2 py-2 text-center text-[11px] font-bold text-white ring-1 ring-white/10 transition hover:bg-white/15 disabled:cursor-not-allowed disabled:opacity-45 sm:text-xs"
+          >
+            צור חדר ציבורי
+          </button>
+          <button
+            type="button"
+            disabled={busy || !active || Boolean(costDisabledReason(entryCost))}
+            onClick={() => onCreateRoom("private", gameKey)}
+            className="rounded-lg border border-white/20 bg-black/30 px-2 py-2 text-center text-[11px] font-bold text-white/95 transition hover:bg-black/40 disabled:cursor-not-allowed disabled:opacity-45 sm:text-xs"
+          >
+            צור חדר פרטי
+          </button>
+        </div>
       </div>
     </div>
   );
@@ -152,6 +252,7 @@ export default function StudentArcadePage() {
   const [joinRoomIdDebug, setJoinRoomIdDebug] = useState("");
   const [joinCode, setJoinCode] = useState("");
   const [openRooms, setOpenRooms] = useState([]);
+  const [initialSyncDone, setInitialSyncDone] = useState(false);
   /** @type {{ kind: string; room: Record<string, unknown> } | null} */
   const [roomHighlight, setRoomHighlight] = useState(null);
 
@@ -186,7 +287,17 @@ export default function StudentArcadePage() {
   }, []);
 
   useEffect(() => {
-    refresh();
+    let cancelled = false;
+    (async () => {
+      try {
+        await refresh();
+      } finally {
+        if (!cancelled) setInitialSyncDone(true);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
   }, [refresh]);
 
   const fourlineMeta = useMemo(() => games.find((g) => g.gameKey === "fourline") || null, [games]);
@@ -224,14 +335,14 @@ export default function StudentArcadePage() {
     return MORE_ARCADE_LOBBY_ROWS.map((row) => {
       const meta = games.find((g) => g.gameKey === row.gameKey) || null;
       const active = Boolean(meta?.enabled === true && meta?.foundationOnly === false);
-      const idleReason = !meta
+      const idleReasonRow = !meta
         ? "טוען משחקים…"
         : !meta.enabled
           ? "המשחק כבוי בשרת"
           : meta.foundationOnly
             ? "עדיין לא פעיל (ממתין להפעלה)"
             : null;
-      return { ...row, active, idleReason };
+      return { ...row, active, idleReason: idleReasonRow };
     });
   }, [games]);
 
@@ -391,6 +502,13 @@ export default function StudentArcadePage() {
     return null;
   };
 
+  const balanceDisplay =
+    balance === null || balance === undefined
+      ? initialSyncDone
+        ? "לא זמין"
+        : "טוען…"
+      : String(balance);
+
   const hlRoom = roomHighlight?.room;
   const hlRoomId = hlRoom?.id != null ? String(hlRoom.id) : "";
   const hlStatus = hlRoom?.status != null ? String(hlRoom.status) : "—";
@@ -413,324 +531,197 @@ export default function StudentArcadePage() {
       <Head>
         <title>משחקים — LEO K</title>
       </Head>
-      <div className="min-h-[calc(100vh-56px)] bg-zinc-950 px-4 py-8 text-zinc-100" dir="rtl">
-        <div className="mx-auto max-w-lg space-y-5">
-          <header className="flex flex-wrap items-center justify-between gap-3 border-b border-zinc-700 pb-4">
-            <div className="min-w-0 flex-1">
-              <h1 className="text-xl font-bold text-white sm:text-2xl">משחקים</h1>
-              <p className="mt-1 truncate text-sm text-zinc-400">
-                <span className="font-medium text-zinc-200">{studentName || "—"}</span>
-                <span className="mx-2 text-zinc-600">·</span>
-                <span className="font-mono text-amber-200">
-                  {balance === null ? "טוען…" : balance}
+      <div
+        className="min-h-[calc(100vh-56px)] bg-gradient-to-b from-[#050816] via-[#0b1020] to-[#050816] text-white"
+        dir="rtl"
+      >
+        <div className="mx-auto max-w-7xl px-4 py-6 sm:px-6 sm:py-8">
+          <header className="mb-5 flex flex-col gap-3 border-b border-white/10 pb-5 sm:mb-6 sm:flex-row sm:items-start sm:justify-between sm:gap-4">
+            <div className="min-w-0 space-y-1.5 text-right">
+              <h1 className="text-2xl font-extrabold tracking-tight text-white md:text-3xl">משחקים</h1>
+              <p className="text-xs text-white/55 sm:text-sm">בחר משחק, עלות כניסה והצטרף לחדר</p>
+              <div className="flex flex-wrap items-center justify-end gap-2 pt-1 text-sm">
+                <span className="font-medium text-white/95">{studentName || "—"}</span>
+                <span className="text-white/25">·</span>
+                <span className="rounded-md bg-black/30 px-2 py-0.5 font-mono text-sm text-amber-200 ring-1 ring-white/10">
+                  {balanceDisplay}
+                  <span className="mr-1.5 text-[11px] font-sans text-white/45">מטבעות</span>
                 </span>
-                <span className="mr-1 text-zinc-500">מטבעות</span>
-              </p>
+              </div>
             </div>
-            <Link
-              href="/learning"
-              className="shrink-0 rounded-lg border border-amber-500/50 bg-amber-500/15 px-3 py-2 text-sm font-semibold text-amber-200 hover:bg-amber-500/25"
-            >
-              חזרה ללמידה
-            </Link>
+            <div className="flex shrink-0 flex-col gap-2 sm:items-end">
+              <Link
+                href="/student/home"
+                className="inline-flex items-center justify-center rounded-lg border border-emerald-500/40 bg-emerald-500/15 px-3 py-2 text-center text-xs font-bold text-emerald-100 transition hover:bg-emerald-500/25 sm:text-sm"
+              >
+                חזרה ללמידה
+              </Link>
+            </div>
           </header>
 
-          <div className={CARD_CLASS}>
-            <div className="flex flex-wrap items-baseline justify-between gap-2">
-              <h2 className="text-lg font-bold text-zinc-900">Fourline</h2>
-              <span
-                className={`rounded-full px-2 py-0.5 text-xs font-bold ${
-                  fourlineActive ? "bg-emerald-100 text-emerald-900" : "bg-zinc-200 text-zinc-600"
-                }`}
-              >
-                {fourlineActive ? "פעיל" : "לא זמין"}
-              </span>
+          {!initialSyncDone ? (
+            <div className="grid grid-cols-1 gap-3 md:grid-cols-2 xl:grid-cols-3">
+              {[1, 2, 3, 4, 5, 6].map((i) => (
+                <div
+                  key={i}
+                  className="h-56 animate-pulse rounded-xl border border-white/5 bg-white/[0.04] sm:h-52"
+                  aria-hidden
+                />
+              ))}
             </div>
-            <p className="mt-1 text-sm text-zinc-700">ארבע בשורה · שניים נגד שניים</p>
-            <ul className="mt-3 list-inside list-disc space-y-1 text-sm text-zinc-800">
-              <li>שחקנים: 2</li>
-              <li>בחר עלות כניסה לפני משחק מהיר או יצירת חדר</li>
-            </ul>
-            {idleReason && !fourlineActive ? (
-              <p className="mt-3 rounded-md border border-amber-300 bg-amber-50 px-3 py-2 text-sm text-amber-950">
-                {idleReason}
-              </p>
-            ) : null}
-
-            <EntryCostSelector
-              entryCost={entryCost}
-              setEntryCost={setEntryCost}
-              costDisabledReason={costDisabledReason}
-              busy={busy}
-            />
-
-            <div className="mt-6 flex flex-col gap-3">
-              <button
-                type="button"
-                disabled={busy || !fourlineActive || Boolean(costDisabledReason(entryCost))}
-                title={
-                  costDisabledReason(entryCost) ||
-                  (!fourlineActive ? idleReason || undefined : undefined)
-                }
-                onClick={() => void onQuickGame()}
-                className="w-full rounded-xl bg-amber-500 px-4 py-4 text-center text-base font-bold text-zinc-900 shadow-lg disabled:cursor-not-allowed disabled:opacity-50"
-              >
-                משחק מהיר
-              </button>
-              <div className="flex flex-col gap-2 sm:flex-row">
-                <button
-                  type="button"
-                  disabled={busy || !fourlineActive || Boolean(costDisabledReason(entryCost))}
-                  onClick={() => void onCreateRoom("public")}
-                  className="flex-1 rounded-lg bg-zinc-800 px-4 py-3 text-center text-sm font-bold text-white shadow disabled:cursor-not-allowed disabled:opacity-50"
-                >
-                  צור חדר ציבורי
-                </button>
-                <button
-                  type="button"
-                  disabled={busy || !fourlineActive || Boolean(costDisabledReason(entryCost))}
-                  onClick={() => void onCreateRoom("private")}
-                  className="flex-1 rounded-lg border-2 border-zinc-600 bg-zinc-100 px-4 py-3 text-center text-sm font-bold text-zinc-900 shadow-sm disabled:cursor-not-allowed disabled:opacity-50"
-                >
-                  צור חדר פרטי
-                </button>
+          ) : (
+            <>
+              <div className="grid grid-cols-1 gap-3 md:grid-cols-2 md:gap-4 xl:grid-cols-3 xl:gap-4">
+                <ArcadeGameCard
+                  title="Fourline"
+                  blurb="ארבע בשורה · שניים נגד שניים"
+                  bullets={["שחקנים: 2", "בחר עלות כניסה לפני משחק מהיר או יצירת חדר"]}
+                  gameKey="fourline"
+                  active={fourlineActive}
+                  idleReason={idleReason}
+                  entryCost={entryCost}
+                  setEntryCost={setEntryCost}
+                  costDisabledReason={costDisabledReason}
+                  busy={busy}
+                  onQuickGame={() => void onQuickGame()}
+                  onCreateRoom={(rt, gk) => void onCreateRoom(rt, gk)}
+                />
+                <ArcadeGameCard
+                  title="Ludo"
+                  blurb="לודו · 2–4 שחקנים"
+                  bullets={["שחקנים: עד 4", "בחר עלות כניסה לפני משחק מהיר או יצירת חדר"]}
+                  gameKey="ludo"
+                  active={ludoActive}
+                  idleReason={idleReasonLudo}
+                  entryCost={entryCost}
+                  setEntryCost={setEntryCost}
+                  costDisabledReason={costDisabledReason}
+                  busy={busy}
+                  onQuickGame={() => void onQuickGame("ludo")}
+                  onCreateRoom={(rt, gk) => void onCreateRoom(rt, gk)}
+                />
+                {moreArcadeLobbyVm.map((row) => (
+                  <ArcadeGameCard
+                    key={row.gameKey}
+                    title={row.title}
+                    blurb={row.blurb}
+                    bullets={[row.playersLine, "בחר עלות כניסה לפני משחק מהיר או יצירת חדר"]}
+                    gameKey={row.gameKey}
+                    active={row.active}
+                    idleReason={row.idleReason}
+                    entryCost={entryCost}
+                    setEntryCost={setEntryCost}
+                    costDisabledReason={costDisabledReason}
+                    busy={busy}
+                    onQuickGame={() => void onQuickGame(row.gameKey)}
+                    onCreateRoom={(rt, gk) => void onCreateRoom(rt, gk)}
+                  />
+                ))}
               </div>
-            </div>
-          </div>
 
-          <div className={CARD_CLASS}>
-            <div className="flex flex-wrap items-baseline justify-between gap-2">
-              <h2 className="text-lg font-bold text-zinc-900">Ludo</h2>
-              <span
-                className={`rounded-full px-2 py-0.5 text-xs font-bold ${
-                  ludoActive ? "bg-emerald-100 text-emerald-900" : "bg-zinc-200 text-zinc-600"
-                }`}
-              >
-                {ludoActive ? "פעיל" : "לא זמין"}
-              </span>
-            </div>
-            <p className="mt-1 text-sm text-zinc-700">לודו · 2–4 שחקנים</p>
-            <ul className="mt-3 list-inside list-disc space-y-1 text-sm text-zinc-800">
-              <li>שחקנים: עד 4</li>
-              <li>בחר עלות כניסה לפני משחק מהיר או יצירת חדר</li>
-            </ul>
-            {idleReasonLudo && !ludoActive ? (
-              <p className="mt-3 rounded-md border border-amber-300 bg-amber-50 px-3 py-2 text-sm text-amber-950">
-                {idleReasonLudo}
-              </p>
-            ) : null}
+              <div className="mt-5 grid gap-3 lg:mt-6 lg:grid-cols-3 lg:gap-4">
+                <div className={`${CARD_SHELL} lg:col-span-2`}>
+                  <h3 className="text-sm font-bold text-white sm:text-base">חדרים פתוחים</h3>
+                  <p className="mt-1 text-[11px] text-white/55 sm:text-xs">חדרים ציבוריים ומשחק מהיר שמחכים לשחקן</p>
+                  {!openRoomsPollActive ? (
+                    <p className="mt-3 text-xs text-white/45">אין רשימה — המשחק לא פעיל</p>
+                  ) : openRooms.length === 0 ? (
+                    <p className="mt-3 text-xs text-white/55">אין חדרים פתוחים כרגע</p>
+                  ) : (
+                    <ul className="mt-3 max-h-64 space-y-2 overflow-y-auto pr-0.5 sm:max-h-72">
+                      {openRooms.map((row) => {
+                        const full = row.playerCount >= row.maxPlayers;
+                        const costLabel =
+                          ENTRY_OPTIONS.find((o) => o.value === row.entryCost)?.label ||
+                          String(row.entryCost);
+                        return (
+                          <li
+                            key={row.roomId}
+                            className="flex flex-col gap-2 rounded-lg border border-white/10 bg-black/25 p-2.5 sm:flex-row sm:items-center sm:justify-between sm:p-2"
+                          >
+                            <div className="min-w-0 text-right text-[11px] text-white/80 sm:text-xs">
+                              <p className="font-semibold text-white">{row.gameTitle || "Fourline"}</p>
+                              <p className="text-white/55">
+                                עלות {costLabel} · {row.playerCount}/{row.maxPlayers} שחקנים ·{" "}
+                                {roomTypeLabel(row.roomType)} · ממתין
+                              </p>
+                            </div>
+                            <button
+                              type="button"
+                              disabled={busy || full || Boolean(costDisabledReason(row.entryCost))}
+                              title={full ? "החדר מלא" : costDisabledReason(row.entryCost) || undefined}
+                              onClick={() => void onJoinPublicRoom(row.roomId)}
+                              className="shrink-0 rounded-md bg-emerald-600 px-3 py-1.5 text-[11px] font-bold text-white transition hover:bg-emerald-500 disabled:cursor-not-allowed disabled:opacity-45 sm:text-xs"
+                            >
+                              הצטרף
+                            </button>
+                          </li>
+                        );
+                      })}
+                    </ul>
+                  )}
+                </div>
 
-            <EntryCostSelector
-              entryCost={entryCost}
-              setEntryCost={setEntryCost}
-              costDisabledReason={costDisabledReason}
-              busy={busy}
-            />
-
-            <div className="mt-6 flex flex-col gap-3">
-              <button
-                type="button"
-                disabled={busy || !ludoActive || Boolean(costDisabledReason(entryCost))}
-                title={
-                  costDisabledReason(entryCost) || (!ludoActive ? idleReasonLudo || undefined : undefined)
-                }
-                onClick={() => void onQuickGame("ludo")}
-                className="w-full rounded-xl bg-amber-500 px-4 py-4 text-center text-base font-bold text-zinc-900 shadow-lg disabled:cursor-not-allowed disabled:opacity-50"
-              >
-                משחק מהיר (לודו)
-              </button>
-              <div className="flex flex-col gap-2 sm:flex-row">
-                <button
-                  type="button"
-                  disabled={busy || !ludoActive || Boolean(costDisabledReason(entryCost))}
-                  onClick={() => void onCreateRoom("public", "ludo")}
-                  className="flex-1 rounded-lg bg-zinc-800 px-4 py-3 text-center text-sm font-bold text-white shadow disabled:cursor-not-allowed disabled:opacity-50"
-                >
-                  צור חדר ציבורי
-                </button>
-                <button
-                  type="button"
-                  disabled={busy || !ludoActive || Boolean(costDisabledReason(entryCost))}
-                  onClick={() => void onCreateRoom("private", "ludo")}
-                  className="flex-1 rounded-lg border-2 border-zinc-600 bg-zinc-100 px-4 py-3 text-center text-sm font-bold text-zinc-900 shadow-sm disabled:cursor-not-allowed disabled:opacity-50"
-                >
-                  צור חדר פרטי
-                </button>
-              </div>
-            </div>
-          </div>
-
-          {moreArcadeLobbyVm.map((row) => (
-            <div key={row.gameKey} className={CARD_CLASS}>
-              <div className="flex flex-wrap items-baseline justify-between gap-2">
-                <h2 className="text-lg font-bold text-zinc-900">{row.title}</h2>
-                <span
-                  className={`rounded-full px-2 py-0.5 text-xs font-bold ${
-                    row.active ? "bg-emerald-100 text-emerald-900" : "bg-zinc-200 text-zinc-600"
-                  }`}
-                >
-                  {row.active ? "פעיל" : "לא זמין"}
-                </span>
-              </div>
-              <p className="mt-1 text-sm text-zinc-700">{row.blurb}</p>
-              <ul className="mt-3 list-inside list-disc space-y-1 text-sm text-zinc-800">
-                <li>{row.playersLine}</li>
-                <li>בחר עלות כניסה לפני משחק מהיר או יצירת חדר</li>
-              </ul>
-              {row.idleReason && !row.active ? (
-                <p className="mt-3 rounded-md border border-amber-300 bg-amber-50 px-3 py-2 text-sm text-amber-950">
-                  {row.idleReason}
-                </p>
-              ) : null}
-
-              <EntryCostSelector
-                entryCost={entryCost}
-                setEntryCost={setEntryCost}
-                costDisabledReason={costDisabledReason}
-                busy={busy}
-              />
-
-              <div className="mt-6 flex flex-col gap-3">
-                <button
-                  type="button"
-                  disabled={busy || !row.active || Boolean(costDisabledReason(entryCost))}
-                  title={
-                    costDisabledReason(entryCost) || (!row.active ? row.idleReason || undefined : undefined)
-                  }
-                  onClick={() => void onQuickGame(row.gameKey)}
-                  className="w-full rounded-xl bg-amber-500 px-4 py-4 text-center text-base font-bold text-zinc-900 shadow-lg disabled:cursor-not-allowed disabled:opacity-50"
-                >
-                  משחק מהיר ({row.title})
-                </button>
-                <div className="flex flex-col gap-2 sm:flex-row">
-                  <button
-                    type="button"
-                    disabled={busy || !row.active || Boolean(costDisabledReason(entryCost))}
-                    onClick={() => void onCreateRoom("public", row.gameKey)}
-                    className="flex-1 rounded-lg bg-zinc-800 px-4 py-3 text-center text-sm font-bold text-white shadow disabled:cursor-not-allowed disabled:opacity-50"
-                  >
-                    צור חדר ציבורי
-                  </button>
-                  <button
-                    type="button"
-                    disabled={busy || !row.active || Boolean(costDisabledReason(entryCost))}
-                    onClick={() => void onCreateRoom("private", row.gameKey)}
-                    className="flex-1 rounded-lg border-2 border-zinc-600 bg-zinc-100 px-4 py-3 text-center text-sm font-bold text-zinc-900 shadow-sm disabled:cursor-not-allowed disabled:opacity-50"
-                  >
-                    צור חדר פרטי
-                  </button>
+                <div className={CARD_SHELL}>
+                  <h3 className="text-sm font-bold text-white sm:text-base">חדר פרטי — הצטרפות בקוד</h3>
+                  <p className="mt-1 text-[11px] text-white/55 sm:text-xs">הזן את הקוד שקיבלת מחבר</p>
+                  <div className="mt-3 flex flex-col gap-2">
+                    <input
+                      type="text"
+                      autoComplete="off"
+                      placeholder="קוד החדר"
+                      value={joinCode}
+                      onChange={(e) => setJoinCode(e.target.value)}
+                      className="w-full rounded-lg border border-white/15 bg-black/35 px-2.5 py-2 text-sm text-white placeholder:text-white/35"
+                    />
+                    <button
+                      type="button"
+                      disabled={busy || !openRoomsPollActive}
+                      onClick={() => void onJoinByCodeSubmit()}
+                      className="rounded-lg bg-white/12 px-3 py-2 text-xs font-bold text-white ring-1 ring-white/15 transition hover:bg-white/18 disabled:opacity-45"
+                    >
+                      הצטרף לפי קוד
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
-
-          <div className={CARD_CLASS}>
-            <h3 className="text-base font-bold text-zinc-900">חדרים פתוחים</h3>
-            <p className="mt-1 text-sm text-zinc-600">חדרים ציבוריים ומשחק מהיר שמחכים לשחקן</p>
-            {!openRoomsPollActive ? (
-              <p className="mt-3 text-sm text-zinc-500">אין רשימה — המשחק לא פעיל</p>
-            ) : openRooms.length === 0 ? (
-              <p className="mt-3 text-sm text-zinc-600">אין חדרים פתוחים כרגע</p>
-            ) : (
-              <ul className="mt-4 space-y-3">
-                {openRooms.map((row) => {
-                  const full = row.playerCount >= row.maxPlayers;
-                  const costLabel =
-                    ENTRY_OPTIONS.find((o) => o.value === row.entryCost)?.label ||
-                    String(row.entryCost);
-                  return (
-                    <li
-                      key={row.roomId}
-                      className="flex flex-col gap-2 rounded-lg border border-zinc-200 bg-zinc-50/80 p-3 sm:flex-row sm:items-center sm:justify-between"
-                    >
-                      <div className="min-w-0 text-sm">
-                        <p className="font-semibold text-zinc-900">{row.gameTitle || "Fourline"}</p>
-                        <p className="text-zinc-600">
-                          עלות {costLabel} · {row.playerCount}/{row.maxPlayers} שחקנים ·{" "}
-                          {roomTypeLabel(row.roomType)} · ממתין
-                        </p>
-                      </div>
-                      <button
-                        type="button"
-                        disabled={busy || full || Boolean(costDisabledReason(row.entryCost))}
-                        title={
-                          full
-                            ? "החדר מלא"
-                            : costDisabledReason(row.entryCost) || undefined
-                        }
-                        onClick={() => void onJoinPublicRoom(row.roomId)}
-                        className="shrink-0 rounded-lg bg-emerald-600 px-4 py-2 text-sm font-bold text-white hover:bg-emerald-500 disabled:cursor-not-allowed disabled:opacity-50"
-                      >
-                        הצטרף
-                      </button>
-                    </li>
-                  );
-                })}
-              </ul>
-            )}
-          </div>
-
-          <div className={CARD_CLASS}>
-            <h3 className="text-base font-bold text-zinc-900">חדר פרטי — הצטרפות בקוד</h3>
-            <p className="mt-1 text-sm text-zinc-600">הזן את הקוד שקיבלת מחבר</p>
-            <div className="mt-3 flex flex-col gap-2 sm:flex-row">
-              <input
-                type="text"
-                autoComplete="off"
-                placeholder="קוד החדר"
-                value={joinCode}
-                onChange={(e) => setJoinCode(e.target.value)}
-                className="min-w-0 flex-1 rounded-lg border border-zinc-400 bg-white px-3 py-2 text-zinc-900 placeholder:text-zinc-400"
-              />
-              <button
-                type="button"
-                disabled={busy || !openRoomsPollActive}
-                onClick={() => void onJoinByCodeSubmit()}
-                className="rounded-lg bg-zinc-800 px-4 py-2 text-sm font-semibold text-white hover:bg-zinc-700 disabled:opacity-50"
-              >
-                הצטרף לפי קוד
-              </button>
-            </div>
-          </div>
+            </>
+          )}
 
           {roomHighlight && hlRoomId ? (
-            <div className="rounded-xl border-2 border-emerald-600 bg-emerald-50 p-5 text-emerald-950 shadow-md">
-              <h3 className="text-xl font-bold">חדר מוכן</h3>
-              <p className="mt-1 text-sm font-medium text-emerald-900">{waitingCopy}</p>
-              <dl className="mt-4 space-y-2 text-sm">
-                <div className="flex justify-between gap-2 border-b border-emerald-200 pb-2">
+            <div className="mt-5 rounded-xl border border-emerald-500/40 bg-emerald-950/35 p-4 shadow-lg ring-1 ring-emerald-500/20 sm:p-5">
+              <h3 className="text-lg font-bold text-emerald-100">חדר מוכן</h3>
+              <p className="mt-1 text-xs font-medium text-emerald-200/90 sm:text-sm">{waitingCopy}</p>
+              <dl className="mt-3 space-y-2 text-xs text-emerald-100/90 sm:text-sm">
+                <div className="flex justify-between gap-2 border-b border-emerald-500/25 pb-2">
                   <dt className="font-semibold">עלות כניסה</dt>
                   <dd className="font-mono">{hlEntry}</dd>
                 </div>
                 {hlPrivate && hlJoinCode ? (
-                  <>
-                    <div className="rounded-md border border-emerald-300 bg-white px-3 py-3">
-                      <p className="text-xs font-semibold uppercase tracking-wide text-emerald-800">
-                        קוד חדר
-                      </p>
-                      <p className="mt-1 font-mono text-2xl font-bold tracking-[0.2em] text-emerald-950">
-                        {hlJoinCode}
-                      </p>
-                      <p className="mt-2 text-sm text-emerald-900">שלח את הקוד לחבר כדי שיצטרף</p>
-                    </div>
-                  </>
+                  <div className="rounded-lg border border-emerald-500/30 bg-black/30 px-3 py-2.5">
+                    <p className="text-[10px] font-semibold uppercase tracking-wide text-emerald-300/90">קוד חדר</p>
+                    <p className="mt-1 font-mono text-xl font-bold tracking-[0.15em] text-emerald-50 sm:text-2xl">
+                      {hlJoinCode}
+                    </p>
+                    <p className="mt-1.5 text-[11px] text-emerald-200/85">שלח את הקוד לחבר כדי שיצטרף</p>
+                  </div>
                 ) : null}
               </dl>
               <Link
                 href={hlPlayHref}
-                className="mt-5 flex w-full items-center justify-center rounded-xl bg-emerald-600 px-4 py-4 text-center text-lg font-bold text-white shadow-lg hover:bg-emerald-500"
+                className="mt-4 flex w-full items-center justify-center rounded-lg bg-emerald-600 px-3 py-2.5 text-center text-sm font-bold text-white shadow-md transition hover:bg-emerald-500 sm:text-base"
               >
                 כניסה למשחק
               </Link>
               {SHOW_ARCADE_DEBUG ? (
-                <p className="mt-3 break-all font-mono text-[10px] text-emerald-800/90">{hlRoomId}</p>
+                <p className="mt-2 break-all font-mono text-[10px] text-emerald-300/70">{hlRoomId}</p>
               ) : null}
             </div>
           ) : null}
 
           {SHOW_ARCADE_DEBUG ? (
-            <div className={CARD_CLASS}>
-              <h3 className="text-sm font-semibold text-zinc-900">מצב פיתוח — הצטרפות לפי roomId</h3>
+            <div className={`${CARD_SHELL} mt-4`}>
+              <h3 className="text-xs font-semibold text-white/90">מצב פיתוח — הצטרפות לפי roomId</h3>
               <div className="mt-2 flex flex-col gap-2 sm:flex-row">
                 <input
                   type="text"
@@ -738,13 +729,13 @@ export default function StudentArcadePage() {
                   placeholder="UUID"
                   value={joinRoomIdDebug}
                   onChange={(e) => setJoinRoomIdDebug(e.target.value)}
-                  className="min-w-0 flex-1 rounded-lg border border-zinc-400 bg-white px-3 py-2 font-mono text-sm text-zinc-900"
+                  className="min-w-0 flex-1 rounded-lg border border-white/15 bg-black/35 px-2.5 py-2 font-mono text-xs text-white"
                 />
                 <button
                   type="button"
                   disabled={busy || !openRoomsPollActive}
                   onClick={() => void onJoinByRoomIdDebug()}
-                  className="rounded-lg bg-zinc-600 px-4 py-2 text-sm font-semibold text-white"
+                  className="rounded-lg bg-white/15 px-3 py-2 text-xs font-semibold text-white"
                 >
                   הצטרף (debug)
                 </button>
@@ -753,13 +744,13 @@ export default function StudentArcadePage() {
           ) : null}
 
           {userMessage ? (
-            <p className="rounded-lg border border-zinc-600 bg-zinc-900/80 px-4 py-3 text-sm font-medium text-amber-100">
+            <p className="mt-4 rounded-lg border border-amber-500/35 bg-amber-950/30 px-3 py-2 text-xs font-medium text-amber-100 sm:text-sm">
               {userMessage}
             </p>
           ) : null}
 
           {SHOW_ARCADE_DEBUG && debugPayload ? (
-            <pre className="max-h-48 overflow-auto whitespace-pre-wrap break-words rounded-lg border border-zinc-600 bg-zinc-900 p-3 font-mono text-xs text-zinc-300">
+            <pre className="mt-3 max-h-40 overflow-auto whitespace-pre-wrap break-words rounded-lg border border-white/10 bg-black/40 p-2.5 font-mono text-[10px] text-white/70">
               {debugPayload}
             </pre>
           ) : null}
