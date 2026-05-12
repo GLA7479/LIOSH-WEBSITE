@@ -9,6 +9,7 @@ import {
 import { isStudentIdentityDiagnosticsEnabled } from "../../lib/dev-student-identity-client";
 import { buildStudentHomeView } from "../../lib/learning-client/studentHomeDashboardClient";
 import { invalidateStudentLearningProfileClientCache } from "../../lib/learning-client/studentLearningProfileClient";
+import { formatGradeLevelHe } from "../../lib/learning-student-defaults";
 
 const HOME_PROFILE_PATH = "/api/student/home-profile";
 
@@ -198,7 +199,8 @@ export default function StudentHomePage() {
   }
 
   const heroName = String(student.full_name || "").trim() || "תלמיד";
-  const heroGrade = student.grade_level != null && student.grade_level !== "" ? String(student.grade_level) : "";
+  const heroGrade =
+    student.grade_level != null && student.grade_level !== "" ? formatGradeLevelHe(student.grade_level) : "";
   const heroCoins = Number(student.coin_balance) || 0;
   const heroAvatar = dashboardView?.identity?.avatarEmoji ?? "👤";
   const heroTagline =
