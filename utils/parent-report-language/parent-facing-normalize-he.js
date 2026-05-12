@@ -18,6 +18,16 @@ export function normalizeParentFacingHe(raw) {
   let s = normalizePedagogyForParentReportHe(String(raw ?? ""));
   if (!s) return "";
 
+  // Phase 4-B6 — E-06 mixed Hebrew/English phrases must run before the standalone `\binference\b` replacement.
+  const e06EnglishMixedPre = [
+    [/עובדה מול inference/giu, "הסקת משמעות מתוך ההקשר"],
+    [/טעות רק ב־inference/giu, "טעות בהסקת משמעות מההקשר"],
+    [/לפני לימוד inference/giu, "לפני לימוד מסוג זה"],
+  ];
+  for (const [re, rep] of e06EnglishMixedPre) {
+    s = s.replace(re, rep);
+  }
+
   const topicKeyPairs = [
     [/\bmain_idea\b/giu, "רעיון מרכזי"],
     [/\breading_comprehension\b/giu, "הבנת הנקרא"],
@@ -36,7 +46,7 @@ export function normalizeParentFacingHe(raw) {
     [/\bbasic_geography\b/giu, "יסודות גאוגרפיה"],
     [/\bmatching\b/giu, "התאמה"],
     [/\bshapes\b/giu, "צורות"],
-    [/\binference\b/giu, "הסקה"],
+    [/\binference\b/giu, "הסקת משמעות מתוך ההקשר"],
   ];
   for (const [re, rep] of topicKeyPairs) {
     s = s.replace(re, rep);
@@ -44,6 +54,9 @@ export function normalizeParentFacingHe(raw) {
 
   // ביטויים שמבלבלים הורים (מתמטיקה / מונחי מערכת)
   const phrasePairs = [
+    // Phase 4-B6 — narrow E-06 raw pattern/intervention Hebrew (no English token here)
+    [/עובדה במקום הסקה/giu, "קושי בהבנת משמעות מהמשפט"],
+    [/מילות סימן להסקה/giu, "מילות עזר מהטקסט"],
     [
       /נראה מהתרגולים האחרונים מגמה כללית שאפשר לשתף בהירות עם ההורה/giu,
       "מהתרגול שנאסף אפשר לראות תמונה ברורה יותר של תחומים עם תוצאות טובות יחסית ושל נושאים לחיזוק",

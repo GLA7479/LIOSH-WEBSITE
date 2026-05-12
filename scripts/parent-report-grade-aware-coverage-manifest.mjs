@@ -229,6 +229,162 @@ function coverageStatus(subjectId, taxonomyId) {
         missingGradeBands: ["g1_g2"],
       };
     }
+    if (subjectId === "hebrew" && taxonomyId === "H-04") {
+      const bo = tpl.bucketOverrides;
+      if (!bo?.reading || !bo.comprehension) return { status: "pending_manual_hebrew" };
+      return {
+        status: "partially_covered_by_template",
+        partialBucketCoverage: ["reading", "comprehension"],
+        missingBucketCoverage: ["vocabulary", "grammar", "writing", "speaking", "mixed"],
+        coveredGradeBands: ["g3_g4", "g5_g6"],
+        missingGradeBands: ["g1_g2"],
+      };
+    }
+    if (subjectId === "hebrew" && taxonomyId === "H-01") {
+      const bo = tpl.bucketOverrides;
+      if (!bo?.vocabulary || !bo?.mixed) return { status: "pending_manual_hebrew" };
+      return {
+        status: "partially_covered_by_template",
+        partialBucketCoverage: ["vocabulary", "mixed"],
+        missingBucketCoverage: ["grammar", "writing", "reading", "comprehension", "speaking"],
+        coveredGradeBands: ["g3_g4", "g5_g6"],
+        missingGradeBands: ["g1_g2"],
+      };
+    }
+    if (subjectId === "hebrew" && taxonomyId === "H-02") {
+      const bo = tpl.bucketOverrides;
+      if (!bo?.grammar || typeof bo.grammar !== "object") return { status: "pending_manual_hebrew" };
+      return {
+        status: "partially_covered_by_template",
+        partialBucketCoverage: ["grammar"],
+        missingBucketCoverage: ["vocabulary", "writing", "reading", "comprehension", "speaking", "mixed"],
+        coveredGradeBands: ["g3_g4", "g5_g6"],
+        missingGradeBands: ["g1_g2"],
+      };
+    }
+    if (subjectId === "hebrew" && taxonomyId === "H-03") {
+      const bo = tpl.bucketOverrides;
+      if (!bo?.writing || typeof bo.writing !== "object") return { status: "pending_manual_hebrew" };
+      return {
+        status: "partially_covered_by_template",
+        partialBucketCoverage: ["writing"],
+        missingBucketCoverage: ["vocabulary", "grammar", "reading", "comprehension", "speaking", "mixed"],
+        coveredGradeBands: ["g3_g4", "g5_g6"],
+        missingGradeBands: ["g1_g2"],
+      };
+    }
+    if (subjectId === "hebrew" && taxonomyId === "H-06") {
+      const bo = tpl.bucketOverrides;
+      if (!bo?.grammar || typeof bo.grammar !== "object") return { status: "pending_manual_hebrew" };
+      return {
+        status: "partially_covered_by_template",
+        partialBucketCoverage: ["grammar"],
+        missingBucketCoverage: ["vocabulary", "writing", "reading", "comprehension", "speaking", "mixed"],
+        coveredGradeBands: ["g3_g4", "g5_g6"],
+        missingGradeBands: ["g1_g2"],
+      };
+    }
+    if (subjectId === "hebrew" && taxonomyId === "H-07") {
+      const bo = tpl.bucketOverrides;
+      if (!bo?.writing || typeof bo.writing !== "object") return { status: "pending_manual_hebrew" };
+      return {
+        status: "partially_covered_by_template",
+        partialBucketCoverage: ["writing"],
+        missingBucketCoverage: ["vocabulary", "grammar", "reading", "comprehension", "speaking", "mixed"],
+        coveredGradeBands: ["g3_g4", "g5_g6"],
+        missingGradeBands: ["g1_g2"],
+      };
+    }
+    if (subjectId === "hebrew" && taxonomyId === "H-08") {
+      const bo = tpl.bucketOverrides;
+      if (!bo?.speaking) return { status: "pending_manual_hebrew" };
+      return {
+        status: "partially_covered_by_template",
+        partialBucketCoverage: ["speaking"],
+        missingBucketCoverage: ["vocabulary", "grammar", "writing", "reading", "comprehension", "mixed"],
+        coveredGradeBands: ["g5_g6"],
+        missingGradeBands: ["g1_g2", "g3_g4"],
+      };
+    }
+    if (subjectId === "english" && taxonomyId === "E-01") {
+      const bo = tpl.bucketOverrides;
+      if (!bo?.vocabulary || typeof bo.vocabulary !== "object") return { status: "pending_manual_hebrew" };
+      return {
+        status: "partially_covered_by_template",
+        partialBucketCoverage: ["vocabulary"],
+        missingBucketCoverage: ["grammar", "translation", "sentences", "sentence", "writing", "mixed"],
+        coveredGradeBands: ["g3_g4", "g5_g6"],
+        missingGradeBands: ["g1_g2"],
+      };
+    }
+    if (subjectId === "english" && taxonomyId === "E-02") {
+      const bo = tpl.bucketOverrides;
+      if (!bo?.grammar || typeof bo.grammar !== "object") return { status: "pending_manual_hebrew" };
+      return {
+        status: "partially_covered_by_template",
+        partialBucketCoverage: ["grammar"],
+        missingBucketCoverage: ["vocabulary", "translation", "sentences", "sentence", "writing", "mixed"],
+        coveredGradeBands: ["g3_g4", "g5_g6"],
+        missingGradeBands: ["g1_g2"],
+      };
+    }
+    if (subjectId === "english" && taxonomyId === "E-04") {
+      const bo = tpl.bucketOverrides;
+      if (!bo?.grammar || typeof bo.grammar !== "object") return { status: "pending_manual_hebrew" };
+      return {
+        status: "partially_covered_by_template",
+        partialBucketCoverage: ["grammar"],
+        missingBucketCoverage: ["vocabulary", "translation", "sentences", "sentence", "writing", "mixed"],
+        coveredGradeBands: ["g3_g4", "g5_g6"],
+        missingGradeBands: ["g1_g2"],
+      };
+    }
+    if (subjectId === "english" && taxonomyId === "E-05") {
+      const bo = tpl.bucketOverrides;
+      if (!bo?.vocabulary || typeof bo.vocabulary !== "object") return { status: "pending_manual_hebrew" };
+      return {
+        status: "partially_covered_by_template",
+        partialBucketCoverage: ["vocabulary"],
+        missingBucketCoverage: ["grammar", "translation", "sentences", "sentence", "writing", "mixed"],
+        coveredGradeBands: ["g3_g4", "g5_g6"],
+        missingGradeBands: ["g1_g2"],
+      };
+    }
+    if (subjectId === "english" && taxonomyId === "E-06") {
+      const bo = tpl.bucketOverrides;
+      if (!bo?.sentences || typeof bo.sentences !== "object" || !bo?.sentence || typeof bo.sentence !== "object") {
+        return { status: "pending_manual_hebrew" };
+      }
+      return {
+        status: "partially_covered_by_template",
+        partialBucketCoverage: ["sentences", "sentence"],
+        missingBucketCoverage: ["vocabulary", "grammar", "translation", "writing", "mixed"],
+        coveredGradeBands: ["g3_g4", "g5_g6"],
+        missingGradeBands: ["g1_g2"],
+      };
+    }
+    if (subjectId === "english" && taxonomyId === "E-03") {
+      const bo = tpl.bucketOverrides;
+      if (!bo?.translation) return { status: "pending_manual_hebrew" };
+      return {
+        status: "partially_covered_by_template",
+        partialBucketCoverage: ["translation"],
+        missingBucketCoverage: ["vocabulary", "grammar", "sentences", "sentence", "writing", "mixed"],
+        coveredGradeBands: ["g3_g4", "g5_g6"],
+        missingGradeBands: ["g1_g2"],
+      };
+    }
+    if (subjectId === "english" && taxonomyId === "E-07") {
+      const bo = tpl.bucketOverrides;
+      if (!bo?.writing) return { status: "pending_manual_hebrew" };
+      return {
+        status: "partially_covered_by_template",
+        partialBucketCoverage: ["writing"],
+        missingBucketCoverage: ["vocabulary", "grammar", "translation", "sentences", "sentence", "mixed"],
+        coveredGradeBands: ["g3_g4", "g5_g6"],
+        missingGradeBands: ["g1_g2"],
+      };
+    }
     return { status: "pending_manual_hebrew" };
   }
 
@@ -306,9 +462,9 @@ const countByStatus = rows.reduce((acc, r) => {
 
 const manifest = {
   generatedAt: new Date().toISOString(),
-  phase: "3-B2",
+  phase: "4-C3",
   note:
-    "covered_by_template = legacy flat entry with all grade bands non-empty actionTextHe and goalTextHe. partially_covered_by_template = null g1_g2 and/or partial bucket/grade coverage (math M-04, M-05; M-03, M-10; M-07 word_problems; M-08 word_problems/sequences/equations/order_of_operations; geometry G-01 shapes_basic+quadrilaterals+parallel_perpendicular+diagonal+tiling, G-02 angles+circles, G-03 quadrilaterals+heights+area, G-04 transformations+rotation, G-05 solids+volume, G-06 perimeter, G-07 symmetry, G-08 area+triangles+pythagoras). bucketGradeCoverage (when present) lists per-bucket which grade bands have non-null action+goal Hebrew vs null — use when aggregate coveredGradeBands would overstate (e.g. G-05 volume only g5_g6). pending_manual_hebrew otherwise. Math M-01: partial bucketOverrides (compare, number_sense, estimation); missing zero_one_properties, scale, prime_composite until approved.",
+    "covered_by_template = legacy flat entry with all grade bands non-empty actionTextHe and goalTextHe. partially_covered_by_template = null g1_g2 and/or partial bucket/grade coverage (math M-04, M-05; M-03, M-10; M-07 word_problems; M-08 word_problems/sequences/equations/order_of_operations; geometry G-01 shapes_basic+quadrilaterals+parallel_perpendicular+diagonal+tiling, G-02 angles+circles, G-03 quadrilaterals+heights+area, G-04 transformations+rotation, G-05 solids+volume, G-06 perimeter, G-07 symmetry, G-08 area+triangles+pythagoras; Hebrew H-01 vocabulary+mixed g3_g4+g5_g6, H-02 grammar g3_g4+g5_g6, H-03 writing g3_g4+g5_g6, H-04 reading+comprehension g3_g4+g5_g6, H-06 grammar g3_g4+g5_g6, H-07 writing g3_g4+g5_g6, H-08 speaking g5_g6; English E-01 vocabulary g3_g4+g5_g6, E-02 grammar g3_g4+g5_g6, E-03 translation g3_g4+g5_g6, E-04 grammar g3_g4+g5_g6, E-05 vocabulary g3_g4+g5_g6, E-06 sentences+sentence g3_g4+g5_g6, E-07 writing g3_g4+g5_g6). bucketGradeCoverage (when present) lists per-bucket which grade bands have non-null action+goal Hebrew vs null — use when aggregate coveredGradeBands would overstate (e.g. G-05 volume only g5_g6). pending_manual_hebrew otherwise. Math M-01: partial bucketOverrides (compare, number_sense, estimation); missing zero_one_properties, scale, prime_composite until approved.",
   summary: {
     totalRows: rows.length,
     countBySubject,

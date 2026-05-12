@@ -1,5 +1,5 @@
 /**
- * Grade-aware parent recommendation templates (Phase 1: math M-02, M-09; Phase 2-A1: M-06; Phase 2-A2–A3: partial M-01 bucketOverrides; Phase 2-B4: math M-04, M-05 fractions — g1_g2 null; Phase 2-C3: math M-03, M-10 bucketOverrides; Phase 2-D3: math M-07, M-08 bucketOverrides only; Phase 3-B1: geometry G-02/G-04/G-05/G-06/G-07 bucketOverrides only; Phase 3-B2: geometry G-01/G-03/G-08 bucketOverrides only).
+ * Grade-aware parent recommendation templates (Phase 1: math M-02, M-09; Phase 2-A1: M-06; Phase 2-A2–A3: partial M-01 bucketOverrides; Phase 2-B4: math M-04, M-05 fractions — g1_g2 null; Phase 2-C3: math M-03, M-10 bucketOverrides; Phase 2-D3: math M-07, M-08 bucketOverrides only; Phase 3-B1: geometry G-02/G-04/G-05/G-06/G-07 bucketOverrides only; Phase 3-B2: geometry G-01/G-03/G-08 bucketOverrides only; Phase 4-B1: Hebrew H-04/H-08 bucketOverrides only; Phase 4-C3: Hebrew H-01/H-02/H-03/H-06/H-07 bucketOverrides only; Phase 4-B2: English E-03/E-07 bucketOverrides only).
  * Slot-specific Hebrew is editorially approved; do not change without sign-off.
  */
 
@@ -1267,6 +1267,709 @@ export const GRADE_AWARE_RECOMMENDATION_TEMPLATES = {
               "בשבוע הקרוב התמקדו בזיהוי משולש ישר־זווית, סימון היתר והניצבים, ושימוש מסודר במשפט פיתגורס.",
             intentDescriptionEn:
               "Grade 5–6 Pythagoras only in right triangles: identify right angle, hypotenuse, legs, substitute carefully, and check reasonableness.",
+          },
+        },
+      },
+    },
+  },
+  hebrew: {
+    "H-04": {
+      defaultBands: {
+        g1_g2: {
+          actionTextHe: null,
+          goalTextHe: null,
+          intentDescriptionEn:
+            "H-04 default: no approved flat copy; use bucketOverrides (reading, comprehension) or engine fallback.",
+        },
+        g3_g4: {
+          actionTextHe: null,
+          goalTextHe: null,
+          intentDescriptionEn:
+            "H-04 default: no approved flat copy; use bucketOverrides (reading, comprehension) or engine fallback.",
+        },
+        g5_g6: {
+          actionTextHe: null,
+          goalTextHe: null,
+          intentDescriptionEn:
+            "H-04 default: no approved flat copy; use bucketOverrides (reading, comprehension) or engine fallback.",
+        },
+      },
+      bucketOverrides: {
+        reading: {
+          g1_g2: {
+            actionTextHe: null,
+            goalTextHe: null,
+            intentDescriptionEn:
+              "Keep reading-order/fact-location recommendations null for grades 1–2 until concrete early-reading copy is approved.",
+          },
+          g3_g4: {
+            actionTextHe:
+              "כדאי לתרגל איתור מידע מפורש בטקסט בעזרת כותרת, פסקה או מילת מפתח. בקשו מהילד לסמן את המשפט שבו מצא את התשובה ולהסביר איך ידע שזה המקום הנכון.",
+            goalTextHe:
+              "בשבוע הקרוב התמקדו באיתור תשובות מפורשות בטקסט ובסימון המקום המדויק שממנו נלקחה התשובה.",
+            intentDescriptionEn:
+              "Grade 3–4 locating explicit information in a text using title, paragraph, or keyword cues, and pointing to the exact sentence.",
+          },
+          g5_g6: {
+            actionTextHe:
+              "כדאי לתרגל איתור מידע בטקסט תוך שימוש בראיות מתוך הכתוב. בקשו מהילד להראות באיזה משפט או פסקה נמצאת התשובה, ולהסביר האם זו עובדה שמופיעה בטקסט או מסקנה שהוא הסיק.",
+            goalTextHe:
+              "בשבוע הקרוב התמקדו במציאת ראיות מתוך הטקסט ובהבחנה בין מידע שמופיע במפורש לבין מסקנה מתוך הכתוב.",
+            intentDescriptionEn:
+              "Grade 5–6 locating textual evidence and distinguishing explicit information from an inference.",
+          },
+        },
+        comprehension: {
+          g1_g2: {
+            actionTextHe: null,
+            goalTextHe: null,
+            intentDescriptionEn:
+              "Keep comprehension strategy recommendations null for grades 1–2 until concrete early-reading copy is approved.",
+          },
+          g3_g4: {
+            actionTextHe:
+              "כדאי לתרגל הבנת קטע קצר על ידי קריאה לפי סדר האירועים או הרעיונות. אחרי הקריאה בקשו מהילד לומר מה קרה קודם, מה קרה אחר כך, ואיפה בטקסט הוא מצא את זה.",
+            goalTextHe:
+              "בשבוע הקרוב התמקדו בהבנת רצף הדברים בטקסט ובחזרה אל המשפטים שמוכיחים את התשובה.",
+            intentDescriptionEn:
+              "Grade 3–4 comprehension through sequence of events/ideas and returning to the text for support.",
+          },
+          g5_g6: {
+            actionTextHe:
+              "כדאי לתרגל הבנת טקסט בעזרת חיבור בין פרטים ממקומות שונים בקטע. בקשו מהילד להסביר אילו פרטים בטקסט תומכים בתשובה שלו, ולא להסתפק בתחושה כללית.",
+            goalTextHe:
+              "בשבוע הקרוב התמקדו בחיבור בין פרטים בטקסט ובהסבר תשובה בעזרת ראיות מהכתוב.",
+            intentDescriptionEn:
+              "Grade 5–6 comprehension by connecting details across the text and supporting answers with textual evidence.",
+          },
+        },
+      },
+    },
+    "H-01": {
+      defaultBands: {
+        g1_g2: {
+          actionTextHe: null,
+          goalTextHe: null,
+          intentDescriptionEn: "H-01 default: use bucketOverrides (vocabulary, mixed) or engine fallback.",
+        },
+        g3_g4: {
+          actionTextHe: null,
+          goalTextHe: null,
+          intentDescriptionEn: "H-01 default: use bucketOverrides (vocabulary, mixed) or engine fallback.",
+        },
+        g5_g6: {
+          actionTextHe: null,
+          goalTextHe: null,
+          intentDescriptionEn: "H-01 default: use bucketOverrides (vocabulary, mixed) or engine fallback.",
+        },
+      },
+      bucketOverrides: {
+        vocabulary: {
+          g1_g2: {
+            actionTextHe: null,
+            goalTextHe: null,
+            intentDescriptionEn:
+              "Keep Hebrew vocabulary recommendations null for grades 1–2 until early-reading copy is approved.",
+          },
+          g3_g4: {
+            actionTextHe:
+              "כדאי לתרגל אוצר מילים בעברית דרך קריאת משפטים קצרים והסבר משמעות של מילים מתוך ההקשר. בקשו מהילד לבחור מילה אחת מהטקסט, להסביר אותה במילים שלו, ולכתוב משפט קצר עם אותה מילה.",
+            goalTextHe:
+              "בשבוע הקרוב התמקדו בהרחבת אוצר מילים בעברית ובהבנת משמעות מילים מתוך משפט או קטע קצר.",
+            intentDescriptionEn:
+              "Grade 3–4 Hebrew vocabulary through short texts, explaining word meaning from context, and using the word in a sentence.",
+          },
+          g5_g6: {
+            actionTextHe:
+              "כדאי לתרגל אוצר מילים בעברית מתוך טקסטים מגוונים. בקשו מהילד לזהות מילים מרכזיות, להסביר את משמעותן לפי ההקשר, ולבדוק אם אותה מילה יכולה לקבל משמעות שונה במשפט אחר.",
+            goalTextHe:
+              "בשבוע הקרוב התמקדו באוצר מילים מתוך הקשר, בדיוק משמעות ובהבחנה בין משמעויות אפשריות של אותה מילה.",
+            intentDescriptionEn:
+              "Grade 5–6 Hebrew vocabulary in context, key words, nuanced meaning, and possible shifts in meaning across contexts.",
+          },
+        },
+        mixed: {
+          g1_g2: {
+            actionTextHe: null,
+            goalTextHe: null,
+            intentDescriptionEn: "Keep mixed Hebrew vocabulary recommendations null for grades 1–2.",
+          },
+          g3_g4: {
+            actionTextHe:
+              "כדאי לתרגל מילים וביטויים מתוך קטעים קצרים, ולחבר בין משמעות המילה לבין המשפט שבו היא מופיעה. בקשו מהילד להסביר איך הבין את המילה ולא רק לתת תרגום או מילה דומה.",
+            goalTextHe: "בשבוע הקרוב התמקדו בהבנת מילים וביטויים מתוך ההקשר שבו הם מופיעים.",
+            intentDescriptionEn:
+              "Grade 3–4 mixed Hebrew vocabulary and expressions through sentence context and explanation.",
+          },
+          g5_g6: {
+            actionTextHe:
+              "כדאי לתרגל מילים, ביטויים וצירופים מתוך טקסט, תוך הבחנה בין משמעות מילולית למשמעות לפי ההקשר. בקשו מהילד לנמק מה בטקסט עזר לו להבין את הביטוי.",
+            goalTextHe:
+              "בשבוע הקרוב התמקדו בהבנת מילים וביטויים בתוך טקסט ובהסבר לפי ראיות מההקשר.",
+            intentDescriptionEn:
+              "Grade 5–6 mixed vocabulary/expressions in text, including literal vs contextual meaning and evidence from context.",
+          },
+        },
+      },
+    },
+    "H-02": {
+      defaultBands: {
+        g1_g2: {
+          actionTextHe: null,
+          goalTextHe: null,
+          intentDescriptionEn: "H-02 default: use bucketOverrides (grammar) or engine fallback.",
+        },
+        g3_g4: {
+          actionTextHe: null,
+          goalTextHe: null,
+          intentDescriptionEn: "H-02 default: use bucketOverrides (grammar) or engine fallback.",
+        },
+        g5_g6: {
+          actionTextHe: null,
+          goalTextHe: null,
+          intentDescriptionEn: "H-02 default: use bucketOverrides (grammar) or engine fallback.",
+        },
+      },
+      bucketOverrides: {
+        grammar: {
+          g1_g2: {
+            actionTextHe: null,
+            goalTextHe: null,
+            intentDescriptionEn: "Keep formal Hebrew grammar recommendations null for grades 1–2.",
+          },
+          g3_g4: {
+            actionTextHe:
+              "כדאי לתרגל דקדוק בסיסי בעברית בתוך משפטים קצרים: התאמה בין שם עצם, פועל ותיאור מתאים. בקשו מהילד לקרוא את כל המשפט ולבדוק אם הצורה שבחר מתאימה למי או למה שמופיע במשפט.",
+            goalTextHe:
+              "בשבוע הקרוב התמקדו בהתאמה בסיסית בתוך משפט בעברית: מין, מספר וצורת המילה המתאימה להקשר.",
+            intentDescriptionEn:
+              "Grade 3–4 basic Hebrew grammar agreement in short sentences: gender, number, and matching the word form to context.",
+          },
+          g5_g6: {
+            actionTextHe:
+              "כדאי לתרגל דקדוק בעברית דרך משפטים מלאים: התאמה במין ובמספר, צורת פועל מתאימה, ושימוש נכון במילות יחס או קישור. בקשו מהילד להסביר לפי מה בחר את הצורה ולבדוק שהמשפט נשמע תקין וברור.",
+            goalTextHe:
+              "בשבוע הקרוב התמקדו בדיוק דקדוקי במשפטים בעברית, כולל התאמה, צורת פועל וקשר תקין בין חלקי המשפט.",
+            intentDescriptionEn:
+              "Grade 5–6 Hebrew grammar accuracy in full sentences: agreement, verb form, function words, and sentence clarity.",
+          },
+        },
+      },
+    },
+    "H-03": {
+      defaultBands: {
+        g1_g2: {
+          actionTextHe: null,
+          goalTextHe: null,
+          intentDescriptionEn: "H-03 default: use bucketOverrides (writing) or engine fallback.",
+        },
+        g3_g4: {
+          actionTextHe: null,
+          goalTextHe: null,
+          intentDescriptionEn: "H-03 default: use bucketOverrides (writing) or engine fallback.",
+        },
+        g5_g6: {
+          actionTextHe: null,
+          goalTextHe: null,
+          intentDescriptionEn: "H-03 default: use bucketOverrides (writing) or engine fallback.",
+        },
+      },
+      bucketOverrides: {
+        writing: {
+          g1_g2: {
+            actionTextHe: null,
+            goalTextHe: null,
+            intentDescriptionEn:
+              "Keep Hebrew writing recommendations null for grades 1–2 until early-writing copy is approved.",
+          },
+          g3_g4: {
+            actionTextHe:
+              "כדאי לתרגל כתיבת תשובה קצרה וברורה בעברית. בקשו מהילד לפתוח במשפט שמענה בדיוק על השאלה, להוסיף פרט אחד תומך, ולקרוא שוב כדי לבדוק שהמשפט מובן.",
+            goalTextHe: "בשבוע הקרוב התמקדו בכתיבת תשובה קצרה, ברורה ומדויקת לשאלה.",
+            intentDescriptionEn:
+              "Grade 3–4 Hebrew writing: short clear answer, direct response to the question, one supporting detail, and rereading for clarity.",
+          },
+          g5_g6: {
+            actionTextHe:
+              "כדאי לתרגל כתיבה בעברית עם מבנה ברור: משפט פתיחה, הסבר או דוגמה, וסיום שמחזיר לשאלה. בקשו מהילד לבדוק שהרעיונות מסודרים ושכל משפט מוסיף מידע חדש.",
+            goalTextHe:
+              "בשבוע הקרוב התמקדו בארגון כתיבה בעברית: פתיחה, פיתוח רעיון, דוגמה או הסבר, וסיום ברור.",
+            intentDescriptionEn:
+              "Grade 5–6 Hebrew writing with clear structure: opening, explanation/example, organized ideas, and a clear closing.",
+          },
+        },
+      },
+    },
+    "H-06": {
+      defaultBands: {
+        g1_g2: {
+          actionTextHe: null,
+          goalTextHe: null,
+          intentDescriptionEn: "H-06 default: use bucketOverrides (grammar) or engine fallback.",
+        },
+        g3_g4: {
+          actionTextHe: null,
+          goalTextHe: null,
+          intentDescriptionEn: "H-06 default: use bucketOverrides (grammar) or engine fallback.",
+        },
+        g5_g6: {
+          actionTextHe: null,
+          goalTextHe: null,
+          intentDescriptionEn: "H-06 default: use bucketOverrides (grammar) or engine fallback.",
+        },
+      },
+      bucketOverrides: {
+        grammar: {
+          g1_g2: {
+            actionTextHe: null,
+            goalTextHe: null,
+            intentDescriptionEn: "Keep advanced Hebrew grammar/syntax recommendations null for grades 1–2.",
+          },
+          g3_g4: {
+            actionTextHe:
+              "כדאי לתרגל ניתוח של משפטים בעברית לפי חלקי המשפט והקשר ביניהם. בקשו מהילד לזהות מי מבצע את הפעולה, מה נאמר עליו, ואיזו מילה מחברת בין הרעיונות במשפט.",
+            goalTextHe: "בשבוע הקרוב התמקדו בהבנת מבנה המשפט בעברית ובקשר בין חלקי המשפט.",
+            intentDescriptionEn:
+              "Grade 3–4 Hebrew sentence structure: identify the doer/action and how sentence parts connect.",
+          },
+          g5_g6: {
+            actionTextHe:
+              "כדאי לתרגל מבנים דקדוקיים מורכבים יותר בעברית, כמו קשר בין שורש, תבנית, צורת פועל ומבנה משפט. בקשו מהילד להסביר מה תפקיד כל חלק במשפט ואיך המבנה משפיע על המשמעות.",
+            goalTextHe:
+              "בשבוע הקרוב התמקדו בניתוח מבנה משפטים בעברית ובקשר בין צורות מילים, תפקידים ומשמעות.",
+            intentDescriptionEn:
+              "Grade 5–6 advanced Hebrew grammar/syntax: root-pattern awareness, verb forms, sentence roles, and meaning.",
+          },
+        },
+      },
+    },
+    "H-07": {
+      defaultBands: {
+        g1_g2: {
+          actionTextHe: null,
+          goalTextHe: null,
+          intentDescriptionEn: "H-07 default: use bucketOverrides (writing) or engine fallback.",
+        },
+        g3_g4: {
+          actionTextHe: null,
+          goalTextHe: null,
+          intentDescriptionEn: "H-07 default: use bucketOverrides (writing) or engine fallback.",
+        },
+        g5_g6: {
+          actionTextHe: null,
+          goalTextHe: null,
+          intentDescriptionEn: "H-07 default: use bucketOverrides (writing) or engine fallback.",
+        },
+      },
+      bucketOverrides: {
+        writing: {
+          g1_g2: {
+            actionTextHe: null,
+            goalTextHe: null,
+            intentDescriptionEn: "Keep higher-level Hebrew writing recommendations null for grades 1–2.",
+          },
+          g3_g4: {
+            actionTextHe:
+              "כדאי לתרגל הרחבת תשובה כתובה בעברית בעזרת הסבר, דוגמה או נימוק קצר. בקשו מהילד לבדוק שכל משפט קשור לרעיון המרכזי ושאין קפיצה בין רעיונות.",
+            goalTextHe: "בשבוע הקרוב התמקדו בפיתוח תשובה כתובה: רעיון מרכזי, הסבר ודוגמה קצרה.",
+            intentDescriptionEn:
+              "Grade 3–4 developed Hebrew writing: main idea, explanation, example, and keeping sentences connected.",
+          },
+          g5_g6: {
+            actionTextHe:
+              "כדאי לתרגל כתיבה של פסקה מסודרת בעברית: רעיון מרכזי, נימוק, דוגמה וקישור בין המשפטים. בקשו מהילד לערוך את הכתיבה בסיום ולבדוק שהרצף ברור ומשכנע.",
+            goalTextHe:
+              "בשבוע הקרוב התמקדו בכתיבת פסקה מאורגנת בעברית, עם נימוק, דוגמה, קשר בין משפטים ועריכה עצמית.",
+            intentDescriptionEn:
+              "Grade 5–6 higher Hebrew writing: organized paragraph, reasoning, examples, cohesion, and revision.",
+          },
+        },
+      },
+    },
+    "H-08": {
+      defaultBands: {
+        g1_g2: {
+          actionTextHe: null,
+          goalTextHe: null,
+          intentDescriptionEn:
+            "H-08 default: no approved flat copy; use bucketOverrides (speaking) or engine fallback.",
+        },
+        g3_g4: {
+          actionTextHe: null,
+          goalTextHe: null,
+          intentDescriptionEn:
+            "H-08 default: no approved flat copy; use bucketOverrides (speaking) or engine fallback.",
+        },
+        g5_g6: {
+          actionTextHe: null,
+          goalTextHe: null,
+          intentDescriptionEn:
+            "H-08 default: no approved flat copy; use bucketOverrides (speaking) or engine fallback.",
+        },
+      },
+      bucketOverrides: {
+        speaking: {
+          g1_g2: {
+            actionTextHe: null,
+            goalTextHe: null,
+            intentDescriptionEn: "Keep formal register/speaking recommendations null for grades 1–2.",
+          },
+          g3_g4: {
+            actionTextHe: null,
+            goalTextHe: null,
+            intentDescriptionEn:
+              "Keep context-appropriate register recommendations null for grades 3–4 until diagnosis-line jargon cleanup and editorial copy are approved.",
+          },
+          g5_g6: {
+            actionTextHe:
+              "כדאי לתרגל התאמת ניסוח למצב התקשורת: שיחה יומיומית, הצגה בכיתה, תשובה למורה או כתיבה רשמית. בקשו מהילד לבחור ניסוח מתאים יותר להקשר ולהסביר למה הוא מתאים.",
+            goalTextHe:
+              "בשבוע הקרוב התמקדו בהתאמת ניסוח להקשר: מתי מתאים ניסוח יומיומי ומתי מתאים ניסוח רשמי או מדויק יותר.",
+            intentDescriptionEn:
+              "Grade 5–6 context-appropriate speaking/register: choosing wording that fits the situation and explaining why.",
+          },
+        },
+      },
+    },
+  },
+  english: {
+    "E-01": {
+      defaultBands: {
+        g1_g2: {
+          actionTextHe: null,
+          goalTextHe: null,
+          intentDescriptionEn: "E-01 default: use bucketOverrides (vocabulary) or engine fallback.",
+        },
+        g3_g4: {
+          actionTextHe: null,
+          goalTextHe: null,
+          intentDescriptionEn: "E-01 default: use bucketOverrides (vocabulary) or engine fallback.",
+        },
+        g5_g6: {
+          actionTextHe: null,
+          goalTextHe: null,
+          intentDescriptionEn: "E-01 default: use bucketOverrides (vocabulary) or engine fallback.",
+        },
+      },
+      bucketOverrides: {
+        vocabulary: {
+          g1_g2: {
+            actionTextHe: null,
+            goalTextHe: null,
+            intentDescriptionEn:
+              "Keep early English vocabulary recommendations null for grades 1–2 until early-English copy is approved.",
+          },
+          g3_g4: {
+            actionTextHe:
+              "כדאי לתרגל אוצר מילים באנגלית דרך התאמה בין מילה, תמונה או משמעות קצרה. בקשו מהילד לומר את המילה בקול, להסביר את המשמעות בעברית, ולזהות אותה שוב בתוך תרגיל קצר.",
+            goalTextHe:
+              "בשבוע הקרוב התמקדו בזיהוי מילים מוכרות באנגלית ובהבנת המשמעות שלהן בהקשר פשוט.",
+            intentDescriptionEn:
+              "Grade 3–4 English vocabulary recognition through word-picture/meaning matching and simple reuse.",
+          },
+          g5_g6: {
+            actionTextHe:
+              "כדאי לתרגל אוצר מילים באנגלית לפי נושאים ולפי הופעה בטקסט. בקשו מהילד לכתוב לכל מילה משמעות בעברית ודוגמה קצרה באנגלית, ואז לבדוק אם הוא מזהה את אותה מילה גם במשפט חדש.",
+            goalTextHe:
+              "בשבוע הקרוב התמקדו בהרחבת אוצר מילים באנגלית ובהבנת מילים חדשות גם כשהן מופיעות במשפט או קטע קצר.",
+            intentDescriptionEn:
+              "Grade 5–6 English vocabulary expansion by topic and text use, with example sentences and recognition in new contexts.",
+          },
+        },
+      },
+    },
+    "E-02": {
+      defaultBands: {
+        g1_g2: {
+          actionTextHe: null,
+          goalTextHe: null,
+          intentDescriptionEn: "E-02 default: use bucketOverrides (grammar) or engine fallback.",
+        },
+        g3_g4: {
+          actionTextHe: null,
+          goalTextHe: null,
+          intentDescriptionEn: "E-02 default: use bucketOverrides (grammar) or engine fallback.",
+        },
+        g5_g6: {
+          actionTextHe: null,
+          goalTextHe: null,
+          intentDescriptionEn: "E-02 default: use bucketOverrides (grammar) or engine fallback.",
+        },
+      },
+      bucketOverrides: {
+        grammar: {
+          g1_g2: {
+            actionTextHe: null,
+            goalTextHe: null,
+            intentDescriptionEn: "Keep formal English grammar recommendations null for grades 1–2.",
+          },
+          g3_g4: {
+            actionTextHe:
+              "כדאי לתרגל מבנים בסיסיים באנגלית בתוך משפטים קצרים, כמו התאמה בין מי שעושה את הפעולה לבין צורת הפועל. בקשו מהילד לקרוא את כל המשפט ולבדוק אם המילה שבחר מתאימה לנושא המשפט.",
+            goalTextHe:
+              "בשבוע הקרוב התמקדו בהתאמה בסיסית בתוך משפט באנגלית: מי מבצע את הפעולה ואיזו צורה מתאימה לו.",
+            intentDescriptionEn:
+              "Grade 3–4 basic English grammar agreement inside short sentences, matching the subject with the correct verb/form.",
+          },
+          g5_g6: {
+            actionTextHe:
+              "כדאי לתרגל דקדוק באנגלית דרך משפטים מלאים: זמן הפעולה, מי מבצע אותה, ואיזו צורת פועל מתאימה. בקשו מהילד להסביר לפי מה בחר את הצורה, ואז לקרוא את המשפט שוב ולבדוק שהוא נשמע נכון ומשמעותי.",
+            goalTextHe:
+              "בשבוע הקרוב התמקדו בהתאמת זמן, נושא וצורת פועל במשפטים באנגלית, עם בדיקה חוזרת של משמעות המשפט.",
+            intentDescriptionEn:
+              "Grade 5–6 English grammar with tense, subject, and verb-form agreement in full sentences.",
+          },
+        },
+      },
+    },
+    "E-03": {
+      defaultBands: {
+        g1_g2: {
+          actionTextHe: null,
+          goalTextHe: null,
+          intentDescriptionEn:
+            "E-03 default: no approved flat copy; use bucketOverrides (translation) or engine fallback.",
+        },
+        g3_g4: {
+          actionTextHe: null,
+          goalTextHe: null,
+          intentDescriptionEn:
+            "E-03 default: no approved flat copy; use bucketOverrides (translation) or engine fallback.",
+        },
+        g5_g6: {
+          actionTextHe: null,
+          goalTextHe: null,
+          intentDescriptionEn:
+            "E-03 default: no approved flat copy; use bucketOverrides (translation) or engine fallback.",
+        },
+      },
+      bucketOverrides: {
+        translation: {
+          g1_g2: {
+            actionTextHe: null,
+            goalTextHe: null,
+            intentDescriptionEn:
+              "Keep line-tracking/layout recommendations null for grades 1–2 until early English reading evidence and copy are approved.",
+          },
+          g3_g4: {
+            actionTextHe:
+              "כדאי לתרגל קריאה מדויקת של טקסט באנגלית על ידי מעקב מסודר אחרי שורה אחת בכל פעם. בקשו מהילד לסמן באצבע או בעיפרון את השורה שהוא קורא, ואז לבדוק שלא דילג לשורה אחרת לפני שענה.",
+            goalTextHe:
+              "בשבוע הקרוב התמקדו במעקב מסודר אחרי שורות בטקסט באנגלית ובבדיקה שהתשובה נלקחה מהמקום הנכון.",
+            intentDescriptionEn:
+              "Grade 3–4 English reading layout support: track one line at a time and avoid jumping between lines.",
+          },
+          g5_g6: {
+            actionTextHe:
+              "כדאי לתרגל קריאה של קטעים באנגלית תוך מעקב מדויק אחרי שורות, פסקאות או טורים. בקשו מהילד לעצור לפני תשובה, להראות מאיזו שורה או פסקה לקח את המידע, ולוודא שלא ערבב בין חלקים שונים בטקסט.",
+            goalTextHe:
+              "בשבוע הקרוב התמקדו בקריאה מדויקת של טקסטים באנגלית ובקישור כל תשובה לשורה או פסקה מתאימה.",
+            intentDescriptionEn:
+              "Grade 5–6 English reading layout and evidence tracking across lines, paragraphs, or columns.",
+          },
+        },
+      },
+    },
+    "E-04": {
+      defaultBands: {
+        g1_g2: {
+          actionTextHe: null,
+          goalTextHe: null,
+          intentDescriptionEn: "E-04 default: use bucketOverrides (grammar) or engine fallback.",
+        },
+        g3_g4: {
+          actionTextHe: null,
+          goalTextHe: null,
+          intentDescriptionEn: "E-04 default: use bucketOverrides (grammar) or engine fallback.",
+        },
+        g5_g6: {
+          actionTextHe: null,
+          goalTextHe: null,
+          intentDescriptionEn: "E-04 default: use bucketOverrides (grammar) or engine fallback.",
+        },
+      },
+      bucketOverrides: {
+        grammar: {
+          g1_g2: {
+            actionTextHe: null,
+            goalTextHe: null,
+            intentDescriptionEn: "Keep sentence-structure grammar recommendations null for grades 1–2.",
+          },
+          g3_g4: {
+            actionTextHe:
+              "כדאי לתרגל בניית משפטים קצרים באנגלית לפי סדר מילים ברור. בקשו מהילד לזהות מי או מה מופיע במשפט, מה הפעולה, ואיזו מילה מחברת או משלימה את המשמעות.",
+            goalTextHe: "בשבוע הקרוב התמקדו בסדר מילים בסיסי באנגלית ובבניית משפט קצר וברור.",
+            intentDescriptionEn:
+              "Grade 3–4 English sentence structure: basic word order, subject/action, and meaning completion.",
+          },
+          g5_g6: {
+            actionTextHe:
+              "כדאי לתרגל מבנה משפט באנגלית בעזרת סדר מילים, מילות קישור ומילות יחס. בקשו מהילד להסביר איך כל חלק במשפט תורם למשמעות, ולבדוק שהמשפט ברור ולא רק מתורגם מילה במילה.",
+            goalTextHe:
+              "בשבוע הקרוב התמקדו במבנה משפט באנגלית: סדר מילים, מילות קישור, מילות יחס ובהירות המשמעות.",
+            intentDescriptionEn:
+              "Grade 5–6 English sentence structure with word order, connectors, prepositions, and meaning clarity.",
+          },
+        },
+      },
+    },
+    "E-05": {
+      defaultBands: {
+        g1_g2: {
+          actionTextHe: null,
+          goalTextHe: null,
+          intentDescriptionEn: "E-05 default: use bucketOverrides (vocabulary) or engine fallback.",
+        },
+        g3_g4: {
+          actionTextHe: null,
+          goalTextHe: null,
+          intentDescriptionEn: "E-05 default: use bucketOverrides (vocabulary) or engine fallback.",
+        },
+        g5_g6: {
+          actionTextHe: null,
+          goalTextHe: null,
+          intentDescriptionEn: "E-05 default: use bucketOverrides (vocabulary) or engine fallback.",
+        },
+      },
+      bucketOverrides: {
+        vocabulary: {
+          g1_g2: {
+            actionTextHe: null,
+            goalTextHe: null,
+            intentDescriptionEn: "Keep vocabulary-in-context recommendations null for grades 1–2.",
+          },
+          g3_g4: {
+            actionTextHe:
+              "כדאי לתרגל בחירת מילה באנגלית לפי משמעות המשפט, ולא רק לפי תרגום בודד. בקשו מהילד לקרוא את כל המשפט, לזהות מילים שעוזרות להבין את ההקשר, ורק אז לבחור את המילה המתאימה.",
+            goalTextHe:
+              "בשבוע הקרוב התמקדו בהבנת מילה לפי המשפט שבו היא מופיעה ובבחירה שמתאימה להקשר.",
+            intentDescriptionEn:
+              "Grade 3–4 vocabulary in context: choose a word by reading the whole sentence and using context clues.",
+          },
+          g5_g6: {
+            actionTextHe:
+              "כדאי לתרגל מילים באנגלית שהמשמעות שלהן משתנה לפי ההקשר או לפי המילים שמופיעות לידן. בקשו מהילד להסביר למה מילה מסוימת מתאימה למשפט הזה, ולא לבחור רק לפי משמעות מוכרת אחת.",
+            goalTextHe:
+              "בשבוע הקרוב התמקדו באוצר מילים לפי הקשר: משמעות במשפט, צירופי מילים טבעיים ובחירה שמתאימה לטקסט.",
+            intentDescriptionEn:
+              "Grade 5–6 vocabulary in context, natural word combinations, and choosing meaning based on sentence/text context.",
+          },
+        },
+      },
+    },
+    "E-06": {
+      defaultBands: {
+        g1_g2: {
+          actionTextHe: null,
+          goalTextHe: null,
+          intentDescriptionEn: "E-06 default: use bucketOverrides (sentences/sentence) or engine fallback.",
+        },
+        g3_g4: {
+          actionTextHe: null,
+          goalTextHe: null,
+          intentDescriptionEn: "E-06 default: use bucketOverrides (sentences/sentence) or engine fallback.",
+        },
+        g5_g6: {
+          actionTextHe: null,
+          goalTextHe: null,
+          intentDescriptionEn: "E-06 default: use bucketOverrides (sentences/sentence) or engine fallback.",
+        },
+      },
+      bucketOverrides: {
+        sentences: {
+          g1_g2: {
+            actionTextHe: null,
+            goalTextHe: null,
+            intentDescriptionEn:
+              "Keep English sentence inference/comprehension recommendations null for grades 1–2 until approved early-English copy exists.",
+          },
+          g3_g4: {
+            actionTextHe:
+              "כדאי לתרגל הבנת משפטים באנגלית לפי כל המשפט, ולא לפי מילה בודדת. בקשו מהילד לזהות מי עושה את הפעולה, מה קורה במשפט, ואיזו מילה עוזרת להבין את המשמעות.",
+            goalTextHe:
+              "בשבוע הקרוב התמקדו בהבנת משפטים באנגלית לפי משמעות המשפט כולו וזיהוי הרמזים שעוזרים להבין אותו.",
+            intentDescriptionEn:
+              "Grade 3–4 English sentence comprehension: understand the whole sentence, identify who does the action, what happens, and context clues.",
+          },
+          g5_g6: {
+            actionTextHe:
+              "כדאי לתרגל הבנת משפטים באנגלית מתוך הקשר, כולל הסקת משמעות ממילים סמוכות, כינויים או מילות קישור. בקשו מהילד להסביר מה במשפט עזר לו להגיע לתשובה, ולא להסתפק בתרגום מילה במילה.",
+            goalTextHe:
+              "בשבוע הקרוב התמקדו בהסקת משמעות מתוך משפטים באנגלית בעזרת הקשר, רמזים לשוניים והסבר של דרך החשיבה.",
+            intentDescriptionEn:
+              "Grade 5–6 English sentence inference from context, nearby words, pronouns, connectors, and explaining the reasoning.",
+          },
+        },
+        sentence: {
+          g1_g2: {
+            actionTextHe: null,
+            goalTextHe: null,
+            intentDescriptionEn:
+              "Alias of sentences. Keep null for grades 1–2 until approved early-English copy exists.",
+          },
+          g3_g4: {
+            actionTextHe:
+              "כדאי לתרגל הבנת משפטים באנגלית לפי כל המשפט, ולא לפי מילה בודדת. בקשו מהילד לזהות מי עושה את הפעולה, מה קורה במשפט, ואיזו מילה עוזרת להבין את המשמעות.",
+            goalTextHe:
+              "בשבוע הקרוב התמקדו בהבנת משפטים באנגלית לפי משמעות המשפט כולו וזיהוי הרמזים שעוזרים להבין אותו.",
+            intentDescriptionEn:
+              "Alias of sentences. Grade 3–4 English sentence comprehension: understand the whole sentence, identify who does the action, what happens, and context clues.",
+          },
+          g5_g6: {
+            actionTextHe:
+              "כדאי לתרגל הבנת משפטים באנגלית מתוך הקשר, כולל הסקת משמעות ממילים סמוכות, כינויים או מילות קישור. בקשו מהילד להסביר מה במשפט עזר לו להגיע לתשובה, ולא להסתפק בתרגום מילה במילה.",
+            goalTextHe:
+              "בשבוע הקרוב התמקדו בהסקת משמעות מתוך משפטים באנגלית בעזרת הקשר, רמזים לשוניים והסבר של דרך החשיבה.",
+            intentDescriptionEn:
+              "Alias of sentences. Grade 5–6 English sentence inference from context, nearby words, pronouns, connectors, and explaining the reasoning.",
+          },
+        },
+      },
+    },
+    "E-07": {
+      defaultBands: {
+        g1_g2: {
+          actionTextHe: null,
+          goalTextHe: null,
+          intentDescriptionEn:
+            "E-07 default: no approved flat copy; use bucketOverrides (writing) or engine fallback.",
+        },
+        g3_g4: {
+          actionTextHe: null,
+          goalTextHe: null,
+          intentDescriptionEn:
+            "E-07 default: no approved flat copy; use bucketOverrides (writing) or engine fallback.",
+        },
+        g5_g6: {
+          actionTextHe: null,
+          goalTextHe: null,
+          intentDescriptionEn:
+            "E-07 default: no approved flat copy; use bucketOverrides (writing) or engine fallback.",
+        },
+      },
+      bucketOverrides: {
+        writing: {
+          g1_g2: {
+            actionTextHe: null,
+            goalTextHe: null,
+            intentDescriptionEn:
+              "Keep early English spelling recommendations null for grades 1–2 until age-appropriate spelling copy is approved.",
+          },
+          g3_g4: {
+            actionTextHe:
+              "כדאי לתרגל איות באנגלית דרך מילים שיש להן דפוס חוזר, למשל אותיות שנשמעות דומה או סיומות שחוזרות בכמה מילים. בקשו מהילד לכתוב כמה מילים מאותה קבוצה ולהסביר מה הדפוס המשותף.",
+            goalTextHe:
+              "בשבוע הקרוב התמקדו בזיהוי דפוסי איות חוזרים באנגלית ובכתיבה מדויקת של מילים מאותה משפחה.",
+            intentDescriptionEn:
+              "Grade 3–4 recurring English spelling patterns through word groups and repeated endings or letter patterns.",
+          },
+          g5_g6: {
+            actionTextHe:
+              "כדאי לתרגל דיוק באיות באנגלית בתוך משפטים קצרים או תשובות כתובות. בקשו מהילד לבדוק מילים שחוזרות אצלו עם אותה טעות, לזהות את הדפוס, ולתקן באופן עקבי לפני שמגיש תשובה.",
+            goalTextHe:
+              "בשבוע הקרוב התמקדו בעקביות באיות באנגלית בתוך כתיבה, בזיהוי טעויות שחוזרות ובתיקון מסודר שלהן.",
+            intentDescriptionEn:
+              "Grade 5–6 spelling consistency in English writing, identifying repeated error patterns and correcting them systematically.",
           },
         },
       },

@@ -11,6 +11,8 @@ import { orderFractionTaxonomyCandidates } from "./fraction-taxonomy-candidate-o
 import { orderMultiplicationTaxonomyCandidates } from "./multiplication-taxonomy-candidate-order.js";
 import { orderWordProblemsTaxonomyCandidates } from "./word-problems-taxonomy-candidate-order.js";
 import { orderGeometryTaxonomyCandidates } from "./geometry-taxonomy-candidate-order.js";
+import { orderEnglishTaxonomyCandidates } from "./english-taxonomy-candidate-order.js";
+import { orderHebrewTaxonomyCandidates } from "./hebrew-taxonomy-candidate-order.js";
 import { passesRecurrenceRules, heavyHintLikelyInvalidatesPattern } from "./recurrence.js";
 import { resolveConfidenceLevel } from "./confidence-policy.js";
 import { resolvePriority, breadthFromWeakRowCount } from "./priority-policy.js";
@@ -109,6 +111,19 @@ export function runDiagnosticEngineV2({ maps, rawMistakesBySubject, startMs, end
         (bucketKey === "quadrilaterals" || bucketKey === "area")
       ) {
         candidateIds = orderGeometryTaxonomyCandidates(candidateIdsRaw, wrongs, { row, bucketKey });
+      } else if (subjectId === "english") {
+        const bk = String(bucketKey || "").trim().toLowerCase();
+        if (bk === "vocabulary" || bk === "grammar") {
+          candidateIds = orderEnglishTaxonomyCandidates(candidateIdsRaw, wrongs, { row, bucketKey });
+        }
+      } else if (subjectId === "hebrew") {
+        const bk = String(bucketKey || "").trim().toLowerCase();
+        if (
+          (bk === "grammar" && candidateIdsRaw.includes("H-02") && candidateIdsRaw.includes("H-06")) ||
+          (bk === "writing" && candidateIdsRaw.includes("H-03") && candidateIdsRaw.includes("H-07"))
+        ) {
+          candidateIds = orderHebrewTaxonomyCandidates(candidateIdsRaw, wrongs, { row, bucketKey });
+        }
       }
       /** @type {string|null} */
       let chosenId = null;
