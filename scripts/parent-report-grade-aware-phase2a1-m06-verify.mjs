@@ -18,12 +18,8 @@ const M06_PARENT_BANNED = [
   "עיגול/השוואה",
 ];
 
-const topicRowKey = "decimals\u0001learning\u0001g4\u0001easy";
-
-/**
- * @param {string} [gradeKey]
- */
 function buildBaseReportDecimalsM06(gradeKey = "g4") {
+  const trk = `decimals\u0001learning\u0001${gradeKey}\u0001easy`;
   return {
     startDate: "2026-05-01",
     endDate: "2026-05-08",
@@ -31,7 +27,7 @@ function buildBaseReportDecimalsM06(gradeKey = "g4") {
     playerName: "בדיקה",
     summary: { totalQuestions: 20 },
     mathOperations: {
-      [topicRowKey]: {
+      [trk]: {
         bucketKey: "decimals",
         displayName: "עשרוניות",
         questions: 12,
@@ -49,9 +45,9 @@ function buildBaseReportDecimalsM06(gradeKey = "g4") {
         {
           blueprintRef: "test",
           engineVersion: "v2",
-          unitKey: `math::${topicRowKey}`,
+          unitKey: `math::${trk}`,
           subjectId: "math",
-          topicRowKey,
+          topicRowKey: trk,
           bucketKey: "decimals",
           displayName: "עשרוניות",
           diagnosis: { allowed: true, taxonomyId: "M-06", lineHe: "מצביע על דפוס." },
@@ -119,9 +115,6 @@ function assertM06ParentBannedAbsent(label, blob) {
   }
 }
 
-const prevE = process.env.ENABLE_GRADE_AWARE_RECOMMENDATIONS;
-const prevN = process.env.NEXT_PUBLIC_ENABLE_GRADE_AWARE_RECOMMENDATIONS;
-
 const [detailedMod, parentReportV2Mod, truthMod, resolverMod, recMod] = await Promise.all([
   import("../utils/detailed-parent-report.js"),
   import("../utils/parent-report-v2.js"),
@@ -133,15 +126,10 @@ const [detailedMod, parentReportV2Mod, truthMod, resolverMod, recMod] = await Pr
 const { buildDetailedParentReportFromBaseReport } = detailedMod;
 const { summarizeV2UnitsForSubjectForTests } = parentReportV2Mod;
 const { buildTruthPacketV1 } = truthMod;
-const { resolveGradeAwareParentRecommendationHe, isGradeAwareRecommendationsEnabled } = resolverMod;
+const { resolveGradeAwareParentRecommendationHe } = resolverMod;
 const { resolveUnitParentActionHe } = recMod;
 
-function runFlagOnM06G4() {
-  process.env.ENABLE_GRADE_AWARE_RECOMMENDATIONS = "true";
-  process.env.NEXT_PUBLIC_ENABLE_GRADE_AWARE_RECOMMENDATIONS = "true";
-
-  if (!isGradeAwareRecommendationsEnabled()) throw new Error("expected grade-aware flag on");
-
+function runM06G4Surfaces() {
   if (
     resolveGradeAwareParentRecommendationHe({
       subjectId: "math",
@@ -182,7 +170,7 @@ function runFlagOnM06G4() {
 
   const tp = buildTruthPacketV1(detailed, {
     scopeType: "topic",
-    scopeId: topicRowKey,
+    scopeId: "decimals\u0001learning\u0001g4\u0001easy",
     scopeLabel: "עשרוניות",
   });
   if (!tp) throw new Error("buildTruthPacketV1 returned null");
@@ -197,7 +185,7 @@ function runFlagOnM06G4() {
   assertM06ParentBannedAbsent("truthPacket JSON", JSON.stringify(tp));
 
   const topics = mp?.topicRecommendations || [];
-  const tr = topics.find((t) => String(t.topicRowKey || t.topicKey) === topicRowKey);
+  const tr = topics.find((t) => String(t.topicRowKey || t.topicKey) === "decimals\u0001learning\u0001g4\u0001easy");
   if (tr) {
     assertEq("topic doNowHe", tr.doNowHe, EXPECTED_ACTION);
     assertEq("topic interventionPlanHe", tr.interventionPlanHe, EXPECTED_GOAL);
@@ -210,7 +198,6 @@ function runFlagOnM06G4() {
 }
 
 function runResolverBands() {
-  process.env.ENABLE_GRADE_AWARE_RECOMMENDATIONS = "true";
   const a2 = resolveGradeAwareParentRecommendationHe({
     subjectId: "math",
     gradeKey: "g2",
@@ -247,25 +234,24 @@ function runResolverBands() {
   assertM06ParentBannedAbsent("M-06 g6 action", a6);
 }
 
-function runFlagOffAndUnknown() {
+function runUnknownGradeFallbackM06() {
   delete process.env.ENABLE_GRADE_AWARE_RECOMMENDATIONS;
   delete process.env.NEXT_PUBLIC_ENABLE_GRADE_AWARE_RECOMMENDATIONS;
-  if (isGradeAwareRecommendationsEnabled()) throw new Error("expected flag off");
   if (
     resolveGradeAwareParentRecommendationHe({
       subjectId: "math",
       gradeKey: "g4",
       taxonomyId: "M-06",
       slot: "action",
-    }) !== null
+    }) == null
   ) {
-    throw new Error("resolver M-06 must be null when flag off");
+    throw new Error("M-06 g4 template must resolve without env flag");
   }
   const u = buildBaseReportDecimalsM06("g4").diagnosticEngineV2.units[0];
-  const fb = resolveUnitParentActionHe(u, "g4");
-  if (!fb || !fb.includes("צביעת")) throw new Error("flag off: M-06 expected engine intervention fallback");
-
-  process.env.ENABLE_GRADE_AWARE_RECOMMENDATIONS = "true";
+  const surf = resolveUnitParentActionHe(u, "g4");
+  if (!surf || surf.includes("צביעת עמדות")) {
+    throw new Error("M-06 g4 surface must use grade-aware template, not raw engine immediate");
+  }
   if (
     resolveGradeAwareParentRecommendationHe({
       subjectId: "math",
@@ -281,15 +267,8 @@ function runFlagOffAndUnknown() {
   if (!act9 || !act9.includes("צביעת")) throw new Error("unknown grade: expected engine fallback for M-06 action");
 }
 
-try {
-  runFlagOnM06G4();
-  runResolverBands();
-  runFlagOffAndUnknown();
-} finally {
-  if (prevE === undefined) delete process.env.ENABLE_GRADE_AWARE_RECOMMENDATIONS;
-  else process.env.ENABLE_GRADE_AWARE_RECOMMENDATIONS = prevE;
-  if (prevN === undefined) delete process.env.NEXT_PUBLIC_ENABLE_GRADE_AWARE_RECOMMENDATIONS;
-  else process.env.NEXT_PUBLIC_ENABLE_GRADE_AWARE_RECOMMENDATIONS = prevN;
-}
+runM06G4Surfaces();
+runResolverBands();
+runUnknownGradeFallbackM06();
 
 process.stdout.write("OK parent-report-grade-aware-phase2a1-m06-verify\n");

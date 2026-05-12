@@ -15,7 +15,7 @@ const [templatesMod, resolverMod, detailedMod, parentReportV2Mod, multOrderMod, 
 ]);
 
 const T = templatesMod.GRADE_AWARE_RECOMMENDATION_TEMPLATES.math;
-const { resolveGradeAwareParentRecommendationHe, isGradeAwareRecommendationsEnabled } = resolverMod;
+const { resolveGradeAwareParentRecommendationHe } = resolverMod;
 const { buildDetailedParentReportFromBaseReport } = detailedMod;
 const { summarizeV2UnitsForSubjectForTests } = parentReportV2Mod;
 const { orderMultiplicationTaxonomyCandidates } = multOrderMod;
@@ -44,12 +44,8 @@ function r(input) {
   return resolveGradeAwareParentRecommendationHe(input);
 }
 
-// --- Resolver: flag on ---
+// --- Resolver: M-03 / M-10 ---
 {
-  const prev = process.env.ENABLE_GRADE_AWARE_RECOMMENDATIONS;
-  process.env.ENABLE_GRADE_AWARE_RECOMMENDATIONS = "true";
-  assert.ok(isGradeAwareRecommendationsEnabled());
-
   assert.equal(r({ subjectId: "math", gradeKey: "g2", taxonomyId: "M-03", bucketKey: "multiplication", slot: "action" }), null);
   assert.equal(r({ subjectId: "math", gradeKey: "g1", taxonomyId: "M-03", bucketKey: "multiplication", slot: "nextGoal" }), null);
 
@@ -154,24 +150,17 @@ function r(input) {
   assert.equal(r({ subjectId: "math", gradeKey: "g9", taxonomyId: "M-03", bucketKey: "multiplication", slot: "action" }), null);
   assert.equal(r({ subjectId: "math", gradeKey: "g4", taxonomyId: "M-10", bucketKey: "addition", slot: "action" }), null);
 
-  process.env.ENABLE_GRADE_AWARE_RECOMMENDATIONS = prev;
-}
-
-// --- Flag off ---
-{
-  const prev = process.env.ENABLE_GRADE_AWARE_RECOMMENDATIONS;
-  delete process.env.ENABLE_GRADE_AWARE_RECOMMENDATIONS;
-  delete process.env.NEXT_PUBLIC_ENABLE_GRADE_AWARE_RECOMMENDATIONS;
-  assert.equal(
-    r({ subjectId: "math", gradeKey: "g4", taxonomyId: "M-03", bucketKey: "multiplication", slot: "action" }),
-    null
-  );
-  process.env.ENABLE_GRADE_AWARE_RECOMMENDATIONS = prev;
 }
 
 // --- Routing + templates integration ---
 {
-  process.env.ENABLE_GRADE_AWARE_RECOMMENDATIONS = "true";
+  delete process.env.ENABLE_GRADE_AWARE_RECOMMENDATIONS;
+  delete process.env.NEXT_PUBLIC_ENABLE_GRADE_AWARE_RECOMMENDATIONS;
+  assert.notEqual(
+    r({ subjectId: "math", gradeKey: "g4", taxonomyId: "M-03", bucketKey: "multiplication", slot: "action" }),
+    null
+  );
+
   const factWrongs = [{ patternFamily: "equal_groups", kind: "mul", params: { kind: "mul" } }];
   assert.deepEqual(orderMultiplicationTaxonomyCandidates(["M-03", "M-10"], factWrongs, {}), ["M-03", "M-10"]);
   const divWrongs = [{ params: { operation: "division", inverse: true } }];
@@ -257,7 +246,6 @@ function r(input) {
 
   assert.deepEqual(orderMultiplicationTaxonomyCandidates(["M-03", "M-10"], [], {}), ["M-03", "M-10"], "ambiguous preserves order");
 
-  process.env.ENABLE_GRADE_AWARE_RECOMMENDATIONS = undefined;
 }
 
 // --- Fraction routing unchanged ---

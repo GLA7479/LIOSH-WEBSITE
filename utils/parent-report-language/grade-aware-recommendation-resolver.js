@@ -1,22 +1,11 @@
 /**
  * Grade-aware parent recommendation resolver (Phase 1+).
- * Gated by ENABLE_GRADE_AWARE_RECOMMENDATIONS (default off).
+ * Always active in dev and production — no feature flag; returns template Hebrew when taxonomy/band/bucket match.
  * Supports legacy flat templates (M-02, M-09, M-06) and extended M-01 (defaultBands + bucketOverrides: compare, number_sense, estimation).
  */
 
 import { mathReportBaseOperationKey } from "../math-report-generator.js";
 import { GRADE_AWARE_RECOMMENDATION_TEMPLATES } from "./grade-aware-recommendation-templates.js";
-
-/**
- * @returns {boolean}
- */
-export function isGradeAwareRecommendationsEnabled() {
-  if (typeof process === "undefined" || !process?.env) return false;
-  const v =
-    process.env.ENABLE_GRADE_AWARE_RECOMMENDATIONS ||
-    process.env.NEXT_PUBLIC_ENABLE_GRADE_AWARE_RECOMMENDATIONS;
-  return v === "true" || v === "1";
-}
 
 /**
  * @param {string|null|undefined} gradeKey
@@ -67,8 +56,6 @@ function slotTextFromBandObject(bandObj, slot) {
  * @returns {string | null}
  */
 export function resolveGradeAwareParentRecommendationHe(input) {
-  if (!isGradeAwareRecommendationsEnabled()) return null;
-
   const subjectId = String(input?.subjectId || "").trim();
   const taxonomyId = String(input?.taxonomyId || "").trim();
   const gradeKey =

@@ -4,6 +4,7 @@
  */
 
 import { generateParentReportV2 } from "./parent-report-v2";
+import { splitTopicRowKey } from "./parent-report-row-diagnostics.js";
 import { isValidHybridRuntimePayload } from "./ai-hybrid-diagnostic/validate-hybrid-runtime.js";
 import { buildParentProductContractV1 } from "./contracts/parent-product-contract-v1.js";
 import { applyMathScopedParentDisplayNames } from "./math-topic-parent-display.js";
@@ -72,10 +73,7 @@ import {
   resolveUnitNextGoalHe,
   resolveUnitParentActionHe,
 } from "./parent-report-recommendation-consistency.js";
-import {
-  isGradeAwareRecommendationsEnabled,
-  resolveGradeAwareParentRecommendationHe,
-} from "./parent-report-language/grade-aware-recommendation-resolver.js";
+import { resolveGradeAwareParentRecommendationHe } from "./parent-report-language/grade-aware-recommendation-resolver.js";
 import {
   deriveRawMetricStrengthLinesHe,
   mergeExecutiveStrengthLinesHe,
@@ -127,9 +125,13 @@ function gradeKeyForV2UnitFromReport(baseReport, unit) {
   const topicMap = baseReport?.[mk];
   if (!topicMap || typeof topicMap !== "object") return null;
   const row = topicMap[trk];
-  if (!row || typeof row !== "object") return null;
-  const g = row.gradeKey;
-  return g != null && String(g).trim() !== "" ? String(g).trim() : null;
+  if (row && typeof row === "object") {
+    const g = row.gradeKey;
+    if (g != null && String(g).trim() !== "") return String(g).trim();
+  }
+  const parsed = splitTopicRowKey(trk);
+  const g2 = parsed?.gradeKey;
+  return g2 != null && String(g2).trim() !== "" ? String(g2).trim() : null;
 }
 
 /**
@@ -142,7 +144,6 @@ function gradeKeyForV2UnitFromReport(baseReport, unit) {
  */
 function sanitizeDiagnosticEngineV2ForParentSnapshot(baseReport, diag) {
   if (!diag || typeof diag !== "object" || !Array.isArray(diag.units)) return diag;
-  if (!isGradeAwareRecommendationsEnabled()) return diag;
 
   const units = diag.units.map((u) => {
     if (!u || typeof u !== "object") return u;
@@ -1929,10 +1930,16 @@ function recommendationFromV2Unit(u, mapRow) {
       : canonicalDecisionTier >= 2
         ? "moderate"
         : "tentative";
+  const rowGkFromTopicKey = (() => {
+    if (!topicKey) return null;
+    const parsed = splitTopicRowKey(topicKey);
+    const g = parsed?.gradeKey;
+    return g != null && String(g).trim() !== "" ? String(g).trim() : null;
+  })();
   const rowGkForRec =
     mapRow && typeof mapRow === "object" && mapRow.gradeKey != null && String(mapRow.gradeKey).trim()
       ? String(mapRow.gradeKey).trim()
-      : null;
+      : rowGkFromTopicKey;
   return {
     topicRowKey: topicKey,
     topicKey,
@@ -2198,10 +2205,9 @@ function buildSubjectProfilesFromV2(baseReport) {
       anchorTrk && topicMapForSid[anchorTrk] && typeof topicMapForSid[anchorTrk] === "object"
         ? topicMapForSid[anchorTrk]
         : null;
-    const anchorGradeKey =
-      anchorMapRow && anchorMapRow.gradeKey != null && String(anchorMapRow.gradeKey).trim()
-        ? String(anchorMapRow.gradeKey).trim()
-        : null;
+    const anchorGradeKey = subjectAnchorUnit
+      ? gradeKeyForV2UnitFromReport(baseReport, subjectAnchorUnit)
+      : null;
 
     const topicRecommendationsBase = attachNarrativeContractsToTopicRecommendations(
       sid,
@@ -2355,7 +2361,7 @@ function buildSubjectProfilesFromV2(baseReport) {
             })()
           : "עדיין לא הצטבר מספיק מידע לתמונה רחבה מהתרגולים.",
       recommendedHomeMethodHe:
-        resolveUnitNextGoalHe(subjectAnchorUnit, anchorGradeKey) || resolveUnitHomeMethodHe(subjectAnchorUnit),
+        resolveUnitNextGoalHe(subjectAnchorUnit, anchorGradeKey) || resolveUnitHomeMethodHe(subjectAnchorUnit, anchorGradeKey),
       whatNotToDoHe: subjectAnchorUnit?.intervention?.avoidHe || null,
       majorRiskFlagsAcrossRows: {
         insufficientEvidenceRisk: units.some((u) => u?.outputGating?.cannotConcludeYet),

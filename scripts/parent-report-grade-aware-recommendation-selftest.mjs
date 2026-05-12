@@ -22,7 +22,7 @@ const [templatesMod, resolverMod, recMod, detailedMod, parentReportV2Mod, fracti
   ]);
 
 const GRADE_AWARE_RECOMMENDATION_TEMPLATES = templatesMod.GRADE_AWARE_RECOMMENDATION_TEMPLATES;
-const { resolveGradeAwareParentRecommendationHe, isGradeAwareRecommendationsEnabled } = resolverMod;
+const { resolveGradeAwareParentRecommendationHe } = resolverMod;
 const { resolveUnitParentActionHe, resolveUnitNextGoalHe } = recMod;
 const { buildDetailedParentReportFromBaseReport } = detailedMod;
 const { summarizeV2UnitsForSubjectForTests } = parentReportV2Mod;
@@ -333,81 +333,89 @@ check(
   }
 }
 
-// --- Resolver: flag off ---
+// --- Resolver: always active (no feature flag) ---
 {
-  const prev = process.env.ENABLE_GRADE_AWARE_RECOMMENDATIONS;
   delete process.env.ENABLE_GRADE_AWARE_RECOMMENDATIONS;
   delete process.env.NEXT_PUBLIC_ENABLE_GRADE_AWARE_RECOMMENDATIONS;
-  check("flag off → isGradeAwareRecommendationsEnabled false", !isGradeAwareRecommendationsEnabled());
+
   check(
-    "resolver null when flag off",
+    "resolver M-09 g4 action without env",
     resolveGradeAwareParentRecommendationHe({
       subjectId: "math",
       gradeKey: "g4",
       taxonomyId: "M-09",
       slot: "action",
-    }) === null
+    }) !== null
   );
   check(
-    "flag off → resolver M-06 null",
+    "resolver M-06 g4 action without env",
     resolveGradeAwareParentRecommendationHe({
       subjectId: "math",
       gradeKey: "g4",
       taxonomyId: "M-06",
       slot: "action",
-    }) === null
+    }) !== null
   );
   check(
-    "flag off → resolver M-04 null",
+    "resolver M-04 g4 action without env",
     resolveGradeAwareParentRecommendationHe({
       subjectId: "math",
       gradeKey: "g4",
       taxonomyId: "M-04",
       slot: "action",
-    }) === null
+    }) !== null
   );
   check(
-    "flag off → resolver M-05 null",
+    "resolver M-05 g5 action without env",
     resolveGradeAwareParentRecommendationHe({
       subjectId: "math",
       gradeKey: "g5",
       taxonomyId: "M-05",
       slot: "action",
-    }) === null
+    }) !== null
   );
   check(
-    "flag off → M-01 estimation override null",
+    "unknown gradeKey → resolver null",
     resolveGradeAwareParentRecommendationHe({
       subjectId: "math",
-      gradeKey: "g4",
-      taxonomyId: "M-01",
-      bucketKey: "estimation",
+      gradeKey: "g9",
+      taxonomyId: "M-09",
       slot: "action",
     }) === null
   );
   const u = makeM09InterveneUnit();
-  const fb = resolveUnitParentActionHe(u, "g4");
-  check("flag off → parent action uses engine fallback path", fb != null && String(fb).includes("ציר"));
+  const m09Surf = resolveUnitParentActionHe(u, "g4");
+  check(
+    "resolveUnit M-09 g4 uses template (no raw ציר)",
+    m09Surf != null &&
+      !String(m09Surf).includes("ציר + סימבולי") &&
+      !String(m09Surf).includes("ציר + מרחק")
+  );
   const u6 = makeM06InterveneUnit();
-  const fb6 = resolveUnitParentActionHe(u6, "g4");
-  check("flag off → M-06 parent action uses engine fallback", fb6 != null && String(fb6).includes("צביעת"));
+  const m06Surf = resolveUnitParentActionHe(u6, "g4");
+  check("resolveUnit M-06 g4 uses template (not raw engine immediate)", m06Surf != null && !String(m06Surf).includes("צביעת עמדות"));
   const uM04 = makeM04InterveneUnit();
-  const fbM04 = resolveUnitParentActionHe(uM04, "g4");
-  check("flag off → M-04 g4 uses engine fallback", fbM04 != null && String(fbM04).includes("חלק־כלל"));
+  const m04Surf = resolveUnitParentActionHe(uM04, "g4");
+  check(
+    "resolveUnit M-04 g4 uses template (not raw engine immediate)",
+    m04Surf != null && !String(m04Surf).includes("חלק־כלל קונקרטי")
+  );
   const uM05 = makeM05InterveneUnit();
-  const fbM05 = resolveUnitParentActionHe(uM05, "g5");
-  check("flag off → M-05 g5 uses engine fallback", fbM05 != null && String(fbM05).includes("שלבים כתובים"));
+  const m05Surf = resolveUnitParentActionHe(uM05, "g5");
+  check(
+    "resolveUnit M-05 g5 uses template (not raw engine immediate)",
+    m05Surf != null && !String(m05Surf).includes("שלבים כתובים + דוגמה מקבילה")
+  );
   const uM07 = makeM07InterveneUnit();
-  const fbM07 = resolveUnitParentActionHe(uM07, "g4");
-  check("flag off → M-07 g4 uses engine fallback", fbM07 != null && String(fbM07).includes("מספר + שורת יחידה"));
-  process.env.ENABLE_GRADE_AWARE_RECOMMENDATIONS = prev;
+  const m07Surf = resolveUnitParentActionHe(uM07, "g4");
+  check(
+    "resolveUnit M-07 g4 uses template (not raw engine immediate)",
+    m07Surf != null && !String(m07Surf).includes("מספר + שורת יחידה")
+  );
 }
 
-// --- Resolver: flag on ---
+// --- Resolver: grade-aware templates ---
 {
-  const prev = process.env.ENABLE_GRADE_AWARE_RECOMMENDATIONS;
-  process.env.ENABLE_GRADE_AWARE_RECOMMENDATIONS = "true";
-
   {
     const t = resolveGradeAwareParentRecommendationHe({
       subjectId: "math",
@@ -1250,13 +1258,10 @@ check(
     check("M-01 zero_one_properties bucket engine fallback", fz != null && String(fz).includes("מניפולציה"));
   }
 
-  process.env.ENABLE_GRADE_AWARE_RECOMMENDATIONS = prev;
 }
 
-// --- Detailed report slice (flag on): short + detailed paths ---
+// --- Detailed report slice: short + detailed paths ---
 {
-  const prev = process.env.ENABLE_GRADE_AWARE_RECOMMENDATIONS;
-  process.env.ENABLE_GRADE_AWARE_RECOMMENDATIONS = "true";
 
   const topicRowKey = "subtraction\u0001learning\u0001g4\u0001easy";
   const baseReport = {
@@ -1357,13 +1362,10 @@ check(
   check("short parentActionHe no engine ציר phrases", !spa.includes("ציר + סימבולי") && !spa.includes("ציר + מרחק"));
   check("short nextWeekGoalHe no engine ציר phrases", !sng.includes("ציר + סימבולי") && !sng.includes("ציר + מרחק"));
 
-  process.env.ENABLE_GRADE_AWARE_RECOMMENDATIONS = prev;
 }
 
-// --- M-06 decimals slice (flag on): short + detailed + internal phrase ban ---
+// --- M-06 decimals slice: short + detailed + internal phrase ban ---
 {
-  const prev = process.env.ENABLE_GRADE_AWARE_RECOMMENDATIONS;
-  process.env.ENABLE_GRADE_AWARE_RECOMMENDATIONS = "true";
 
   const topicRowKey6 = "decimals\u0001learning\u0001g4\u0001easy";
   const baseReport6 = {
@@ -1455,13 +1457,10 @@ check(
   assertM06ParentSurfaceNoInternalHe(short6.nextWeekGoalHe);
   assertM06ParentSurfaceNoInternalHe(short6.recommendedHomeMethodHe);
 
-  process.env.ENABLE_GRADE_AWARE_RECOMMENDATIONS = prev;
 }
 
 // --- M-04/M-05 fractions: routing + detailed/short integration (Phase 2-B4) ---
 {
-  const prev = process.env.ENABLE_GRADE_AWARE_RECOMMENDATIONS;
-  process.env.ENABLE_GRADE_AWARE_RECOMMENDATIONS = "true";
 
   check(
     "fraction routing: comparison-heavy → M-04 first",
@@ -1705,15 +1704,13 @@ check(
     detailedM04g2 != null && typeof detailedM04g2 === "object"
   );
 
-  process.env.ENABLE_GRADE_AWARE_RECOMMENDATIONS = prev;
 }
 
 // --- index exports ---
 const indexSrc = readFileSync(join(__dirname, "../utils/parent-report-language/index.js"), "utf8");
 check(
-  "index exports grade-aware API",
-  indexSrc.includes("isGradeAwareRecommendationsEnabled") &&
-    indexSrc.includes("resolveGradeAwareParentRecommendationHe")
+  "index exports grade-aware resolver",
+  indexSrc.includes("resolveGradeAwareParentRecommendationHe")
 );
 
 if (failures > 0) {

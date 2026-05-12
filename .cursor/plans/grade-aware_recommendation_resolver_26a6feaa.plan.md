@@ -16,7 +16,7 @@ todos:
     status: pending
   - id: phase3-geometry
     content: "Phase 3: Grade-banded templates for G-01 through G-08 (recommendation/action text only)"
-    status: pending
+    status: cancelled
   - id: phase4-lang
     content: "Phase 4: Grade-banded templates for H-01–H-08, E-01–E-08 (recommendation/action text); PLUS diagnosis-line cleanup for English tokens (collocation, preposition, past/present, he/she/it, inference) in parent-facing-normalize-he.js"
     status: pending

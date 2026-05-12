@@ -12,9 +12,6 @@ const BANNED = [
   "שלבים + בדיקה לאחור",
 ];
 
-const prevE = process.env.ENABLE_GRADE_AWARE_RECOMMENDATIONS;
-const prevN = process.env.NEXT_PUBLIC_ENABLE_GRADE_AWARE_RECOMMENDATIONS;
-
 const [templatesMod, detailedMod, parentReportV2Mod, truthMod, wpOrderMod] = await Promise.all([
   import("../utils/parent-report-language/grade-aware-recommendation-templates.js"),
   import("../utils/detailed-parent-report.js"),
@@ -111,11 +108,10 @@ function buildUnit(taxonomyId, bucketKey, topicRowKey) {
   };
 }
 
-try {
-  process.env.ENABLE_GRADE_AWARE_RECOMMENDATIONS = "true";
-  process.env.NEXT_PUBLIC_ENABLE_GRADE_AWARE_RECOMMENDATIONS = "true";
+delete process.env.ENABLE_GRADE_AWARE_RECOMMENDATIONS;
+delete process.env.NEXT_PUBLIC_ENABLE_GRADE_AWARE_RECOMMENDATIONS;
 
-  const twp = "word_problems\u0001learning\u0001g4\u0001easy";
+const twp = "word_problems\u0001learning\u0001g4\u0001easy";
   const baseM07 = {
     startDate: "2026-05-01",
     endDate: "2026-05-08",
@@ -203,11 +199,5 @@ try {
   if (ordModel[0] !== "M-08" || ordModel[1] !== "M-07") throw new Error("routing model evidence expected M-08 first");
   const ordAmb = orderWordProblemsTaxonomyCandidates(["M-07", "M-08"], [], {});
   if (ordAmb[0] !== "M-07" || ordAmb[1] !== "M-08") throw new Error("routing ambiguous expected default order");
-} finally {
-  if (prevE === undefined) delete process.env.ENABLE_GRADE_AWARE_RECOMMENDATIONS;
-  else process.env.ENABLE_GRADE_AWARE_RECOMMENDATIONS = prevE;
-  if (prevN === undefined) delete process.env.NEXT_PUBLIC_ENABLE_GRADE_AWARE_RECOMMENDATIONS;
-  else process.env.NEXT_PUBLIC_ENABLE_GRADE_AWARE_RECOMMENDATIONS = prevN;
-}
 
 process.stdout.write("OK parent-report-grade-aware-phase2d3-word-problems-verify\n");

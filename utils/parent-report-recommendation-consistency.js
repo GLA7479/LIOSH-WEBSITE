@@ -143,7 +143,11 @@ export function resolveUnitNextGoalHe(unit, gradeKey) {
   return fallback || null;
 }
 
-export function resolveUnitHomeMethodHe(unit) {
+/**
+ * @param {unknown} unit
+ * @param {string|null|undefined} [gradeKey] from topic map row or topicRowKey parse
+ */
+export function resolveUnitHomeMethodHe(unit, gradeKey) {
   const cs = canonicalState(unit);
   if (isStrengthAction(unit) && cs?.recommendation?.allowed) {
     const name = topicName(unit);
@@ -151,6 +155,22 @@ export function resolveUnitHomeMethodHe(unit) {
       `ב${name} עדיף תרגול קצר וקבוע באותה רמה, בלי לקפוץ מהר קדימה.`
     );
   }
+  const nextG = resolveGradeAwareParentRecommendationHe({
+    subjectId: unit?.subjectId,
+    gradeKey: gradeKey ?? null,
+    taxonomyId: unitTaxonomyId(unit),
+    bucketKey: unit?.bucketKey,
+    slot: "nextGoal",
+  });
+  if (nextG) return nextG;
+  const act = resolveGradeAwareParentRecommendationHe({
+    subjectId: unit?.subjectId,
+    gradeKey: gradeKey ?? null,
+    taxonomyId: unitTaxonomyId(unit),
+    bucketKey: unit?.bucketKey,
+    slot: "action",
+  });
+  if (act) return act;
   const fallback = bestEffortText(unit?.intervention?.shortPracticeHe || "");
   return fallback || null;
 }

@@ -905,11 +905,16 @@ function buildDiagnosticCardsForSubject(subjectId, subjectUnits, topicMap) {
     const rowGk =
       rowSafe && typeof rowSafe === "object" && rowSafe.gradeKey != null && String(rowSafe.gradeKey).trim()
         ? String(rowSafe.gradeKey).trim()
-        : null;
+        : (() => {
+            if (!trk) return null;
+            const p = splitTopicRowKey(trk);
+            const g = p?.gradeKey;
+            return g != null && String(g).trim() !== "" ? String(g).trim() : null;
+          })();
     const recommendationHe =
       resolveUnitParentActionHe(u, rowGk) ||
       resolveUnitNextGoalHe(u, rowGk) ||
-      resolveUnitHomeMethodHe(u) ||
+      resolveUnitHomeMethodHe(u, rowGk) ||
       null;
     const id = `dc:${subjectId}:${trk.replace(/\u0001/g, "|")}`;
     out.push({
@@ -1216,10 +1221,15 @@ function summarizeV2UnitsForSubject(units, opts = {}) {
     anchorTrk && topicMap[anchorTrk] && typeof topicMap[anchorTrk] === "object"
       ? topicMap[anchorTrk]
       : null;
-  const anchorGradeKey =
-    anchorRow && anchorRow.gradeKey != null && String(anchorRow.gradeKey).trim()
-      ? String(anchorRow.gradeKey).trim()
-      : null;
+  const anchorGradeKey = (() => {
+    if (anchorRow && anchorRow.gradeKey != null && String(anchorRow.gradeKey).trim()) {
+      return String(anchorRow.gradeKey).trim();
+    }
+    if (!anchorTrk) return null;
+    const p = splitTopicRowKey(anchorTrk);
+    const g = p?.gradeKey;
+    return g != null && String(g).trim() !== "" ? String(g).trim() : null;
+  })();
 
   const POSITIVE_LEVEL_RANK_LOCAL = { excellent: 3, very_good: 2, good: 1, none: 0 };
   const posLevel = (u) => cs(u)?.evidence?.positiveAuthorityLevel || "none";
@@ -1411,7 +1421,7 @@ function summarizeV2UnitsForSubject(units, opts = {}) {
       return t ? normalizeParentFacingHe(t) : null;
     })(),
     recommendedHomeMethodHe: actionAnchor
-      ? resolveUnitNextGoalHe(actionAnchor, anchorGradeKey) || resolveUnitHomeMethodHe(actionAnchor)
+      ? resolveUnitNextGoalHe(actionAnchor, anchorGradeKey) || resolveUnitHomeMethodHe(actionAnchor, anchorGradeKey)
       : null,
     subjectMemoryNarrativeHe: uncertain.length ? v2SubjectMemoryPartialEvidenceHe() : null,
     subjectDiagnosticRestraintHe: uncertain.length ? v2SubjectDiagnosticRestraintHe() : null,

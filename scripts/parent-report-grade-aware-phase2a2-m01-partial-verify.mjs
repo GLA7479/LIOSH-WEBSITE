@@ -130,9 +130,6 @@ function assertM01ParentBannedAbsent(label, blob) {
   }
 }
 
-const prevE = process.env.ENABLE_GRADE_AWARE_RECOMMENDATIONS;
-const prevN = process.env.NEXT_PUBLIC_ENABLE_GRADE_AWARE_RECOMMENDATIONS;
-
 const [detailedMod, parentReportV2Mod, truthMod, resolverMod, recMod] = await Promise.all([
   import("../utils/detailed-parent-report.js"),
   import("../utils/parent-report-v2.js"),
@@ -144,15 +141,10 @@ const [detailedMod, parentReportV2Mod, truthMod, resolverMod, recMod] = await Pr
 const { buildDetailedParentReportFromBaseReport } = detailedMod;
 const { summarizeV2UnitsForSubjectForTests } = parentReportV2Mod;
 const { buildTruthPacketV1 } = truthMod;
-const { resolveGradeAwareParentRecommendationHe, isGradeAwareRecommendationsEnabled } = resolverMod;
+const { resolveGradeAwareParentRecommendationHe } = resolverMod;
 const { resolveUnitParentActionHe } = recMod;
 
-function runFlagOnM01ApprovedBucketsG4() {
-  process.env.ENABLE_GRADE_AWARE_RECOMMENDATIONS = "true";
-  process.env.NEXT_PUBLIC_ENABLE_GRADE_AWARE_RECOMMENDATIONS = "true";
-
-  if (!isGradeAwareRecommendationsEnabled()) throw new Error("expected grade-aware flag on");
-
+function runM01ApprovedBucketsG4() {
   if (
     resolveGradeAwareParentRecommendationHe({
       subjectId: "math",
@@ -359,9 +351,6 @@ function runFlagOnM01ApprovedBucketsG4() {
 }
 
 function runM01MissingBucketsFallbackStillEngine() {
-  process.env.ENABLE_GRADE_AWARE_RECOMMENDATIONS = "true";
-  process.env.NEXT_PUBLIC_ENABLE_GRADE_AWARE_RECOMMENDATIONS = "true";
-
   for (const bucket of ["scale", "prime_composite", "zero_one_properties"]) {
     if (
       resolveGradeAwareParentRecommendationHe({
@@ -388,10 +377,9 @@ function runM01MissingBucketsFallbackStillEngine() {
   }
 }
 
-function runFlagOffM01CompareNull() {
+function runM01TemplatesAlwaysAvailableWithoutEnv() {
   delete process.env.ENABLE_GRADE_AWARE_RECOMMENDATIONS;
   delete process.env.NEXT_PUBLIC_ENABLE_GRADE_AWARE_RECOMMENDATIONS;
-  if (isGradeAwareRecommendationsEnabled()) throw new Error("expected flag off");
   if (
     resolveGradeAwareParentRecommendationHe({
       subjectId: "math",
@@ -399,9 +387,9 @@ function runFlagOffM01CompareNull() {
       taxonomyId: "M-01",
       bucketKey: "compare",
       slot: "action",
-    }) !== null
+    }) == null
   ) {
-    throw new Error("M-01 compare must not resolve when flag off");
+    throw new Error("M-01 compare must resolve without env flag");
   }
   if (
     resolveGradeAwareParentRecommendationHe({
@@ -410,21 +398,14 @@ function runFlagOffM01CompareNull() {
       taxonomyId: "M-01",
       bucketKey: "estimation",
       slot: "action",
-    }) !== null
+    }) == null
   ) {
-    throw new Error("M-01 estimation must not resolve when flag off");
+    throw new Error("M-01 estimation must resolve without env flag");
   }
 }
 
-try {
-  runFlagOnM01ApprovedBucketsG4();
-  runM01MissingBucketsFallbackStillEngine();
-  runFlagOffM01CompareNull();
-} finally {
-  if (prevE === undefined) delete process.env.ENABLE_GRADE_AWARE_RECOMMENDATIONS;
-  else process.env.ENABLE_GRADE_AWARE_RECOMMENDATIONS = prevE;
-  if (prevN === undefined) delete process.env.NEXT_PUBLIC_ENABLE_GRADE_AWARE_RECOMMENDATIONS;
-  else process.env.NEXT_PUBLIC_ENABLE_GRADE_AWARE_RECOMMENDATIONS = prevN;
-}
+runM01ApprovedBucketsG4();
+runM01MissingBucketsFallbackStillEngine();
+runM01TemplatesAlwaysAvailableWithoutEnv();
 
 process.stdout.write("OK parent-report-grade-aware-phase2a2-m01-partial-verify\n");

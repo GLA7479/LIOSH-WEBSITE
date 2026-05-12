@@ -14,9 +14,6 @@ const BANNED = [
   "קישור כפל־חילוק",
 ];
 
-const prevE = process.env.ENABLE_GRADE_AWARE_RECOMMENDATIONS;
-const prevN = process.env.NEXT_PUBLIC_ENABLE_GRADE_AWARE_RECOMMENDATIONS;
-
 const [templatesMod, detailedMod, parentReportV2Mod, truthMod] = await Promise.all([
   import("../utils/parent-report-language/grade-aware-recommendation-templates.js"),
   import("../utils/detailed-parent-report.js"),
@@ -112,11 +109,10 @@ function rowFor(topicRowKey, bucketKey, gradeKey) {
   };
 }
 
-try {
-  process.env.ENABLE_GRADE_AWARE_RECOMMENDATIONS = "true";
-  process.env.NEXT_PUBLIC_ENABLE_GRADE_AWARE_RECOMMENDATIONS = "true";
+delete process.env.ENABLE_GRADE_AWARE_RECOMMENDATIONS;
+delete process.env.NEXT_PUBLIC_ENABLE_GRADE_AWARE_RECOMMENDATIONS;
 
-  const tMult = "multiplication\u0001learning\u0001g4\u0001easy";
+const tMult = "multiplication\u0001learning\u0001g4\u0001easy";
   const baseM03Mult = {
     startDate: "2026-05-01",
     endDate: "2026-05-08",
@@ -187,11 +183,5 @@ try {
   assertNoBanned("M-10 ratio detailed action", mp4?.parentActionHe);
   const tp4 = buildTruthPacketV1(d4, { scopeType: "topic", scopeId: tRat, scopeLabel: "יחס" });
   assertNoBanned("truth M-10 ratio", JSON.stringify(tp4));
-} finally {
-  if (prevE === undefined) delete process.env.ENABLE_GRADE_AWARE_RECOMMENDATIONS;
-  else process.env.ENABLE_GRADE_AWARE_RECOMMENDATIONS = prevE;
-  if (prevN === undefined) delete process.env.NEXT_PUBLIC_ENABLE_GRADE_AWARE_RECOMMENDATIONS;
-  else process.env.NEXT_PUBLIC_ENABLE_GRADE_AWARE_RECOMMENDATIONS = prevN;
-}
 
 process.stdout.write("OK parent-report-grade-aware-phase2c3-mult-div-verify\n");

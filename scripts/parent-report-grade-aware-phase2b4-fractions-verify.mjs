@@ -106,9 +106,6 @@ function assertNoBanned(label, blob) {
   }
 }
 
-const prevE = process.env.ENABLE_GRADE_AWARE_RECOMMENDATIONS;
-const prevN = process.env.NEXT_PUBLIC_ENABLE_GRADE_AWARE_RECOMMENDATIONS;
-
 const [detailedMod, parentReportV2Mod, truthMod, resolverMod] = await Promise.all([
   import("../utils/detailed-parent-report.js"),
   import("../utils/parent-report-v2.js"),
@@ -119,7 +116,7 @@ const [detailedMod, parentReportV2Mod, truthMod, resolverMod] = await Promise.al
 const { buildDetailedParentReportFromBaseReport } = detailedMod;
 const { summarizeV2UnitsForSubjectForTests } = parentReportV2Mod;
 const { buildTruthPacketV1 } = truthMod;
-const { resolveGradeAwareParentRecommendationHe, isGradeAwareRecommendationsEnabled } = resolverMod;
+const { resolveGradeAwareParentRecommendationHe } = resolverMod;
 
 const fractionOrderMod = await import(
   new URL("../utils/diagnostic-engine-v2/fraction-taxonomy-candidate-order.js", import.meta.url).href
@@ -142,11 +139,6 @@ function runRoutingSanity() {
 }
 
 function runResolverAndProductSurfaces() {
-  process.env.ENABLE_GRADE_AWARE_RECOMMENDATIONS = "true";
-  process.env.NEXT_PUBLIC_ENABLE_GRADE_AWARE_RECOMMENDATIONS = "true";
-
-  if (!isGradeAwareRecommendationsEnabled()) throw new Error("expected grade-aware flag on");
-
   assertEq("M-04 g4 resolver action", resolveGradeAwareParentRecommendationHe({
     subjectId: "math",
     gradeKey: "g4",
@@ -276,14 +268,7 @@ function runResolverAndProductSurfaces() {
   assertNoBanned("truth M-05 full JSON", JSON.stringify(tp05));
 }
 
-try {
-  runRoutingSanity();
-  runResolverAndProductSurfaces();
-} finally {
-  if (prevE === undefined) delete process.env.ENABLE_GRADE_AWARE_RECOMMENDATIONS;
-  else process.env.ENABLE_GRADE_AWARE_RECOMMENDATIONS = prevE;
-  if (prevN === undefined) delete process.env.NEXT_PUBLIC_ENABLE_GRADE_AWARE_RECOMMENDATIONS;
-  else process.env.NEXT_PUBLIC_ENABLE_GRADE_AWARE_RECOMMENDATIONS = prevN;
-}
+runRoutingSanity();
+runResolverAndProductSurfaces();
 
 process.stdout.write("OK parent-report-grade-aware-phase2b4-fractions-verify\n");
