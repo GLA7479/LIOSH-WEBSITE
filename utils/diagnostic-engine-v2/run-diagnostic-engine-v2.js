@@ -4,8 +4,12 @@
  */
 import { splitTopicRowKey } from "../parent-report-row-diagnostics.js";
 import { filterMistakesForRow } from "../parent-report-row-trend.js";
+import { mathReportBaseOperationKey } from "../math-report-generator.js";
 import { TAXONOMY_BY_ID } from "./taxonomy-registry.js";
 import { taxonomyIdsForReportBucket } from "./topic-taxonomy-bridge.js";
+import { orderFractionTaxonomyCandidates } from "./fraction-taxonomy-candidate-order.js";
+import { orderMultiplicationTaxonomyCandidates } from "./multiplication-taxonomy-candidate-order.js";
+import { orderWordProblemsTaxonomyCandidates } from "./word-problems-taxonomy-candidate-order.js";
 import { passesRecurrenceRules, heavyHintLikelyInvalidatesPattern } from "./recurrence.js";
 import { resolveConfidenceLevel } from "./confidence-policy.js";
 import { resolvePriority, breadthFromWeakRowCount } from "./priority-policy.js";
@@ -72,7 +76,34 @@ export function runDiagnosticEngineV2({ maps, rawMistakesBySubject, startMs, end
 
       const hintInvalidates = heavyHintLikelyInvalidatesPattern(events);
 
-      const candidateIds = taxonomyIdsForReportBucket(subjectId, bucketKey);
+      const candidateIdsRaw = taxonomyIdsForReportBucket(subjectId, bucketKey);
+      let candidateIds = candidateIdsRaw;
+      if (
+        subjectId === "math" &&
+        mathReportBaseOperationKey(bucketKey) === "fractions" &&
+        candidateIdsRaw.includes("M-04") &&
+        candidateIdsRaw.includes("M-05")
+      ) {
+        candidateIds = orderFractionTaxonomyCandidates(candidateIdsRaw, wrongs, {
+          row,
+          bucketKey,
+          topicRowKey,
+        });
+      } else if (
+        subjectId === "math" &&
+        mathReportBaseOperationKey(bucketKey) === "multiplication" &&
+        candidateIdsRaw.includes("M-03") &&
+        candidateIdsRaw.includes("M-10")
+      ) {
+        candidateIds = orderMultiplicationTaxonomyCandidates(candidateIdsRaw, wrongs, { row });
+      } else if (
+        subjectId === "math" &&
+        mathReportBaseOperationKey(bucketKey) === "word_problems" &&
+        candidateIdsRaw.includes("M-07") &&
+        candidateIdsRaw.includes("M-08")
+      ) {
+        candidateIds = orderWordProblemsTaxonomyCandidates(candidateIdsRaw, wrongs, { row });
+      }
       /** @type {string|null} */
       let chosenId = null;
       for (const tid of candidateIds) {
@@ -92,7 +123,7 @@ export function runDiagnosticEngineV2({ maps, rawMistakesBySubject, startMs, end
           break;
         }
       }
-      const weakTaxonomyFallbackBlocked = !chosenId && candidateIds.length > 0 && wrongCountForRules >= 2;
+      const weakTaxonomyFallbackBlocked = !chosenId && candidateIdsRaw.length > 0 && wrongCountForRules >= 2;
       const classificationState = weakTaxonomyFallbackBlocked
         ? "unclassified_weak_evidence"
         : chosenId

@@ -106,3 +106,15 @@ Do not add new parent sentences inside engine modules except as an interim fallb
 
 מימוש אחיד: **`normalizeParentFacingHe`** + **`glossTopicRecommendationHeFields`** ב־[`utils/parent-report-language/parent-facing-normalize-he.js`](../utils/parent-report-language/parent-facing-normalize-he.js).  
 בדיקה אוטומטית: `findReadabilityLeakSubstringsInString` ב־[`forbidden-terms.js`](../utils/parent-report-language/forbidden-terms.js) (ב־`npm run test:parent-report-hebrew-language`).
+
+---
+
+## 11. Grade-aware registry — internal / engine phrases (parent surface)
+
+Purpose: track **diagnostic shorthand** that must not appear as parent-facing Hebrew for certain grade bands, once the grade-aware template layer is active (see `utils/parent-report-language/grade-aware-recommendation-templates.js`). **Final replacement wording is not defined here** — only the governance record.
+
+| subject / taxonomy | grade band | Internal phrase (must not leak to parents) | Replacement Hebrew |
+|--------------------|------------|---------------------------------------------|--------------------|
+| math / M-09 | g3–g6 | ציר + סימבולי | *(manual editorial — Phase 1)* |
+
+Coverage table (all taxonomy ids): run `node scripts/parent-report-grade-aware-coverage-manifest.mjs` → `reports/parent-report-grade-aware-coverage-manifest.md`.

@@ -1,4 +1,5 @@
 import { normalizeParentFacingHe } from "./parent-report-language/index.js";
+import { resolveGradeAwareParentRecommendationHe } from "./parent-report-language/grade-aware-recommendation-resolver.js";
 
 function canonicalState(unit) {
   return unit?.canonicalState || null;
@@ -65,7 +66,20 @@ function bestEffortText(s) {
   return t ? normalizeParentFacingHe(t) : "";
 }
 
-export function resolveUnitParentActionHe(unit) {
+function unitTaxonomyId(unit) {
+  return (
+    unit?.diagnosis?.taxonomyId ||
+    unit?.intervention?.taxonomyId ||
+    unit?.taxonomy?.id ||
+    null
+  );
+}
+
+/**
+ * @param {unknown} unit
+ * @param {string|null|undefined} [gradeKey] from topic map row for this unit's topicRowKey
+ */
+export function resolveUnitParentActionHe(unit, gradeKey) {
   const cs = canonicalState(unit);
   const name = topicName(unit);
 
@@ -85,13 +99,27 @@ export function resolveUnitParentActionHe(unit) {
 
   const action = actionState(unit);
   if (action === "withhold" || action === "probe_only") return null;
+
+  const gradeAware = resolveGradeAwareParentRecommendationHe({
+    subjectId: unit?.subjectId,
+    gradeKey: gradeKey ?? null,
+    taxonomyId: unitTaxonomyId(unit),
+    bucketKey: unit?.bucketKey,
+    slot: "action",
+  });
+  if (gradeAware) return gradeAware;
+
   const fallback = bestEffortText(
     unit?.intervention?.immediateActionHe || unit?.probe?.specificationHe || ""
   );
   return fallback || null;
 }
 
-export function resolveUnitNextGoalHe(unit) {
+/**
+ * @param {unknown} unit
+ * @param {string|null|undefined} [gradeKey] from topic map row for this unit's topicRowKey
+ */
+export function resolveUnitNextGoalHe(unit, gradeKey) {
   const cs = canonicalState(unit);
   if (isStrengthAction(unit) && cs?.recommendation?.allowed) {
     const name = topicName(unit);
@@ -99,6 +127,16 @@ export function resolveUnitNextGoalHe(unit) {
       `לשבוע הקרוב ב${name}: להמשיך באותה רמה, ואם ההצלחה נשמרת — לנסות צעד אחד מעט מאתגר יותר.`
     );
   }
+
+  const gradeAware = resolveGradeAwareParentRecommendationHe({
+    subjectId: unit?.subjectId,
+    gradeKey: gradeKey ?? null,
+    taxonomyId: unitTaxonomyId(unit),
+    bucketKey: unit?.bucketKey,
+    slot: "nextGoal",
+  });
+  if (gradeAware) return gradeAware;
+
   const fallback = bestEffortText(
     unit?.probe?.objectiveHe || unit?.intervention?.shortPracticeHe || ""
   );

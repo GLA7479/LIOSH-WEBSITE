@@ -73,6 +73,10 @@ import {
   resolveUnitParentActionHe,
 } from "./parent-report-recommendation-consistency.js";
 import {
+  isGradeAwareRecommendationsEnabled,
+  resolveGradeAwareParentRecommendationHe,
+} from "./parent-report-language/grade-aware-recommendation-resolver.js";
+import {
   deriveRawMetricStrengthLinesHe,
   mergeExecutiveStrengthLinesHe,
   subjectAccuracyFromReportSummary,
@@ -108,6 +112,65 @@ const REPORT_MAP_KEY = {
   hebrew: "hebrewTopics",
   "moledet-geography": "moledetGeographyTopics",
 };
+
+/**
+ * @param {Record<string, unknown>} baseReport
+ * @param {unknown} unit
+ * @returns {string|null}
+ */
+function gradeKeyForV2UnitFromReport(baseReport, unit) {
+  const sid = String(unit?.subjectId || "");
+  const trk = String(unit?.topicRowKey || "");
+  if (!sid || !trk) return null;
+  const mk = REPORT_MAP_KEY[sid];
+  if (!mk) return null;
+  const topicMap = baseReport?.[mk];
+  if (!topicMap || typeof topicMap !== "object") return null;
+  const row = topicMap[trk];
+  if (!row || typeof row !== "object") return null;
+  const g = row.gradeKey;
+  return g != null && String(g).trim() !== "" ? String(g).trim() : null;
+}
+
+/**
+ * Embedded `diagnosticEngineV2` is included for traceability; when Phase-1 grade-aware
+ * templates apply, align `intervention.*He` on the snapshot with parent-facing resolver
+ * output so JSON/Copilot-adjacent consumers do not see raw engine probe Hebrew.
+ *
+ * @param {Record<string, unknown>} baseReport
+ * @param {unknown} diag
+ */
+function sanitizeDiagnosticEngineV2ForParentSnapshot(baseReport, diag) {
+  if (!diag || typeof diag !== "object" || !Array.isArray(diag.units)) return diag;
+  if (!isGradeAwareRecommendationsEnabled()) return diag;
+
+  const units = diag.units.map((u) => {
+    if (!u || typeof u !== "object") return u;
+    const gk = gradeKeyForV2UnitFromReport(baseReport, u);
+    const subjectId = String(u.subjectId || "").trim();
+    const taxonomyId = String(
+      u?.diagnosis?.taxonomyId || u?.intervention?.taxonomyId || u?.taxonomy?.id || ""
+    ).trim();
+    const hasTemplate =
+      resolveGradeAwareParentRecommendationHe({
+        subjectId,
+        gradeKey: gk,
+        taxonomyId,
+        bucketKey: u?.bucketKey,
+        slot: "action",
+      }) != null;
+    if (!hasTemplate) return u;
+
+    const pa = resolveUnitParentActionHe(u, gk);
+    const ng = resolveUnitNextGoalHe(u, gk);
+    const intr = u?.intervention && typeof u.intervention === "object" ? { ...u.intervention } : {};
+    if (pa) intr.immediateActionHe = pa;
+    if (ng) intr.shortPracticeHe = ng;
+    return { ...u, intervention: intr };
+  });
+
+  return { ...diag, units };
+}
 
 const SUMMARY_Q = {
   math: ["mathQuestions", "mathCorrect", "mathAccuracy"],
@@ -1866,6 +1929,10 @@ function recommendationFromV2Unit(u, mapRow) {
       : canonicalDecisionTier >= 2
         ? "moderate"
         : "tentative";
+  const rowGkForRec =
+    mapRow && typeof mapRow === "object" && mapRow.gradeKey != null && String(mapRow.gradeKey).trim()
+      ? String(mapRow.gradeKey).trim()
+      : null;
   return {
     topicRowKey: topicKey,
     topicKey,
@@ -1893,8 +1960,8 @@ function recommendationFromV2Unit(u, mapRow) {
       + (thinEvidenceDowngraded
         ? " עדיין אין מספיק מה שרואים בשורה כדי להמלצה חזקה — נשארים בצעד שמרני עד לצבירת נתון נוסף."
         : ""),
-    interventionPlanHe: String(u?.intervention?.shortPracticeHe || ""),
-    doNowHe: String(u?.intervention?.immediateActionHe || ""),
+    interventionPlanHe: resolveUnitNextGoalHe(u, rowGkForRec) || String(u?.intervention?.shortPracticeHe || ""),
+    doNowHe: resolveUnitParentActionHe(u, rowGkForRec) || String(u?.intervention?.immediateActionHe || ""),
     avoidNowHe: String(u?.intervention?.avoidHe || ""),
     cautionLineHe:
       u?.outputGating?.cannotConcludeYet || cautionAdditive
@@ -2131,6 +2198,10 @@ function buildSubjectProfilesFromV2(baseReport) {
       anchorTrk && topicMapForSid[anchorTrk] && typeof topicMapForSid[anchorTrk] === "object"
         ? topicMapForSid[anchorTrk]
         : null;
+    const anchorGradeKey =
+      anchorMapRow && anchorMapRow.gradeKey != null && String(anchorMapRow.gradeKey).trim()
+        ? String(anchorMapRow.gradeKey).trim()
+        : null;
 
     const topicRecommendationsBase = attachNarrativeContractsToTopicRecommendations(
       sid,
@@ -2255,8 +2326,8 @@ function buildSubjectProfilesFromV2(baseReport) {
       })),
       diagnosticSectionsHe: null,
       subSkillInsightsHe: [],
-      parentActionHe: resolveUnitParentActionHe(subjectAnchorUnit),
-      nextWeekGoalHe: resolveUnitNextGoalHe(subjectAnchorUnit),
+      parentActionHe: resolveUnitParentActionHe(subjectAnchorUnit, anchorGradeKey),
+      nextWeekGoalHe: resolveUnitNextGoalHe(subjectAnchorUnit, anchorGradeKey),
       evidenceExamples: [],
       trendVsPreviousPeriod: null,
       topicRecommendations,
@@ -2283,7 +2354,8 @@ function buildSubjectProfilesFromV2(baseReport) {
               });
             })()
           : "עדיין לא הצטבר מספיק מידע לתמונה רחבה מהתרגולים.",
-      recommendedHomeMethodHe: resolveUnitHomeMethodHe(subjectAnchorUnit),
+      recommendedHomeMethodHe:
+        resolveUnitNextGoalHe(subjectAnchorUnit, anchorGradeKey) || resolveUnitHomeMethodHe(subjectAnchorUnit),
       whatNotToDoHe: subjectAnchorUnit?.intervention?.avoidHe || null,
       majorRiskFlagsAcrossRows: {
         insufficientEvidenceRisk: units.some((u) => u?.outputGating?.cannotConcludeYet),
@@ -2317,13 +2389,13 @@ function buildSubjectProfilesFromV2(baseReport) {
       subjectInterventionPriorityHe: priorityLevelParentLabelHe(subjectAnchorUnit?.priority?.level),
       subjectPriorityLevel: highPriority > 0 ? "immediate" : "soon",
       subjectPriorityReasonHe: subjectAnchorUnit?.taxonomy?.patternHe || null,
-      subjectImmediateActionHe: resolveUnitParentActionHe(subjectAnchorUnit),
+      subjectImmediateActionHe: resolveUnitParentActionHe(subjectAnchorUnit, anchorGradeKey),
       subjectDeferredActionHe:
         subjectAnchorUnit && isStrongPositiveUnitForParentGuidance(subjectAnchorUnit)
           ? "להמשיך באותה מורכבות ולבחון הרחבה זהירה רק אחרי עקביות נוספת."
           : subjectAnchorUnit?.probe?.specificationHe || null,
       subjectMonitoringOnly: units.length === 0,
-      subjectDoNowHe: resolveUnitParentActionHe(subjectAnchorUnit),
+      subjectDoNowHe: resolveUnitParentActionHe(subjectAnchorUnit, anchorGradeKey),
       subjectAvoidNowHe: subjectAnchorUnit?.intervention?.avoidHe || null,
       subjectReviewBeforeAdvanceHe: subjectAnchorUnit?.probe?.objectiveHe || null,
       subjectTransferReadiness: units.some((u) => u?.diagnosis?.allowed) ? "emerging" : "not_ready",
@@ -2342,6 +2414,7 @@ function buildSubjectProfilesFromV2(baseReport) {
 function buildExecutiveSummaryFromV2(baseReport, subjectCoverage) {
   const diag = baseReport?.diagnosticEngineV2;
   const units = Array.isArray(diag?.units) ? diag.units : [];
+  const gk = (u) => (u ? gradeKeyForV2UnitFromReport(baseReport, u) : null);
   const csOf = (u) => u?.canonicalState;
   const actionOf = (u) => csOf(u)?.actionState || "withhold";
   const diagnosed = units.filter((u) => u?.diagnosis?.allowed);
@@ -2379,9 +2452,9 @@ function buildExecutiveSummaryFromV2(baseReport, subjectCoverage) {
       stable: stable.length,
     }),
     mainHomeRecommendationHe:
-      resolveUnitParentActionHe(p4[0])
-      || resolveUnitParentActionHe(diagnosed[0])
-      || resolveUnitParentActionHe(leadPosX)
+      resolveUnitParentActionHe(p4[0], gk(p4[0]))
+      || resolveUnitParentActionHe(diagnosed[0], gk(diagnosed[0]))
+      || resolveUnitParentActionHe(leadPosX, gk(leadPosX))
       || "כרגע אין המלצה ביתית אחת מרכזית, כי עדיין צריך עוד מידע.",
     cautionNoteHe: executiveV2CautionNoteHe({ p4Length: p4.length, uncertainLength: uncertain.length }),
     overallConfidenceHe: executiveV2OverallConfidenceHe(diagnosed.length, units.length, stable.length),
@@ -2394,8 +2467,15 @@ function buildExecutiveSummaryFromV2(baseReport, subjectCoverage) {
     mixedSignalNoticeHe: executiveV2MixedSignalNoticeHe(uncertain.length > 0),
     reportReadinessHe: executiveV2ReportReadinessHe(units.length),
     evidenceBalanceHe: executiveV2EvidenceBalanceHe(stable.length, diagnosed.length),
-    topImmediateParentActionHe: diagnosed[0]?.intervention?.immediateActionHe || "",
-    secondPriorityActionHe: diagnosed[1]?.intervention?.immediateActionHe || "",
+    topImmediateParentActionHe:
+      resolveUnitParentActionHe(diagnosed[0], gk(diagnosed[0])) ||
+      diagnosed[0]?.intervention?.immediateActionHe ||
+      "",
+    secondPriorityActionHe: diagnosed[1]
+      ? resolveUnitParentActionHe(diagnosed[1], gk(diagnosed[1])) ||
+        diagnosed[1]?.intervention?.immediateActionHe ||
+        ""
+      : "",
     monitoringOnlyAreasHe: units.filter((u) => actionOf(u) === "withhold" || actionOf(u) === "probe_only").slice(0, 4).map((u) => `${u.displayName} (${SUBJECT_LABEL_HE[u.subjectId] || u.subjectId})`),
     deferForNowAreasHe: [],
     reviewBeforeAdvanceAreasHe: diagnosed
@@ -2425,10 +2505,11 @@ function buildCrossSubjectInsightsFromV2(baseReport) {
 function buildHomePlanFromV2(baseReport) {
   const units = Array.isArray(baseReport?.diagnosticEngineV2?.units) ? baseReport.diagnosticEngineV2.units : [];
   const itemsHe = units
-    .filter((u) => resolveUnitParentActionHe(u))
+    .filter((u) => resolveUnitParentActionHe(u, gradeKeyForV2UnitFromReport(baseReport, u)))
     .slice(0, 6)
     .map((u) => {
-      const action = resolveUnitParentActionHe(u) || "";
+      const action =
+        resolveUnitParentActionHe(u, gradeKeyForV2UnitFromReport(baseReport, u)) || "";
       return `ב${SUBJECT_LABEL_HE[u.subjectId] || u.subjectId} (${u.displayName}): ${rewriteParentRecommendationForDetailedHe(String(action))}`;
     });
   return { itemsHe: itemsHe.length ? itemsHe : [homePlanV2EmptyFallbackHe()] };
@@ -2437,10 +2518,10 @@ function buildHomePlanFromV2(baseReport) {
 function buildNextPeriodGoalsFromV2(baseReport) {
   const units = Array.isArray(baseReport?.diagnosticEngineV2?.units) ? baseReport.diagnosticEngineV2.units : [];
   const itemsHe = units
-    .filter((u) => resolveUnitNextGoalHe(u))
+    .filter((u) => resolveUnitNextGoalHe(u, gradeKeyForV2UnitFromReport(baseReport, u)))
     .slice(0, 6)
     .map((u) => {
-      const goal = resolveUnitNextGoalHe(u) || "";
+      const goal = resolveUnitNextGoalHe(u, gradeKeyForV2UnitFromReport(baseReport, u)) || "";
       return `ב${SUBJECT_LABEL_HE[u.subjectId] || u.subjectId}: ${rewriteParentRecommendationForDetailedHe(String(goal))}`;
     });
   return { itemsHe: itemsHe.length ? itemsHe : [nextPeriodGoalsV2EmptyFallbackHe()] };
@@ -2525,7 +2606,10 @@ export function buildDetailedParentReportFromBaseReport(baseReport, meta = {}) {
   return {
     version: 2,
     generatedAt: new Date().toISOString(),
-    diagnosticEngineV2: baseReport.diagnosticEngineV2 ?? null,
+    diagnosticEngineV2: sanitizeDiagnosticEngineV2ForParentSnapshot(
+      baseReport,
+      baseReport.diagnosticEngineV2 ?? null,
+    ),
     hybridRuntime: (() => {
       const h = baseReport?.hybridRuntime;
       if (h == null) return null;

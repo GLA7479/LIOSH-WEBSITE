@@ -54,3 +54,8 @@ export {
   GENERIC_CAUTIOUS_TOPIC_LINE_HE,
   unitsSuggestInstability,
 } from "./subject-withhold-summary-he.js";
+export { GRADE_AWARE_RECOMMENDATION_TEMPLATES } from "./grade-aware-recommendation-templates.js";
+export {
+  resolveGradeAwareParentRecommendationHe,
+  isGradeAwareRecommendationsEnabled,
+} from "./grade-aware-recommendation-resolver.js";

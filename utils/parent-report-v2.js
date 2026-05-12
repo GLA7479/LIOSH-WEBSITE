@@ -902,8 +902,15 @@ function buildDiagnosticCardsForSubject(subjectId, subjectUnits, topicMap) {
     const row = trk ? map[trk] : null;
     const rowSafe = row && typeof row === "object" ? row : {};
     const evidence = collectDiagnosticEvidenceLinesHe(u, rowSafe);
+    const rowGk =
+      rowSafe && typeof rowSafe === "object" && rowSafe.gradeKey != null && String(rowSafe.gradeKey).trim()
+        ? String(rowSafe.gradeKey).trim()
+        : null;
     const recommendationHe =
-      resolveUnitParentActionHe(u) || resolveUnitNextGoalHe(u) || resolveUnitHomeMethodHe(u) || null;
+      resolveUnitParentActionHe(u, rowGk) ||
+      resolveUnitNextGoalHe(u, rowGk) ||
+      resolveUnitHomeMethodHe(u) ||
+      null;
     const id = `dc:${subjectId}:${trk.replace(/\u0001/g, "|")}`;
     out.push({
       id,
@@ -1157,7 +1164,13 @@ function intelligenceSummaryFromV2Units(list) {
 
 /**
  * @param {unknown[]} units
- * @param {{ subjectReportQuestions?: number, subjectLabelHe?: string, reportSubjectAccuracy?: number|null, reportTotalQuestions?: number }} [opts]
+ * @param {{
+ *   subjectReportQuestions?: number,
+ *   subjectLabelHe?: string,
+ *   reportSubjectAccuracy?: number|null,
+ *   reportTotalQuestions?: number,
+ *   topicMap?: Record<string, unknown>|null,
+ * }} [opts]
  */
 function summarizeV2UnitsForSubject(units, opts = {}) {
   const list = Array.isArray(units) ? units : [];
@@ -1196,6 +1209,17 @@ function summarizeV2UnitsForSubject(units, opts = {}) {
     if (maintainUnit) return maintainUnit;
     return list[0] || null;
   })();
+
+  const topicMap = opts.topicMap && typeof opts.topicMap === "object" ? opts.topicMap : {};
+  const anchorTrk = actionAnchor ? String(actionAnchor.topicRowKey || "") : "";
+  const anchorRow =
+    anchorTrk && topicMap[anchorTrk] && typeof topicMap[anchorTrk] === "object"
+      ? topicMap[anchorTrk]
+      : null;
+  const anchorGradeKey =
+    anchorRow && anchorRow.gradeKey != null && String(anchorRow.gradeKey).trim()
+      ? String(anchorRow.gradeKey).trim()
+      : null;
 
   const POSITIVE_LEVEL_RANK_LOCAL = { excellent: 3, very_good: 2, good: 1, none: 0 };
   const posLevel = (u) => cs(u)?.evidence?.positiveAuthorityLevel || "none";
@@ -1371,13 +1395,13 @@ function summarizeV2UnitsForSubject(units, opts = {}) {
     evidenceMistake: null,
     evidenceSuccess,
     evidenceExamples,
-    parentActionHe: actionAnchor ? resolveUnitParentActionHe(actionAnchor) : null,
-    nextWeekGoalHe: actionAnchor ? resolveUnitNextGoalHe(actionAnchor) : null,
+    parentActionHe: actionAnchor ? resolveUnitParentActionHe(actionAnchor, anchorGradeKey) : null,
+    nextWeekGoalHe: actionAnchor ? resolveUnitNextGoalHe(actionAnchor, anchorGradeKey) : null,
     subjectPriorityReasonHe: (() => {
       const t = String(topWeak?.taxonomy?.patternHe || "").trim();
       return t ? normalizeParentFacingHe(t) : null;
     })(),
-    subjectDoNowHe: actionAnchor ? resolveUnitParentActionHe(actionAnchor) : null,
+    subjectDoNowHe: actionAnchor ? resolveUnitParentActionHe(actionAnchor, anchorGradeKey) : null,
     subjectAvoidNowHe: (() => {
       const t = String(actionAnchor?.intervention?.avoidHe || "").trim();
       return t ? normalizeParentFacingHe(t) : null;
@@ -1386,7 +1410,9 @@ function summarizeV2UnitsForSubject(units, opts = {}) {
       const t = String(topWeak?.taxonomy?.patternHe || "").trim();
       return t ? normalizeParentFacingHe(t) : null;
     })(),
-    recommendedHomeMethodHe: actionAnchor ? resolveUnitHomeMethodHe(actionAnchor) : null,
+    recommendedHomeMethodHe: actionAnchor
+      ? resolveUnitNextGoalHe(actionAnchor, anchorGradeKey) || resolveUnitHomeMethodHe(actionAnchor)
+      : null,
     subjectMemoryNarrativeHe: uncertain.length ? v2SubjectMemoryPartialEvidenceHe() : null,
     subjectDiagnosticRestraintHe: uncertain.length ? v2SubjectDiagnosticRestraintHe() : null,
   };
@@ -1445,6 +1471,7 @@ function buildPatternDiagnosticsFromV2(
         subjectLabelHe: labelHe,
         reportSubjectAccuracy: reportAcc,
         reportTotalQuestions: rtq,
+        topicMap,
       }),
       diagnosticCards: buildDiagnosticCardsForSubject(sid, subjectUnits, topicMap),
     };
