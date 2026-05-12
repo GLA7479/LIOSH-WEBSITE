@@ -8,8 +8,11 @@ import {
 } from "../../lib/learning-student-local-sync";
 import { isStudentIdentityDiagnosticsEnabled } from "../../lib/dev-student-identity-client";
 import { buildStudentHomeView } from "../../lib/learning-client/studentHomeDashboardClient";
-import { invalidateStudentLearningProfileClientCache } from "../../lib/learning-client/studentLearningProfileClient";
+import {
+  invalidateStudentLearningProfileClientCache,
+} from "../../lib/learning-client/studentLearningProfileClient";
 import { formatGradeLevelHe } from "../../lib/learning-student-defaults";
+import StudentAvatarPickerModal from "../../components/student/StudentAvatarPickerModal";
 
 const HOME_PROFILE_PATH = "/api/student/home-profile";
 
@@ -51,6 +54,9 @@ export default function StudentHomePage() {
   const [profileError, setProfileError] = useState("");
   const [logoutMessage, setLogoutMessage] = useState("");
   const [logoutBusy, setLogoutBusy] = useState(false);
+  const [showAvatarModal, setShowAvatarModal] = useState(false);
+  const [heroAvatarImage, setHeroAvatarImage] = useState(null);
+  const [heroAvatarEmoji, setHeroAvatarEmoji] = useState("👤");
 
   const loadHomeDashboard = useCallback(async () => {
     setProfilePhase("loading");
@@ -167,6 +173,48 @@ export default function StudentHomePage() {
     }
   }, [student, homePayload, profilePhase]);
 
+  const refreshHeroAvatarFromBrowser = useCallback(() => {
+    if (typeof window === "undefined") return;
+    const img = localStorage.getItem("mleo_player_avatar_image");
+    const em = localStorage.getItem("mleo_player_avatar");
+    const prof =
+      homePayload?.profile && typeof homePayload.profile === "object" && !Array.isArray(homePayload.profile)
+        ? homePayload.profile.avatarEmoji
+        : null;
+    const fromDash = dashboardView?.identity?.avatarEmoji;
+    if (img) {
+      setHeroAvatarImage(img);
+      setHeroAvatarEmoji("👤");
+      return;
+    }
+    setHeroAvatarImage(null);
+    const pick =
+      (em && String(em).trim()) ||
+      (prof != null && String(prof).trim() !== "" ? String(prof).trim() : "") ||
+      (fromDash && String(fromDash).trim()) ||
+      "👤";
+    setHeroAvatarEmoji(pick.slice(0, 8));
+  }, [homePayload?.profile, dashboardView?.identity?.avatarEmoji]);
+
+  useEffect(() => {
+    refreshHeroAvatarFromBrowser();
+  }, [refreshHeroAvatarFromBrowser]);
+
+  const mergeHomeProfileAvatarEmoji = useCallback((emoji) => {
+    setHomePayload((prev) => {
+      if (!prev || typeof prev !== "object") return prev;
+      const profile =
+        prev.profile && typeof prev.profile === "object" && !Array.isArray(prev.profile)
+          ? { ...prev.profile }
+          : {};
+      if (emoji != null && String(emoji).trim() !== "") {
+        profile.avatarEmoji = String(emoji).trim().slice(0, 8);
+      } else {
+        delete profile.avatarEmoji;
+      }
+      return { ...prev, profile };
+    });
+  }, []);
   const profilePending = profilePhase === "idle" || profilePhase === "loading";
   const buildFailed = profilePhase === "ok" && !dashboardView;
 
@@ -202,7 +250,6 @@ export default function StudentHomePage() {
   const heroGrade =
     student.grade_level != null && student.grade_level !== "" ? formatGradeLevelHe(student.grade_level) : "";
   const heroCoins = Number(student.coin_balance) || 0;
-  const heroAvatar = dashboardView?.identity?.avatarEmoji ?? "👤";
   const heroTagline =
     dashboardView?.identity?.friendlyLineHe ?? "כאן מוצגים הנתונים מהשרת אחרי התחברות.";
 
@@ -214,12 +261,25 @@ export default function StudentHomePage() {
         <section className="rounded-3xl border border-emerald-500/25 bg-gradient-to-br from-emerald-950/50 via-[#0c1224] to-indigo-950/40 p-5 md:p-8 shadow-xl shadow-black/40">
           <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-5">
             <div className="flex items-start gap-4">
-              <div
-                className="text-5xl md:text-6xl shrink-0 rounded-2xl bg-black/30 border border-white/10 w-16 h-16 md:w-20 md:h-20 flex items-center justify-center"
-                aria-hidden
+              <button
+                type="button"
+                onClick={() => setShowAvatarModal(true)}
+                className="group shrink-0 rounded-2xl border border-white/10 bg-black/30 text-5xl md:text-6xl w-16 h-16 md:w-20 md:h-20 flex items-center justify-center cursor-pointer transition hover:border-emerald-400/50 hover:bg-black/45 focus:outline-none focus-visible:ring-2 focus-visible:ring-emerald-400/70"
+                title="בחירת אווטר"
+                aria-label="פתח בחירת אווטר"
               >
-                {heroAvatar}
-              </div>
+                {heroAvatarImage ? (
+                  <img
+                    src={heroAvatarImage}
+                    alt=""
+                    className="h-[85%] w-[85%] rounded-full object-cover"
+                  />
+                ) : (
+                  <span className="leading-none" aria-hidden>
+                    {heroAvatarEmoji}
+                  </span>
+                )}
+              </button>
               <div className="min-w-0 text-right">
                 <h1 className="text-2xl md:text-3xl font-extrabold text-white tracking-tight">שלום, {heroName}</h1>
                 <p className="text-white/80 mt-1 text-sm md:text-base">
@@ -435,6 +495,22 @@ export default function StudentHomePage() {
           </>
         ) : null}
       </div>
+      <StudentAvatarPickerModal
+        open={showAvatarModal}
+        onClose={() => setShowAvatarModal(false)}
+        playerName={heroName}
+        serverAvatarEmoji={
+          homePayload?.profile && typeof homePayload.profile === "object" && !Array.isArray(homePayload.profile)
+            ? homePayload.profile.avatarEmoji
+            : dashboardView?.identity?.avatarEmoji
+        }
+        onAvatarEmojiPersisted={(emoji) => {
+          mergeHomeProfileAvatarEmoji(emoji);
+        }}
+        onAvatarChanged={() => {
+          refreshHeroAvatarFromBrowser();
+        }}
+      />
     </Layout>
   );
 }
