@@ -223,7 +223,7 @@ export default function StudentHomePage() {
               <div className="min-w-0 text-right">
                 <h1 className="text-2xl md:text-3xl font-extrabold text-white tracking-tight">שלום, {heroName}</h1>
                 <p className="text-white/80 mt-1 text-sm md:text-base">
-                  כיתה: {heroGrade ? heroGrade : "עדיין אין נתונים"}
+                  {heroGrade ? heroGrade : "עדיין אין נתונים"}
                 </p>
                 <p className="text-amber-200/95 mt-1 text-sm font-semibold tabular-nums">מטבעות: {heroCoins}</p>
                 <p className="text-emerald-200/90 mt-2 text-sm md:text-base leading-relaxed">{heroTagline}</p>
