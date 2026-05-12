@@ -7,6 +7,7 @@ import {
   parseIsoDateParam,
   safeString,
 } from "../../../../../lib/parent-server/report-data-aggregate.server.js";
+import { attachStudentLearningAccountToParentReportPayload } from "../../../../../lib/parent-server/parent-report-account-attachment.server.js";
 
 const DEFAULT_RANGE_DAYS = 30;
 
@@ -71,7 +72,8 @@ export default async function handler(req, res) {
     }
 
     const serviceClient = getLearningSupabaseServiceRoleClient();
-    const payload = await aggregateParentReportPayload(serviceClient, student, fromDate, toDate);
+    const analytics = await aggregateParentReportPayload(serviceClient, student, fromDate, toDate);
+    const payload = await attachStudentLearningAccountToParentReportPayload(serviceClient, student, analytics);
     return res.status(200).json(payload);
   } catch {
     return res.status(500).json({ ok: false, error: "Unexpected server error" });

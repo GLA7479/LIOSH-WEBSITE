@@ -48,6 +48,7 @@
     "start": "next start",
     "verify:learning-supabase-env": "node scripts/verify-learning-supabase-env.mjs",
     "verify:learning-rls": "node scripts/verify-learning-rls.mjs",
+    "verify:student-account-sync": "node scripts/verify-student-account-sync.mjs",
     "audit:hebrew-subtopics": "tsx scripts/hebrew-subtopic-coverage-audit.mjs",
     "audit:questions": "tsx scripts/generator-deterministic-harness.mjs && tsx scripts/audit-question-banks.mjs",
     "audit:curriculum:inventory": "tsx scripts/curriculum-audit/scan-question-inventory.mjs",

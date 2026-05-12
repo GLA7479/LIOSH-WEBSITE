@@ -141,6 +141,7 @@ import {
   pickSubjectChallengeBlobs,
   subjectChallengePatch,
 } from "../../lib/learning-client/student-dashboard-account-tiles";
+import { mapSubjectAccountViewFromStudentProfile } from "../../lib/learning-shared/student-account-state-view";
 
 /** Passed into compareGeometryLearnerAnswer — not defaulted inside answer-compare. */
 const GEOMETRY_NUMERIC_SCALE_FLOOR = 1e-6;
@@ -420,14 +421,15 @@ const refreshMonthlyProgress = useCallback(() => {
           return;
         }
         learningProfileStudentIdRef.current = profile.studentId;
+        const acc = mapSubjectAccountViewFromStudentProfile(profile, "geometry");
         const sub = profile.row.subjects?.geometry;
         if (sub && typeof sub === "object") {
           const ps = sub.progressStore;
           if (ps && typeof ps === "object") {
-            if (typeof ps.stars === "number") setStars(ps.stars);
+            if (typeof acc.stars === "number") setStars(acc.stars);
             if (Array.isArray(ps.badges)) setBadges(ps.badges);
-            if (typeof ps.playerLevel === "number") setPlayerLevel(ps.playerLevel);
-            if (typeof ps.xp === "number") setXp(ps.xp);
+            if (typeof acc.playerLevel === "number") setPlayerLevel(acc.playerLevel);
+            if (typeof acc.xp === "number") setXp(acc.xp);
             if (ps.progress && typeof ps.progress === "object") {
               setProgress((prev) => ({ ...prev, ...ps.progress }));
             }
