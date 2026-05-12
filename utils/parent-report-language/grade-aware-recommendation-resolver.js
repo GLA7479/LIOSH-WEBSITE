@@ -1,7 +1,7 @@
 /**
  * Grade-aware parent recommendation resolver (Phase 1+).
  * Always active in dev and production — no feature flag; returns template Hebrew when taxonomy/band/bucket match.
- * Supports legacy flat templates (M-02, M-09, M-06) and extended M-01 (defaultBands + bucketOverrides: compare, number_sense, estimation).
+ * Supports legacy flat templates (M-02, M-09, M-06) and extended entries (defaultBands + bucketOverrides) for math and geometry.
  */
 
 import { mathReportBaseOperationKey } from "../math-report-generator.js";
@@ -23,9 +23,13 @@ function gradeKeyToBand(gradeKey) {
  * @param {string} subjectId
  * @param {unknown} bucketKeyRaw
  */
-function normalizedMathBucketKey(subjectId, bucketKeyRaw) {
-  if (String(subjectId || "").trim() !== "math") return "";
-  return mathReportBaseOperationKey(String(bucketKeyRaw || ""));
+function normalizedResolverBucketKey(subjectId, bucketKeyRaw) {
+  const sid = String(subjectId || "").trim();
+  const raw = String(bucketKeyRaw || "").trim();
+  if (!raw) return "";
+  if (sid === "math") return mathReportBaseOperationKey(raw);
+  if (sid === "geometry") return raw.toLowerCase();
+  return "";
 }
 
 /**
@@ -72,9 +76,9 @@ export function resolveGradeAwareParentRecommendationHe(input) {
   const entry = subjectBank[taxonomyId];
   if (!entry || typeof entry !== "object") return null;
 
-  /** Extended shape: M-01 partial bucket-aware (defaultBands + optional bucketOverrides). */
+  /** Extended shape: math M-01/M-03/… and geometry G-02/G-04/… (defaultBands + optional bucketOverrides). */
   if (entry.defaultBands != null && typeof entry.defaultBands === "object") {
-    const bucketNorm = normalizedMathBucketKey(subjectId, input?.bucketKey);
+    const bucketNorm = normalizedResolverBucketKey(subjectId, input?.bucketKey);
     const bo = entry.bucketOverrides && typeof entry.bucketOverrides === "object" ? entry.bucketOverrides : null;
     let bandObj = null;
     if (bo && bucketNorm && bo[bucketNorm] && typeof bo[bucketNorm] === "object") {

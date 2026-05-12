@@ -1,40 +1,56 @@
 ---
 name: Grade-aware recommendation resolver
-overview: Add a grade-aware parent recommendation resolver that sits between the diagnostic engine output and all parent-facing report text, so HTML, PDF, detailed report, short report, and Copilot grounding all receive pedagogically-appropriate Hebrew copy without touching core diagnostic logic. No source changes in this planning task.
+overview: Add a grade-aware parent recommendation resolver between diagnostic engine output and parent-facing report text (short/detailed/PDF/Copilot). Resolver is always active (no feature flag). Rolling status — see reports/parent-report-grade-aware-progress-status.md and .json.
 todos:
   - id: phase0-scaffold
-    content: "Phase 0: Create empty resolver (always null), empty templates file (all textHe: null), taxonomy coverage manifest script, update index.js exports, create all-green selftest; add pending-fix manifest entry for M-09/g4"
+    content: "Phase 0: Scaffold / coverage manifest — templates/resolver structure, selftest, manifest script, index exports"
     status: completed
   - id: phase1-math-add-sub
-    content: "Phase 1: Math only — M-02 (addition) + M-09 (subtraction); fill grade-banded templates with manually-approved textHe; wire resolver into resolveUnitParentActionHe/resolveUnitNextGoalHe; pass gradeKey from callers; feature flag off by default; verify short report + detailed report + PDF text + Copilot grounding before expanding"
+    content: "Phase 1: Math M-02 + M-09 add/sub — approved Hebrew templates; wire resolveUnit* + gradeKey; always-on resolver"
     status: completed
   - id: phase1-tests
-    content: "Phase 1 tests: selftest M-09 g4 no ציר+סימבולי, M-02 g2 vs g4 vs g6 differ, rendered snapshot check, coverage manifest shows M-02+M-09 as covered_by_template"
+    content: "Phase 1 tests: M-09 g4 banned phrases, M-02 bands, snapshots, manifest M-02+M-09 covered_by_template"
     status: completed
   - id: phase2-math-rest
-    content: "Phase 2: Grade-banded templates for M-01, M-03 through M-10 (recommendation/action text only)"
-    status: pending
+    content: "Phase 2: Math (approved scope) — M-01/M-03–M-10 partial templates + math routing (fractions, multiplication, word_problems); see progress-status"
+    status: completed
+  - id: phase3a-geometry-plan
+    content: "Phase 3-A: Geometry mapping / implementation-ready plan (documentation)"
+    status: completed
+  - id: phase3b0-geometry-routing
+    content: "Phase 3-B0: Geometry routing quadrilaterals G-01 vs G-03; area G-03 vs G-08 (no Hebrew geometry templates)"
+    status: completed
+  - id: phase3b1-geometry-templates-batch-a
+    content: "Phase 3-B1: Geometry templates Batch A — G-02, G-04, G-05, G-06, G-07 (bucketOverrides; g1_g2 only where safe)"
+    status: completed
+  - id: phase3b2-geometry-templates-g010308
+    content: "Phase 3-B2: Geometry templates G-01 / G-03 / G-08 after routing stable"
+    status: completed
   - id: phase3-geometry
-    content: "Phase 3: Grade-banded templates for G-01 through G-08 (recommendation/action text only)"
+    content: Superseded by phase3a / phase3b0–b2 — split geometry plan vs templates vs routing
     status: cancelled
   - id: phase4-lang
-    content: "Phase 4: Grade-banded templates for H-01–H-08, E-01–E-08 (recommendation/action text); PLUS diagnosis-line cleanup for English tokens (collocation, preposition, past/present, he/she/it, inference) in parent-facing-normalize-he.js"
+    content: "Phase 4: Hebrew + English — H-01–H-08, E-01–E-08; English token cleanup in parent-facing-normalize-he.js"
     status: pending
   - id: phase5-science-geo
-    content: "Phase 5: Grade-banded templates for S-01–S-08, MG-01–MG-08"
+    content: "Phase 5: Science + Moledet/Geography — S-01–S-08, MG-01–MG-08"
     status: pending
   - id: phase6-copilot
-    content: "Phase 6: Audit truth-packet narrative-slot assembly for Copilot; add guard if intervention strings feed nar.action slots"
+    content: "Phase 6: Copilot final grounding review — truth-packet / narrative slots"
     status: pending
   - id: phase7-qa
-    content: "Phase 7: Full rendered corpus QA (all 6 subjects × 6 grades × short/detailed/PDF); coverage manifest must show 100% covered_by_template or not_parent_facing; final Hebrew editorial sign-off"
+    content: "Phase 7: Broad rendered / PDF / corpus QA + final Hebrew editorial sign-off"
     status: pending
 isProject: false
 ---
 
 # Grade-Aware Recommendation Resolver — Implementation Plan
 
-## Confirmed no source changes for this planning task
+## Current status (rolling)
+
+Authoritative phase status, coverage notes, and intentional fallbacks: **`reports/parent-report-grade-aware-progress-status.md`** (human-readable) and **`reports/parent-report-grade-aware-progress-status.json`** (machine-readable).
+
+This plan file remains the architecture + phase intent reference; the progress files track **completed vs pending** as work lands.
 
 ---
 
@@ -134,11 +150,11 @@ All `TaxonomyRow` fields (`patternHe`, `probeHe`, `interventionHe`, `subskillHe`
 - No product-visible Hebrew text changes.
 - No report output changes (short report, detailed report, PDF, Copilot payload identical to before).
 - No taxonomy files changed.
-- No diagnostic engine files changed (`intervention-layer.js`, `taxonomy-*.js`, `run-diagnostic-engine-v2.js`).
+- No diagnostic engine files changed in **Phase 0** (`intervention-layer.js`, `taxonomy-*.js`). **Phase 3-B0** later added geometry-only taxonomy **candidate reordering** in `run-diagnostic-engine-v2.js` (no template/resolver changes there).
 - All existing selftests pass: `parent-report-insights-selftest.mjs` 67/67, `parent-report-phase1-selftest.mjs`, all `npm test` or CI commands.
 - New selftest `parent-report-grade-aware-recommendation-selftest.mjs` runs and is fully green.
-- Coverage manifest script runs and exits 0; outputs a table showing all taxonomy ids as `pending_manual_hebrew`.
-- Feature flag `ENABLE_GRADE_AWARE_RECOMMENDATIONS` defaults to `false` (any call-site prep must short-circuit when flag is off).
+- Coverage manifest script runs and exits 0; outputs a coverage table (initially `pending_manual_hebrew` for unfilled templates).
+- **Resolver is always active in production** — the `ENABLE_GRADE_AWARE_RECOMMENDATIONS` feature flag was removed; see `reports/parent-report-grade-aware-progress-status.md`.
 
 **Rollback:** Remove `utils/parent-report-language/grade-aware-recommendation-templates.js` and `grade-aware-recommendation-resolver.js`; revert `utils/parent-report-language/index.js` export additions; delete `scripts/parent-report-grade-aware-recommendation-selftest.mjs` and `scripts/parent-report-grade-aware-coverage-manifest.mjs`; revert `docs/PARENT_REPORT_HEBREW_STYLE_GUIDE.md` section 11; delete generated `reports/parent-report-grade-aware-coverage-manifest.json` and `reports/parent-report-grade-aware-coverage-manifest.md` if present.
 
@@ -164,7 +180,7 @@ All `TaxonomyRow` fields (`patternHe`, `probeHe`, `interventionHe`, `subskillHe`
 - `utils/detailed-parent-report.js` — same
 - `scripts/parent-report-grade-aware-recommendation-selftest.mjs` — tests go green for M-09 g4
 
-**Risk:** Medium. The resolver is on the critical path for `doNowHe` / parent action. Use feature-flag env var `ENABLE_GRADE_AWARE_RECOMMENDATIONS=true` to limit blast radius.
+**Risk:** Medium. The resolver is on the critical path for `doNowHe` / parent action. **Mitigation:** narrow selftests + `qa:parent-report-grade-aware` before expanding scope; resolver falls back when template is null.
 
 **Test plan:**
 - Unit: `resolveGradeAwareParentRecommendationHe("math", "g4", "M-09", "subtraction")` returns grade-appropriate Hebrew (not "ציר + סימבולי")
@@ -176,27 +192,41 @@ All `TaxonomyRow` fields (`patternHe`, `probeHe`, `interventionHe`, `subskillHe`
 
 **Acceptance:** «ציר + סימבולי» does not appear parent-facing for g3–g6; grade 1–2 gets appropriate concrete-first wording; all prior tests pass.
 
-**Rollback:** Set `ENABLE_GRADE_AWARE_RECOMMENDATIONS=false`; resolver short-circuits to `null` restoring prior behavior.
+**Rollback:** Revert resolver wiring and template entries for M-02/M-09; restore prior `resolveUnit*` fallback-only behavior (historical — project has moved past flag-gated rollout).
 
 ---
 
-### Phase 2 — Remaining math taxonomy rows (M-01, M-03 through M-10)
+### Phase 2 — Math (approved scope) — **completed**
 
-**Scope:** Add grade-banded intents for all other math buckets in `grade-aware-recommendation-templates.js`. Hebrew copy provided manually.
+**Scope (as delivered):** Grade-banded / bucket-aware templates for M-01 (partial buckets), M-03–M-10 (partial buckets and bands), M-02/M-06/M-09 full paths per approved scope; **math routing** for fractions (M-04/M-05), multiplication (M-03/M-10), word_problems (M-07/M-08). Intentional engine fallbacks remain where templates are null by design.
 
-**Files:** `grade-aware-recommendation-templates.js` only (resolver logic unchanged).
+**Files:** Primarily `grade-aware-recommendation-templates.js`, `grade-aware-recommendation-resolver.js`, `parent-report-recommendation-consistency.js`, `parent-report-v2.js`, `detailed-parent-report.js`, `run-diagnostic-engine-v2.js` (math orderers only), plus QA scripts.
 
-**Risk:** Low (templates only; resolver already wired)
+**Status:** See **`reports/parent-report-grade-aware-progress-status.md`** for coverage summary and remaining intentional fallbacks.
 
-**Acceptance:** All 10 math taxonomy ids return grade-appropriate text; no raw `patternHe` / `probeHe` / `interventionHe` strings leak to parents for math.
+**Acceptance (approved scope):** Math parent surfaces use approved template Hebrew where implemented; routing orderers apply only to listed math buckets; no change to non-math subjects in Phase 2.
 
 ---
 
-### Phase 3 — Geometry (G-01 through G-08)
+### Phase 3 — Geometry (split)
 
-**Scope:** Geometry grade bands: g3–g4 (basic shapes / area / perimeter) vs g5–g6 (volume / pythagoras / advanced transformations). Hebrew copy provided manually.
+#### Phase 3-A — Mapping / plan — **completed**
 
-**Risk:** Low
+Implementation-ready geometry bucket ↔ taxonomy mapping and sequencing plan (documentation / alignment with `topic-taxonomy-bridge.js`).
+
+#### Phase 3-B0 — Routing / alignment — **completed**
+
+`geometry-taxonomy-candidate-order.js`: **quadrilaterals** (G-01 vs G-03), **area** (G-03 vs G-08). Hook in `run-diagnostic-engine-v2.js` for `subjectId === "geometry"` only. **No Hebrew geometry templates** in this sub-phase.
+
+#### Phase 3-B1 — Geometry templates Batch A — **pending**
+
+Planned taxonomy ids: **G-02, G-04, G-05, G-06, G-07**. Use **`bucketOverrides`**; no broad flat templates; **g1_g2** only where safe per editorial plan; **no routing** work for these ids.
+
+#### Phase 3-B2 — Geometry templates G-01 / G-03 / G-08 — **pending**
+
+After routing (3-B0) is stable in the field, add approved Hebrew for **G-01, G-03, G-08** (post-routing template pass).
+
+**Risk:** Low for routing; Medium for Hebrew editorial load in B1/B2.
 
 ---
 
@@ -253,7 +283,7 @@ All `TaxonomyRow` fields (`patternHe`, `probeHe`, `interventionHe`, `subskillHe`
 | `utils/parent-report-language/parent-facing-normalize-he.js` | Phase 4: add English token filter for `subskillHe`-derived diagnosis lines | 4 | display normalizer |
 | `utils/diagnostic-engine-v2/intervention-layer.js` | **Do not change** — keep as internal; resolver gates output | — | core diagnostic |
 | `utils/diagnostic-engine-v2/taxonomy-*.js` | **Do not change** — internal analytics only | — | core diagnostic |
-| `utils/diagnostic-engine-v2/run-diagnostic-engine-v2.js` | **Do not change** | — | core diagnostic |
+| `utils/diagnostic-engine-v2/run-diagnostic-engine-v2.js` | **Math + geometry candidate order only** — `orderFractionTaxonomyCandidates`, `orderMultiplicationTaxonomyCandidates`, `orderWordProblemsTaxonomyCandidates`, `orderGeometryTaxonomyCandidates`; no taxonomy row edits | 2–3-B0 | core diagnostic |
 | `utils/topic-next-step-engine.js` | **No change needed** — step decisions (gradeKey already used there) are separate from taxonomy text | — | recommendation logic |
 | `utils/contracts/parent-product-contract-v1.js` | Low risk: `doNowHe` flows in from `resolveUnitParentActionHe` — no direct change unless upstream covers it | later | contract display |
 | `components/parent-report-topic-explain-row.jsx` | `parentFacingEngineLine` will receive cleaner input; no change required unless tests reveal residual leaks | 7 | UI display |
@@ -348,12 +378,12 @@ Hebrew copy slots start as `null`. **Resolver returns `null` when `textHe === nu
 
 | Risk | Mitigation |
 |---|---|
-| Changing recommendation copy but not Copilot grounding | Phase 6 explicitly audits truth-packet / narrative-slot assembly; feature-flag allows staging |
+| Changing recommendation copy but not Copilot grounding | Phase 6 explicitly audits truth-packet / narrative-slot assembly; keep resolver + narrative assembly aligned |
 | Changing detailed report but not short report | Both go through `resolveUnitParentActionHe` — same resolver; checked in selftest with both short and detailed report fixtures |
 | Resolver running too late (after normalizer already ran) | Resolver sits at `resolveUnitParentActionHe`, which is upstream of `normalizeParentFacingHe`; the fallback only passes through normalizer if resolver returns null |
 | Missing grade context (gradeKey null on row) | Resolver returns `null` on null gradeKey; falls back to existing behavior; no regression |
 | Wrong fallback for thin data | Thin data path (`topicRecommendationV2CautionGatedHe`) is bypassed before resolver is called (existing gating check); no change to that path |
-| Breaking existing tests | Feature-flag env var gates new behavior; existing tests run with flag off until Phase 1 is validated |
+| Breaking existing tests | `qa:parent-report-grade-aware` + targeted selftests gate each phase |
 | Making Hebrew clear but pedagogically wrong | Hebrew is `null` (returns null → fallback) until editorial manually approves `textHe`; Cursor never writes final Hebrew copy |
 
 ---
@@ -377,6 +407,6 @@ Reasons:
 6. Add pending-fix documentation comment in selftest (not an assertion — documents M-09/g4 as Phase 1 target)
 7. Confirm all existing tests still pass
 
-**Do not** change `intervention-layer.js`, any `taxonomy-*.js`, or `run-diagnostic-engine-v2.js` — those are internal and must stay untouched.
+**Do not** change `intervention-layer.js` or any `taxonomy-*.js` for parent-copy purposes — those stay internal. **`run-diagnostic-engine-v2.js`** may only gain **taxonomy-id candidate reordering** helpers (math fractions / mult / word problems; geometry quadrilaterals / area); do not change recurrence, confidence, or intervention text builders for grade-aware copy (that remains the resolver’s job).
 
 **Cursor does not author final Hebrew copy.** All `textHe` fields start as `null` and are filled manually after editorial sign-off, per phase. Cursor may only add keys, grade-band stubs, `intentDescriptionEn` labels, and `TODO` comments.

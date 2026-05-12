@@ -10,6 +10,7 @@ import { taxonomyIdsForReportBucket } from "./topic-taxonomy-bridge.js";
 import { orderFractionTaxonomyCandidates } from "./fraction-taxonomy-candidate-order.js";
 import { orderMultiplicationTaxonomyCandidates } from "./multiplication-taxonomy-candidate-order.js";
 import { orderWordProblemsTaxonomyCandidates } from "./word-problems-taxonomy-candidate-order.js";
+import { orderGeometryTaxonomyCandidates } from "./geometry-taxonomy-candidate-order.js";
 import { passesRecurrenceRules, heavyHintLikelyInvalidatesPattern } from "./recurrence.js";
 import { resolveConfidenceLevel } from "./confidence-policy.js";
 import { resolvePriority, breadthFromWeakRowCount } from "./priority-policy.js";
@@ -103,6 +104,11 @@ export function runDiagnosticEngineV2({ maps, rawMistakesBySubject, startMs, end
         candidateIdsRaw.includes("M-08")
       ) {
         candidateIds = orderWordProblemsTaxonomyCandidates(candidateIdsRaw, wrongs, { row });
+      } else if (
+        subjectId === "geometry" &&
+        (bucketKey === "quadrilaterals" || bucketKey === "area")
+      ) {
+        candidateIds = orderGeometryTaxonomyCandidates(candidateIdsRaw, wrongs, { row, bucketKey });
       }
       /** @type {string|null} */
       let chosenId = null;

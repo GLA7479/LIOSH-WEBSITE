@@ -43,6 +43,33 @@ function bandHasNullActionAndGoal(band) {
 }
 
 /**
+ * Per-bucket grade-band Hebrew coverage for extended `bucketOverrides` templates.
+ * `bandsWithHebrew` / `bandsNull` refer to both actionTextHe and goalTextHe non-empty vs null.
+ *
+ * @param {unknown} tpl
+ * @returns {Array<{ bucketKey: string; bandsWithHebrew: string[]; bandsNull: string[] }>|null}
+ */
+function bucketGradeCoverageFromOverrides(tpl) {
+  if (!tpl || typeof tpl !== "object" || tpl.defaultBands == null) return null;
+  const bo = tpl.bucketOverrides;
+  if (!bo || typeof bo !== "object") return null;
+  const bandKeys = ["g1_g2", "g3_g4", "g5_g6"];
+  const out = [];
+  for (const bucketKey of Object.keys(bo)) {
+    const entry = bo[bucketKey];
+    if (!entry || typeof entry !== "object") continue;
+    const bandsWithHebrew = [];
+    const bandsNull = [];
+    for (const bk of bandKeys) {
+      if (bandHasNonEmptyActionAndGoal(entry[bk])) bandsWithHebrew.push(bk);
+      else bandsNull.push(bk);
+    }
+    out.push({ bucketKey, bandsWithHebrew, bandsNull });
+  }
+  return out.length ? out : null;
+}
+
+/**
  * @param {string} subjectId
  * @param {string} taxonomyId
  * @returns {{
@@ -121,6 +148,87 @@ function coverageStatus(subjectId, taxonomyId) {
         missingGradeBands: ["g1_g2"],
       };
     }
+    if (subjectId === "geometry" && taxonomyId === "G-02") {
+      const bo = tpl.bucketOverrides;
+      if (!bo?.angles || !bo?.circles) return { status: "pending_manual_hebrew" };
+      return {
+        status: "partially_covered_by_template",
+        partialBucketCoverage: ["angles", "circles"],
+        coveredGradeBands: ["g3_g4", "g5_g6"],
+        missingGradeBands: ["g1_g2"],
+      };
+    }
+    if (subjectId === "geometry" && taxonomyId === "G-04") {
+      const bo = tpl.bucketOverrides;
+      if (!bo?.transformations || !bo?.rotation) return { status: "pending_manual_hebrew" };
+      return {
+        status: "partially_covered_by_template",
+        partialBucketCoverage: ["transformations", "rotation"],
+        coveredGradeBands: ["g1_g2", "g3_g4", "g5_g6"],
+      };
+    }
+    if (subjectId === "geometry" && taxonomyId === "G-05") {
+      const bo = tpl.bucketOverrides;
+      if (!bo?.solids || !bo?.volume) return { status: "pending_manual_hebrew" };
+      return {
+        status: "partially_covered_by_template",
+        partialBucketCoverage: ["solids", "volume"],
+        coveredGradeBands: ["g1_g2", "g3_g4", "g5_g6"],
+        missingGradeBands: [],
+      };
+    }
+    if (subjectId === "geometry" && taxonomyId === "G-06") {
+      const bo = tpl.bucketOverrides;
+      if (!bo?.perimeter) return { status: "pending_manual_hebrew" };
+      return {
+        status: "partially_covered_by_template",
+        partialBucketCoverage: ["perimeter"],
+        coveredGradeBands: ["g3_g4", "g5_g6"],
+        missingGradeBands: ["g1_g2"],
+      };
+    }
+    if (subjectId === "geometry" && taxonomyId === "G-07") {
+      const bo = tpl.bucketOverrides;
+      if (!bo?.symmetry) return { status: "pending_manual_hebrew" };
+      return {
+        status: "partially_covered_by_template",
+        partialBucketCoverage: ["symmetry"],
+        coveredGradeBands: ["g1_g2", "g3_g4", "g5_g6"],
+      };
+    }
+    if (subjectId === "geometry" && taxonomyId === "G-01") {
+      const bo = tpl.bucketOverrides;
+      const required = ["shapes_basic", "quadrilaterals", "parallel_perpendicular", "diagonal", "tiling"];
+      for (const k of required) {
+        if (!bo?.[k] || typeof bo[k] !== "object") return { status: "pending_manual_hebrew" };
+      }
+      return {
+        status: "partially_covered_by_template",
+        partialBucketCoverage: [...required],
+        missingBucketCoverage: ["mixed"],
+        coveredGradeBands: ["g1_g2", "g3_g4", "g5_g6"],
+      };
+    }
+    if (subjectId === "geometry" && taxonomyId === "G-03") {
+      const bo = tpl.bucketOverrides;
+      if (!bo?.quadrilaterals || !bo.heights || !bo.area) return { status: "pending_manual_hebrew" };
+      return {
+        status: "partially_covered_by_template",
+        partialBucketCoverage: ["quadrilaterals", "heights", "area"],
+        coveredGradeBands: ["g3_g4", "g5_g6"],
+        missingGradeBands: ["g1_g2"],
+      };
+    }
+    if (subjectId === "geometry" && taxonomyId === "G-08") {
+      const bo = tpl.bucketOverrides;
+      if (!bo?.area || !bo.triangles || !bo.pythagoras) return { status: "pending_manual_hebrew" };
+      return {
+        status: "partially_covered_by_template",
+        partialBucketCoverage: ["area", "triangles", "pythagoras"],
+        coveredGradeBands: ["g3_g4", "g5_g6"],
+        missingGradeBands: ["g1_g2"],
+      };
+    }
     return { status: "pending_manual_hebrew" };
   }
 
@@ -168,6 +276,8 @@ function assertIdMatchesSubject(subjectId, id) {
 const rows = ALL_TAXONOMY_ROWS.map((row) => {
   const mismatch = assertIdMatchesSubject(row.subjectId, row.id);
   const cov = coverageStatus(row.subjectId, row.id);
+  const tplFull = GRADE_AWARE_RECOMMENDATION_TEMPLATES[row.subjectId]?.[row.id];
+  const bgc = bucketGradeCoverageFromOverrides(tplFull);
   /** @type {Record<string, unknown>} */
   const out = {
     subjectId: row.subjectId,
@@ -180,6 +290,7 @@ const rows = ALL_TAXONOMY_ROWS.map((row) => {
   if (cov.missingBucketCoverage) out.missingBucketCoverage = cov.missingBucketCoverage;
   if (cov.coveredGradeBands) out.coveredGradeBands = cov.coveredGradeBands;
   if (cov.missingGradeBands) out.missingGradeBands = cov.missingGradeBands;
+  if (bgc) out.bucketGradeCoverage = bgc;
   return out;
 });
 
@@ -195,9 +306,9 @@ const countByStatus = rows.reduce((acc, r) => {
 
 const manifest = {
   generatedAt: new Date().toISOString(),
-  phase: "2-D3",
+  phase: "3-B2",
   note:
-    "covered_by_template = legacy flat entry with all grade bands non-empty actionTextHe and goalTextHe. partially_covered_by_template = null g1_g2 and/or partial bucket/grade coverage (math M-04, M-05; M-03, M-10; M-07 word_problems; M-08 word_problems/sequences/equations/order_of_operations). pending_manual_hebrew otherwise. Math M-01: partial bucketOverrides (compare, number_sense, estimation); missing zero_one_properties, scale, prime_composite until approved.",
+    "covered_by_template = legacy flat entry with all grade bands non-empty actionTextHe and goalTextHe. partially_covered_by_template = null g1_g2 and/or partial bucket/grade coverage (math M-04, M-05; M-03, M-10; M-07 word_problems; M-08 word_problems/sequences/equations/order_of_operations; geometry G-01 shapes_basic+quadrilaterals+parallel_perpendicular+diagonal+tiling, G-02 angles+circles, G-03 quadrilaterals+heights+area, G-04 transformations+rotation, G-05 solids+volume, G-06 perimeter, G-07 symmetry, G-08 area+triangles+pythagoras). bucketGradeCoverage (when present) lists per-bucket which grade bands have non-null action+goal Hebrew vs null — use when aggregate coveredGradeBands would overstate (e.g. G-05 volume only g5_g6). pending_manual_hebrew otherwise. Math M-01: partial bucketOverrides (compare, number_sense, estimation); missing zero_one_properties, scale, prime_composite until approved.",
   summary: {
     totalRows: rows.length,
     countBySubject,
@@ -250,6 +361,20 @@ const mdLines = [
     return `| ${r.subjectId} | ${r.taxonomyId} | ${r.status} | ${r.idPrefixOk ? "yes" : "no"} | ${p} | ${m} | ${cgb} | ${mgb} |`;
   }),
   "",
+  "## bucketGradeCoverage (extended templates)",
+  "",
+  "Per-bucket `bandsWithHebrew` / `bandsNull` for `g1_g2`, `g3_g4`, `g5_g6` (both `actionTextHe` and `goalTextHe` must be non-empty for “with Hebrew”). See JSON rows for full arrays.",
+  "",
+  ...rows
+    .filter((r) => Array.isArray(r.bucketGradeCoverage) && r.bucketGradeCoverage.length)
+    .map((r) => {
+      const lines = r.bucketGradeCoverage.map((b) => {
+        const wh = Array.isArray(b.bandsWithHebrew) ? b.bandsWithHebrew.join(",") : "";
+        const nl = Array.isArray(b.bandsNull) ? b.bandsNull.join(",") : "";
+        return `  - **${r.taxonomyId}** / \`${b.bucketKey}\`: Hebrew **${wh || "—"}** · null **${nl || "—"}**`;
+      });
+      return [`### ${r.subjectId} ${r.taxonomyId}`, "", ...lines, ""].join("\n");
+    }),
 ];
 
 const mdPath = join(reportsDir, "parent-report-grade-aware-coverage-manifest.md");

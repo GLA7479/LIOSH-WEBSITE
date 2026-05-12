@@ -1,5 +1,5 @@
 /**
- * Grade-aware parent recommendation templates (Phase 1: math M-02, M-09; Phase 2-A1: M-06; Phase 2-A2–A3: partial M-01 bucketOverrides; Phase 2-B4: math M-04, M-05 fractions — g1_g2 null; Phase 2-C3: math M-03, M-10 bucketOverrides; Phase 2-D3: math M-07, M-08 bucketOverrides only).
+ * Grade-aware parent recommendation templates (Phase 1: math M-02, M-09; Phase 2-A1: M-06; Phase 2-A2–A3: partial M-01 bucketOverrides; Phase 2-B4: math M-04, M-05 fractions — g1_g2 null; Phase 2-C3: math M-03, M-10 bucketOverrides; Phase 2-D3: math M-07, M-08 bucketOverrides only; Phase 3-B1: geometry G-02/G-04/G-05/G-06/G-07 bucketOverrides only; Phase 3-B2: geometry G-01/G-03/G-08 bucketOverrides only).
  * Slot-specific Hebrew is editorially approved; do not change without sign-off.
  */
 
@@ -8,8 +8,8 @@
 /** @typedef {{ g1_g2: GradeAwareBandCopy; g3_g4: GradeAwareBandCopy; g5_g6: GradeAwareBandCopy }} GradeAwareTaxonomyTemplate */
 
 /**
- * Math extended entries: `defaultBands` + optional `bucketOverrides` — M-01 (compare, number_sense, estimation); M-03 (multiplication, factors_multiples, powers); M-10 (division, division_with_remainder, ratio, multiplication); M-07 (word_problems); M-08 (word_problems, sequences, equations, order_of_operations).
- * Legacy math taxonomies remain a flat {@link GradeAwareTaxonomyTemplate}.
+ * Math and geometry extended entries: `defaultBands` + optional `bucketOverrides` — M-01 (compare, number_sense, estimation); M-03 (multiplication, factors_multiples, powers); M-10 (division, division_with_remainder, ratio, multiplication); M-07 (word_problems); M-08 (word_problems, sequences, equations, order_of_operations); geometry G-01/G-02/G-03/G-04/G-05/G-06/G-07/G-08 (see bucketOverrides).
+ * Legacy flat taxonomies remain a flat {@link GradeAwareTaxonomyTemplate}.
  * @typedef {{
  *   defaultBands: GradeAwareTaxonomyTemplate;
  *   bucketOverrides?: Partial<Record<string, GradeAwareTaxonomyTemplate>>;
@@ -620,6 +620,653 @@ export const GRADE_AWARE_RECOMMENDATION_TEMPLATES = {
               "בשבוע הקרוב התמקדו באומדן ובבדיקת סבירות בתרגילים מורכבים, לפני הפתרון ולאחריו.",
             intentDescriptionEn:
               "Upper-grade estimation across larger numbers and more complex contexts, including simple fractions, decimals, or percentages, with before-and-after reasonableness checks.",
+          },
+        },
+      },
+    },
+  },
+  geometry: {
+    "G-02": {
+      defaultBands: {
+        g1_g2: {
+          actionTextHe: null,
+          goalTextHe: null,
+          intentDescriptionEn:
+            "G-02 default: no approved parent copy; use bucketOverrides (angles, circles) or engine fallback.",
+        },
+        g3_g4: {
+          actionTextHe: null,
+          goalTextHe: null,
+          intentDescriptionEn:
+            "G-02 default: no approved parent copy; use bucketOverrides (angles, circles) or engine fallback.",
+        },
+        g5_g6: {
+          actionTextHe: null,
+          goalTextHe: null,
+          intentDescriptionEn:
+            "G-02 default: no approved parent copy; use bucketOverrides (angles, circles) or engine fallback.",
+        },
+      },
+      bucketOverrides: {
+        angles: {
+          g1_g2: {
+            actionTextHe: null,
+            goalTextHe: null,
+            intentDescriptionEn:
+              "Keep formal angle recommendations null for grades 1–2 unless product evidence explicitly supports it.",
+          },
+          g3_g4: {
+            actionTextHe:
+              "כדאי לתרגל זיהוי והשוואת זוויות בעזרת ציור ברור או פינה ישרה. בקשו מהילד להסביר אם הזווית קטנה, שווה או גדולה מזווית ישרה, ולסמן את הזווית שעליה הוא מסתכל.",
+            goalTextHe:
+              "בשבוע הקרוב התמקדו בזיהוי זוויות ובהשוואה שלהן לזווית ישרה, תוך סימון ברור של הזווית בציור.",
+            intentDescriptionEn:
+              "Grade 3–4 angle recognition and comparison using a clear drawing and right-angle benchmark.",
+          },
+          g5_g6: {
+            actionTextHe:
+              "כדאי לתרגל מדידה והערכת גודל של זוויות, כולל שימוש נכון במד־זווית כאשר הוא נדרש. בקשו מהילד להסביר מאיפה מתחילים למדוד, איזה קו הוא קו הבסיס, והאם התוצאה הגיונית לפי סוג הזווית.",
+            goalTextHe:
+              "בשבוע הקרוב התמקדו במדידת זוויות, באומדן גודל הזווית ובבדיקת סבירות המדידה לפי סוג הזווית.",
+            intentDescriptionEn:
+              "Grade 5–6 angle measurement and estimation, including correct protractor use and reasonableness checks.",
+          },
+        },
+        circles: {
+          g1_g2: {
+            actionTextHe: null,
+            goalTextHe: null,
+            intentDescriptionEn:
+              "Keep circle recommendations null for grades 1–2 unless product evidence explicitly supports circle properties.",
+          },
+          g3_g4: {
+            actionTextHe:
+              "כדאי לתרגל זיהוי חלקי המעגל בעזרת ציור ברור: מרכז, רדיוס וקוטר. בקשו מהילד לסמן כל חלק בציור ולהסביר מה הקשר שלו למעגל.",
+            goalTextHe:
+              "בשבוע הקרוב התמקדו בזיהוי מרכז, רדיוס וקוטר במעגל ובהסבר התפקיד של כל חלק בציור.",
+            intentDescriptionEn:
+              "Grade 3–4 circle parts: center, radius, diameter, and explaining their role in a clear diagram.",
+          },
+          g5_g6: {
+            actionTextHe:
+              "כדאי לתרגל קשרים בין רדיוס, קוטר ומדידות במעגל. בקשו מהילד לסמן את הנתונים בציור, להסביר איזה גודל חסר, ולבדוק שהתשובה מתאימה לקשר בין רדיוס לקוטר.",
+            goalTextHe:
+              "בשבוע הקרוב התמקדו בקשרים בין רדיוס, קוטר ומדידות במעגל, עם סימון נתונים ובדיקת סבירות.",
+            intentDescriptionEn:
+              "Grade 5–6 circle relationships involving radius, diameter, measurements, diagram marking, and reasonableness checks.",
+          },
+        },
+      },
+    },
+    "G-04": {
+      defaultBands: {
+        g1_g2: {
+          actionTextHe: null,
+          goalTextHe: null,
+          intentDescriptionEn:
+            "G-04 default: no approved parent copy; use bucketOverrides (transformations, rotation) or engine fallback.",
+        },
+        g3_g4: {
+          actionTextHe: null,
+          goalTextHe: null,
+          intentDescriptionEn:
+            "G-04 default: no approved parent copy; use bucketOverrides (transformations, rotation) or engine fallback.",
+        },
+        g5_g6: {
+          actionTextHe: null,
+          goalTextHe: null,
+          intentDescriptionEn:
+            "G-04 default: no approved parent copy; use bucketOverrides (transformations, rotation) or engine fallback.",
+        },
+      },
+      bucketOverrides: {
+        transformations: {
+          g1_g2: {
+            actionTextHe:
+              "כדאי לתרגל הזזה, שיקוף או סיבוב של צורה בעזרת חפץ, ציור או משבצות. בקשו מהילד לבדוק שהצורה עצמה לא השתנתה, אלא רק המקום או הכיוון שלה.",
+            goalTextHe:
+              "בשבוע הקרוב התמקדו בזיהוי שינוי מקום או כיוון של צורה, בלי לשנות את הצורה עצמה.",
+            intentDescriptionEn:
+              "Grade 1–2 concrete transformations: slide, flip, or turn a shape while preserving the shape.",
+          },
+          g3_g4: {
+            actionTextHe:
+              "כדאי לתרגל הזזה, שיקוף וסיבוב על רשת משבצות. בקשו מהילד לתאר מה קרה לצורה: לאן זזה, סביב מה הסתובבה, או ביחס לאיזה קו השתקפה.",
+            goalTextHe:
+              "בשבוע הקרוב התמקדו בתיאור טרנספורמציות של צורות על רשת: הזזה, שיקוף וסיבוב.",
+            intentDescriptionEn:
+              "Grade 3–4 transformations on a grid: translation, reflection, rotation, and describing what changed.",
+          },
+          g5_g6: {
+            actionTextHe:
+              "כדאי לתרגל תיאור מדויק של טרנספורמציות, כולל כיוון, מרחק, קו שיקוף או מרכז סיבוב. בקשו מהילד להשוות בין הצורה המקורית לתמונה שלה ולנמק מה נשמר ומה השתנה.",
+            goalTextHe:
+              "בשבוע הקרוב התמקדו בתיאור מדויק של טרנספורמציות ובהשוואה בין הצורה המקורית לתמונה שלה.",
+            intentDescriptionEn:
+              "Grade 5–6 precise transformation descriptions including direction, distance, reflection line, rotation center, and invariants.",
+          },
+        },
+        rotation: {
+          g1_g2: {
+            actionTextHe:
+              "כדאי לתרגל סיבוב של צורה בעזרת חפץ או ציור. בקשו מהילד להראות איך הצורה נראית אחרי סיבוב קטן או חצי סיבוב, ולבדוק שהצורה עצמה נשארה אותה צורה.",
+            goalTextHe:
+              "בשבוע הקרוב התמקדו בזיהוי צורה לפני ואחרי סיבוב, תוך שמירה על אותה צורה.",
+            intentDescriptionEn:
+              "Grade 1–2 concrete rotation using objects or drawings, recognizing the same shape after turning.",
+          },
+          g3_g4: {
+            actionTextHe:
+              "כדאי לתרגל סיבוב של צורה סביב נקודה, למשל רבע סיבוב או חצי סיבוב. בקשו מהילד לסמן את נקודת הסיבוב ולתאר לאיזה כיוון הצורה הסתובבה.",
+            goalTextHe:
+              "בשבוע הקרוב התמקדו בסיבוב צורות סביב נקודה ובתיאור כיוון וגודל הסיבוב.",
+            intentDescriptionEn:
+              "Grade 3–4 rotation around a point, including quarter-turn/half-turn language and direction.",
+          },
+          g5_g6: {
+            actionTextHe:
+              "כדאי לתרגל סיבובים מדויקים יותר בעזרת מרכז סיבוב, כיוון וזווית סיבוב. בקשו מהילד לבדוק שכל נקודה בתמונה נמצאת במרחק מתאים ממרכז הסיבוב.",
+            goalTextHe:
+              "בשבוע הקרוב התמקדו בסיבוב מדויק של צורות לפי מרכז, כיוון וזווית.",
+            intentDescriptionEn:
+              "Grade 5–6 precise rotation using center, direction, angle, and point-image consistency.",
+          },
+        },
+      },
+    },
+    "G-05": {
+      defaultBands: {
+        g1_g2: {
+          actionTextHe: null,
+          goalTextHe: null,
+          intentDescriptionEn:
+            "G-05 default: no approved parent copy; use bucketOverrides (solids, volume) or engine fallback.",
+        },
+        g3_g4: {
+          actionTextHe: null,
+          goalTextHe: null,
+          intentDescriptionEn:
+            "G-05 default: no approved parent copy; use bucketOverrides (solids, volume) or engine fallback.",
+        },
+        g5_g6: {
+          actionTextHe: null,
+          goalTextHe: null,
+          intentDescriptionEn:
+            "G-05 default: no approved parent copy; use bucketOverrides (solids, volume) or engine fallback.",
+        },
+      },
+      bucketOverrides: {
+        solids: {
+          g1_g2: {
+            actionTextHe:
+              "כדאי לתרגל זיהוי גופים בעזרת חפצים מהבית, כמו קובייה, תיבה, גליל או כדור. בקשו מהילד לתאר מה רואים: פאות, קצוות, צורה עגולה או צורה שטוחה.",
+            goalTextHe:
+              "בשבוע הקרוב התמקדו בזיהוי גופים ובהבחנה בין צורות שטוחות לגופים במרחב.",
+            intentDescriptionEn:
+              "Grade 1–2 solid recognition using everyday objects and simple spatial language.",
+          },
+          g3_g4: {
+            actionTextHe:
+              "כדאי לתרגל זיהוי גופים ותיאור התכונות שלהם: פאות, קודקודים, מקצועות וצורת הפאות. בקשו מהילד להסביר לפי אילו סימנים הוא מזהה את הגוף.",
+            goalTextHe:
+              "בשבוע הקרוב התמקדו בתיאור גופים לפי פאות, קודקודים, מקצועות וצורת הפאות.",
+            intentDescriptionEn:
+              "Grade 3–4 solid properties: faces, vertices, edges, face shapes, and justification of identification.",
+          },
+          g5_g6: {
+            actionTextHe:
+              "כדאי לתרגל קשר בין גוף, פריסה ומידות. בקשו מהילד לזהות אילו פאות מרכיבות את הגוף, איך הן מתחברות, ואיך הנתונים בציור קשורים למבנה התלת־ממדי.",
+            goalTextHe:
+              "בשבוע הקרוב התמקדו בקשר בין גוף, פריסה ומידות, ובהבנת המבנה התלת־ממדי מתוך ציור או נתונים.",
+            intentDescriptionEn:
+              "Grade 5–6 solids, nets, measurements, and connecting 2D representations to 3D structure.",
+          },
+        },
+        volume: {
+          g1_g2: {
+            actionTextHe: null,
+            goalTextHe: null,
+            intentDescriptionEn: "Keep formal volume recommendations null for grades 1–2.",
+          },
+          g3_g4: {
+            actionTextHe: null,
+            goalTextHe: null,
+            intentDescriptionEn:
+              "Keep formal volume recommendations null for grades 3–4 unless product evidence explicitly supports volume at this level.",
+          },
+          g5_g6: {
+            actionTextHe:
+              "כדאי לתרגל נפח של תיבה או גוף פשוט בעזרת פירוק למידות: אורך, רוחב וגובה. בקשו מהילד להסביר מה מייצגת כל מידה, לבחור יחידות מתאימות, ולבדוק שהתשובה היא ביחידות נפח.",
+            goalTextHe:
+              "בשבוע הקרוב התמקדו בחישוב נפח בעזרת אורך, רוחב וגובה, עם הקפדה על יחידות נפח ובדיקת סבירות.",
+            intentDescriptionEn:
+              "Grade 5–6 volume of simple solids using length, width, height, units, and reasonableness checks.",
+          },
+        },
+      },
+    },
+    "G-06": {
+      defaultBands: {
+        g1_g2: {
+          actionTextHe: null,
+          goalTextHe: null,
+          intentDescriptionEn:
+            "G-06 default: no approved parent copy; use bucketOverrides (perimeter) or engine fallback.",
+        },
+        g3_g4: {
+          actionTextHe: null,
+          goalTextHe: null,
+          intentDescriptionEn:
+            "G-06 default: no approved parent copy; use bucketOverrides (perimeter) or engine fallback.",
+        },
+        g5_g6: {
+          actionTextHe: null,
+          goalTextHe: null,
+          intentDescriptionEn:
+            "G-06 default: no approved parent copy; use bucketOverrides (perimeter) or engine fallback.",
+        },
+      },
+      bucketOverrides: {
+        perimeter: {
+          g1_g2: {
+            actionTextHe: null,
+            goalTextHe: null,
+            intentDescriptionEn: "Keep formal perimeter recommendations null for grades 1–2.",
+          },
+          g3_g4: {
+            actionTextHe:
+              "כדאי לתרגל היקף על ידי סימון כל צלע בציור וחיבור אורכי הצלעות. בקשו מהילד לוודא שלא דילג על צלע, שלא ספר צלע פעמיים, ושכתב יחידת אורך מתאימה.",
+            goalTextHe:
+              "בשבוע הקרוב התמקדו בחישוב היקף על ידי חיבור כל הצלעות ושמירה על יחידות אורך.",
+            intentDescriptionEn:
+              "Grade 3–4 perimeter as sum of side lengths, marking each side and using correct length units.",
+          },
+          g5_g6: {
+            actionTextHe:
+              "כדאי לתרגל היקף של צורות מורכבות יותר, כולל מציאת צלעות חסרות לפי הנתונים בציור. בקשו מהילד לסמן את כל הצלעות הדרושות, לבדוק יחידות, ולהסביר מדוע כל אורך נכלל בהיקף.",
+            goalTextHe:
+              "בשבוע הקרוב התמקדו בהיקף של צורות מורכבות, מציאת צלעות חסרות ובדיקת יחידות.",
+            intentDescriptionEn:
+              "Grade 5–6 perimeter of composite or more complex shapes, missing sides, units, and justification.",
+          },
+        },
+      },
+    },
+    "G-07": {
+      defaultBands: {
+        g1_g2: {
+          actionTextHe: null,
+          goalTextHe: null,
+          intentDescriptionEn:
+            "G-07 default: no approved parent copy; use bucketOverrides (symmetry) or engine fallback.",
+        },
+        g3_g4: {
+          actionTextHe: null,
+          goalTextHe: null,
+          intentDescriptionEn:
+            "G-07 default: no approved parent copy; use bucketOverrides (symmetry) or engine fallback.",
+        },
+        g5_g6: {
+          actionTextHe: null,
+          goalTextHe: null,
+          intentDescriptionEn:
+            "G-07 default: no approved parent copy; use bucketOverrides (symmetry) or engine fallback.",
+        },
+      },
+      bucketOverrides: {
+        symmetry: {
+          g1_g2: {
+            actionTextHe:
+              "כדאי לתרגל סימטריה בעזרת קיפול נייר או ציור פשוט. בקשו מהילד לבדוק אם שני הצדדים נראים כמו תמונת מראה זה של זה.",
+            goalTextHe:
+              "בשבוע הקרוב התמקדו בזיהוי סימטריה בעזרת קיפול או השוואה בין שני צדדים של צורה.",
+            intentDescriptionEn:
+              "Grade 1–2 symmetry through folding, mirror-like matching, and simple visual comparison.",
+          },
+          g3_g4: {
+            actionTextHe:
+              "כדאי לתרגל זיהוי קו סימטריה והשלמת חצי חסר של צורה. בקשו מהילד לבדוק שכל נקודה בצד אחד מתאימה לנקודה בצד השני באותו מרחק מקו הסימטריה.",
+            goalTextHe:
+              "בשבוע הקרוב התמקדו בזיהוי קווי סימטריה ובהשלמת צורות לפי מרחק שווה מקו הסימטריה.",
+            intentDescriptionEn:
+              "Grade 3–4 symmetry lines and completing shapes using equal distance from the line of symmetry.",
+          },
+          g5_g6: {
+            actionTextHe:
+              "כדאי לתרגל סימטריה בצורות מורכבות יותר, כולל בדיקה אם יש יותר מקו סימטריה אחד. בקשו מהילד לנמק מדוע קו מסוים הוא קו סימטריה או מדוע הוא אינו מתאים.",
+            goalTextHe:
+              "בשבוע הקרוב התמקדו בנימוק קווי סימטריה בצורות מורכבות ובבדיקה אם קיימים כמה קווי סימטריה.",
+            intentDescriptionEn:
+              "Grade 5–6 symmetry in more complex shapes, multiple symmetry lines, and justification.",
+          },
+        },
+      },
+    },
+    "G-01": {
+      defaultBands: {
+        g1_g2: {
+          actionTextHe: null,
+          goalTextHe: null,
+          intentDescriptionEn:
+            "G-01 default: no approved parent copy; use bucketOverrides (shapes_basic, quadrilaterals, parallel_perpendicular, diagonal, tiling) or engine fallback.",
+        },
+        g3_g4: {
+          actionTextHe: null,
+          goalTextHe: null,
+          intentDescriptionEn:
+            "G-01 default: no approved parent copy; use bucketOverrides (shapes_basic, quadrilaterals, parallel_perpendicular, diagonal, tiling) or engine fallback.",
+        },
+        g5_g6: {
+          actionTextHe: null,
+          goalTextHe: null,
+          intentDescriptionEn:
+            "G-01 default: no approved parent copy; use bucketOverrides (shapes_basic, quadrilaterals, parallel_perpendicular, diagonal, tiling) or engine fallback.",
+        },
+      },
+      bucketOverrides: {
+        shapes_basic: {
+          g1_g2: {
+            actionTextHe:
+              "כדאי לתרגל זיהוי צורות בסיסיות בעזרת ציור או חפצים מוכרים. בקשו מהילד לומר את שם הצורה ולהסביר לפי סימן אחד ברור, למשל מספר צלעות או פינות.",
+            goalTextHe:
+              "בשבוע הקרוב התמקדו בזיהוי צורות בסיסיות ובהסבר פשוט לפי צלעות, פינות וצורה כללית.",
+            intentDescriptionEn:
+              "Grade 1–2 basic shape recognition using familiar objects or drawings, with simple properties such as sides and corners.",
+          },
+          g3_g4: {
+            actionTextHe:
+              "כדאי לתרגל מיון צורות לפי תכונות ברורות: מספר צלעות, מספר קודקודים, צלעות שוות או זוויות ישרות. בקשו מהילד להסביר לפי איזו תכונה הוא שייך כל צורה לקבוצה.",
+            goalTextHe:
+              "בשבוע הקרוב התמקדו במיון צורות לפי תכונות גאומטריות ברורות ובהסבר הבחירה.",
+            intentDescriptionEn:
+              "Grade 3–4 shape classification by clear geometric properties such as sides, vertices, equal sides, and right angles.",
+          },
+          g5_g6: {
+            actionTextHe:
+              "כדאי לתרגל ניתוח תכונות של צורות והשוואה בין משפחות של צורות. בקשו מהילד לנמק אילו תכונות משותפות לצורות ואילו תכונות מבדילות ביניהן.",
+            goalTextHe:
+              "בשבוע הקרוב התמקדו בהשוואת צורות לפי תכונות ובנימוק הקשר בין משפחות של צורות.",
+            intentDescriptionEn:
+              "Grade 5–6 analysis and comparison of shape properties and relationships between shape families.",
+          },
+        },
+        quadrilaterals: {
+          g1_g2: {
+            actionTextHe: null,
+            goalTextHe: null,
+            intentDescriptionEn:
+              "Keep formal quadrilateral property recommendations null for grades 1–2 unless product evidence explicitly supports it.",
+          },
+          g3_g4: {
+            actionTextHe:
+              "כדאי לתרגל זיהוי מרובעים לפי תכונות: ארבע צלעות, צלעות נגדיות, זוויות ישרות וצלעות שוות. בקשו מהילד להסביר איזו תכונה עזרה לו לזהות את סוג המרובע.",
+            goalTextHe:
+              "בשבוע הקרוב התמקדו בזיהוי מרובעים לפי תכונות ולא רק לפי המראה הכללי של הצורה.",
+            intentDescriptionEn:
+              "Grade 3–4 quadrilateral identification using properties such as four sides, opposite sides, right angles, and equal sides.",
+          },
+          g5_g6: {
+            actionTextHe:
+              "כדאי לתרגל השוואה בין סוגי מרובעים לפי תכונות מדויקות, כמו מקבילות, שוויון צלעות, זוויות ואלכסונים. בקשו מהילד לנמק מדוע צורה שייכת למשפחה מסוימת של מרובעים.",
+            goalTextHe:
+              "בשבוע הקרוב התמקדו בקשרים בין משפחות מרובעים ובהוכחת הסיווג לפי תכונות מדויקות.",
+            intentDescriptionEn:
+              "Grade 5–6 quadrilateral classification and relationships using parallelism, equal sides, angles, diagonals, and justification.",
+          },
+        },
+        parallel_perpendicular: {
+          g1_g2: {
+            actionTextHe: null,
+            goalTextHe: null,
+            intentDescriptionEn: "Keep formal parallel/perpendicular recommendations null for grades 1–2.",
+          },
+          g3_g4: {
+            actionTextHe:
+              "כדאי לתרגל זיהוי ישרים מקבילים ומאונכים בעזרת ציור ברור. בקשו מהילד להסביר אם הקווים נפגשים, אם הם יוצרים זווית ישרה, או אם הם שומרים על אותו מרחק.",
+            goalTextHe:
+              "בשבוע הקרוב התמקדו בזיהוי מקבילים ומאונכים בעזרת ציור והסבר של הקשר בין הקווים.",
+            intentDescriptionEn:
+              "Grade 3–4 identifying parallel and perpendicular lines using drawings, right angles, intersection, and equal distance.",
+          },
+          g5_g6: {
+            actionTextHe:
+              "כדאי לתרגל שימוש במקבילים ומאונכים בתוך צורות, במיוחד במרובעים ובשרטוטים מורכבים יותר. בקשו מהילד לנמק איך היחסים בין הקווים עוזרים לזהות את תכונות הצורה.",
+            goalTextHe:
+              "בשבוע הקרוב התמקדו בשימוש במקבילים ומאונכים כדי להסביר תכונות של צורות.",
+            intentDescriptionEn:
+              "Grade 5–6 using parallel and perpendicular relationships inside shapes to justify geometric properties.",
+          },
+        },
+        diagonal: {
+          g1_g2: {
+            actionTextHe: null,
+            goalTextHe: null,
+            intentDescriptionEn: "Keep diagonal recommendations null for grades 1–2.",
+          },
+          g3_g4: {
+            actionTextHe:
+              "כדאי לתרגל זיהוי אלכסון במצולע: קו שמחבר בין שני קודקודים שאינם סמוכים. בקשו מהילד לסמן אלכסון אחד ולהסביר מדוע הוא אינו צלע.",
+            goalTextHe:
+              "בשבוע הקרוב התמקדו בזיהוי אלכסונים ובהבחנה בינם לבין צלעות.",
+            intentDescriptionEn:
+              "Grade 3–4 identifying diagonals as segments between non-adjacent vertices and distinguishing them from sides.",
+          },
+          g5_g6: {
+            actionTextHe:
+              "כדאי לתרגל שימוש באלכסונים כדי להבין תכונות של מרובעים, כמו חלוקה למשולשים, שוויון או חצייה. בקשו מהילד להסביר מה האלכסון מגלה על הצורה.",
+            goalTextHe:
+              "בשבוע הקרוב התמקדו בקשר בין אלכסונים לתכונות של מרובעים.",
+            intentDescriptionEn:
+              "Grade 5–6 using diagonals to reason about quadrilateral properties, triangle decomposition, equality, and bisection.",
+          },
+        },
+        tiling: {
+          g1_g2: {
+            actionTextHe:
+              "כדאי לתרגל ריצוף בעזרת צורות פשוטות: לבדוק אילו צורות מכסות שטח בלי רווחים ובלי חפיפה. בקשו מהילד להסביר מה קרה כשניסו לסדר את הצורות זו ליד זו.",
+            goalTextHe:
+              "בשבוע הקרוב התמקדו בריצוף פשוט של שטח בעזרת צורות, בלי רווחים ובלי חפיפות.",
+            intentDescriptionEn:
+              "Grade 1–2 simple tiling with shapes, covering space without gaps or overlaps.",
+          },
+          g3_g4: {
+            actionTextHe:
+              "כדאי לתרגל ריצוף בעזרת מצולעים ולבדוק אילו תכונות מאפשרות לצורות לכסות שטח בלי רווחים. בקשו מהילד להסביר את הדפוס שנוצר ואת הסיבה שהוא עובד.",
+            goalTextHe:
+              "בשבוע הקרוב התמקדו בריצוף, בדפוסים ובבדיקה מדוע צורות מסוימות מכסות שטח באופן מלא.",
+            intentDescriptionEn:
+              "Grade 3–4 tiling with polygons, patterns, and explaining why shapes cover a region without gaps.",
+          },
+          g5_g6: {
+            actionTextHe:
+              "כדאי לתרגל ניתוח ריצופים ודפוסים גאומטריים לפי זוויות, צלעות וחזרות. בקשו מהילד לנמק מדוע הדפוס ממשיך לכסות את השטח בלי רווחים או חפיפות.",
+            goalTextHe:
+              "בשבוע הקרוב התמקדו בניתוח ריצופים לפי תכונות גאומטריות ובנימוק הדפוס החוזר.",
+            intentDescriptionEn:
+              "Grade 5–6 analyzing tessellations and geometric patterns using angles, sides, repetition, and justification.",
+          },
+        },
+      },
+    },
+    "G-03": {
+      defaultBands: {
+        g1_g2: {
+          actionTextHe: null,
+          goalTextHe: null,
+          intentDescriptionEn:
+            "G-03 default: no approved parent copy; use bucketOverrides (quadrilaterals, heights, area) or engine fallback.",
+        },
+        g3_g4: {
+          actionTextHe: null,
+          goalTextHe: null,
+          intentDescriptionEn:
+            "G-03 default: no approved parent copy; use bucketOverrides (quadrilaterals, heights, area) or engine fallback.",
+        },
+        g5_g6: {
+          actionTextHe: null,
+          goalTextHe: null,
+          intentDescriptionEn:
+            "G-03 default: no approved parent copy; use bucketOverrides (quadrilaterals, heights, area) or engine fallback.",
+        },
+      },
+      bucketOverrides: {
+        quadrilaterals: {
+          g1_g2: {
+            actionTextHe: null,
+            goalTextHe: null,
+            intentDescriptionEn:
+              "Keep advanced quadrilateral area/height recommendations null for grades 1–2.",
+          },
+          g3_g4: {
+            actionTextHe:
+              "כדאי לתרגל מרובעים דרך בסיס, גובה ושרטוט מסודר. בקשו מהילד לסמן את הצלע שאליה מתייחסים ואת הגובה המתאים, ולהסביר מדוע הגובה חייב להיות מאונך לבסיס.",
+            goalTextHe:
+              "בשבוע הקרוב התמקדו בזיהוי בסיס וגובה במרובעים ובהבנה שהגובה מאונך לבסיס.",
+            intentDescriptionEn:
+              "Grade 3–4 quadrilateral reasoning with base, height, and the perpendicular relationship between them.",
+          },
+          g5_g6: {
+            actionTextHe:
+              "כדאי לתרגל חישובי שטח במרובעים תוך התאמת הנוסחה לצורה ולנתונים. בקשו מהילד לסמן בסיס וגובה, לבדוק שהם מתאימים זה לזה, ולהסביר למה הנוסחה שבחר מתאימה לצורה.",
+            goalTextHe:
+              "בשבוע הקרוב התמקדו בשטחי מרובעים, בהתאמת בסיס וגובה ובבחירת נוסחה מתאימה לפי הצורה.",
+            intentDescriptionEn:
+              "Grade 5–6 quadrilateral area reasoning using matched base-height pairs and selecting the appropriate formula.",
+          },
+        },
+        heights: {
+          g1_g2: {
+            actionTextHe: null,
+            goalTextHe: null,
+            intentDescriptionEn: "Keep formal height recommendations null for grades 1–2.",
+          },
+          g3_g4: {
+            actionTextHe:
+              "כדאי לתרגל זיהוי גובה בצורות בעזרת סימון בסיס וגובה בציור. בקשו מהילד לבדוק שהגובה יורד אל הבסיס בזווית ישרה ולא סתם מחבר שתי נקודות בציור.",
+            goalTextHe:
+              "בשבוע הקרוב התמקדו בזיהוי גובה כקטע מאונך לבסיס בתוך שרטוט גאומטרי.",
+            intentDescriptionEn:
+              "Grade 3–4 identifying height as a perpendicular segment to a base, not just any segment in the diagram.",
+          },
+          g5_g6: {
+            actionTextHe:
+              "כדאי לתרגל שימוש בגובה בחישובי שטח, במיוחד כאשר הצורה משורטטת בצורה לא רגילה. בקשו מהילד לסמן בסיס וגובה מתאימים ולבדוק שהנתונים שבחר באמת שייכים לאותה נוסחה.",
+            goalTextHe:
+              "בשבוע הקרוב התמקדו בהתאמת גובה לבסיס ובשימוש נכון בהם בחישובי שטח.",
+            intentDescriptionEn:
+              "Grade 5–6 using height correctly in area calculations, matching base and height even in non-standard diagrams.",
+          },
+        },
+        area: {
+          g1_g2: {
+            actionTextHe: null,
+            goalTextHe: null,
+            intentDescriptionEn: "Keep formal area recommendations null for grades 1–2.",
+          },
+          g3_g4: {
+            actionTextHe:
+              "כדאי לתרגל שטח בעזרת כיסוי משבצות או פירוק הצורה לחלקים פשוטים. בקשו מהילד להסביר מה בדיוק סופרים או מודדים, ולבדוק שלא בלבל בין שטח להיקף.",
+            goalTextHe:
+              "בשבוע הקרוב התמקדו בהבנת שטח ככיסוי של אזור ובהבחנה בין שטח להיקף.",
+            intentDescriptionEn:
+              "Grade 3–4 area as covering a region, using grid squares or decomposition, and distinguishing area from perimeter.",
+          },
+          g5_g6: {
+            actionTextHe:
+              "כדאי לתרגל חישובי שטח בצורות מורכבות בעזרת פירוק והרכבה. בקשו מהילד להסביר אילו חלקים חישב, באיזו נוסחה השתמש לכל חלק, ואיך חיבר את התוצאות.",
+            goalTextHe:
+              "בשבוע הקרוב התמקדו בחישוב שטחים בצורות מורכבות בעזרת פירוק, נוסחאות מתאימות ובדיקת סבירות.",
+            intentDescriptionEn:
+              "Grade 5–6 area of composite shapes using decomposition, appropriate formulas, and reasonableness checks.",
+          },
+        },
+      },
+    },
+    "G-08": {
+      defaultBands: {
+        g1_g2: {
+          actionTextHe: null,
+          goalTextHe: null,
+          intentDescriptionEn:
+            "G-08 default: no approved parent copy; use bucketOverrides (area, triangles, pythagoras) or engine fallback.",
+        },
+        g3_g4: {
+          actionTextHe: null,
+          goalTextHe: null,
+          intentDescriptionEn:
+            "G-08 default: no approved parent copy; use bucketOverrides (area, triangles, pythagoras) or engine fallback.",
+        },
+        g5_g6: {
+          actionTextHe: null,
+          goalTextHe: null,
+          intentDescriptionEn:
+            "G-08 default: no approved parent copy; use bucketOverrides (area, triangles, pythagoras) or engine fallback.",
+        },
+      },
+      bucketOverrides: {
+        area: {
+          g1_g2: {
+            actionTextHe: null,
+            goalTextHe: null,
+            intentDescriptionEn: "Keep formula-based area recommendations null for grades 1–2.",
+          },
+          g3_g4: {
+            actionTextHe: null,
+            goalTextHe: null,
+            intentDescriptionEn:
+              "Keep formula-based advanced area recommendations null for grades 3–4 unless item evidence explicitly supports it.",
+          },
+          g5_g6: {
+            actionTextHe:
+              "כדאי לתרגל שימוש בנוסחאות שטח תוך התאמת הנוסחה לצורה ולנתונים. בקשו מהילד לסמן את הנתונים בציור, להציב אותם בנוסחה בצורה מסודרת, ולבדוק שהיחידות הן יחידות שטח.",
+            goalTextHe:
+              "בשבוע הקרוב התמקדו בבחירת נוסחת שטח מתאימה, הצבת נתונים מסודרת ובדיקת יחידות שטח.",
+            intentDescriptionEn:
+              "Grade 5–6 formula-based area reasoning: choose the correct formula, substitute values, and check square units.",
+          },
+        },
+        triangles: {
+          g1_g2: {
+            actionTextHe: null,
+            goalTextHe: null,
+            intentDescriptionEn:
+              "Keep formal triangle area/property recommendations null for grades 1–2.",
+          },
+          g3_g4: {
+            actionTextHe:
+              "כדאי לתרגל זיהוי תכונות של משולשים, כמו מספר צלעות, קודקודים וזוויות, והשוואה בין סוגי משולשים פשוטים. בקשו מהילד לנמק לפי איזו תכונה הוא מזהה את המשולש.",
+            goalTextHe:
+              "בשבוע הקרוב התמקדו בזיהוי משולשים והשוואה ביניהם לפי תכונות ברורות.",
+            intentDescriptionEn:
+              "Grade 3–4 triangle identification and comparison using clear properties such as sides, vertices, and angles.",
+          },
+          g5_g6: {
+            actionTextHe:
+              "כדאי לתרגל שטח משולש בעזרת בסיס וגובה, ולהבין מדוע מחלקים את מכפלת הבסיס והגובה ב־2. בקשו מהילד לסמן בסיס וגובה מתאימים ולבדוק שהגובה מאונך לבסיס.",
+            goalTextHe:
+              "בשבוע הקרוב התמקדו בשטח משולש, התאמת בסיס וגובה והבנת הקשר לשטח מלבן או מקבילית.",
+            intentDescriptionEn:
+              "Grade 5–6 triangle area using base and height, understanding the divide-by-two relationship to rectangles/parallelograms.",
+          },
+        },
+        pythagoras: {
+          g1_g2: {
+            actionTextHe: null,
+            goalTextHe: null,
+            intentDescriptionEn: "Keep Pythagoras recommendations null for grades 1–2.",
+          },
+          g3_g4: {
+            actionTextHe: null,
+            goalTextHe: null,
+            intentDescriptionEn: "Keep Pythagoras recommendations null for grades 3–4.",
+          },
+          g5_g6: {
+            actionTextHe:
+              "כדאי לתרגל את משפט פיתגורס רק במשולשים ישרי־זווית. בקשו מהילד לזהות קודם את הזווית הישרה, לסמן את היתר ואת הניצבים, ואז להציב בזהירות בנוסחה ולבדוק שהתוצאה הגיונית.",
+            goalTextHe:
+              "בשבוע הקרוב התמקדו בזיהוי משולש ישר־זווית, סימון היתר והניצבים, ושימוש מסודר במשפט פיתגורס.",
+            intentDescriptionEn:
+              "Grade 5–6 Pythagoras only in right triangles: identify right angle, hypotenuse, legs, substitute carefully, and check reasonableness.",
           },
         },
       },
