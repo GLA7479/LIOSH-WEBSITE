@@ -5,8 +5,8 @@ import DevCoinTopupNav from "./layout/DevCoinTopupNav";
 
 const menuLinksBase = [
   { href: "/", label: "בית" },
-  { href: "/parent/login", label: "כניסת הורים" },
-  { href: "/student/login", label: "כניסת תלמיד" },
+  { href: "/parent/login", label: "עמוד הורים" },
+  { href: "/student/home", label: "עמוד תלמיד" },
   { href: "/game", label: "משחקים" },
   { href: "/offline", label: "לא מקוון" },
   { href: "/learning", label: "לימודים" },

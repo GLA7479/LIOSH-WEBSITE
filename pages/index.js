@@ -1,11 +1,35 @@
 import { useEffect, useState } from "react";
+import { useRouter } from "next/router";
 import Layout from "../components/Layout";
 import Link from "next/link";
 import InstallAppPrompt from "../components/InstallAppPrompt";
 import InstallAppButton from "../components/InstallAppButton";
 
 export default function HomePage() {
+  const router = useRouter();
   const [playerName, setPlayerName] = useState("");
+  const [learningZoneBusy, setLearningZoneBusy] = useState(false);
+
+  const goStudentLearningZone = async () => {
+    setLearningZoneBusy(true);
+    try {
+      const res = await fetch("/api/student/me", {
+        credentials: "include",
+        cache: "no-store",
+        headers: { Accept: "application/json" },
+      });
+      const payload = await res.json().catch(() => ({}));
+      if (res.ok && payload?.student?.id) {
+        await router.push("/student/home");
+      } else {
+        await router.push("/student/login");
+      }
+    } catch {
+      await router.push("/student/login");
+    } finally {
+      setLearningZoneBusy(false);
+    }
+  };
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -39,7 +63,12 @@ export default function HomePage() {
         </section>
 
         <section className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          <Link href="/learning" className="group rounded-2xl bg-gradient-to-br from-amber-500/60 to-rose-600/70 p-[1px]">
+          <button
+            type="button"
+            disabled={learningZoneBusy}
+            onClick={() => void goStudentLearningZone()}
+            className="group rounded-2xl bg-gradient-to-br from-amber-500/60 to-rose-600/70 p-[1px] text-right w-full disabled:opacity-60 disabled:pointer-events-none"
+          >
             <div className="h-full rounded-2xl bg-black/60 p-5 flex flex-col justify-between">
               <div className="space-y-3">
                 <div className="text-4xl">📚</div>
@@ -50,10 +79,10 @@ export default function HomePage() {
               </div>
               <span className="mt-4 inline-flex items-center gap-2 text-sm font-semibold text-amber-200 group-hover:-translate-x-1 transition">
                 <span>←</span>
-                כניסה ללימודים
+                {learningZoneBusy ? "טוען..." : "כניסה לאזור התלמיד"}
               </span>
             </div>
-          </Link>
+          </button>
 
           <Link href="/offline" className="group rounded-2xl bg-gradient-to-br from-emerald-500/60 to-teal-600/70 p-[1px]">
             <div className="h-full rounded-2xl bg-black/60 p-5 flex flex-col justify-between">
