@@ -16,7 +16,6 @@ import {
   saveScoreEntry,
 } from "../../utils/geometry-storage";
 import {
-  loadGeometryIntel,
   persistGeometryIntel,
   recordGeometryAnswerIntel,
   getGeometryTopicInsights,
@@ -60,7 +59,6 @@ import {
 } from "../../utils/learning-ui-classes";
 import {
   addSessionProgress,
-  loadMonthlyProgress,
   loadRewardChoice,
   saveRewardChoice,
   getCurrentYearMonth,
@@ -74,7 +72,6 @@ import {
 } from "../../data/reward-options";
 import { splitRewardAmountLabel } from "../../utils/dashboard-setup-ui";
 import {
-  loadDailyStreak,
   updateDailyStreak,
   getStreakReward,
 } from "../../utils/daily-streak";
@@ -130,6 +127,13 @@ import {
   gradeKeyToNumber,
   normalizeGradeLevelToKey,
 } from "../../lib/learning-student-defaults";
+import {
+  debounceStudentLearningProfilePatch,
+  fetchStudentLearningProfile,
+  patchStudentLearningProfile,
+  refreshStudentLearningProfileAfterSession,
+  getCachedStudentLearningProfile,
+} from "../../lib/learning-client/studentLearningProfileClient";
 
 /** Passed into compareGeometryLearnerAnswer — not defaulted inside answer-compare. */
 const GEOMETRY_NUMERIC_SCALE_FLOOR = 1e-6;
@@ -189,6 +193,10 @@ export default function GeometryMaster() {
   const yearMonthRef = useRef(getCurrentYearMonth());
   const geometryPendingDiagnosticProbeRef = useRef(null);
   const geometryHypothesisLedgerRef = useRef(null);
+  const learningProfileStudentIdRef = useRef(null);
+  const learningProfileHydratedRef = useRef(false);
+  const scoresStoreRef = useRef({});
+  const progressLoadedRef = useRef(false);
 
   // פונקציה עזר לקבלת מפתח תאריך
   const getTodayKey = () => {
@@ -237,13 +245,11 @@ export default function GeometryMaster() {
   // תרגול ממוקד
   const [focusedPracticeMode, setFocusedPracticeMode] = useState("normal"); // "normal", "mistakes", "graded"
   const [practiceFocus, setPracticeFocus] = useState("default");
-  const [mistakes, setMistakes] = useState(() => {
-    if (typeof window !== "undefined") {
-      return safeGetJsonArray("mleo_geometry_mistakes");
-    }
-    return [];
-  });
-  const [learningIntel, setLearningIntel] = useState(() => loadGeometryIntel());
+  const [mistakes, setMistakes] = useState([]);
+  const [learningIntel, setLearningIntel] = useState(() => ({
+    topicStats: {},
+    recentTail: [],
+  }));
   const mistakeQueueRef = useRef([]);
   const mistakeCursorRef = useRef(0);
   const correctRef = useRef(0);
@@ -261,17 +267,10 @@ export default function GeometryMaster() {
     pythagoras: { total: 0, correct: 0 },
   });
   const [dailyChallenge, setDailyChallenge] = useState(() => {
-    if (typeof window !== "undefined") {
-      try {
-        const saved = safeGetJsonObject("mleo_geometry_daily_challenge");
-        const todayKey = getTodayKey();
-        if (saved.date === todayKey) {
-          return saved;
-        }
-      } catch {}
-    }
+    const today = new Date();
+    const todayKey = `${today.getFullYear()}-${today.getMonth()}-${today.getDate()}`;
     return {
-      date: getTodayKey(),
+      date: todayKey,
       questions: 0,
       correct: 0,
       bestScore: 0,
@@ -279,20 +278,10 @@ export default function GeometryMaster() {
     };
   });
   const [weeklyChallenge, setWeeklyChallenge] = useState(() => {
-    if (typeof window !== "undefined") {
-      try {
-        const saved = safeGetJsonObject("mleo_weekly_challenge");
-        const today = new Date();
-        const weekStart = new Date(today.setDate(today.getDate() - today.getDay()));
-        const weekKey = `${weekStart.getFullYear()}-${weekStart.getMonth()}-${weekStart.getDate()}`;
-        if (saved.week === weekKey) {
-          return saved;
-        }
-      } catch {}
-    }
+    const today = new Date();
     return {
-      week: getTodayKey().split('-').slice(0, 2).join('-'), // שבוע נוכחי
-      target: 100, // יעד: 100 שאלות נכונות
+      week: `${today.getFullYear()}-${today.getMonth()}-${today.getDate()}`,
+      target: 100,
       current: 0,
       completed: false,
     };
@@ -325,7 +314,7 @@ export default function GeometryMaster() {
   const [referenceCategory, setReferenceCategory] = useState("shapes");
   
   // Daily Streak
-  const [dailyStreak, setDailyStreak] = useState(() => loadDailyStreak("mleo_geometry_daily_streak"));
+  const [dailyStreak, setDailyStreak] = useState({ streak: 0, lastDate: null });
   const [showStreakReward, setShowStreakReward] = useState(null);
   
   // Sound system
@@ -387,20 +376,88 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
 const refreshMonthlyProgress = useCallback(() => {
   if (typeof window === "undefined") return;
   try {
-    const all = loadMonthlyProgress();
-    const current = all[yearMonthRef.current] || { totalMinutes: 0, totalExercises: 0 };
-    setMonthlyProgress(current);
+    const profile = getCachedStudentLearningProfile();
+    const sid = learningProfileStudentIdRef.current || undefined;
+    const mins = profile?.derived?.monthlyMinutesUtcMonth ?? 0;
+    const ex = profile?.derived?.monthlyAnswersCountUtcMonth ?? 0;
+    setMonthlyProgress({ totalMinutes: mins, totalExercises: ex });
     const percent = MONTHLY_MINUTES_TARGET
-      ? Math.min(100, Math.round((current.totalMinutes / MONTHLY_MINUTES_TARGET) * 100))
+      ? Math.min(100, Math.round((mins / MONTHLY_MINUTES_TARGET) * 100))
       : 0;
     setGoalPercent(percent);
-    setMinutesRemaining(Math.max(0, MONTHLY_MINUTES_TARGET - current.totalMinutes));
-    const choice = loadRewardChoice(yearMonthRef.current);
+    setMinutesRemaining(Math.max(0, MONTHLY_MINUTES_TARGET - mins));
+    const ym = yearMonthRef.current;
+    const choiceFromServer = profile?.row?.monthly?.rewardChoices?.[ym];
+    const choice =
+      choiceFromServer != null && choiceFromServer !== ""
+        ? choiceFromServer
+        : loadRewardChoice(ym, sid);
     setRewardChoice(choice);
   } catch {
     // ignore
   }
 }, []);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetchStudentLearningProfile()
+      .then((profile) => {
+        if (cancelled) return;
+        if (!profile?.ok) {
+          learningProfileHydratedRef.current = true;
+          progressLoadedRef.current = true;
+          refreshMonthlyProgress();
+          return;
+        }
+        learningProfileStudentIdRef.current = profile.studentId;
+        const sub = profile.row.subjects?.geometry;
+        if (sub && typeof sub === "object") {
+          const ps = sub.progressStore;
+          if (ps && typeof ps === "object") {
+            if (typeof ps.stars === "number") setStars(ps.stars);
+            if (Array.isArray(ps.badges)) setBadges(ps.badges);
+            if (typeof ps.playerLevel === "number") setPlayerLevel(ps.playerLevel);
+            if (typeof ps.xp === "number") setXp(ps.xp);
+            if (ps.progress && typeof ps.progress === "object") {
+              setProgress((prev) => ({ ...prev, ...ps.progress }));
+            }
+          }
+          if (sub.scoresStore && typeof sub.scoresStore === "object") {
+            scoresStoreRef.current = sub.scoresStore;
+          }
+          if (Array.isArray(sub.mistakes)) setMistakes(sub.mistakes);
+          if (sub.intel && typeof sub.intel === "object") {
+            setLearningIntel({
+              topicStats:
+                sub.intel.topicStats && typeof sub.intel.topicStats === "object"
+                  ? sub.intel.topicStats
+                  : {},
+              recentTail: Array.isArray(sub.intel.recentTail) ? sub.intel.recentTail : [],
+            });
+          }
+        }
+        const ch = profile.row.challenges;
+        const gd = ch?.geometryDaily || ch?.globalDaily;
+        if (gd && typeof gd === "object") setDailyChallenge(gd);
+        if (ch?.globalWeekly && typeof ch.globalWeekly === "object") setWeeklyChallenge(ch.globalWeekly);
+        const st = profile.row.streaks?.geometry;
+        if (st && typeof st === "object") setDailyStreak(st);
+        const emoji = profile.row.profile?.avatarEmoji;
+        if (typeof emoji === "string" && emoji) setPlayerAvatar(emoji);
+        learningProfileHydratedRef.current = true;
+        progressLoadedRef.current = true;
+        refreshMonthlyProgress();
+      })
+      .catch(() => {
+        if (cancelled) return;
+        learningProfileHydratedRef.current = true;
+        progressLoadedRef.current = true;
+        refreshMonthlyProgress();
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [refreshMonthlyProgress]);
 
 
 
@@ -475,27 +532,55 @@ const refreshMonthlyProgress = useCallback(() => {
     }
   }, [dailyChallenge.date]);
 
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    try {
-      const saved = safeGetJsonObject(STORAGE_KEY + "_progress");
-      if (saved.stars) setStars(saved.stars);
-      if (saved.badges) setBadges(saved.badges);
-      if (saved.playerLevel) setPlayerLevel(saved.playerLevel);
-      if (saved.xp) setXp(saved.xp);
-      if (saved.progress) setProgress(saved.progress);
-    } catch {}
-  }, []);
-
   // שמירת progress ל-localStorage בכל עדכון
   useEffect(() => {
     if (typeof window === "undefined") return;
+    if (!progressLoadedRef.current) return;
     try {
       const saved = safeGetJsonObject(STORAGE_KEY + "_progress");
       saved.progress = progress;
       safeSetJson(STORAGE_KEY + "_progress", saved);
     } catch {}
   }, [progress]);
+
+  useEffect(() => {
+    if (!learningProfileHydratedRef.current) return;
+    if (!learningProfileStudentIdRef.current) return;
+    const progressStore = { stars, badges, playerLevel, xp, progress };
+    debounceStudentLearningProfilePatch("geometry-master-sync", () => {
+      return patchStudentLearningProfile({
+        subjects: {
+          geometry: {
+            progressStore,
+            scoresStore: scoresStoreRef.current,
+            mistakes,
+            intel: learningIntel,
+          },
+        },
+        challenges: {
+          geometryDaily: dailyChallenge,
+          globalWeekly: weeklyChallenge,
+        },
+        streaks: { geometry: dailyStreak },
+        profile: {
+          avatarEmoji: playerAvatar && !playerAvatarImage ? playerAvatar : undefined,
+        },
+      });
+    }, 2400);
+  }, [
+    stars,
+    badges,
+    playerLevel,
+    xp,
+    progress,
+    mistakes,
+    learningIntel,
+    dailyChallenge,
+    weeklyChallenge,
+    dailyStreak,
+    playerAvatar,
+    playerAvatarImage,
+  ]);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -526,7 +611,11 @@ const refreshMonthlyProgress = useCallback(() => {
   useEffect(() => {
     if (showLeaderboard && typeof window !== "undefined") {
       try {
-        const saved = safeGetJsonObject(STORAGE_KEY);
+        const fromRef = scoresStoreRef.current;
+        const saved =
+          fromRef && typeof fromRef === "object" && Object.keys(fromRef).length > 0
+            ? fromRef
+            : safeGetJsonObject(STORAGE_KEY);
         const topScores = buildTop10ByScore(saved, leaderboardLevel);
         setLeaderboardData(topScores);
       } catch (e) {
@@ -558,12 +647,18 @@ const refreshMonthlyProgress = useCallback(() => {
 useEffect(() => {
   if (typeof window === "undefined") return;
   if (monthlyProgress.totalMinutes < MONTHLY_MINUTES_TARGET) return;
-  if (hasRewardCelebrationShown(yearMonthRef.current)) return;
+  const ym = yearMonthRef.current;
+  const profile = getCachedStudentLearningProfile();
+  if (profile?.row?.monthly?.celebrationsShown?.[ym]) return;
+  if (hasRewardCelebrationShown(ym, learningProfileStudentIdRef.current || undefined)) return;
 
   const label = rewardChoice ? getRewardLabel(rewardChoice) : "";
   setRewardCelebrationLabel(label);
   setShowRewardCelebration(true);
-  markRewardCelebrationShown(yearMonthRef.current);
+  markRewardCelebrationShown(ym, learningProfileStudentIdRef.current || undefined);
+  void patchStudentLearningProfile({
+    monthly: { celebrationsShown: { [ym]: true } },
+  }).catch(() => {});
   sound.playSound("badge-earned");
   // eslint-disable-next-line react-hooks/exhaustive-deps
 }, [monthlyProgress.totalMinutes, rewardChoice]);
@@ -963,15 +1058,22 @@ useEffect(() => {
     const durationSeconds = Math.max(1, Math.round(totalSeconds / 1000));
     const accuracyForFinish =
       answered > 0 ? Math.round((Math.max(0, correctForFinish) / answered) * 100) : 0;
-    addSessionProgress(durationMinutes, answered, {
-      subject: "geometry",
-      topic,
-      grade,
-      mode,
-      game: "GeometryMaster",
-      date: new Date(),
+    addSessionProgress(
+      durationMinutes,
+      answered,
+      {
+        subject: "geometry",
+        topic,
+        grade,
+        mode,
+        game: "GeometryMaster",
+        date: new Date(),
+      },
+      { studentId: learningProfileStudentIdRef.current || undefined }
+    );
+    void refreshStudentLearningProfileAfterSession().then((p) => {
+      if (p?.ok) refreshMonthlyProgress();
     });
-    refreshMonthlyProgress();
     if (sessionIdForFinish) {
       finishLearningSession({
         learningSessionId: sessionIdForFinish,
@@ -1658,6 +1760,7 @@ useEffect(() => {
         timestamp: Date.now(),
       });
       safeSetJson(STORAGE_KEY, saved);
+      scoresStoreRef.current = saved;
       const playerScores = (saved[key] || []).filter(
         (s) => s.playerName === playerName.trim()
       );
@@ -1674,6 +1777,11 @@ useEffect(() => {
       if (showLeaderboard) {
         const topScores = buildTop10ByScore(saved, leaderboardLevel);
         setLeaderboardData(topScores);
+      }
+      if (learningProfileStudentIdRef.current && learningProfileHydratedRef.current) {
+        void patchStudentLearningProfile({
+          subjects: { geometry: { scoresStore: saved } },
+        }).catch(() => {});
       }
     } catch {}
   }
@@ -2471,7 +2579,16 @@ useEffect(() => {
                       type="button"
                       key={option.key}
                       onClick={() => {
-                        saveRewardChoice(yearMonthRef.current, option.key);
+                        saveRewardChoice(
+                          yearMonthRef.current,
+                          option.key,
+                          learningProfileStudentIdRef.current || undefined
+                        );
+                        void patchStudentLearningProfile({
+                          monthly: {
+                            rewardChoices: { [yearMonthRef.current]: option.key },
+                          },
+                        }).catch(() => {});
                         setRewardChoice(option.key);
                       }}
                       className={`rounded-lg border py-2.5 px-1.5 md:py-2.5 md:px-2 lg:py-3 lg:px-2.5 min-h-[4.85rem] md:min-h-[5.5rem] lg:min-h-[6rem] bg-black/35 flex flex-col items-center justify-center gap-1.5 md:gap-1.5 min-w-0 transition-colors ${

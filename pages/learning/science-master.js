@@ -13,14 +13,12 @@ import TrackingDebugPanel from "../../components/TrackingDebugPanel";
 import LearningPlannerRecommendationBlock from "../../components/LearningPlannerRecommendationBlock";
 import { reportModeFromGameState } from "../../utils/report-track-meta";
 import {
-  loadDailyStreak,
   updateDailyStreak,
   getStreakReward,
 } from "../../utils/daily-streak";
 import { useSound } from "../../hooks/useSound";
 import {
   addSessionProgress,
-  loadMonthlyProgress,
   loadRewardChoice,
   saveRewardChoice,
   getCurrentYearMonth,
@@ -79,6 +77,13 @@ import {
   mergePlannerSessionClientMeta,
 } from "../../lib/learning-client/adaptive-planner-recommended-practice";
 import { normalizeGradeLevelToKey } from "../../lib/learning-student-defaults";
+import {
+  debounceStudentLearningProfilePatch,
+  fetchStudentLearningProfile,
+  patchStudentLearningProfile,
+  refreshStudentLearningProfileAfterSession,
+  getCachedStudentLearningProfile,
+} from "../../lib/learning-client/studentLearningProfileClient";
 
 // ================== CONFIG ==================
 
@@ -715,6 +720,11 @@ export default function ScienceMaster() {
   /** Question pool topic id for the question currently being timed (matches localStorage bucket). */
   const scienceTrackingTopicKeyRef = useRef(null);
   const yearMonthRef = useRef(getCurrentYearMonth());
+  const learningProfileStudentIdRef = useRef(null);
+  const learningProfileHydratedRef = useRef(false);
+  const scoresStoreRef = useRef({});
+  const progressLoadedRef = useRef(false);
+  const progressStringRef = useRef("");
 
   const [playerName, setPlayerName] = useState(() => {
     if (typeof window === "undefined") return "";
@@ -793,7 +803,7 @@ export default function ScienceMaster() {
   const [leaderboardData, setLeaderboardData] = useState([]);
   
   // Daily Streak
-  const [dailyStreak, setDailyStreak] = useState(() => loadDailyStreak("mleo_science_daily_streak"));
+  const [dailyStreak, setDailyStreak] = useState({ streak: 0, lastDate: null });
   const [showStreakReward, setShowStreakReward] = useState(null);
   
   // Sound system
@@ -821,39 +831,21 @@ export default function ScienceMaster() {
     return `${today.getFullYear()}-${today.getMonth()}-${today.getDate()}`;
   };
   
-  const [dailyChallenge, setDailyChallenge] = useState(() => {
-    if (typeof window !== "undefined") {
-      try {
-        const saved = JSON.parse(localStorage.getItem("mleo_science_daily_challenge") || "{}");
-        const todayKey = getTodayKey();
-        if (saved.date === todayKey) {
-          return saved;
-        }
-      } catch {}
-    }
-    return {
-      date: getTodayKey(),
+  const [dailyChallenge, setDailyChallenge] = useState(() => ({
+    date: getTodayKey(),
     questions: 0,
-      correct: 0,
-      bestScore: 0,
-      completed: false,
-    };
-  });
-  
+    correct: 0,
+    bestScore: 0,
+    completed: false,
+  }));
+
   const [weeklyChallenge, setWeeklyChallenge] = useState(() => {
-    if (typeof window !== "undefined") {
-      try {
-        const saved = JSON.parse(localStorage.getItem("mleo_science_weekly_challenge") || "{}");
-        const today = new Date();
-        const weekStart = new Date(today.setDate(today.getDate() - today.getDay()));
-        const weekKey = `${weekStart.getFullYear()}-${weekStart.getMonth()}-${weekStart.getDate()}`;
-        if (saved.week === weekKey) {
-          return saved;
-        }
-      } catch {}
-    }
+    const today = new Date();
+    const weekStart = new Date(today);
+    weekStart.setDate(weekStart.getDate() - weekStart.getDay());
+    const weekKey = `${weekStart.getFullYear()}-${weekStart.getMonth()}-${weekStart.getDate()}`;
     return {
-      week: getTodayKey().split('-').slice(0, 2).join('-'),
+      week: weekKey,
       target: 100,
       current: 0,
       completed: false,
@@ -875,15 +867,22 @@ export default function ScienceMaster() {
   const refreshMonthlyProgress = useCallback(() => {
     if (typeof window === "undefined") return;
     try {
-      const all = loadMonthlyProgress();
-      const current = all[yearMonthRef.current] || { totalMinutes: 0, totalExercises: 0 };
-      setMonthlyProgress(current);
+      const profile = getCachedStudentLearningProfile();
+      const sid = learningProfileStudentIdRef.current || undefined;
+      const mins = profile?.derived?.monthlyMinutesUtcMonth ?? 0;
+      const ex = profile?.derived?.monthlyAnswersCountUtcMonth ?? 0;
+      setMonthlyProgress({ totalMinutes: mins, totalExercises: ex });
       const percent = MONTHLY_MINUTES_TARGET
-        ? Math.min(100, Math.round((current.totalMinutes / MONTHLY_MINUTES_TARGET) * 100))
+        ? Math.min(100, Math.round((mins / MONTHLY_MINUTES_TARGET) * 100))
         : 0;
       setGoalPercent(percent);
-      setMinutesRemaining(Math.max(0, MONTHLY_MINUTES_TARGET - current.totalMinutes));
-      const choice = loadRewardChoice(yearMonthRef.current);
+      setMinutesRemaining(Math.max(0, MONTHLY_MINUTES_TARGET - mins));
+      const ym = yearMonthRef.current;
+      const choiceFromServer = profile?.row?.monthly?.rewardChoices?.[ym];
+      const choice =
+        choiceFromServer != null && choiceFromServer !== ""
+          ? choiceFromServer
+          : loadRewardChoice(ym, sid);
       setRewardChoice(choice);
     } catch {
       // ignore
@@ -960,15 +959,133 @@ export default function ScienceMaster() {
     }
   };
 
+  useEffect(() => {
+    let cancelled = false;
+    fetchStudentLearningProfile()
+      .then((profile) => {
+        if (cancelled) return;
+        if (!profile?.ok) {
+          learningProfileHydratedRef.current = true;
+          progressLoadedRef.current = true;
+          refreshMonthlyProgress();
+          return;
+        }
+        learningProfileStudentIdRef.current = profile.studentId;
+        const sub = profile.row.subjects?.science;
+        if (sub && typeof sub === "object") {
+          const ps = sub.progressStore;
+          if (ps && typeof ps === "object") {
+            if (typeof ps.stars === "number") setStars(ps.stars);
+            if (Array.isArray(ps.badges)) setBadges(ps.badges);
+            if (typeof ps.playerLevel === "number") setPlayerLevel(ps.playerLevel);
+            if (typeof ps.xp === "number") setXp(ps.xp);
+            if (ps.progress && typeof ps.progress === "object") {
+              setProgress((prev) => ({ ...prev, ...ps.progress }));
+            }
+          }
+          if (sub.scoresStore && typeof sub.scoresStore === "object") {
+            scoresStoreRef.current = sub.scoresStore;
+          }
+          if (Array.isArray(sub.mistakes)) setMistakes(sub.mistakes);
+          const si = sub.intel;
+          if (si && typeof si === "object") {
+            scienceIntelRef.current = {
+              topicStats: sanitizeTopicStats(si.topicStats),
+              recentIds: sanitizeRecentIds(si.recentIds),
+              answerTail: sanitizeAnswerTail(si.answerTail),
+              topicAnswerTails: sanitizeTopicAnswerTails(si.topicAnswerTails),
+            };
+            setInsightRevision((n) => n + 1);
+          }
+        }
+        const ch = profile.row.challenges;
+        if (ch?.scienceDaily && typeof ch.scienceDaily === "object") setDailyChallenge(ch.scienceDaily);
+        if (ch?.scienceWeekly && typeof ch.scienceWeekly === "object") setWeeklyChallenge(ch.scienceWeekly);
+        const st = profile.row.streaks?.science;
+        if (st && typeof st === "object") setDailyStreak(st);
+        const emoji = profile.row.profile?.avatarEmoji;
+        if (typeof emoji === "string" && emoji) setPlayerAvatar(emoji);
+        learningProfileHydratedRef.current = true;
+        try {
+          const pr = profile.row.subjects?.science?.progressStore?.progress;
+          progressStringRef.current = JSON.stringify(pr || {});
+        } catch {
+          progressStringRef.current = "";
+        }
+        progressLoadedRef.current = true;
+        refreshMonthlyProgress();
+      })
+      .catch(() => {
+        if (cancelled) return;
+        learningProfileHydratedRef.current = true;
+        progressLoadedRef.current = true;
+        refreshMonthlyProgress();
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [refreshMonthlyProgress]);
+
+  useEffect(() => {
+    if (!learningProfileHydratedRef.current) return;
+    if (!learningProfileStudentIdRef.current) return;
+    const progressStore = { stars, badges, playerLevel, xp, progress };
+    const intelSnap = scienceIntelRef.current;
+    debounceStudentLearningProfilePatch("science-master-sync", () => {
+      return patchStudentLearningProfile({
+        subjects: {
+          science: {
+            progressStore,
+            scoresStore: scoresStoreRef.current,
+            mistakes,
+            intel: {
+              topicStats: sanitizeTopicStats(intelSnap.topicStats),
+              recentIds: sanitizeRecentIds(intelSnap.recentIds),
+              answerTail: sanitizeAnswerTail(intelSnap.answerTail),
+              topicAnswerTails: sanitizeTopicAnswerTails(intelSnap.topicAnswerTails),
+            },
+          },
+        },
+        challenges: {
+          scienceDaily: dailyChallenge,
+          scienceWeekly: weeklyChallenge,
+        },
+        streaks: { science: dailyStreak },
+        profile: {
+          avatarEmoji: playerAvatar && !playerAvatarImage ? playerAvatar : undefined,
+        },
+      });
+    }, 2400);
+  }, [
+    stars,
+    badges,
+    playerLevel,
+    xp,
+    progress,
+    mistakes,
+    dailyChallenge,
+    weeklyChallenge,
+    dailyStreak,
+    playerAvatar,
+    playerAvatarImage,
+    insightRevision,
+  ]);
+
 useEffect(() => {
   if (typeof window === "undefined") return;
   if (monthlyProgress.totalMinutes < MONTHLY_MINUTES_TARGET) return;
-  if (hasRewardCelebrationShown(yearMonthRef.current)) return;
+  const ym = yearMonthRef.current;
+  const profile = getCachedStudentLearningProfile();
+  if (profile?.row?.monthly?.celebrationsShown?.[ym]) return;
+  if (hasRewardCelebrationShown(ym, learningProfileStudentIdRef.current || undefined)) return;
 
   const label = rewardChoice ? getRewardLabel(rewardChoice) : "";
   setRewardCelebrationLabel(label);
   setShowRewardCelebration(true);
-  markRewardCelebrationShown(yearMonthRef.current);
+  markRewardCelebrationShown(ym, learningProfileStudentIdRef.current || undefined);
+  void patchStudentLearningProfile({
+    monthly: { celebrationsShown: { [ym]: true } },
+  }).catch(() => {});
   sound.playSound("badge-earned");
   // eslint-disable-next-line react-hooks/exhaustive-deps
 }, [monthlyProgress.totalMinutes, rewardChoice]);
@@ -976,22 +1093,6 @@ useEffect(() => {
   useEffect(() => {
     correctRef.current = correct;
   }, [correct]);
-
-  useEffect(() => {
-    refreshMistakesList();
-  }, []);
-
-  useEffect(() => {
-    if (!mounted || typeof window === "undefined") return;
-    const loaded = loadScienceIntel();
-    scienceIntelRef.current = {
-      topicStats: { ...loaded.topicStats },
-      recentIds: [...loaded.recentIds],
-      answerTail: [...loaded.answerTail],
-      topicAnswerTails: { ...loaded.topicAnswerTails },
-    };
-    setInsightRevision((n) => n + 1);
-  }, [mounted]);
 
   useEffect(() => {
     if (typeof window === "undefined" || process.env.NODE_ENV !== "development") {
@@ -1068,26 +1169,12 @@ useEffect(() => {
     };
   }, [mounted]);
 
-  // ----- LOAD LONG-TERM PROGRESS -----
   useEffect(() => {
     if (typeof window === "undefined") return;
-    try {
-      const raw = localStorage.getItem(STORAGE_KEY + "_progress");
-      if (!raw) return;
-      const saved = JSON.parse(raw);
-      if (saved.stars) setStars(saved.stars);
-      if (saved.badges) setBadges(saved.badges);
-      if (saved.playerLevel) setPlayerLevel(saved.playerLevel);
-      if (saved.xp) setXp(saved.xp);
-      if (saved.progress) setProgress(saved.progress);
-    } catch {
-      // ignore
-    }
-  }, []);
-
-  // שמירת progress ל-localStorage בכל עדכון
-  useEffect(() => {
-    if (typeof window === "undefined") return;
+    if (!progressLoadedRef.current) return;
+    const currentProgressStr = JSON.stringify(progress);
+    if (currentProgressStr === progressStringRef.current) return;
+    progressStringRef.current = currentProgressStr;
     try {
       const saved = JSON.parse(localStorage.getItem(STORAGE_KEY + "_progress") || "{}");
       saved.progress = progress;
@@ -1146,13 +1233,19 @@ useEffect(() => {
       return;
     }
     try {
-      const raw = localStorage.getItem(STORAGE_KEY);
-      if (!raw) {
+      const rawHolder =
+        scoresStoreRef.current &&
+        typeof scoresStoreRef.current === "object" &&
+        Object.keys(scoresStoreRef.current).length > 0
+          ? scoresStoreRef.current
+          : null;
+      const saved =
+        rawHolder ?? JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+      if (!saved || typeof saved !== "object") {
         setBestScore(0);
         setBestStreak(0);
         return;
       }
-      const saved = JSON.parse(raw);
       const key = `${level}_${topic}`;
       const items = saved[key];
       if (!Array.isArray(items)) {
@@ -1375,11 +1468,6 @@ useEffect(() => {
     }
   }
 
-  const refreshMistakesList = () => {
-    const stored = loadScienceMistakesFromStorage();
-    setMistakes(stored.slice(-SCIENCE_MISTAKES_MAX).reverse());
-  };
-
   function trackCurrentQuestionTime() {
     if (!questionStartTime) return;
     const elapsedMs = Date.now() - questionStartTime;
@@ -1447,15 +1535,22 @@ function recordSessionProgress(opts = {}) {
   const durationSeconds = Math.max(1, Math.round(totalSeconds / 1000));
   const accuracyForFinish =
     answered > 0 ? Math.round((Math.max(0, correctForFinish) / answered) * 100) : 0;
-  addSessionProgress(durationMinutes, answered, {
+  addSessionProgress(
+    durationMinutes,
+    answered,
+    {
     subject: "science",
     topic: scienceTrackingTopicKeyRef.current ?? currentQuestion?.topic ?? "",
     grade,
     mode,
     game: "ScienceMaster",
     date: new Date(),
+    },
+    { studentId: learningProfileStudentIdRef.current || undefined }
+  );
+  void refreshStudentLearningProfileAfterSession().then((p) => {
+    if (p?.ok) refreshMonthlyProgress();
   });
-  refreshMonthlyProgress();
   if (sessionIdForFinish) {
     finishLearningSession({
       learningSessionId: sessionIdForFinish,
@@ -1903,6 +1998,7 @@ function saveScienceAnswerInParallel({
       });
       saved[key] = arr.slice(-100);
       localStorage.setItem(STORAGE_KEY, JSON.stringify(saved));
+      scoresStoreRef.current = saved;
       // update best
       const top = arr.reduce(
         (acc, item) => {
@@ -1920,6 +2016,12 @@ function saveScienceAnswerInParallel({
       if (showLeaderboard) {
         const all = buildTop10(saved);
         setLeaderboardData(all);
+      }
+
+      if (learningProfileStudentIdRef.current && learningProfileHydratedRef.current) {
+        void patchStudentLearningProfile({
+          subjects: { science: { scoresStore: saved } },
+        }).catch(() => {});
       }
     } catch {
       // ignore
@@ -2959,8 +3061,13 @@ function saveScienceAnswerInParallel({
                       type="button"
                       key={option.key}
                       onClick={() => {
-                        saveRewardChoice(yearMonthRef.current, option.key);
+                        saveRewardChoice(yearMonthRef.current, option.key, learningProfileStudentIdRef.current || undefined);
                         setRewardChoice(option.key);
+                        void patchStudentLearningProfile({
+                          monthly: {
+                            rewardChoices: { [yearMonthRef.current]: option.key },
+                          },
+                        }).catch(() => {});
                       }}
                       className={`rounded-lg border py-2.5 px-1.5 md:py-2.5 md:px-2 lg:py-3 lg:px-2.5 min-h-[4.85rem] md:min-h-[5.5rem] lg:min-h-[6rem] bg-black/35 flex flex-col items-center justify-center gap-1.5 md:gap-1.5 min-w-0 transition-colors ${
                         prizePicked

@@ -7,7 +7,6 @@ import { applyLearningShellLayoutVars } from "../../utils/learning-shell-layout"
 import { reportModeFromGameState } from "../../utils/report-track-meta";
 import {
   addSessionProgress,
-  loadMonthlyProgress,
   loadRewardChoice,
   saveRewardChoice,
   getCurrentYearMonth,
@@ -21,7 +20,6 @@ import {
 } from "../../data/reward-options";
 import { splitRewardAmountLabel } from "../../utils/dashboard-setup-ui";
 import {
-  loadDailyStreak,
   updateDailyStreak,
   getStreakReward,
 } from "../../utils/daily-streak";
@@ -87,6 +85,13 @@ import {
   gradeKeyToNumber,
   normalizeGradeLevelToKey,
 } from "../../lib/learning-student-defaults";
+import {
+  debounceStudentLearningProfilePatch,
+  fetchStudentLearningProfile,
+  patchStudentLearningProfile,
+  refreshStudentLearningProfileAfterSession,
+  getCachedStudentLearningProfile,
+} from "../../lib/learning-client/studentLearningProfileClient";
 
 const LEVELS = {
   easy: { name: "קל", maxWords: 5, complexity: "basic" },
@@ -1235,6 +1240,11 @@ export default function EnglishMaster() {
   /** localStorage bucket key for the question currently being timed (same idea as geometry topic ref). */
   const englishTrackingTopicKeyRef = useRef(null);
   const yearMonthRef = useRef(getCurrentYearMonth());
+  const learningProfileStudentIdRef = useRef(null);
+  const learningProfileHydratedRef = useRef(false);
+  const scoresStoreRef = useRef({});
+  const progressLoadedRef = useRef(false);
+  const progressStringRef = useRef("");
 
   const [mounted, setMounted] = useState(false);
   const [grade, setGrade] = useState("g3");
@@ -1273,7 +1283,7 @@ export default function EnglishMaster() {
   const [showPracticeOptions, setShowPracticeOptions] = useState(false);
   
   // Daily Streak
-  const [dailyStreak, setDailyStreak] = useState(() => loadDailyStreak("mleo_english_daily_streak"));
+  const [dailyStreak, setDailyStreak] = useState({ streak: 0, lastDate: null });
   const [showStreakReward, setShowStreakReward] = useState(null);
   
   // Sound system
@@ -1289,11 +1299,25 @@ export default function EnglishMaster() {
     sentences: { total: 0, correct: 0 },
     writing: { total: 0, correct: 0 },
   });
-  const [dailyChallenge, setDailyChallenge] = useState({
-    date: new Date().toDateString(),
-    bestScore: 0,
-    questions: 0,
-    correct: 0,
+  const [dailyChallenge, setDailyChallenge] = useState(() => {
+    const today = new Date();
+    const todayKey = `${today.getFullYear()}-${today.getMonth()}-${today.getDate()}`;
+    return {
+      date: todayKey,
+      questions: 0,
+      correct: 0,
+      bestScore: 0,
+      completed: false,
+    };
+  });
+  const [weeklyChallenge, setWeeklyChallenge] = useState(() => {
+    const today = new Date();
+    return {
+      week: `${today.getFullYear()}-${today.getMonth()}-${today.getDate()}`,
+      target: 100,
+      current: 0,
+      completed: false,
+    };
   });
   const [showDailyChallenge, setShowDailyChallenge] = useState(false);
   const [showHint, setShowHint] = useState(false);
@@ -1340,15 +1364,22 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
 const refreshMonthlyProgress = useCallback(() => {
   if (typeof window === "undefined") return;
   try {
-    const all = loadMonthlyProgress();
-    const current = all[yearMonthRef.current] || { totalMinutes: 0, totalExercises: 0 };
-    setMonthlyProgress(current);
+    const profile = getCachedStudentLearningProfile();
+    const sid = learningProfileStudentIdRef.current || undefined;
+    const mins = profile?.derived?.monthlyMinutesUtcMonth ?? 0;
+    const ex = profile?.derived?.monthlyAnswersCountUtcMonth ?? 0;
+    setMonthlyProgress({ totalMinutes: mins, totalExercises: ex });
     const percent = MONTHLY_MINUTES_TARGET
-      ? Math.min(100, Math.round((current.totalMinutes / MONTHLY_MINUTES_TARGET) * 100))
+      ? Math.min(100, Math.round((mins / MONTHLY_MINUTES_TARGET) * 100))
       : 0;
     setGoalPercent(percent);
-    setMinutesRemaining(Math.max(0, MONTHLY_MINUTES_TARGET - current.totalMinutes));
-    const choice = loadRewardChoice(yearMonthRef.current);
+    setMinutesRemaining(Math.max(0, MONTHLY_MINUTES_TARGET - mins));
+    const ym = yearMonthRef.current;
+    const choiceFromServer = profile?.row?.monthly?.rewardChoices?.[ym];
+    const choice =
+      choiceFromServer != null && choiceFromServer !== ""
+        ? choiceFromServer
+        : loadRewardChoice(ym, sid);
     setRewardChoice(choice);
   } catch {
     // ignore
@@ -1411,13 +1442,6 @@ const refreshMonthlyProgress = useCallback(() => {
     }
   }, [grade, leaderboardLevel]);
 
-  useEffect(() => {
-    clearActiveDiagnosticState(
-      englishPendingDiagnosticProbeRef,
-      englishHypothesisLedgerRef
-    );
-    englishGrammarRecentRowKeysRef.current = [];
-  }, [grade, level, topic, practiceFocus]);
   const [playerAvatar, setPlayerAvatar] = useState(() => {
     if (typeof window !== "undefined") {
       try {
@@ -1431,11 +1455,111 @@ const refreshMonthlyProgress = useCallback(() => {
   const [playerAvatarImage, setPlayerAvatarImage] = useState(null); // תמונת אווטר מותאמת אישית
   const [showPlayerProfile, setShowPlayerProfile] = useState(false);
   const gradeLabels = ["א", "ב", "ג", "ד", "ה", "ו"];
-  const [weeklyChallenge, setWeeklyChallenge] = useState({
-    target: 50,
-    current: 0,
-    completed: false,
-  });
+
+  useEffect(() => {
+    clearActiveDiagnosticState(
+      englishPendingDiagnosticProbeRef,
+      englishHypothesisLedgerRef
+    );
+    englishGrammarRecentRowKeysRef.current = [];
+  }, [grade, level, topic, practiceFocus]);
+
+  useEffect(() => {
+    let cancelled = false;
+    fetchStudentLearningProfile()
+      .then((profile) => {
+        if (cancelled) return;
+        if (!profile?.ok) {
+          learningProfileHydratedRef.current = true;
+          progressLoadedRef.current = true;
+          refreshMonthlyProgress();
+          return;
+        }
+        learningProfileStudentIdRef.current = profile.studentId;
+        const sub = profile.row.subjects?.english;
+        if (sub && typeof sub === "object") {
+          const ps = sub.progressStore;
+          if (ps && typeof ps === "object") {
+            if (typeof ps.stars === "number") setStars(ps.stars);
+            if (Array.isArray(ps.badges)) setBadges(ps.badges);
+            if (typeof ps.playerLevel === "number") setPlayerLevel(ps.playerLevel);
+            if (typeof ps.xp === "number") setXp(ps.xp);
+            if (ps.progress && typeof ps.progress === "object") {
+              setProgress((prev) => ({ ...prev, ...ps.progress }));
+            }
+          }
+          if (sub.scoresStore && typeof sub.scoresStore === "object") {
+            scoresStoreRef.current = sub.scoresStore;
+          }
+          if (Array.isArray(sub.mistakes)) setMistakes(sub.mistakes);
+        }
+        const ch = profile.row.challenges;
+        if (ch?.globalDaily && typeof ch.globalDaily === "object") setDailyChallenge(ch.globalDaily);
+        if (ch?.globalWeekly && typeof ch.globalWeekly === "object") setWeeklyChallenge(ch.globalWeekly);
+        const st = profile.row.streaks?.english;
+        if (st && typeof st === "object") setDailyStreak(st);
+        const emoji = profile.row.profile?.avatarEmoji;
+        if (typeof emoji === "string" && emoji) {
+          setPlayerAvatar(emoji);
+        }
+        learningProfileHydratedRef.current = true;
+        try {
+          const pr = profile.row.subjects?.english?.progressStore?.progress;
+          progressStringRef.current = JSON.stringify(pr || {});
+        } catch {
+          progressStringRef.current = "";
+        }
+        progressLoadedRef.current = true;
+        refreshMonthlyProgress();
+      })
+      .catch(() => {
+        if (cancelled) return;
+        learningProfileHydratedRef.current = true;
+        progressLoadedRef.current = true;
+        refreshMonthlyProgress();
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [refreshMonthlyProgress]);
+
+  useEffect(() => {
+    if (!learningProfileHydratedRef.current) return;
+    if (!learningProfileStudentIdRef.current) return;
+    const progressStore = { stars, badges, playerLevel, xp, progress };
+    debounceStudentLearningProfilePatch("english-master-sync", () => {
+      return patchStudentLearningProfile({
+        subjects: {
+          english: {
+            progressStore,
+            scoresStore: scoresStoreRef.current,
+            mistakes,
+            intel: {},
+          },
+        },
+        challenges: {
+          globalDaily: dailyChallenge,
+          globalWeekly: weeklyChallenge,
+        },
+        streaks: { english: dailyStreak },
+        profile: {
+          avatarEmoji: playerAvatar && !playerAvatarImage ? playerAvatar : undefined,
+        },
+      });
+    }, 2400);
+  }, [
+    stars,
+    badges,
+    playerLevel,
+    xp,
+    progress,
+    mistakes,
+    dailyChallenge,
+    weeklyChallenge,
+    dailyStreak,
+    playerAvatar,
+    playerAvatarImage,
+  ]);
 
   useEffect(() => {
     const idx = GRADE_ORDER.indexOf(grade);
@@ -1443,10 +1567,6 @@ const refreshMonthlyProgress = useCallback(() => {
       setGradeNumber(idx + 1);
     }
   }, [grade, gradeNumber]);
-
-  useEffect(() => {
-    refreshMistakes();
-  }, []);
 
   useEffect(() => {
     refreshMonthlyProgress();
@@ -1516,12 +1636,18 @@ const refreshMonthlyProgress = useCallback(() => {
   useEffect(() => {
     if (typeof window === "undefined") return;
     if (monthlyProgress.totalMinutes < MONTHLY_MINUTES_TARGET) return;
-    if (hasRewardCelebrationShown(yearMonthRef.current)) return;
+    const ym = yearMonthRef.current;
+    const profile = getCachedStudentLearningProfile();
+    if (profile?.row?.monthly?.celebrationsShown?.[ym]) return;
+    if (hasRewardCelebrationShown(ym, learningProfileStudentIdRef.current || undefined)) return;
 
-    const label = rewardChoice ? getRewardLabel(rewardChoice) : "";
+    const label = rewardChoice ? lobbyMonthlyRewardDisplayLabel(rewardChoice) : "";
     setRewardCelebrationLabel(label);
     setShowRewardCelebration(true);
-    markRewardCelebrationShown(yearMonthRef.current);
+    markRewardCelebrationShown(ym, learningProfileStudentIdRef.current || undefined);
+    void patchStudentLearningProfile({
+      monthly: { celebrationsShown: { [ym]: true } },
+    }).catch(() => {});
     sound.playSound("badge-earned");
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [monthlyProgress.totalMinutes, rewardChoice]);
@@ -1536,30 +1662,17 @@ const refreshMonthlyProgress = useCallback(() => {
     setGameActive(false);
   };
 
-  function persistProgressSnapshot(newProgress) {
-    if (typeof window === "undefined") return;
-    try {
-      const saved = JSON.parse(
-        localStorage.getItem(STORAGE_KEY + "_progress") || "{}"
-      );
-      saved.progress = newProgress;
-      localStorage.setItem(STORAGE_KEY + "_progress", JSON.stringify(saved));
-    } catch {}
-  }
-
   function updateTopicProgress(topic, isCorrect) {
     if (!topic) return;
     setProgress((prev) => {
       const prevEntry = prev[topic] || { total: 0, correct: 0 };
-      const updated = {
+      return {
         ...prev,
         [topic]: {
           total: (prevEntry.total || 0) + 1,
           correct: (prevEntry.correct || 0) + (isCorrect ? 1 : 0),
         },
       };
-      persistProgressSnapshot(updated);
-      return updated;
     });
   }
 
@@ -1672,15 +1785,22 @@ const refreshMonthlyProgress = useCallback(() => {
     const durationSeconds = Math.max(1, Math.round(totalSeconds / 1000));
     const accuracyForFinish =
       answered > 0 ? Math.round((Math.max(0, correctForFinish) / answered) * 100) : 0;
-    addSessionProgress(durationMinutes, answered, {
+    addSessionProgress(
+      durationMinutes,
+      answered,
+      {
       subject: "english",
       topic: englishTrackingTopicKeyRef.current ?? currentQuestion?.topic ?? "",
       grade: gradeNumber,
       mode,
       game: "EnglishMaster",
       date: new Date(),
+      },
+      { studentId: learningProfileStudentIdRef.current || undefined }
+    );
+    void refreshStudentLearningProfileAfterSession().then((p) => {
+      if (p?.ok) refreshMonthlyProgress();
     });
-    refreshMonthlyProgress();
     if (sessionIdForFinish) {
       finishLearningSession({
         learningSessionId: sessionIdForFinish,
@@ -1819,7 +1939,12 @@ const refreshMonthlyProgress = useCallback(() => {
     setMounted(true);
     if (typeof window !== "undefined") {
       try {
-        const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+        const saved =
+          scoresStoreRef.current &&
+          typeof scoresStoreRef.current === "object" &&
+          Object.keys(scoresStoreRef.current).length > 0
+            ? scoresStoreRef.current
+            : JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
         const key = `${level}_${topic}`;
         if (saved[key] && playerName.trim()) {
           if (Array.isArray(saved[key])) {
@@ -1886,32 +2011,25 @@ const refreshMonthlyProgress = useCallback(() => {
   }, [grade]);
 
   useEffect(() => {
-    const today = new Date().toDateString();
-    if (dailyChallenge.date !== today) {
-      setDailyChallenge({ date: today, bestScore: 0, questions: 0, correct: 0 });
+    const today = new Date();
+    const todayKey = `${today.getFullYear()}-${today.getMonth()}-${today.getDate()}`;
+    if (dailyChallenge.date !== todayKey) {
+      setDailyChallenge({
+        date: todayKey,
+        bestScore: 0,
+        questions: 0,
+        correct: 0,
+        completed: false,
+      });
     }
   }, [dailyChallenge.date]);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
-    try {
-      const saved = JSON.parse(localStorage.getItem(STORAGE_KEY + "_progress") || "{}");
-      if (saved.stars) setStars(saved.stars);
-      if (saved.badges) setBadges(saved.badges);
-      if (saved.playerLevel) setPlayerLevel(saved.playerLevel);
-      if (saved.xp) setXp(saved.xp);
-      if (saved.progress) {
-        setProgress((prev) => ({
-          ...prev,
-          ...saved.progress,
-        }));
-      }
-    } catch {}
-  }, []);
-
-  // שמירת progress ל-localStorage בכל עדכון
-  useEffect(() => {
-    if (typeof window === "undefined") return;
+    if (!progressLoadedRef.current) return;
+    const currentProgressStr = JSON.stringify(progress);
+    if (currentProgressStr === progressStringRef.current) return;
+    progressStringRef.current = currentProgressStr;
     try {
       const saved = JSON.parse(localStorage.getItem(STORAGE_KEY + "_progress") || "{}");
       saved.progress = progress;
@@ -1922,7 +2040,11 @@ const refreshMonthlyProgress = useCallback(() => {
   useEffect(() => {
     if (showLeaderboard && typeof window !== "undefined") {
       try {
-        const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+        const fromRef = scoresStoreRef.current;
+        const saved =
+          fromRef && typeof fromRef === "object" && Object.keys(fromRef).length > 0
+            ? fromRef
+            : JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
         const topScores = buildTop10ByScore(saved, leaderboardLevel);
         setLeaderboardData(topScores);
       } catch (e) {
@@ -1981,6 +2103,8 @@ const refreshMonthlyProgress = useCallback(() => {
         timestamp: Date.now(),
       });
       localStorage.setItem(STORAGE_KEY, JSON.stringify(saved));
+      scoresStoreRef.current = saved;
+
       const playerScores = (saved[key] || []).filter(
         (s) => s.playerName === playerName.trim()
       );
@@ -1997,6 +2121,12 @@ const refreshMonthlyProgress = useCallback(() => {
       if (showLeaderboard) {
         const topScores = buildTop10ByScore(saved, leaderboardLevel);
         setLeaderboardData(topScores);
+      }
+
+      if (learningProfileStudentIdRef.current && learningProfileHydratedRef.current) {
+        void patchStudentLearningProfile({
+          subjects: { english: { scoresStore: saved } },
+        }).catch(() => {});
       }
     } catch {}
   }
@@ -3249,8 +3379,13 @@ const refreshMonthlyProgress = useCallback(() => {
                       type="button"
                       key={option.key}
                       onClick={() => {
-                        saveRewardChoice(yearMonthRef.current, option.key);
+                        const ym = yearMonthRef.current;
+                        const sid = learningProfileStudentIdRef.current || undefined;
+                        saveRewardChoice(ym, option.key, sid);
                         setRewardChoice(option.key);
+                        void patchStudentLearningProfile({
+                          monthly: { rewardChoices: { [ym]: option.key } },
+                        }).catch(() => {});
                       }}
                       className={`rounded-lg border py-2.5 px-1.5 md:py-2.5 md:px-2 lg:py-3 lg:px-2.5 min-h-[4.85rem] md:min-h-[5.5rem] lg:min-h-[6rem] bg-black/35 flex flex-col items-center justify-center gap-1.5 md:gap-1.5 min-w-0 transition-colors ${
                         prizePicked

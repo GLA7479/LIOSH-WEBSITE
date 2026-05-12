@@ -67,7 +67,6 @@ import {
 } from "../../utils/learning-ui-classes";
 import {
   addSessionProgress,
-  loadMonthlyProgress,
   loadRewardChoice,
   saveRewardChoice,
   getCurrentYearMonth,
@@ -128,6 +127,13 @@ import {
   patchLearningDiagnosticDebug,
   installLearningDiagnosticDebugOnce,
 } from "../../utils/learning-diagnostic-debug.js";
+import {
+  debounceStudentLearningProfilePatch,
+  fetchStudentLearningProfile,
+  patchStudentLearningProfile,
+  refreshStudentLearningProfileAfterSession,
+  getCachedStudentLearningProfile,
+} from "../../lib/learning-client/studentLearningProfileClient";
 
 /** Math lobby UI only: keys stay ROBUX / VBUCKS / … for storage; visible labels are coin amounts. */
 const MATH_MONTHLY_REWARD_DISPLAY_BY_KEY = {
@@ -209,6 +215,10 @@ export default function MathMaster() {
   const yearMonthRef = useRef(getCurrentYearMonth());
   const mathPendingDiagnosticProbeRef = useRef(null);
   const mathHypothesisLedgerRef = useRef(null);
+  const learningProfileStudentIdRef = useRef(null);
+  const learningProfileHydratedRef = useRef(false);
+  /** Leaderboard / best-score blob (mirrors legacy STORAGE_KEY JSON). */
+  const scoresStoreRef = useRef({});
 
   const [mounted, setMounted] = useState(false);
 
@@ -279,15 +289,22 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
   const refreshMonthlyProgress = useCallback(() => {
     if (typeof window === "undefined") return;
     try {
-      const all = loadMonthlyProgress();
-      const current = all[yearMonthRef.current] || { totalMinutes: 0, totalExercises: 0 };
-      setMonthlyProgress(current);
+      const profile = getCachedStudentLearningProfile();
+      const sid = learningProfileStudentIdRef.current || undefined;
+      const mins = profile?.derived?.monthlyMinutesUtcMonth ?? 0;
+      const ex = profile?.derived?.monthlyAnswersCountUtcMonth ?? 0;
+      setMonthlyProgress({ totalMinutes: mins, totalExercises: ex });
       const percent = MONTHLY_MINUTES_TARGET
-        ? Math.min(100, Math.round((current.totalMinutes / MONTHLY_MINUTES_TARGET) * 100))
+        ? Math.min(100, Math.round((mins / MONTHLY_MINUTES_TARGET) * 100))
         : 0;
       setGoalPercent(percent);
-      setMinutesRemaining(Math.max(0, MONTHLY_MINUTES_TARGET - current.totalMinutes));
-      const choice = loadRewardChoice(yearMonthRef.current);
+      setMinutesRemaining(Math.max(0, MONTHLY_MINUTES_TARGET - mins));
+      const ym = yearMonthRef.current;
+      const choiceFromServer = profile?.row?.monthly?.rewardChoices?.[ym];
+      const choice =
+        choiceFromServer != null && choiceFromServer !== ""
+          ? choiceFromServer
+          : loadRewardChoice(ym, sid);
       setRewardChoice(choice);
     } catch {
       // ignore
@@ -322,17 +339,10 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
   };
 
   const [dailyChallenge, setDailyChallenge] = useState(() => {
-    if (typeof window !== "undefined") {
-      try {
-        const saved = JSON.parse(localStorage.getItem("mleo_daily_challenge") || "{}");
-        const todayKey = getTodayKey();
-        if (saved.date === todayKey) {
-          return saved;
-        }
-      } catch {}
-    }
+    const today = new Date();
+    const todayKey = `${today.getFullYear()}-${today.getMonth()}-${today.getDate()}`;
     return {
-      date: getTodayKey(),
+      date: todayKey,
       questions: 0,
       correct: 0,
       bestScore: 0,
@@ -341,20 +351,10 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
   });
 
   const [weeklyChallenge, setWeeklyChallenge] = useState(() => {
-    if (typeof window !== "undefined") {
-      try {
-        const saved = JSON.parse(localStorage.getItem("mleo_weekly_challenge") || "{}");
-        const today = new Date();
-        const weekStart = new Date(today.setDate(today.getDate() - today.getDay()));
-        const weekKey = `${weekStart.getFullYear()}-${weekStart.getMonth()}-${weekStart.getDate()}`;
-        if (saved.week === weekKey) {
-          return saved;
-        }
-      } catch {}
-    }
+    const today = new Date();
     return {
-      week: getTodayKey().split('-').slice(0, 2).join('-'), // שבוע נוכחי
-      target: 100, // יעד: 100 שאלות נכונות
+      week: `${today.getFullYear()}-${today.getMonth()}-${today.getDate()}`,
+      target: 100,
       current: 0,
       completed: false,
     };
@@ -363,23 +363,18 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
   const [showDailyChallenge, setShowDailyChallenge] = useState(false);
 
   // Daily Streak
-  const [dailyStreak, setDailyStreak] = useState(() => loadDailyStreak("mleo_math_daily_streak"));
+  const [dailyStreak, setDailyStreak] = useState({ streak: 0, lastDate: null });
   const [showStreakReward, setShowStreakReward] = useState(null);
   
   // Sound system
   const sound = useSound();
   
   // תרגול ממוקד - שמירת שגיאות ותרגול מדורג
-  const [mistakes, setMistakes] = useState(() => {
-    if (typeof window !== "undefined") {
-      try {
-        const saved = JSON.parse(localStorage.getItem("mleo_mistakes") || "[]");
-        return Array.isArray(saved) ? saved : [];
-      } catch {}
-    }
-    return [];
-  });
-  const [learningIntel, setLearningIntel] = useState(() => loadMathIntel());
+  const [mistakes, setMistakes] = useState([]);
+  const [learningIntel, setLearningIntel] = useState(() => ({
+    opStats: {},
+    recentTail: [],
+  }));
   const correctRef = useRef(0);
   /** Parent Report V2: last-answer meta consumed when logging time for the previous question */
   const pendingTimeTrackMetaRef = useRef(null);
@@ -622,19 +617,88 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
   }, [isShowingAnySolution, animationSteps, explanationQuestion]);
 
   useEffect(() => {
-    refreshMonthlyProgress();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []); // רק פעם אחת בטעינה
+    let cancelled = false;
+    fetchStudentLearningProfile()
+      .then((profile) => {
+        if (cancelled) return;
+        if (!profile?.ok) {
+          learningProfileHydratedRef.current = true;
+          progressLoadedRef.current = true;
+          refreshMonthlyProgress();
+          return;
+        }
+        learningProfileStudentIdRef.current = profile.studentId;
+        const sub = profile.row.subjects?.math;
+        if (sub && typeof sub === "object") {
+          const ps = sub.progressStore;
+          if (ps && typeof ps === "object") {
+            if (typeof ps.stars === "number") setStars(ps.stars);
+            if (Array.isArray(ps.badges)) setBadges(ps.badges);
+            if (typeof ps.playerLevel === "number") setPlayerLevel(ps.playerLevel);
+            if (typeof ps.xp === "number") setXp(ps.xp);
+            if (ps.progress && typeof ps.progress === "object") {
+              setProgress((prev) => ({ ...prev, ...ps.progress }));
+            }
+          }
+          if (sub.scoresStore && typeof sub.scoresStore === "object") {
+            scoresStoreRef.current = sub.scoresStore;
+          }
+          if (Array.isArray(sub.mistakes)) setMistakes(sub.mistakes);
+          if (sub.intel && typeof sub.intel === "object") {
+            setLearningIntel({
+              opStats:
+                sub.intel.opStats && typeof sub.intel.opStats === "object"
+                  ? sub.intel.opStats
+                  : {},
+              recentTail: Array.isArray(sub.intel.recentTail) ? sub.intel.recentTail : [],
+            });
+          }
+        }
+        const ch = profile.row.challenges;
+        if (ch?.globalDaily && typeof ch.globalDaily === "object") setDailyChallenge(ch.globalDaily);
+        if (ch?.globalWeekly && typeof ch.globalWeekly === "object") setWeeklyChallenge(ch.globalWeekly);
+        const st = profile.row.streaks?.math;
+        if (st && typeof st === "object") setDailyStreak(st);
+        const emoji = profile.row.profile?.avatarEmoji;
+        if (typeof emoji === "string" && emoji) {
+          setPlayerAvatar(emoji);
+        }
+        learningProfileHydratedRef.current = true;
+        try {
+          const pr = profile.row.subjects?.math?.progressStore?.progress;
+          progressStringRef.current = JSON.stringify(pr || {});
+        } catch {
+          progressStringRef.current = "";
+        }
+        progressLoadedRef.current = true;
+        refreshMonthlyProgress();
+      })
+      .catch(() => {
+        if (cancelled) return;
+        learningProfileHydratedRef.current = true;
+        progressLoadedRef.current = true;
+        refreshMonthlyProgress();
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [refreshMonthlyProgress]);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
     if (monthlyProgress.totalMinutes < MONTHLY_MINUTES_TARGET) return;
-    if (hasRewardCelebrationShown(yearMonthRef.current)) return;
+    const ym = yearMonthRef.current;
+    const profile = getCachedStudentLearningProfile();
+    if (profile?.row?.monthly?.celebrationsShown?.[ym]) return;
+    if (hasRewardCelebrationShown(ym, learningProfileStudentIdRef.current || undefined)) return;
 
     const label = rewardChoice ? mathMonthlyRewardDisplayLabel(rewardChoice) : "";
     setRewardCelebrationLabel(label);
     setShowRewardCelebration(true);
-    markRewardCelebrationShown(yearMonthRef.current);
+    markRewardCelebrationShown(ym, learningProfileStudentIdRef.current || undefined);
+    void patchStudentLearningProfile({
+      monthly: { celebrationsShown: { [ym]: true } },
+    }).catch(() => {});
     sound.playSound("badge-earned");
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [monthlyProgress.totalMinutes, rewardChoice]);
@@ -836,7 +900,11 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
     // Load best scores for current player
     if (typeof window !== "undefined") {
       try {
-        const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+        const fromRef = scoresStoreRef.current;
+        const saved =
+          fromRef && typeof fromRef === "object" && Object.keys(fromRef).length > 0
+            ? fromRef
+            : JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
         const key = `${level}_${operation}`;
 
         if (saved[key] && playerName.trim()) {
@@ -872,6 +940,7 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
           setBestScore(0);
           setBestStreak(0);
         }
+        scoresStoreRef.current = saved;
       } catch {}
     }
   }, [level, operation, playerName]);
@@ -916,25 +985,6 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
 
   // לא צריך event listener - ה-modal נפתח רק ב-onChange או דרך כפתור ⚙️
 
-  // טעינת נתונים מ-localStorage
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    if (progressLoadedRef.current) return; // אל תטען פעמיים
-    try {
-      const saved = JSON.parse(localStorage.getItem(STORAGE_KEY + "_progress") || "{}");
-      if (saved.stars) setStars(saved.stars);
-      if (saved.badges) setBadges(saved.badges);
-      if (saved.playerLevel) setPlayerLevel(saved.playerLevel);
-      if (saved.xp) setXp(saved.xp);
-      if (saved.progress) {
-        setProgress(saved.progress);
-        // שמור את הגרסה הראשונית כדי למנוע שמירה מיותרת
-        progressStringRef.current = JSON.stringify(saved.progress);
-      }
-      progressLoadedRef.current = true; // סמן שטענו את progress
-    } catch {}
-  }, []);
-
   // שמירת progress ל-localStorage בכל עדכון - רק אחרי טעינה ראשונית
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -951,6 +1001,45 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
       localStorage.setItem(STORAGE_KEY + "_progress", JSON.stringify(saved));
     } catch {}
   }, [progress]);
+
+  useEffect(() => {
+    if (!learningProfileHydratedRef.current) return;
+    if (!learningProfileStudentIdRef.current) return;
+    const progressStore = { stars, badges, playerLevel, xp, progress };
+    debounceStudentLearningProfilePatch("math-master-sync", () => {
+      return patchStudentLearningProfile({
+        subjects: {
+          math: {
+            progressStore,
+            scoresStore: scoresStoreRef.current,
+            mistakes,
+            intel: learningIntel,
+          },
+        },
+        challenges: {
+          globalDaily: dailyChallenge,
+          globalWeekly: weeklyChallenge,
+        },
+        streaks: { math: dailyStreak },
+        profile: {
+          avatarEmoji: playerAvatar && !playerAvatarImage ? playerAvatar : undefined,
+        },
+      });
+    }, 2400);
+  }, [
+    stars,
+    badges,
+    playerLevel,
+    xp,
+    progress,
+    mistakes,
+    learningIntel,
+    dailyChallenge,
+    weeklyChallenge,
+    dailyStreak,
+    playerAvatar,
+    playerAvatarImage,
+  ]);
 
   useEffect(() => {
     if (typeof window === "undefined") return;
@@ -1092,6 +1181,7 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
       });
 
       localStorage.setItem(STORAGE_KEY, JSON.stringify(saved));
+      scoresStoreRef.current = saved;
 
       const playerScores = (saved[key] || []).filter(
         (s) => s.playerName === playerName.trim()
@@ -1110,6 +1200,12 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
       if (showLeaderboard) {
         const topScores = buildTop10ByScore(saved, leaderboardLevel);
         setLeaderboardData(topScores);
+      }
+
+      if (learningProfileStudentIdRef.current && learningProfileHydratedRef.current) {
+        void patchStudentLearningProfile({
+          subjects: { math: { scoresStore: saved } },
+        }).catch(() => {});
       }
     } catch {}
   }
@@ -1502,15 +1598,22 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
     const durationSeconds = Math.max(1, Math.round(totalSeconds / 1000));
     const accuracyForFinish =
       answered > 0 ? Math.round((Math.max(0, correct) / answered) * 100) : 0;
-    addSessionProgress(totalMinutes, answered, {
-      subject: "math",
-      topic: mathTrackingOperationKeyRef.current ?? currentQuestion?.operation ?? "",
-      grade,
-      mode,
-      game: "MathMaster",
-      date: new Date(),
+    addSessionProgress(
+      totalMinutes,
+      answered,
+      {
+        subject: "math",
+        topic: mathTrackingOperationKeyRef.current ?? currentQuestion?.operation ?? "",
+        grade,
+        mode,
+        game: "MathMaster",
+        date: new Date(),
+      },
+      { studentId: learningProfileStudentIdRef.current || undefined }
+    );
+    void refreshStudentLearningProfileAfterSession().then((p) => {
+      if (p?.ok) refreshMonthlyProgress();
     });
-    refreshMonthlyProgress();
     if (sessionIdForFinish) {
       finishLearningSession({
         learningSessionId: sessionIdForFinish,
@@ -3526,7 +3629,16 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
                       type="button"
                       key={option.key}
                       onClick={() => {
-                        saveRewardChoice(yearMonthRef.current, option.key);
+                        saveRewardChoice(
+                          yearMonthRef.current,
+                          option.key,
+                          learningProfileStudentIdRef.current || undefined
+                        );
+                        void patchStudentLearningProfile({
+                          monthly: {
+                            rewardChoices: { [yearMonthRef.current]: option.key },
+                          },
+                        }).catch(() => {});
                         setRewardChoice(option.key);
                       }}
                       className={`rounded-lg border py-2.5 px-1.5 md:py-2.5 md:px-2 lg:py-3 lg:px-2.5 min-h-[4.85rem] md:min-h-[5.5rem] lg:min-h-[6rem] bg-black/35 flex flex-col items-center justify-center gap-1.5 md:gap-1.5 min-w-0 transition-colors ${

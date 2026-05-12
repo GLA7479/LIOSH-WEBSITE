@@ -37,7 +37,6 @@ import LearningPlannerRecommendationBlock from "../../components/LearningPlanner
 import { reportModeFromGameState } from "../../utils/report-track-meta";
 import {
   addSessionProgress,
-  loadMonthlyProgress,
   loadRewardChoice,
   saveRewardChoice,
   getCurrentYearMonth,
@@ -51,7 +50,6 @@ import {
 } from "../../data/reward-options";
 import { splitRewardAmountLabel } from "../../utils/dashboard-setup-ui";
 import {
-  loadDailyStreak,
   updateDailyStreak,
   getStreakReward,
 } from "../../utils/daily-streak";
@@ -106,6 +104,13 @@ import {
   gradeKeyToNumber,
   normalizeGradeLevelToKey,
 } from "../../lib/learning-student-defaults";
+import {
+  debounceStudentLearningProfilePatch,
+  fetchStudentLearningProfile,
+  patchStudentLearningProfile,
+  refreshStudentLearningProfileAfterSession,
+  getCachedStudentLearningProfile,
+} from "../../lib/learning-client/studentLearningProfileClient";
 
 const AVATAR_OPTIONS = [
   "👤",
@@ -180,6 +185,11 @@ export default function HebrewMaster() {
   const hebrewPendingDiagnosticProbeRef = useRef(null);
   const hebrewHypothesisLedgerRef = useRef(null);
   const yearMonthRef = useRef(getCurrentYearMonth());
+  const learningProfileStudentIdRef = useRef(null);
+  const learningProfileHydratedRef = useRef(false);
+  const scoresStoreRef = useRef({});
+  const progressLoadedRef = useRef(false);
+  const progressStringRef = useRef("");
   /** עדכני ל־handleAnswer (משוב שגוי) כדי להציג תשובה נכונה מנוקדת כשה־map כבר הגיע */
   const niqqudByIdRef = useRef({});
   const audioBuild1CounterRef = useRef(0);
@@ -239,7 +249,7 @@ export default function HebrewMaster() {
   const [showBadge, setShowBadge] = useState(null);
   
   // Daily Streak
-  const [dailyStreak, setDailyStreak] = useState(() => loadDailyStreak("mleo_hebrew_daily_streak"));
+  const [dailyStreak, setDailyStreak] = useState({ streak: 0, lastDate: null });
   const [showStreakReward, setShowStreakReward] = useState(null);
   
   // Sound system
@@ -272,15 +282,22 @@ export default function HebrewMaster() {
   const refreshMonthlyProgress = useCallback(() => {
     if (typeof window === "undefined") return;
     try {
-      const all = loadMonthlyProgress();
-      const current = all[yearMonthRef.current] || { totalMinutes: 0, totalExercises: 0 };
-      setMonthlyProgress(current);
+      const profile = getCachedStudentLearningProfile();
+      const sid = learningProfileStudentIdRef.current || undefined;
+      const mins = profile?.derived?.monthlyMinutesUtcMonth ?? 0;
+      const ex = profile?.derived?.monthlyAnswersCountUtcMonth ?? 0;
+      setMonthlyProgress({ totalMinutes: mins, totalExercises: ex });
       const percent = MONTHLY_MINUTES_TARGET
-        ? Math.min(100, Math.round((current.totalMinutes / MONTHLY_MINUTES_TARGET) * 100))
+        ? Math.min(100, Math.round((mins / MONTHLY_MINUTES_TARGET) * 100))
         : 0;
       setGoalPercent(percent);
-      setMinutesRemaining(Math.max(0, MONTHLY_MINUTES_TARGET - current.totalMinutes));
-      const choice = loadRewardChoice(yearMonthRef.current);
+      setMinutesRemaining(Math.max(0, MONTHLY_MINUTES_TARGET - mins));
+      const ym = yearMonthRef.current;
+      const choiceFromServer = profile?.row?.monthly?.rewardChoices?.[ym];
+      const choice =
+        choiceFromServer != null && choiceFromServer !== ""
+          ? choiceFromServer
+          : loadRewardChoice(ym, sid);
       setRewardChoice(choice);
     } catch {
       // ignore
@@ -304,40 +321,22 @@ export default function HebrewMaster() {
     return `${today.getFullYear()}-${today.getMonth()}-${today.getDate()}`;
   };
 
-  const [dailyChallenge, setDailyChallenge] = useState(() => {
-    if (typeof window !== "undefined") {
-      try {
-        const saved = JSON.parse(localStorage.getItem("mleo_daily_challenge") || "{}");
-        const todayKey = getTodayKey();
-        if (saved.date === todayKey) {
-          return saved;
-        }
-      } catch {}
-    }
-    return {
-      date: getTodayKey(),
-      questions: 0,
-      correct: 0,
-      bestScore: 0,
-      completed: false,
-    };
-  });
+  const [dailyChallenge, setDailyChallenge] = useState(() => ({
+    date: getTodayKey(),
+    questions: 0,
+    correct: 0,
+    bestScore: 0,
+    completed: false,
+  }));
 
   const [weeklyChallenge, setWeeklyChallenge] = useState(() => {
-    if (typeof window !== "undefined") {
-      try {
-        const saved = JSON.parse(localStorage.getItem("mleo_weekly_challenge") || "{}");
-        const today = new Date();
-        const weekStart = new Date(today.setDate(today.getDate() - today.getDay()));
-        const weekKey = `${weekStart.getFullYear()}-${weekStart.getMonth()}-${weekStart.getDate()}`;
-        if (saved.week === weekKey) {
-          return saved;
-        }
-      } catch {}
-    }
+    const today = new Date();
+    const weekStart = new Date(today);
+    weekStart.setDate(weekStart.getDate() - weekStart.getDay());
+    const weekKey = `${weekStart.getFullYear()}-${weekStart.getMonth()}-${weekStart.getDate()}`;
     return {
-      week: getTodayKey().split('-').slice(0, 2).join('-'), // שבוע נוכחי
-      target: 100, // יעד: 100 שאלות נכונות
+      week: weekKey,
+      target: 100,
       current: 0,
       completed: false,
     };
@@ -346,15 +345,7 @@ export default function HebrewMaster() {
   const [showDailyChallenge, setShowDailyChallenge] = useState(false);
   
   // תרגול ממוקד - שמירת שגיאות ותרגול מדורג
-  const [mistakes, setMistakes] = useState(() => {
-    if (typeof window !== "undefined") {
-      try {
-        const saved = JSON.parse(localStorage.getItem(HEBREW_MISTAKES_KEY) || "[]");
-        return saved;
-      } catch {}
-    }
-    return [];
-  });
+  const [mistakes, setMistakes] = useState([]);
   const [focusedPracticeMode, setFocusedPracticeMode] = useState("normal"); // "normal", "mistakes", "graded"
   const [showPracticeOptions, setShowPracticeOptions] = useState(false);
   const [showReferenceModal, setShowReferenceModal] = useState(false);
@@ -508,12 +499,18 @@ export default function HebrewMaster() {
 useEffect(() => {
   if (typeof window === "undefined") return;
   if (monthlyProgress.totalMinutes < MONTHLY_MINUTES_TARGET) return;
-  if (hasRewardCelebrationShown(yearMonthRef.current)) return;
+  const ym = yearMonthRef.current;
+  const profile = getCachedStudentLearningProfile();
+  if (profile?.row?.monthly?.celebrationsShown?.[ym]) return;
+  if (hasRewardCelebrationShown(ym, learningProfileStudentIdRef.current || undefined)) return;
 
   const label = rewardChoice ? getRewardLabel(rewardChoice) : "";
   setRewardCelebrationLabel(label);
   setShowRewardCelebration(true);
-  markRewardCelebrationShown(yearMonthRef.current);
+  markRewardCelebrationShown(ym, learningProfileStudentIdRef.current || undefined);
+  void patchStudentLearningProfile({
+    monthly: { celebrationsShown: { [ym]: true } },
+  }).catch(() => {});
   sound.playSound("badge-earned");
   // eslint-disable-next-line react-hooks/exhaustive-deps
 }, [monthlyProgress.totalMinutes, rewardChoice]);
@@ -686,6 +683,101 @@ useEffect(() => {
   };
 
   useEffect(() => {
+    let cancelled = false;
+    fetchStudentLearningProfile()
+      .then((profile) => {
+        if (cancelled) return;
+        if (!profile?.ok) {
+          learningProfileHydratedRef.current = true;
+          progressLoadedRef.current = true;
+          refreshMonthlyProgress();
+          return;
+        }
+        learningProfileStudentIdRef.current = profile.studentId;
+        const sub = profile.row.subjects?.hebrew;
+        if (sub && typeof sub === "object") {
+          const ps = sub.progressStore;
+          if (ps && typeof ps === "object") {
+            if (typeof ps.stars === "number") setStars(ps.stars);
+            if (Array.isArray(ps.badges)) setBadges(ps.badges);
+            if (typeof ps.playerLevel === "number") setPlayerLevel(ps.playerLevel);
+            if (typeof ps.xp === "number") setXp(ps.xp);
+            if (ps.progress && typeof ps.progress === "object") {
+              setProgress((prev) => ({ ...prev, ...ps.progress }));
+            }
+          }
+          if (sub.scoresStore && typeof sub.scoresStore === "object") {
+            scoresStoreRef.current = sub.scoresStore;
+          }
+          if (Array.isArray(sub.mistakes)) setMistakes(sub.mistakes);
+        }
+        const ch = profile.row.challenges;
+        if (ch?.globalDaily && typeof ch.globalDaily === "object") setDailyChallenge(ch.globalDaily);
+        if (ch?.globalWeekly && typeof ch.globalWeekly === "object") setWeeklyChallenge(ch.globalWeekly);
+        const st = profile.row.streaks?.hebrew;
+        if (st && typeof st === "object") setDailyStreak(st);
+        const emoji = profile.row.profile?.avatarEmoji;
+        if (typeof emoji === "string" && emoji) setPlayerAvatar(emoji);
+        learningProfileHydratedRef.current = true;
+        try {
+          const pr = profile.row.subjects?.hebrew?.progressStore?.progress;
+          progressStringRef.current = JSON.stringify(pr || {});
+        } catch {
+          progressStringRef.current = "";
+        }
+        progressLoadedRef.current = true;
+        refreshMonthlyProgress();
+      })
+      .catch(() => {
+        if (cancelled) return;
+        learningProfileHydratedRef.current = true;
+        progressLoadedRef.current = true;
+        refreshMonthlyProgress();
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [refreshMonthlyProgress]);
+
+  useEffect(() => {
+    if (!learningProfileHydratedRef.current) return;
+    if (!learningProfileStudentIdRef.current) return;
+    const progressStore = { stars, badges, playerLevel, xp, progress };
+    debounceStudentLearningProfilePatch("hebrew-master-sync", () => {
+      return patchStudentLearningProfile({
+        subjects: {
+          hebrew: {
+            progressStore,
+            scoresStore: scoresStoreRef.current,
+            mistakes,
+            intel: {},
+          },
+        },
+        challenges: {
+          globalDaily: dailyChallenge,
+          globalWeekly: weeklyChallenge,
+        },
+        streaks: { hebrew: dailyStreak },
+        profile: {
+          avatarEmoji: playerAvatar && !playerAvatarImage ? playerAvatar : undefined,
+        },
+      });
+    }, 2400);
+  }, [
+    stars,
+    badges,
+    playerLevel,
+    xp,
+    progress,
+    mistakes,
+    dailyChallenge,
+    weeklyChallenge,
+    dailyStreak,
+    playerAvatar,
+    playerAvatarImage,
+  ]);
+
+  useEffect(() => {
     return () => {
       recordSessionProgress({ includePlannerRecommendation: false });
     };
@@ -695,7 +787,12 @@ useEffect(() => {
     // Load best scores for current player
     if (typeof window !== "undefined") {
       try {
-        const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+        const saved =
+          scoresStoreRef.current &&
+          typeof scoresStoreRef.current === "object" &&
+          Object.keys(scoresStoreRef.current).length > 0
+            ? scoresStoreRef.current
+            : JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
         const key = `${level}_${operation}`;
 
         if (saved[key] && playerName.trim()) {
@@ -762,35 +859,30 @@ useEffect(() => {
 
   // לא צריך useEffect - ה-modal נפתח ישירות ב-onChange
 
-  // בדיקה אם זה יום חדש לתחרות יומית - רק פעם אחת בטעינה
+  // בדיקה אם זה יום חדש לתחרות יומית
   useEffect(() => {
-    const today = new Date().toDateString();
-    setDailyChallenge((prev) => {
-      if (prev.date !== today) {
-        return { date: today, bestScore: 0, questions: 0 };
-      }
-      return prev;
-    });
-  }, []); // רק פעם אחת בטעינה
+    const todayKey = getTodayKey();
+    if (dailyChallenge.date !== todayKey) {
+      setDailyChallenge({
+        date: todayKey,
+        bestScore: 0,
+        questions: 0,
+        correct: 0,
+        completed: false,
+      });
+    }
+  }, [dailyChallenge.date]);
 
   // לא צריך event listener - ה-modal נפתח רק ב-onChange או דרך כפתור ⚙️
 
-  // טעינת נתונים מ-localStorage
-  useEffect(() => {
-    if (typeof window === "undefined") return;
-    try {
-      const saved = JSON.parse(localStorage.getItem(STORAGE_KEY + "_progress") || "{}");
-      if (saved.stars) setStars(saved.stars);
-      if (saved.badges) setBadges(saved.badges);
-      if (saved.playerLevel) setPlayerLevel(saved.playerLevel);
-      if (saved.xp) setXp(saved.xp);
-      if (saved.progress) setProgress(saved.progress);
-    } catch {}
-  }, []);
+  // טעינת נתונים מ-localStorage — נטען מהשרת ב-fetchStudentLearningProfile
 
-  // שמירת progress ל-localStorage כשהם משתנים
   useEffect(() => {
     if (typeof window === "undefined") return;
+    if (!progressLoadedRef.current) return;
+    const currentProgressStr = JSON.stringify(progress);
+    if (currentProgressStr === progressStringRef.current) return;
+    progressStringRef.current = currentProgressStr;
     try {
       const saved = JSON.parse(localStorage.getItem(STORAGE_KEY + "_progress") || "{}");
       saved.progress = progress;
@@ -802,7 +894,11 @@ useEffect(() => {
   useEffect(() => {
     if (showLeaderboard && typeof window !== "undefined") {
       try {
-        const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+        const fromRef = scoresStoreRef.current;
+        const saved =
+          fromRef && typeof fromRef === "object" && Object.keys(fromRef).length > 0
+            ? fromRef
+            : JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
         const topScores = buildTop10ByScore(saved, leaderboardLevel);
         setLeaderboardData(topScores);
       } catch (e) {
@@ -998,6 +1094,7 @@ useEffect(() => {
       });
 
       localStorage.setItem(STORAGE_KEY, JSON.stringify(saved));
+      scoresStoreRef.current = saved;
 
       const playerScores = (saved[key] || []).filter(
         (s) => s.playerName === playerName.trim()
@@ -1016,6 +1113,12 @@ useEffect(() => {
       if (showLeaderboard) {
         const topScores = buildTop10ByScore(saved, leaderboardLevel);
         setLeaderboardData(topScores);
+      }
+
+      if (learningProfileStudentIdRef.current && learningProfileHydratedRef.current) {
+        void patchStudentLearningProfile({
+          subjects: { hebrew: { scoresStore: saved } },
+        }).catch(() => {});
       }
     } catch {}
   }
@@ -1317,7 +1420,10 @@ useEffect(() => {
     const durationSeconds = Math.max(1, Math.round(totalSeconds / 1000));
     const accuracyForFinish =
       answered > 0 ? Math.round((Math.max(0, correctForFinish) / answered) * 100) : 0;
-    addSessionProgress(durationMinutes, answered, {
+    addSessionProgress(
+      durationMinutes,
+      answered,
+      {
       subject: "hebrew",
       topic:
         hebrewTrackingTopicKeyRef.current ??
@@ -1328,8 +1434,12 @@ useEffect(() => {
       mode,
       game: "HebrewMaster",
       date: new Date(),
+      },
+      { studentId: learningProfileStudentIdRef.current || undefined }
+    );
+    void refreshStudentLearningProfileAfterSession().then((p) => {
+      if (p?.ok) refreshMonthlyProgress();
     });
-    refreshMonthlyProgress();
     if (sessionIdForFinish) {
       finishLearningSession({
         learningSessionId: sessionIdForFinish,
@@ -3401,8 +3511,13 @@ useEffect(() => {
                       type="button"
                       key={option.key}
                       onClick={() => {
-                        saveRewardChoice(yearMonthRef.current, option.key);
+                        saveRewardChoice(yearMonthRef.current, option.key, learningProfileStudentIdRef.current || undefined);
                         setRewardChoice(option.key);
+                        void patchStudentLearningProfile({
+                          monthly: {
+                            rewardChoices: { [yearMonthRef.current]: option.key },
+                          },
+                        }).catch(() => {});
                       }}
                       className={`rounded-lg border py-2.5 px-1.5 md:py-2.5 md:px-2 lg:py-3 lg:px-2.5 min-h-[4.85rem] md:min-h-[5.5rem] lg:min-h-[6rem] bg-black/35 flex flex-col items-center justify-center gap-1.5 md:gap-1.5 min-w-0 transition-colors ${
                         prizePicked
