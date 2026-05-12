@@ -281,7 +281,7 @@ export default function StudentHomePage() {
                 )}
               </button>
               <div className="min-w-0 text-right">
-                <h1 className="text-2xl md:text-3xl font-extrabold text-white tracking-tight">שלום, {heroName}</h1>
+                <h1 className="text-2xl md:text-3xl font-extrabold text-white tracking-tight">שלום {heroName}</h1>
                 <p className="text-white/80 mt-1 text-sm md:text-base">
                   {heroGrade ? heroGrade : "עדיין אין נתונים"}
                 </p>
