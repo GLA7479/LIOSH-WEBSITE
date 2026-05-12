@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import Link from "next/link";
 import Layout from "../../components/Layout";
@@ -11,6 +11,38 @@ export default function StudentLoginPage() {
   const [pin, setPin] = useState("");
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState("");
+  const [sessionCheck, setSessionCheck] = useState("pending");
+
+  useEffect(() => {
+    if (!router.isReady) return undefined;
+    let mounted = true;
+    fetch("/api/student/me", { credentials: "same-origin", cache: "no-store" })
+      .then((res) => {
+        if (!mounted) return;
+        if (res.ok) {
+          router.replace("/student/home");
+          return;
+        }
+        setSessionCheck("none");
+      })
+      .catch(() => {
+        if (mounted) setSessionCheck("none");
+      });
+    return () => {
+      mounted = false;
+    };
+  }, [router.isReady, router]);
+
+  if (sessionCheck === "pending") {
+    return (
+      <Layout>
+        <div className="min-h-[50vh] flex flex-col items-center justify-center px-4">
+          <div className="h-10 w-10 rounded-full border-2 border-emerald-400/30 border-t-emerald-400 animate-spin mb-3" aria-hidden />
+          <p className="text-white/85">בודקים חיבור...</p>
+        </div>
+      </Layout>
+    );
+  }
 
   const resolveNextTarget = () => {
     const raw = router.query?.next;
