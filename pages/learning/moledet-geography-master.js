@@ -87,6 +87,10 @@ import {
   subjectChallengePatch,
 } from "../../lib/learning-client/student-dashboard-account-tiles";
 import { mapSubjectAccountViewFromStudentProfile } from "../../lib/learning-shared/student-account-state-view";
+import {
+  buildStudentSubjectDashboardView,
+  logStudentSubjectDashboardDiagnostics,
+} from "../../lib/learning-shared/student-subject-dashboard-view";
 
 const AVATAR_OPTIONS = [
   "👤",
@@ -1756,6 +1760,7 @@ useEffect(() => {
         ...prev,
         bestScore: Math.max(prev.bestScore, score + points),
         questions: prev.questions + 1,
+        correct: (prev.correct || 0) + 1,
       }));
 
       // אנימציה ותגובה חזותית לתשובה נכונה
@@ -2024,6 +2029,70 @@ useEffect(() => {
     return TOPICS[op]?.name || op;
   };
 
+  const profileSnap = getCachedStudentLearningProfile();
+  const subjectView = useMemo(
+    () =>
+      buildStudentSubjectDashboardView({
+        subject: "moledet_geography",
+        studentId: profileSnap?.studentId ?? "",
+        profile: profileSnap,
+        derived: profileSnap?.derived,
+        currentRunState: {
+          gameActive,
+          score,
+          streak,
+          correct,
+          bestScore,
+          bestStreak,
+          lives,
+          timeLeft,
+        },
+        scoresStoreSnapshot: scoresStoreRef.current,
+        topicScopeKey: `${level}_${operation}`,
+        monthlyState: {
+          totalMinutes: monthlyProgress.totalMinutes,
+          goalMinutes: MONTHLY_MINUTES_TARGET,
+          yearMonth: yearMonthRef.current,
+          selectedRewardKey: rewardChoice,
+          celebrationShownForMonth: !!profileSnap?.row?.monthly?.celebrationsShown?.[yearMonthRef.current],
+        },
+        mode,
+        gameActive,
+        playerDisplayName: playerName,
+        avatarEmoji: playerAvatar && !playerAvatarImage ? playerAvatar : null,
+        hydrationComplete: learningProfileHydrationTick > 0 && !!learningProfileHydratedRef.current,
+        liveDailyBlob: dailyChallenge,
+        liveWeeklyBlob: weeklyChallenge,
+      }),
+    [
+      gameActive,
+      score,
+      streak,
+      correct,
+      bestScore,
+      bestStreak,
+      lives,
+      timeLeft,
+      learningProfileHydrationTick,
+      playerName,
+      level,
+      operation,
+      monthlyProgress.totalMinutes,
+      rewardChoice,
+      mode,
+      playerAvatar,
+      playerAvatarImage,
+      dailyChallenge,
+      weeklyChallenge,
+    ]
+  );
+
+  useEffect(() => {
+    logStudentSubjectDashboardDiagnostics("moledet_geography", subjectView, {
+      hydrationComplete: !!learningProfileHydratedRef.current,
+    });
+  }, [subjectView, learningProfileHydrationTick]);
+
   if (!mounted)
     return (
       <div className="min-h-screen bg-gradient-to-b from-[#0a0f1d] to-[#141928] flex items-center justify-center">
@@ -2033,8 +2102,6 @@ useEffect(() => {
 
   const accuracy =
     totalQuestions > 0 ? Math.round((correct / totalQuestions) * 100) : 0;
-  const middleDashboardAccuracyPct =
-    serverAccountSubjectAccuracyPct != null ? serverAccountSubjectAccuracyPct : 0;
   // No word problems for Moledet & Geography - all topics are text-based
 
   // ✅ טקסט רמז והסבר מלא לשאלה הנוכחית
@@ -2174,7 +2241,9 @@ useEffect(() => {
                 <div className="text-[9px] md:text-[12px] lg:text-sm text-white/78 md:text-white/85 lg:text-white/90 leading-tight">ניקוד</div>
               </div>
               <div className="flex flex-1 items-center justify-center min-h-0">
-                <div className="text-sm md:text-lg lg:text-xl font-bold text-emerald-300 md:text-emerald-300 lg:text-emerald-200 leading-tight">{score}</div>
+                <div className="text-sm md:text-lg lg:text-xl font-bold text-emerald-300 md:text-emerald-300 lg:text-emerald-200 leading-tight">
+                  {subjectView.topHud.score}
+                </div>
               </div>
             </div>
             <div className="bg-black/30 border border-white/10 rounded-lg py-1.5 px-0.5 md:py-2 md:px-1 lg:px-1.5 text-center flex flex-col items-stretch justify-start min-h-[50px] md:min-h-[58px] lg:min-h-[62px]">
@@ -2182,7 +2251,9 @@ useEffect(() => {
                 <div className="text-[9px] md:text-[12px] lg:text-sm text-white/78 md:text-white/85 lg:text-white/90 leading-tight">רצף</div>
               </div>
               <div className="flex flex-1 items-center justify-center min-h-0">
-                <div className="text-sm md:text-lg lg:text-xl font-bold text-amber-300 md:text-amber-300 lg:text-amber-200 leading-tight">🔥{streak}</div>
+                <div className="text-sm md:text-lg lg:text-xl font-bold text-amber-300 md:text-amber-300 lg:text-amber-200 leading-tight">
+                  🔥{subjectView.topHud.streak}
+                </div>
               </div>
             </div>
             <div className="bg-black/30 border border-white/10 rounded-lg py-1.5 px-0.5 md:py-2 md:px-1 lg:px-1.5 text-center flex flex-col items-stretch justify-start min-h-[50px] md:min-h-[58px] lg:min-h-[62px]">
@@ -2190,7 +2261,7 @@ useEffect(() => {
                 <div className="text-[9px] md:text-[12px] lg:text-sm text-white/78 md:text-white/85 lg:text-white/90 leading-tight">כוכבים</div>
               </div>
               <div className="flex flex-1 items-center justify-center min-h-0">
-                <div className="text-sm md:text-lg lg:text-xl font-bold text-yellow-300 md:text-yellow-300 lg:text-yellow-200 leading-tight">⭐{stars}</div>
+                <div className="text-sm md:text-lg lg:text-xl font-bold text-yellow-300 md:text-yellow-300 lg:text-yellow-200 leading-tight">⭐{subjectView.topHud.stars}</div>
               </div>
             </div>
             <div className="bg-black/30 border border-white/10 rounded-lg py-1.5 px-0.5 md:py-2 md:px-1 lg:px-1.5 text-center flex flex-col items-stretch justify-start min-h-[50px] md:min-h-[58px] lg:min-h-[62px]">
@@ -2198,7 +2269,7 @@ useEffect(() => {
                 <div className="text-[9px] md:text-[12px] lg:text-sm text-white/78 md:text-white/85 lg:text-white/90 leading-tight">רמה</div>
               </div>
               <div className="flex flex-1 items-center justify-center min-h-0">
-                <div className="text-sm md:text-lg lg:text-xl font-bold text-purple-300 md:text-purple-300 lg:text-purple-200 leading-tight">רמה {playerLevel}</div>
+                <div className="text-sm md:text-lg lg:text-xl font-bold text-purple-300 md:text-purple-300 lg:text-purple-200 leading-tight">רמה {subjectView.topHud.level}</div>
               </div>
             </div>
             <div className="bg-black/30 border border-white/10 rounded-lg py-1.5 px-0.5 md:py-2 md:px-1 lg:px-1.5 text-center flex flex-col items-stretch justify-start min-h-[50px] md:min-h-[58px] lg:min-h-[62px]">
@@ -2206,7 +2277,9 @@ useEffect(() => {
                 <div className="text-[9px] md:text-[12px] lg:text-sm text-white/78 md:text-white/85 lg:text-white/90 leading-tight">✅</div>
               </div>
               <div className="flex flex-1 items-center justify-center min-h-0">
-                <div className="text-sm md:text-lg lg:text-xl font-bold text-green-300 md:text-green-300 lg:text-green-200 leading-tight">{correct}</div>
+                <div className="text-sm md:text-lg lg:text-xl font-bold text-green-300 md:text-green-300 lg:text-green-200 leading-tight">
+                  {subjectView.topHud.correct}
+                </div>
               </div>
             </div>
             <div className="bg-black/30 border border-white/10 rounded-lg py-1.5 px-0.5 md:py-2 md:px-1 lg:px-1.5 text-center flex flex-col items-stretch justify-start min-h-[50px] md:min-h-[58px] lg:min-h-[62px]">
@@ -2823,7 +2896,7 @@ useEffect(() => {
                     <span className="text-[10px] md:text-[13px] lg:text-sm text-white/78 md:text-white/85 lg:text-white/90 text-center leading-tight max-w-full line-clamp-2">שיא ניקוד</span>
                   </div>
                   <div className="flex flex-1 items-center justify-center min-h-0">
-                    <span className="text-base md:text-xl lg:text-2xl font-bold text-emerald-300 md:text-emerald-300 lg:text-emerald-200 tabular-nums leading-tight">{bestScore}</span>
+                    <span className="text-base md:text-xl lg:text-2xl font-bold text-emerald-300 md:text-emerald-300 lg:text-emerald-200 tabular-nums leading-tight">{subjectView.middleTiles.bestScore}</span>
                   </div>
                 </div>
                 <div className="bg-black/25 border border-white/15 rounded-lg md:rounded-xl px-1 py-2 md:px-2 md:py-3 min-h-[4.5rem] md:min-h-[5.25rem] lg:min-h-[5.75rem] flex flex-col items-stretch justify-start gap-1 md:gap-1.5 min-w-0 shadow-sm">
@@ -2831,7 +2904,7 @@ useEffect(() => {
                     <span className="text-[10px] md:text-[13px] lg:text-sm text-white/78 md:text-white/85 lg:text-white/90 text-center leading-tight max-w-full line-clamp-2">שיא רצף</span>
                   </div>
                   <div className="flex flex-1 items-center justify-center min-h-0">
-                    <span className="text-base md:text-xl lg:text-2xl font-bold text-amber-300 md:text-amber-300 lg:text-amber-200 tabular-nums leading-tight">{bestStreak}</span>
+                    <span className="text-base md:text-xl lg:text-2xl font-bold text-amber-300 md:text-amber-300 lg:text-amber-200 tabular-nums leading-tight">{subjectView.middleTiles.bestStreak}</span>
                   </div>
                 </div>
                 <div className="bg-black/25 border border-white/15 rounded-lg md:rounded-xl px-1 py-2 md:px-2 md:py-3 min-h-[4.5rem] md:min-h-[5.25rem] lg:min-h-[5.75rem] flex flex-col items-stretch justify-start gap-1 md:gap-1.5 min-w-0 shadow-sm">
@@ -2839,7 +2912,7 @@ useEffect(() => {
                     <span className="text-[10px] md:text-[13px] lg:text-sm text-white/78 md:text-white/85 lg:text-white/90 text-center leading-tight max-w-full line-clamp-2">דיוק</span>
                   </div>
                   <div className="flex flex-1 items-center justify-center min-h-0">
-                    <span className="text-base md:text-xl lg:text-2xl font-bold text-blue-300 md:text-blue-300 lg:text-blue-200 tabular-nums leading-tight">{middleDashboardAccuracyPct}%</span>
+                    <span className="text-base md:text-xl lg:text-2xl font-bold text-blue-300 md:text-blue-300 lg:text-blue-200 tabular-nums leading-tight">{subjectView.middleTiles.accuracy}%</span>
                   </div>
                 </div>
                 <div className="bg-black/25 border border-white/15 rounded-lg md:rounded-xl px-1 py-2 md:px-2 md:py-3 min-h-[4.5rem] md:min-h-[5.25rem] lg:min-h-[5.75rem] flex flex-col items-stretch justify-start gap-1 md:gap-1.5 min-w-0 shadow-sm">
@@ -3802,26 +3875,28 @@ useEffect(() => {
                   <div className="bg-black/30 rounded-lg p-3">
                     <div className="text-xs text-white/60 mb-1">שאלות היום</div>
                     <div className="text-2xl font-bold text-white">
-                      {dailyChallenge.questions || 0}
+                      {subjectView.dailyChallenge.questionsToday}
                     </div>
                   </div>
                   <div className="bg-black/30 rounded-lg p-3">
                     <div className="text-xs text-white/60 mb-1">תשובות נכונות</div>
                     <div className="text-2xl font-bold text-emerald-400">
-                      {dailyChallenge.correct || 0}
+                      {subjectView.dailyChallenge.correctToday}
                     </div>
                   </div>
                   <div className="bg-black/30 rounded-lg p-3">
                     <div className="text-xs text-white/60 mb-1">ניקוד שיא</div>
                     <div className="text-2xl font-bold text-yellow-400">
-                      {dailyChallenge.bestScore || 0}
+                      {subjectView.dailyChallenge.scoreToday}
                     </div>
                   </div>
-                  {(dailyChallenge.questions || 0) > 0 && (
+                  {(subjectView.dailyChallenge.questionsToday || 0) > 0 && (
                     <div className="bg-black/30 rounded-lg p-3">
                       <div className="text-xs text-white/60 mb-1">דיוק</div>
                       <div className="text-2xl font-bold text-blue-400">
-                        {Math.round(((dailyChallenge.correct || 0) / (dailyChallenge.questions || 1)) * 100)}%
+                        {subjectView.dailyChallenge.accuracyToday != null
+                          ? `${subjectView.dailyChallenge.accuracyToday}%`
+                          : "—"}
                       </div>
                     </div>
                   )}
