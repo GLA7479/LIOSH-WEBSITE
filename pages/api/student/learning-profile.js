@@ -73,16 +73,27 @@ export default async function handler(req, res) {
       const current = normalizeLearningProfileRow(row);
       const patch = extractLearningProfilePatch(body);
 
+      const sanitizedProfile = sanitizeProfileForStorage(patch.profile ?? {});
+      let mergedProfile = deepMergeLearningState(current.profile, sanitizedProfile);
+      const rawProfilePatch = patch.profile;
+      if (
+        rawProfilePatch &&
+        typeof rawProfilePatch === "object" &&
+        !Array.isArray(rawProfilePatch) &&
+        Object.prototype.hasOwnProperty.call(rawProfilePatch, "avatarCustomDataUrl") &&
+        rawProfilePatch.avatarCustomDataUrl === null
+      ) {
+        mergedProfile = { ...mergedProfile };
+        delete mergedProfile.avatarCustomDataUrl;
+      }
+
       const next = {
         subjects: deepMergeLearningState(current.subjects, patch.subjects ?? {}),
         monthly: deepMergeLearningState(current.monthly, patch.monthly ?? {}),
         challenges: deepMergeLearningState(current.challenges, patch.challenges ?? {}),
         streaks: deepMergeLearningState(current.streaks, patch.streaks ?? {}),
         achievements: deepMergeLearningState(current.achievements, patch.achievements ?? {}),
-        profile: deepMergeLearningState(
-          current.profile,
-          sanitizeProfileForStorage(patch.profile ?? {})
-        ),
+        profile: mergedProfile,
       };
 
       const { error: upErr } = await supabase

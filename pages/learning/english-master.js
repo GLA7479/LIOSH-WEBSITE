@@ -93,6 +93,12 @@ import {
   getCachedStudentLearningProfile,
 } from "../../lib/learning-client/studentLearningProfileClient";
 import {
+  applyLearningProfileAvatarRowToPlayerState,
+  compressImageFileToJpegDataUrl,
+  patchLearningProfileAvatarCustomImage,
+  patchLearningProfileClearAvatarCustom,
+} from "../../lib/learning-client/student-avatar-profile-sync";
+import {
   accountAccuracyDisplayFromDerived,
   logAccountTileSync,
   maxBestForPlayerInKey,
@@ -1516,10 +1522,7 @@ const refreshMonthlyProgress = useCallback(() => {
         setServerAccountSubjectAccuracyPct(accountAccuracyDisplayFromDerived(profile.derived, "english"));
         const st = profile.row.streaks?.english;
         if (st && typeof st === "object") setDailyStreak(st);
-        const emoji = profile.row.profile?.avatarEmoji;
-        if (typeof emoji === "string" && emoji) {
-          setPlayerAvatar(emoji);
-        }
+        applyLearningProfileAvatarRowToPlayerState(profile.row.profile, setPlayerAvatar, setPlayerAvatarImage);
         learningProfileHydratedRef.current = true;
         try {
           const pr = profile.row.subjects?.english?.progressStore?.progress;
@@ -1548,7 +1551,7 @@ const refreshMonthlyProgress = useCallback(() => {
     if (!learningProfileStudentIdRef.current) return;
     const progressStore = { stars, badges, playerLevel, xp, progress };
     debounceStudentLearningProfilePatch("english-master-sync", () => {
-      return patchStudentLearningProfile({
+      const base = {
         subjects: {
           english: {
             progressStore,
@@ -1559,10 +1562,17 @@ const refreshMonthlyProgress = useCallback(() => {
         },
         challenges: subjectChallengePatch("english", dailyChallenge, weeklyChallenge),
         streaks: { english: dailyStreak },
-        profile: {
-          avatarEmoji: playerAvatar && !playerAvatarImage ? playerAvatar : undefined,
-        },
-      });
+      };
+      if (!playerAvatarImage) {
+        return patchStudentLearningProfile({
+          ...base,
+          profile: {
+            avatarEmoji: playerAvatar ? playerAvatar : undefined,
+            avatarCustomDataUrl: null,
+          },
+        });
+      }
+      return patchStudentLearningProfile(base);
     }, 2400);
   }, [
     stars,
@@ -1604,50 +1614,58 @@ const refreshMonthlyProgress = useCallback(() => {
     }
   }, []);
 
-  // טיפול בהעלאת תמונת אווטר
+  // טיפול בהעלאת תמונת אווטר (דחיסה + שמירה בפרופיל — סנכרון בין מכשירים)
   const handleAvatarImageUpload = (e) => {
-    const file = e.target.files[0];
+    const file = e.target.files?.[0];
     if (!file) return;
-    
-    // בדוק גודל קובץ (מקסימום 5MB)
+
     if (file.size > 5 * 1024 * 1024) {
       alert("התמונה גדולה מדי. נא לבחור תמונה עד 5MB");
       return;
     }
-    
-    // בדוק סוג קובץ
+
     if (!file.type.startsWith("image/")) {
       alert("נא לבחור קובץ תמונה בלבד");
       return;
     }
-    
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      const imageUrl = reader.result;
-      setPlayerAvatarImage(imageUrl);
-      setPlayerAvatar(null);
+
+    void (async () => {
       try {
-        localStorage.setItem("mleo_player_avatar_image", imageUrl);
-        localStorage.removeItem("mleo_player_avatar"); // הסר אמוג'י אם נבחרה תמונה
-      } catch {
-        // ignore
+        const dataUrl = await compressImageFileToJpegDataUrl(file);
+        setPlayerAvatarImage(dataUrl);
+        setPlayerAvatar(null);
+        try {
+          localStorage.setItem("mleo_player_avatar_image", dataUrl);
+          localStorage.removeItem("mleo_player_avatar");
+        } catch {
+          /* ignore */
+        }
+        await patchLearningProfileAvatarCustomImage(dataUrl);
+      } catch (err) {
+        alert(err && typeof err === "object" && "message" in err ? String(err.message) : "שמירת התמונה נכשלה");
       }
-    };
-    reader.readAsDataURL(file);
+    })();
+    e.target.value = "";
   };
 
   // טיפול במחיקת תמונת אווטר
   const handleRemoveAvatarImage = () => {
-    setPlayerAvatarImage(null);
-    try {
-      localStorage.removeItem("mleo_player_avatar_image");
-      // החזר אמוג'י ברירת מחדל
+    void (async () => {
       const defaultAvatar = "👤";
+      setPlayerAvatarImage(null);
+      try {
+        localStorage.removeItem("mleo_player_avatar_image");
+        localStorage.setItem("mleo_player_avatar", defaultAvatar);
+      } catch {
+        /* ignore */
+      }
       setPlayerAvatar(defaultAvatar);
-      localStorage.setItem("mleo_player_avatar", defaultAvatar);
-    } catch {
-      // ignore
-    }
+      try {
+        await patchLearningProfileClearAvatarCustom(defaultAvatar);
+      } catch {
+        /* ignore */
+      }
+    })();
   };
 
   useEffect(() => {

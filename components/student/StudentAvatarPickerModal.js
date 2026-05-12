@@ -1,5 +1,10 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { patchStudentLearningProfile } from "../../lib/learning-client/studentLearningProfileClient";
+import {
+  compressImageFileToJpegDataUrl,
+  patchLearningProfileAvatarCustomImage,
+  patchLearningProfileClearAvatarCustom,
+} from "../../lib/learning-client/student-avatar-profile-sync";
 
 /** Same palette as learning master pages (math / hebrew / …). */
 export const STUDENT_AVATAR_EMOJI_OPTIONS = [
@@ -24,7 +29,7 @@ export const STUDENT_AVATAR_EMOJI_OPTIONS = [
 ];
 
 /**
- * Avatar picker overlay aligned with game pages: emoji grid + optional custom image (localStorage only).
+ * Avatar picker overlay aligned with game pages: emoji grid + optional custom image (synced to learning profile).
  *
  * @param {object} props
  * @param {boolean} props.open
@@ -32,6 +37,7 @@ export const STUDENT_AVATAR_EMOJI_OPTIONS = [
  * @param {string} [props.playerName]
  * @param {string | null | undefined} props.serverAvatarEmoji from learning profile (e.g. home-profile `profile.avatarEmoji`)
  * @param {(emoji: string | null) => void} [props.onAvatarEmojiPersisted] parent may merge into dashboard payload
+ * @param {(url: string | null) => void} [props.onAvatarCustomDataUrlPersisted] parent merges `profile.avatarCustomDataUrl`
  * @param {() => void} [props.onAvatarChanged] called after any local avatar change (e.g. refresh hero from localStorage)
  */
 export default function StudentAvatarPickerModal({
@@ -40,6 +46,7 @@ export default function StudentAvatarPickerModal({
   playerName = "",
   serverAvatarEmoji = null,
   onAvatarEmojiPersisted,
+  onAvatarCustomDataUrlPersisted,
   onAvatarChanged,
 }) {
   const fileInputRef = useRef(null);
@@ -77,23 +84,26 @@ export default function StudentAvatarPickerModal({
   }, [open, syncFromBrowser]);
 
   const persistEmojiToServer = useCallback(
-    async (emoji, hasCustomImage) => {
+    async (emoji) => {
       setSaving(true);
       setSaveError("");
       try {
+        const em = emoji && String(emoji).trim() ? String(emoji).trim().slice(0, 8) : "👤";
         await patchStudentLearningProfile({
           profile: {
-            avatarEmoji: hasCustomImage ? undefined : emoji && emoji.trim() ? emoji.trim().slice(0, 8) : undefined,
+            avatarEmoji: em,
+            avatarCustomDataUrl: null,
           },
         });
-        onAvatarEmojiPersisted?.(hasCustomImage ? null : emoji && emoji.trim() ? emoji.trim().slice(0, 8) : null);
+        onAvatarEmojiPersisted?.(em);
+        onAvatarCustomDataUrlPersisted?.(null);
       } catch (e) {
         setSaveError(e && typeof e === "object" && "message" in e ? String(e.message) : "שמירה נכשלה");
       } finally {
         setSaving(false);
       }
     },
-    [onAvatarEmojiPersisted],
+    [onAvatarEmojiPersisted, onAvatarCustomDataUrlPersisted],
   );
 
   const handleAvatarImageUpload = (e) => {
@@ -107,31 +117,51 @@ export default function StudentAvatarPickerModal({
       window.alert("נא לבחור קובץ תמונה בלבד");
       return;
     }
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      const imageUrl = reader.result;
-      setPlayerAvatarImage(typeof imageUrl === "string" ? imageUrl : null);
-      setPlayerAvatar("👤");
-      if (typeof window !== "undefined") {
-        localStorage.setItem("mleo_player_avatar_image", imageUrl);
-        localStorage.removeItem("mleo_player_avatar");
+    void (async () => {
+      setSaving(true);
+      setSaveError("");
+      try {
+        const dataUrl = await compressImageFileToJpegDataUrl(file);
+        setPlayerAvatarImage(dataUrl);
+        setPlayerAvatar("👤");
+        if (typeof window !== "undefined") {
+          localStorage.setItem("mleo_player_avatar_image", dataUrl);
+          localStorage.removeItem("mleo_player_avatar");
+        }
+        onAvatarChanged?.();
+        await patchLearningProfileAvatarCustomImage(dataUrl);
+        onAvatarCustomDataUrlPersisted?.(dataUrl);
+      } catch (err) {
+        setSaveError(err && typeof err === "object" && "message" in err ? String(err.message) : "שמירת התמונה נכשלה");
+      } finally {
+        setSaving(false);
       }
-      onAvatarChanged?.();
-    };
-    reader.readAsDataURL(file);
+    })();
     e.target.value = "";
   };
 
   const handleRemoveAvatarImage = () => {
-    setPlayerAvatarImage(null);
-    const defaultAvatar = "👤";
-    setPlayerAvatar(defaultAvatar);
-    if (typeof window !== "undefined") {
-      localStorage.removeItem("mleo_player_avatar_image");
-      localStorage.setItem("mleo_player_avatar", defaultAvatar);
-    }
-    onAvatarChanged?.();
-    void persistEmojiToServer(defaultAvatar, false);
+    void (async () => {
+      setSaving(true);
+      setSaveError("");
+      try {
+        const defaultAvatar = "👤";
+        setPlayerAvatarImage(null);
+        setPlayerAvatar(defaultAvatar);
+        if (typeof window !== "undefined") {
+          localStorage.removeItem("mleo_player_avatar_image");
+          localStorage.setItem("mleo_player_avatar", defaultAvatar);
+        }
+        onAvatarChanged?.();
+        await patchLearningProfileClearAvatarCustom(defaultAvatar);
+        onAvatarCustomDataUrlPersisted?.(null);
+        onAvatarEmojiPersisted?.(defaultAvatar);
+      } catch (e) {
+        setSaveError(e && typeof e === "object" && "message" in e ? String(e.message) : "שמירה נכשלה");
+      } finally {
+        setSaving(false);
+      }
+    })();
   };
 
   const selectEmoji = (avatar) => {
@@ -142,7 +172,7 @@ export default function StudentAvatarPickerModal({
       localStorage.removeItem("mleo_player_avatar_image");
     }
     onAvatarChanged?.();
-    void persistEmojiToServer(avatar, false);
+    void persistEmojiToServer(avatar);
   };
 
   if (!open) return null;

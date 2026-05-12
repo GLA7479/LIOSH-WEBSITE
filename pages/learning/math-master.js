@@ -135,6 +135,12 @@ import {
   getCachedStudentLearningProfile,
 } from "../../lib/learning-client/studentLearningProfileClient";
 import {
+  applyLearningProfileAvatarRowToPlayerState,
+  compressImageFileToJpegDataUrl,
+  patchLearningProfileAvatarCustomImage,
+  patchLearningProfileClearAvatarCustom,
+} from "../../lib/learning-client/student-avatar-profile-sync";
+import {
   accountAccuracyDisplayFromDerived,
   logAccountTileSync,
   maxBestForPlayerInKey,
@@ -268,7 +274,7 @@ export default function MathMaster() {
   // מניעת שאלות חוזרות
   const [recentQuestions, setRecentQuestions] = useState(new Set());
 
-  // מצב תצוגה מאוזן/מאונך
+  /** תצוגת תרגיל: מאוזן (ברירת מחדל) / מאונך — רק לסשן הפעיל; לא נשמר בשרת או ב-localStorage קבוע. מתאפס ב־startGame / stopGame / hardResetGame. */
   const [isVerticalDisplay, setIsVerticalDisplay] = useState(false);
 
   // מערכת כוכבים ותגים
@@ -677,10 +683,7 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
         setServerAccountSubjectAccuracyPct(accountAccuracyDisplayFromDerived(profile.derived, "math"));
         const st = profile.row.streaks?.math;
         if (st && typeof st === "object") setDailyStreak(st);
-        const emoji = profile.row.profile?.avatarEmoji;
-        if (typeof emoji === "string" && emoji) {
-          setPlayerAvatar(emoji);
-        }
+        applyLearningProfileAvatarRowToPlayerState(profile.row.profile, setPlayerAvatar, setPlayerAvatarImage);
         learningProfileHydratedRef.current = true;
         try {
           const pr = profile.row.subjects?.math?.progressStore?.progress;
@@ -866,46 +869,54 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
     }
   }, []);
 
-  // טיפול בהעלאת תמונת אווטר
+  // טיפול בהעלאת תמונת אווטר (דחיסה + שמירה בפרופיל ללמידה — סנכרון בין מכשירים)
   const handleAvatarImageUpload = (e) => {
-    const file = e.target.files[0];
+    const file = e.target.files?.[0];
     if (!file) return;
-    
-    // בדוק גודל קובץ (מקסימום 5MB)
+
     if (file.size > 5 * 1024 * 1024) {
       alert("התמונה גדולה מדי. נא לבחור תמונה עד 5MB");
       return;
     }
-    
-    // בדוק סוג קובץ
+
     if (!file.type.startsWith("image/")) {
       alert("נא לבחור קובץ תמונה בלבד");
       return;
     }
-    
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      const imageUrl = reader.result;
-      setPlayerAvatarImage(imageUrl);
-      setPlayerAvatar(null);
-      if (typeof window !== "undefined") {
-        localStorage.setItem("mleo_player_avatar_image", imageUrl);
-        localStorage.removeItem("mleo_player_avatar"); // הסר אמוג'י אם נבחרה תמונה
+
+    void (async () => {
+      try {
+        const dataUrl = await compressImageFileToJpegDataUrl(file);
+        setPlayerAvatarImage(dataUrl);
+        setPlayerAvatar(null);
+        if (typeof window !== "undefined") {
+          localStorage.setItem("mleo_player_avatar_image", dataUrl);
+          localStorage.removeItem("mleo_player_avatar");
+        }
+        await patchLearningProfileAvatarCustomImage(dataUrl);
+      } catch (err) {
+        alert(err && typeof err === "object" && "message" in err ? String(err.message) : "שמירת התמונה נכשלה");
       }
-    };
-    reader.readAsDataURL(file);
+    })();
+    e.target.value = "";
   };
 
   // טיפול במחיקת תמונת אווטר
   const handleRemoveAvatarImage = () => {
-    setPlayerAvatarImage(null);
-    if (typeof window !== "undefined") {
-      localStorage.removeItem("mleo_player_avatar_image");
-      // החזר אמוג'י ברירת מחדל
+    void (async () => {
       const defaultAvatar = "👤";
+      setPlayerAvatarImage(null);
+      if (typeof window !== "undefined") {
+        localStorage.removeItem("mleo_player_avatar_image");
+        localStorage.setItem("mleo_player_avatar", defaultAvatar);
+      }
       setPlayerAvatar(defaultAvatar);
-      localStorage.setItem("mleo_player_avatar", defaultAvatar);
-    }
+      try {
+        await patchLearningProfileClearAvatarCustom(defaultAvatar);
+      } catch {
+        /* ignore */
+      }
+    })();
   };
 
   useEffect(() => {
@@ -1007,7 +1018,7 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
     if (!learningProfileStudentIdRef.current) return;
     const progressStore = { stars, badges, playerLevel, xp, progress };
     debounceStudentLearningProfilePatch("math-master-sync", () => {
-      return patchStudentLearningProfile({
+      const base = {
         subjects: {
           math: {
             progressStore,
@@ -1018,10 +1029,17 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
         },
         challenges: subjectChallengePatch("math", dailyChallenge, weeklyChallenge),
         streaks: { math: dailyStreak },
-        profile: {
-          avatarEmoji: playerAvatar && !playerAvatarImage ? playerAvatar : undefined,
-        },
-      });
+      };
+      if (!playerAvatarImage) {
+        return patchStudentLearningProfile({
+          ...base,
+          profile: {
+            avatarEmoji: playerAvatar ? playerAvatar : undefined,
+            avatarCustomDataUrl: null,
+          },
+        });
+      }
+      return patchStudentLearningProfile(base);
     }, 2400);
   }, [
     stars,
@@ -1248,6 +1266,7 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
     setQuestionStartTime(null);
     setShowPreviousSolution(false);
     setPreviousExplanationQuestion(null);
+    setIsVerticalDisplay(false);
     clearActiveDiagnosticState(
       mathPendingDiagnosticProbeRef,
       mathHypothesisLedgerRef
@@ -1370,7 +1389,6 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
           setHintUsed(false);
           closeExplanationModal();
           setErrorExplanation("");
-          setIsVerticalDisplay(false);
           setMovedCirclesA(0);
           setMovedCirclesB(0);
           return;
@@ -1542,7 +1560,6 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
     setHintUsed(false);
     closeExplanationModal();
     setErrorExplanation("");
-    setIsVerticalDisplay(false); // איפוס למצב מאוזן בכל שאלה חדשה
     // איפוס עיגולים שעברו כשמשנים שאלה
     setMovedCirclesA(0);
     setMovedCirclesB(0);
@@ -1790,6 +1807,7 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
       mathHypothesisLedgerRef
     );
     setRecentQuestions(new Set()); // איפוס ההיסטוריה
+    setIsVerticalDisplay(false); // סשן חדש: תמיד מאוזן כברירת מחדל
     setGameActive(true);
     setScore(0);
     setStreak(0);
@@ -1874,7 +1892,8 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
     setFeedback(null);
     setSelectedAnswer(null);
     setTextAnswer("");
-    
+    setIsVerticalDisplay(false);
+
     // Stop background music when game stops
     sound.stopBackgroundMusic();
     
@@ -2135,6 +2154,7 @@ const [rewardCelebrationLabel, setRewardCelebrationLabel] = useState("");
           setTimeout(() => {
             setFeedback(null);
             setGameActive(false);
+            setIsVerticalDisplay(false);
           }, 3000);
           return;
         }

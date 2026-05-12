@@ -175,13 +175,26 @@ export default function StudentHomePage() {
 
   const refreshHeroAvatarFromBrowser = useCallback(() => {
     if (typeof window === "undefined") return;
+    const rowProf =
+      homePayload?.profile && typeof homePayload.profile === "object" && !Array.isArray(homePayload.profile)
+        ? homePayload.profile
+        : null;
+    const serverCustom =
+      rowProf && typeof rowProf.avatarCustomDataUrl === "string" && rowProf.avatarCustomDataUrl.trim().startsWith("data:image/")
+        ? rowProf.avatarCustomDataUrl.trim()
+        : null;
     const img = localStorage.getItem("mleo_player_avatar_image");
     const em = localStorage.getItem("mleo_player_avatar");
-    const prof =
-      homePayload?.profile && typeof homePayload.profile === "object" && !Array.isArray(homePayload.profile)
-        ? homePayload.profile.avatarEmoji
-        : null;
-    const fromDash = dashboardView?.identity?.avatarEmoji;
+    const profEmoji = rowProf?.avatarEmoji;
+    const fromDashEmoji = dashboardView?.identity?.avatarEmoji;
+    const fromDashCustom = dashboardView?.identity?.avatarCustomDataUrl;
+
+    if (serverCustom || (typeof fromDashCustom === "string" && fromDashCustom.trim().startsWith("data:image/"))) {
+      const url = serverCustom || String(fromDashCustom).trim();
+      setHeroAvatarImage(url);
+      setHeroAvatarEmoji("👤");
+      return;
+    }
     if (img) {
       setHeroAvatarImage(img);
       setHeroAvatarEmoji("👤");
@@ -190,27 +203,38 @@ export default function StudentHomePage() {
     setHeroAvatarImage(null);
     const pick =
       (em && String(em).trim()) ||
-      (prof != null && String(prof).trim() !== "" ? String(prof).trim() : "") ||
-      (fromDash && String(fromDash).trim()) ||
+      (profEmoji != null && String(profEmoji).trim() !== "" ? String(profEmoji).trim() : "") ||
+      (fromDashEmoji && String(fromDashEmoji).trim()) ||
       "👤";
     setHeroAvatarEmoji(pick.slice(0, 8));
-  }, [homePayload?.profile, dashboardView?.identity?.avatarEmoji]);
+  }, [homePayload?.profile, dashboardView?.identity?.avatarEmoji, dashboardView?.identity?.avatarCustomDataUrl]);
 
   useEffect(() => {
     refreshHeroAvatarFromBrowser();
   }, [refreshHeroAvatarFromBrowser]);
 
-  const mergeHomeProfileAvatarEmoji = useCallback((emoji) => {
+  const mergeHomeLearningProfileAvatar = useCallback((partial) => {
     setHomePayload((prev) => {
       if (!prev || typeof prev !== "object") return prev;
       const profile =
         prev.profile && typeof prev.profile === "object" && !Array.isArray(prev.profile)
           ? { ...prev.profile }
           : {};
-      if (emoji != null && String(emoji).trim() !== "") {
-        profile.avatarEmoji = String(emoji).trim().slice(0, 8);
-      } else {
-        delete profile.avatarEmoji;
+      if (partial && typeof partial === "object") {
+        if (Object.prototype.hasOwnProperty.call(partial, "emoji")) {
+          if (partial.emoji != null && String(partial.emoji).trim() !== "") {
+            profile.avatarEmoji = String(partial.emoji).trim().slice(0, 8);
+          } else {
+            delete profile.avatarEmoji;
+          }
+        }
+        if (Object.prototype.hasOwnProperty.call(partial, "customDataUrl")) {
+          if (partial.customDataUrl != null && String(partial.customDataUrl).trim() !== "") {
+            profile.avatarCustomDataUrl = String(partial.customDataUrl).trim();
+          } else {
+            delete profile.avatarCustomDataUrl;
+          }
+        }
       }
       return { ...prev, profile };
     });
@@ -505,7 +529,10 @@ export default function StudentHomePage() {
             : dashboardView?.identity?.avatarEmoji
         }
         onAvatarEmojiPersisted={(emoji) => {
-          mergeHomeProfileAvatarEmoji(emoji);
+          mergeHomeLearningProfileAvatar({ emoji });
+        }}
+        onAvatarCustomDataUrlPersisted={(customDataUrl) => {
+          mergeHomeLearningProfileAvatar({ customDataUrl });
         }}
         onAvatarChanged={() => {
           refreshHeroAvatarFromBrowser();
