@@ -84,6 +84,13 @@ import {
   refreshStudentLearningProfileAfterSession,
   getCachedStudentLearningProfile,
 } from "../../lib/learning-client/studentLearningProfileClient";
+import {
+  accountAccuracyDisplayFromDerived,
+  logAccountTileSync,
+  maxBestForPlayerInKey,
+  pickSubjectChallengeBlobs,
+  subjectChallengePatch,
+} from "../../lib/learning-client/student-dashboard-account-tiles";
 
 // ================== CONFIG ==================
 
@@ -722,6 +729,8 @@ export default function ScienceMaster() {
   const yearMonthRef = useRef(getCurrentYearMonth());
   const learningProfileStudentIdRef = useRef(null);
   const learningProfileHydratedRef = useRef(false);
+  const [serverAccountSubjectAccuracyPct, setServerAccountSubjectAccuracyPct] = useState(null);
+  const [learningProfileHydrationTick, setLearningProfileHydrationTick] = useState(0);
   const scoresStoreRef = useRef({});
   const progressLoadedRef = useRef(false);
   const progressStringRef = useRef("");
@@ -895,6 +904,28 @@ export default function ScienceMaster() {
   }, []);
 
   useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (!learningProfileHydratedRef.current) return;
+    try {
+      const saved =
+        scoresStoreRef.current && typeof scoresStoreRef.current === "object"
+          ? scoresStoreRef.current
+          : {};
+      const key = `${level}_${topic}`;
+      const { maxScore, maxStreak } = maxBestForPlayerInKey(saved, key, playerName);
+      setBestScore(maxScore);
+      setBestStreak(maxStreak);
+      logAccountTileSync("science", {
+        tile: "personalBests",
+        level,
+        topic,
+        displayedBestScore: maxScore,
+        displayedBestStreak: maxStreak,
+      });
+    } catch {}
+  }, [level, topic, playerName, learningProfileHydrationTick]);
+
+  useEffect(() => {
     refreshMonthlyProgress();
   }, [refreshMonthlyProgress]);
 
@@ -967,6 +998,7 @@ export default function ScienceMaster() {
         if (!profile?.ok) {
           learningProfileHydratedRef.current = true;
           progressLoadedRef.current = true;
+          setLearningProfileHydrationTick((n) => n + 1);
           refreshMonthlyProgress();
           return;
         }
@@ -999,8 +1031,10 @@ export default function ScienceMaster() {
           }
         }
         const ch = profile.row.challenges;
-        if (ch?.scienceDaily && typeof ch.scienceDaily === "object") setDailyChallenge(ch.scienceDaily);
-        if (ch?.scienceWeekly && typeof ch.scienceWeekly === "object") setWeeklyChallenge(ch.scienceWeekly);
+        const { daily: chDaily, weekly: chWeekly } = pickSubjectChallengeBlobs(ch, "science");
+        if (chDaily) setDailyChallenge(chDaily);
+        if (chWeekly) setWeeklyChallenge(chWeekly);
+        setServerAccountSubjectAccuracyPct(accountAccuracyDisplayFromDerived(profile.derived, "science"));
         const st = profile.row.streaks?.science;
         if (st && typeof st === "object") setDailyStreak(st);
         const emoji = profile.row.profile?.avatarEmoji;
@@ -1013,12 +1047,14 @@ export default function ScienceMaster() {
           progressStringRef.current = "";
         }
         progressLoadedRef.current = true;
+        setLearningProfileHydrationTick((n) => n + 1);
         refreshMonthlyProgress();
       })
       .catch(() => {
         if (cancelled) return;
         learningProfileHydratedRef.current = true;
         progressLoadedRef.current = true;
+        setLearningProfileHydrationTick((n) => n + 1);
         refreshMonthlyProgress();
       });
     return () => {
@@ -1046,10 +1082,7 @@ export default function ScienceMaster() {
             },
           },
         },
-        challenges: {
-          scienceDaily: dailyChallenge,
-          scienceWeekly: weeklyChallenge,
-        },
+        challenges: subjectChallengePatch("science", dailyChallenge, weeklyChallenge),
         streaks: { science: dailyStreak },
         profile: {
           avatarEmoji: playerAvatar && !playerAvatarImage ? playerAvatar : undefined,
@@ -1224,60 +1257,6 @@ useEffect(() => {
     return () => clearTimeout(t);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [timeLeft, gameActive, mode]);
-
-  // ----- BEST SCORES LOAD PER LEVEL+TOPIC -----
-  useEffect(() => {
-    if (typeof window === "undefined" || !playerName.trim()) {
-      setBestScore(0);
-      setBestStreak(0);
-      return;
-    }
-    try {
-      const rawHolder =
-        scoresStoreRef.current &&
-        typeof scoresStoreRef.current === "object" &&
-        Object.keys(scoresStoreRef.current).length > 0
-          ? scoresStoreRef.current
-          : null;
-      const saved =
-        rawHolder ?? JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
-      if (!saved || typeof saved !== "object") {
-        setBestScore(0);
-        setBestStreak(0);
-        return;
-      }
-      const key = `${level}_${topic}`;
-      const items = saved[key];
-      if (!Array.isArray(items)) {
-        setBestScore(0);
-        setBestStreak(0);
-        return;
-      }
-      const playerItems = items.filter(
-        (e) => e.playerName === playerName.trim()
-      );
-      if (playerItems.length === 0) {
-        setBestScore(0);
-        setBestStreak(0);
-        return;
-      }
-      const maxScore = Math.max(
-        ...playerItems.map((s) => s.bestScore ?? s.score ?? 0),
-        0
-      );
-      const maxStreak = Math.max(
-        ...playerItems.map((s) => s.bestStreak ?? s.streak ?? 0),
-        0
-      );
-      setBestScore(maxScore);
-      setBestStreak(maxStreak);
-    } catch {
-      setBestScore(0);
-      setBestStreak(0);
-    }
-  }, [level, topic, playerName]);
-
-  // ================== GAME LOGIC ==================
 
   function filterQuestionsForCurrentSettings(levelOverride) {
     const gradeKey = grade;
@@ -1549,7 +1528,11 @@ function recordSessionProgress(opts = {}) {
     { studentId: learningProfileStudentIdRef.current || undefined }
   );
   void refreshStudentLearningProfileAfterSession().then((p) => {
-    if (p?.ok) refreshMonthlyProgress();
+    if (p?.ok) {
+      refreshMonthlyProgress();
+      const acc = accountAccuracyDisplayFromDerived(p.derived, "science");
+      if (acc != null) setServerAccountSubjectAccuracyPct(acc);
+    }
   });
   if (sessionIdForFinish) {
     finishLearningSession({
@@ -1560,6 +1543,7 @@ function recordSessionProgress(opts = {}) {
       score: scoreForFinish,
       accuracy: accuracyForFinish,
       durationSeconds,
+      mode: reportModeFromGameState(mode, focusedPracticeMode),
       clientMeta: {
         source: "science-master",
         version: "phase-2d-b6",
@@ -1609,7 +1593,7 @@ function buildScienceSessionStartPayload() {
   return {
     subject: "science",
     topic: String(scienceTrackingTopicKeyRef.current || currentQuestion?.topic || topic || "science"),
-    mode: String(mode || "learning"),
+    mode: reportModeFromGameState(mode, focusedPracticeMode),
     gradeLevel: String(grade || ""),
     level: String(level || ""),
     clientMeta:
@@ -1986,10 +1970,18 @@ function saveScienceAnswerInParallel({
   function saveRunToStorage() {
     if (typeof window === "undefined" || !playerName.trim()) return;
     try {
-      const raw = localStorage.getItem(STORAGE_KEY) || "{}";
-      const saved = JSON.parse(raw);
+      let saved;
+      if (learningProfileStudentIdRef.current && learningProfileHydratedRef.current) {
+        const base = scoresStoreRef.current;
+        saved =
+          base && typeof base === "object"
+            ? JSON.parse(JSON.stringify(base))
+            : {};
+      } else {
+        saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+      }
       const key = `${level}_${topic}`;
-      const arr = Array.isArray(saved[key]) ? saved[key] : [];
+      const arr = Array.isArray(saved[key]) ? [...saved[key]] : [];
       arr.push({
         playerName: playerName.trim(),
         bestScore: score,
@@ -1999,29 +1991,28 @@ function saveScienceAnswerInParallel({
       saved[key] = arr.slice(-100);
       localStorage.setItem(STORAGE_KEY, JSON.stringify(saved));
       scoresStoreRef.current = saved;
-      // update best
-      const top = arr.reduce(
-        (acc, item) => {
-          const s = item.bestScore ?? item.score ?? 0;
-          const st = item.bestStreak ?? item.streak ?? 0;
-          return {
-            bestScore: Math.max(acc.bestScore, s),
-            bestStreak: Math.max(acc.bestStreak, st),
-          };
-        },
-        { bestScore: 0, bestStreak: 0 }
-      );
-      setBestScore(top.bestScore);
-      setBestStreak(top.bestStreak);
+      const { maxScore, maxStreak } = maxBestForPlayerInKey(saved, key, playerName);
+      setBestScore(maxScore);
+      setBestStreak(maxStreak);
       if (showLeaderboard) {
         const all = buildTop10(saved);
         setLeaderboardData(all);
       }
 
       if (learningProfileStudentIdRef.current && learningProfileHydratedRef.current) {
-        void patchStudentLearningProfile({
-          subjects: { science: { scoresStore: saved } },
-        }).catch(() => {});
+        const patchBody = { subjects: { science: { scoresStore: saved } } };
+        void patchStudentLearningProfile(patchBody)
+          .then((json) => {
+            const acc = accountAccuracyDisplayFromDerived(json?.derived, "science");
+            if (acc != null) setServerAccountSubjectAccuracyPct(acc);
+            logAccountTileSync("science", {
+              tile: "finishPatch",
+              responseAccuracy: acc,
+              displayedBestScore: maxScore,
+              displayedBestStreak: maxStreak,
+            });
+          })
+          .catch(() => {});
       }
     } catch {
       // ignore
@@ -2608,6 +2599,8 @@ function saveScienceAnswerInParallel({
 
   const accuracy =
     totalQuestions > 0 ? Math.round((correct / totalQuestions) * 100) : 0;
+  const middleDashboardAccuracyPct =
+    serverAccountSubjectAccuracyPct != null ? serverAccountSubjectAccuracyPct : 0;
   const referenceSection =
     REFERENCE_SECTIONS[referenceCategory] || REFERENCE_SECTIONS.life_science;
   const referenceEntries = referenceSection.entries || [];
@@ -3007,7 +3000,7 @@ function saveScienceAnswerInParallel({
                     <span className="text-[10px] md:text-[13px] lg:text-sm text-white/78 md:text-white/85 lg:text-white/90 text-center leading-tight max-w-full line-clamp-2">דיוק</span>
                   </div>
                   <div className="flex flex-1 items-center justify-center min-h-0">
-                    <span className="text-base md:text-xl lg:text-2xl font-bold text-blue-300 md:text-blue-300 lg:text-blue-200 tabular-nums leading-tight">{accuracy}%</span>
+                    <span className="text-base md:text-xl lg:text-2xl font-bold text-blue-300 md:text-blue-300 lg:text-blue-200 tabular-nums leading-tight">{middleDashboardAccuracyPct}%</span>
                   </div>
                 </div>
                 <div className="bg-black/25 border border-white/15 rounded-lg md:rounded-xl px-1 py-2 md:px-2 md:py-3 min-h-[4.5rem] md:min-h-[5.25rem] lg:min-h-[5.75rem] flex flex-col items-stretch justify-start gap-1 md:gap-1.5 min-w-0 shadow-sm">
@@ -3017,7 +3010,19 @@ function saveScienceAnswerInParallel({
                   <div className="flex flex-1 items-center justify-center min-h-0">
                     <button
                       type="button"
-                      onClick={() => setShowDailyChallenge(true)}
+                      onClick={() => {
+                        void fetchStudentLearningProfile()
+                          .then((p) => {
+                            if (!p?.ok) return;
+                            const { daily, weekly } = pickSubjectChallengeBlobs(p.row.challenges, "science");
+                            if (daily) setDailyChallenge(daily);
+                            if (weekly) setWeeklyChallenge(weekly);
+                            const acc = accountAccuracyDisplayFromDerived(p.derived, "science");
+                            if (acc != null) setServerAccountSubjectAccuracyPct(acc);
+                            logAccountTileSync("science", { tile: "challengesPrefetch" });
+                          })
+                          .finally(() => setShowDailyChallenge(true));
+                      }}
                       className="h-7 md:h-8 w-full max-w-[3.5rem] md:max-w-[4rem] px-1.5 md:px-2 rounded-md bg-blue-500/85 hover:bg-blue-500 text-white text-[11px] md:text-sm lg:text-base font-bold"
                     >
                       פתיחה

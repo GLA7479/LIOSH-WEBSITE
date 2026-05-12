@@ -134,6 +134,13 @@ import {
   refreshStudentLearningProfileAfterSession,
   getCachedStudentLearningProfile,
 } from "../../lib/learning-client/studentLearningProfileClient";
+import {
+  accountAccuracyDisplayFromDerived,
+  logAccountTileSync,
+  maxBestForPlayerInKey,
+  pickSubjectChallengeBlobs,
+  subjectChallengePatch,
+} from "../../lib/learning-client/student-dashboard-account-tiles";
 
 /** Passed into compareGeometryLearnerAnswer — not defaulted inside answer-compare. */
 const GEOMETRY_NUMERIC_SCALE_FLOOR = 1e-6;
@@ -195,6 +202,8 @@ export default function GeometryMaster() {
   const geometryHypothesisLedgerRef = useRef(null);
   const learningProfileStudentIdRef = useRef(null);
   const learningProfileHydratedRef = useRef(false);
+  const [serverAccountSubjectAccuracyPct, setServerAccountSubjectAccuracyPct] = useState(null);
+  const [learningProfileHydrationTick, setLearningProfileHydrationTick] = useState(0);
   const scoresStoreRef = useRef({});
   const progressLoadedRef = useRef(false);
 
@@ -406,6 +415,7 @@ const refreshMonthlyProgress = useCallback(() => {
         if (!profile?.ok) {
           learningProfileHydratedRef.current = true;
           progressLoadedRef.current = true;
+          setLearningProfileHydrationTick((n) => n + 1);
           refreshMonthlyProgress();
           return;
         }
@@ -437,21 +447,24 @@ const refreshMonthlyProgress = useCallback(() => {
           }
         }
         const ch = profile.row.challenges;
-        const gd = ch?.geometryDaily || ch?.globalDaily;
-        if (gd && typeof gd === "object") setDailyChallenge(gd);
-        if (ch?.globalWeekly && typeof ch.globalWeekly === "object") setWeeklyChallenge(ch.globalWeekly);
+        const { daily: chDaily, weekly: chWeekly } = pickSubjectChallengeBlobs(ch, "geometry");
+        if (chDaily) setDailyChallenge(chDaily);
+        if (chWeekly) setWeeklyChallenge(chWeekly);
+        setServerAccountSubjectAccuracyPct(accountAccuracyDisplayFromDerived(profile.derived, "geometry"));
         const st = profile.row.streaks?.geometry;
         if (st && typeof st === "object") setDailyStreak(st);
         const emoji = profile.row.profile?.avatarEmoji;
         if (typeof emoji === "string" && emoji) setPlayerAvatar(emoji);
         learningProfileHydratedRef.current = true;
         progressLoadedRef.current = true;
+        setLearningProfileHydrationTick((n) => n + 1);
         refreshMonthlyProgress();
       })
       .catch(() => {
         if (cancelled) return;
         learningProfileHydratedRef.current = true;
         progressLoadedRef.current = true;
+        setLearningProfileHydrationTick((n) => n + 1);
         refreshMonthlyProgress();
       });
     return () => {
@@ -557,10 +570,7 @@ const refreshMonthlyProgress = useCallback(() => {
             intel: learningIntel,
           },
         },
-        challenges: {
-          geometryDaily: dailyChallenge,
-          globalWeekly: weeklyChallenge,
-        },
+        challenges: subjectChallengePatch("geometry", dailyChallenge, weeklyChallenge),
         streaks: { geometry: dailyStreak },
         profile: {
           avatarEmoji: playerAvatar && !playerAvatarImage ? playerAvatar : undefined,
@@ -628,6 +638,29 @@ const refreshMonthlyProgress = useCallback(() => {
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    if (!learningProfileHydratedRef.current) return;
+    try {
+      const saved =
+        scoresStoreRef.current && typeof scoresStoreRef.current === "object"
+          ? scoresStoreRef.current
+          : {};
+      const key = `${level}_${topic}`;
+      const { maxScore, maxStreak } = maxBestForPlayerInKey(saved, key, playerName);
+      setBestScore(maxScore);
+      setBestStreak(maxStreak);
+      logAccountTileSync("geometry", {
+        tile: "personalBests",
+        level,
+        topic,
+        playerName: playerName.trim(),
+        displayedBestScore: maxScore,
+        displayedBestStreak: maxStreak,
+      });
+    } catch {}
+  }, [level, topic, playerName, learningProfileHydrationTick]);
 
   useEffect(() => {
     installLearningDiagnosticDebugOnce();
@@ -1072,7 +1105,11 @@ useEffect(() => {
       { studentId: learningProfileStudentIdRef.current || undefined }
     );
     void refreshStudentLearningProfileAfterSession().then((p) => {
-      if (p?.ok) refreshMonthlyProgress();
+      if (p?.ok) {
+        refreshMonthlyProgress();
+        const acc = accountAccuracyDisplayFromDerived(p.derived, "geometry");
+        if (acc != null) setServerAccountSubjectAccuracyPct(acc);
+      }
     });
     if (sessionIdForFinish) {
       finishLearningSession({
@@ -1083,6 +1120,7 @@ useEffect(() => {
         score: scoreForFinish,
         accuracy: accuracyForFinish,
         durationSeconds,
+        mode: reportModeFromGameState(mode, focusedPracticeMode),
         clientMeta: {
           source: "geometry-master",
           version: "phase-2d-b3",
@@ -1133,7 +1171,7 @@ useEffect(() => {
     return {
       subject: "geometry",
       topic: String(currentQuestion?.topic || topic || "geometry"),
-      mode: String(mode || "learning"),
+      mode: reportModeFromGameState(mode, focusedPracticeMode),
       gradeLevel: String(grade || ""),
       level: String(level || ""),
       clientMeta:
@@ -1751,7 +1789,16 @@ useEffect(() => {
   function saveRunToStorage() {
     if (typeof window === "undefined" || !playerName.trim()) return;
     try {
-      const saved = safeGetJsonObject(STORAGE_KEY);
+      let saved;
+      if (learningProfileStudentIdRef.current && learningProfileHydratedRef.current) {
+        const base = scoresStoreRef.current;
+        saved =
+          base && typeof base === "object"
+            ? JSON.parse(JSON.stringify(base))
+            : {};
+      } else {
+        saved = safeGetJsonObject(STORAGE_KEY);
+      }
       const key = `${level}_${topic}`;
       saveScoreEntry(saved, key, {
         playerName: playerName.trim(),
@@ -1779,9 +1826,20 @@ useEffect(() => {
         setLeaderboardData(topScores);
       }
       if (learningProfileStudentIdRef.current && learningProfileHydratedRef.current) {
-        void patchStudentLearningProfile({
-          subjects: { geometry: { scoresStore: saved } },
-        }).catch(() => {});
+        const patchBody = { subjects: { geometry: { scoresStore: saved } } };
+        void patchStudentLearningProfile(patchBody)
+          .then((json) => {
+            const acc = accountAccuracyDisplayFromDerived(json?.derived, "geometry");
+            if (acc != null) setServerAccountSubjectAccuracyPct(acc);
+            logAccountTileSync("geometry", {
+              tile: "finishPatch",
+              patchSubjects: Object.keys(patchBody.subjects || {}),
+              responseAccuracy: acc,
+              displayedBestScore: maxScore,
+              displayedBestStreak: maxStreak,
+            });
+          })
+          .catch(() => {});
       }
     } catch {}
   }
@@ -2061,6 +2119,8 @@ useEffect(() => {
 
   const accuracy =
     totalQuestions > 0 ? Math.round((correct / totalQuestions) * 100) : 0;
+  const middleDashboardAccuracyPct =
+    serverAccountSubjectAccuracyPct != null ? serverAccountSubjectAccuracyPct : 0;
 
   return (
     <Layout>
@@ -2525,7 +2585,7 @@ useEffect(() => {
                     <span className="text-[10px] md:text-[13px] lg:text-sm text-white/78 md:text-white/85 lg:text-white/90 text-center leading-tight max-w-full line-clamp-2">דיוק</span>
                   </div>
                   <div className="flex flex-1 items-center justify-center min-h-0">
-                    <span className="text-base md:text-xl lg:text-2xl font-bold text-blue-300 md:text-blue-300 lg:text-blue-200 tabular-nums leading-tight">{accuracy}%</span>
+                    <span className="text-base md:text-xl lg:text-2xl font-bold text-blue-300 md:text-blue-300 lg:text-blue-200 tabular-nums leading-tight">{middleDashboardAccuracyPct}%</span>
                   </div>
                 </div>
                 <div className="bg-black/25 border border-white/15 rounded-lg md:rounded-xl px-1 py-2 md:px-2 md:py-3 min-h-[4.5rem] md:min-h-[5.25rem] lg:min-h-[5.75rem] flex flex-col items-stretch justify-start gap-1 md:gap-1.5 min-w-0 shadow-sm">
@@ -2535,7 +2595,19 @@ useEffect(() => {
                   <div className="flex flex-1 items-center justify-center min-h-0">
                     <button
                       type="button"
-                      onClick={() => setShowDailyChallenge(true)}
+                      onClick={() => {
+                        void fetchStudentLearningProfile()
+                          .then((p) => {
+                            if (!p?.ok) return;
+                            const { daily, weekly } = pickSubjectChallengeBlobs(p.row.challenges, "geometry");
+                            if (daily) setDailyChallenge(daily);
+                            if (weekly) setWeeklyChallenge(weekly);
+                            const acc = accountAccuracyDisplayFromDerived(p.derived, "geometry");
+                            if (acc != null) setServerAccountSubjectAccuracyPct(acc);
+                            logAccountTileSync("geometry", { tile: "challengesPrefetch" });
+                          })
+                          .finally(() => setShowDailyChallenge(true));
+                      }}
                       className="h-7 md:h-8 w-full max-w-[3.5rem] md:max-w-[4rem] px-1.5 md:px-2 rounded-md bg-blue-500/85 hover:bg-blue-500 text-white text-[11px] md:text-sm lg:text-base font-bold"
                     >
                       פתיחה

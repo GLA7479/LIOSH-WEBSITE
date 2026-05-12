@@ -111,6 +111,13 @@ import {
   refreshStudentLearningProfileAfterSession,
   getCachedStudentLearningProfile,
 } from "../../lib/learning-client/studentLearningProfileClient";
+import {
+  accountAccuracyDisplayFromDerived,
+  logAccountTileSync,
+  maxBestForPlayerInKey,
+  pickSubjectChallengeBlobs,
+  subjectChallengePatch,
+} from "../../lib/learning-client/student-dashboard-account-tiles";
 
 const AVATAR_OPTIONS = [
   "👤",
@@ -187,6 +194,8 @@ export default function HebrewMaster() {
   const yearMonthRef = useRef(getCurrentYearMonth());
   const learningProfileStudentIdRef = useRef(null);
   const learningProfileHydratedRef = useRef(false);
+  const [serverAccountSubjectAccuracyPct, setServerAccountSubjectAccuracyPct] = useState(null);
+  const [learningProfileHydrationTick, setLearningProfileHydrationTick] = useState(0);
   const scoresStoreRef = useRef({});
   const progressLoadedRef = useRef(false);
   const progressStringRef = useRef("");
@@ -690,6 +699,7 @@ useEffect(() => {
         if (!profile?.ok) {
           learningProfileHydratedRef.current = true;
           progressLoadedRef.current = true;
+          setLearningProfileHydrationTick((n) => n + 1);
           refreshMonthlyProgress();
           return;
         }
@@ -712,8 +722,10 @@ useEffect(() => {
           if (Array.isArray(sub.mistakes)) setMistakes(sub.mistakes);
         }
         const ch = profile.row.challenges;
-        if (ch?.globalDaily && typeof ch.globalDaily === "object") setDailyChallenge(ch.globalDaily);
-        if (ch?.globalWeekly && typeof ch.globalWeekly === "object") setWeeklyChallenge(ch.globalWeekly);
+        const { daily: chDaily, weekly: chWeekly } = pickSubjectChallengeBlobs(ch, "hebrew");
+        if (chDaily) setDailyChallenge(chDaily);
+        if (chWeekly) setWeeklyChallenge(chWeekly);
+        setServerAccountSubjectAccuracyPct(accountAccuracyDisplayFromDerived(profile.derived, "hebrew"));
         const st = profile.row.streaks?.hebrew;
         if (st && typeof st === "object") setDailyStreak(st);
         const emoji = profile.row.profile?.avatarEmoji;
@@ -726,12 +738,14 @@ useEffect(() => {
           progressStringRef.current = "";
         }
         progressLoadedRef.current = true;
+        setLearningProfileHydrationTick((n) => n + 1);
         refreshMonthlyProgress();
       })
       .catch(() => {
         if (cancelled) return;
         learningProfileHydratedRef.current = true;
         progressLoadedRef.current = true;
+        setLearningProfileHydrationTick((n) => n + 1);
         refreshMonthlyProgress();
       });
     return () => {
@@ -753,10 +767,7 @@ useEffect(() => {
             intel: {},
           },
         },
-        challenges: {
-          globalDaily: dailyChallenge,
-          globalWeekly: weeklyChallenge,
-        },
+        challenges: subjectChallengePatch("hebrew", dailyChallenge, weeklyChallenge),
         streaks: { hebrew: dailyStreak },
         profile: {
           avatarEmoji: playerAvatar && !playerAvatarImage ? playerAvatar : undefined,
@@ -784,53 +795,26 @@ useEffect(() => {
   }, []);
 
   useEffect(() => {
-    // Load best scores for current player
-    if (typeof window !== "undefined") {
-      try {
-        const saved =
-          scoresStoreRef.current &&
-          typeof scoresStoreRef.current === "object" &&
-          Object.keys(scoresStoreRef.current).length > 0
-            ? scoresStoreRef.current
-            : JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
-        const key = `${level}_${operation}`;
-
-        if (saved[key] && playerName.trim()) {
-          if (Array.isArray(saved[key])) {
-            const playerScores = saved[key].filter(
-              (s) => s.playerName === playerName.trim()
-            );
-            if (playerScores.length > 0) {
-              const maxScore = Math.max(
-                ...playerScores.map((s) => s.bestScore || 0),
-                0
-              );
-              const maxStreak = Math.max(
-                ...playerScores.map((s) => s.bestStreak || 0),
-                0
-              );
-              setBestScore(maxScore);
-              setBestStreak(maxStreak);
-            } else {
-              setBestScore(0);
-              setBestStreak(0);
-            }
-          } else {
-            if (saved[key][playerName.trim()]) {
-              setBestScore(saved[key][playerName.trim()].bestScore || 0);
-              setBestStreak(saved[key][playerName.trim()].bestStreak || 0);
-            } else {
-              setBestScore(0);
-              setBestStreak(0);
-            }
-          }
-        } else {
-          setBestScore(0);
-          setBestStreak(0);
-        }
-      } catch {}
-    }
-  }, [level, operation, playerName]);
+    if (typeof window === "undefined") return;
+    if (!learningProfileHydratedRef.current) return;
+    try {
+      const saved =
+        scoresStoreRef.current && typeof scoresStoreRef.current === "object"
+          ? scoresStoreRef.current
+          : {};
+      const key = `${level}_${operation || "reading"}`;
+      const { maxScore, maxStreak } = maxBestForPlayerInKey(saved, key, playerName);
+      setBestScore(maxScore);
+      setBestStreak(maxStreak);
+      logAccountTileSync("hebrew", {
+        tile: "personalBests",
+        level,
+        operation,
+        displayedBestScore: maxScore,
+        displayedBestStreak: maxStreak,
+      });
+    } catch {}
+  }, [level, operation, playerName, learningProfileHydrationTick]);
 
   // לוודא שהפעולה שתבחר קיימת לכיתה שנבחרה
   useEffect(() => {
@@ -1083,7 +1067,16 @@ useEffect(() => {
         return;
       }
 
-      const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+      let saved;
+      if (learningProfileStudentIdRef.current && learningProfileHydratedRef.current) {
+        const base = scoresStoreRef.current;
+        saved =
+          base && typeof base === "object"
+            ? JSON.parse(JSON.stringify(base))
+            : {};
+      } else {
+        saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "{}");
+      }
       const key = `${level}_${operation || "reading"}`;
 
       saveScoreEntry(saved, key, {
@@ -1116,9 +1109,19 @@ useEffect(() => {
       }
 
       if (learningProfileStudentIdRef.current && learningProfileHydratedRef.current) {
-        void patchStudentLearningProfile({
-          subjects: { hebrew: { scoresStore: saved } },
-        }).catch(() => {});
+        const patchBody = { subjects: { hebrew: { scoresStore: saved } } };
+        void patchStudentLearningProfile(patchBody)
+          .then((json) => {
+            const acc = accountAccuracyDisplayFromDerived(json?.derived, "hebrew");
+            if (acc != null) setServerAccountSubjectAccuracyPct(acc);
+            logAccountTileSync("hebrew", {
+              tile: "finishPatch",
+              responseAccuracy: acc,
+              displayedBestScore: maxScore,
+              displayedBestStreak: maxStreak,
+            });
+          })
+          .catch(() => {});
       }
     } catch {}
   }
@@ -1438,7 +1441,11 @@ useEffect(() => {
       { studentId: learningProfileStudentIdRef.current || undefined }
     );
     void refreshStudentLearningProfileAfterSession().then((p) => {
-      if (p?.ok) refreshMonthlyProgress();
+      if (p?.ok) {
+        refreshMonthlyProgress();
+        const acc = accountAccuracyDisplayFromDerived(p.derived, "hebrew");
+        if (acc != null) setServerAccountSubjectAccuracyPct(acc);
+      }
     });
     if (sessionIdForFinish) {
       finishLearningSession({
@@ -1449,6 +1456,7 @@ useEffect(() => {
         score: scoreForFinish,
         accuracy: accuracyForFinish,
         durationSeconds,
+        mode: reportModeFromGameState(mode, focusedPracticeMode),
         clientMeta: {
           source: "hebrew-master",
           version: "phase-2d-b5",
@@ -1509,7 +1517,7 @@ useEffect(() => {
           operation ||
           "reading"
       ),
-      mode: String(mode || "learning"),
+      mode: reportModeFromGameState(mode, focusedPracticeMode),
       gradeLevel: String(grade || ""),
       level: String(level || ""),
       clientMeta:
@@ -2491,6 +2499,8 @@ useEffect(() => {
 
   const accuracy =
     totalQuestions > 0 ? Math.round((correct / totalQuestions) * 100) : 0;
+  const middleDashboardAccuracyPct =
+    serverAccountSubjectAccuracyPct != null ? serverAccountSubjectAccuracyPct : 0;
   // No word problems for Hebrew - all topics are text-based
 
   // ✅ טקסט רמז והסבר מלא לשאלה הנוכחית
@@ -3457,7 +3467,7 @@ useEffect(() => {
                     <span className="text-[10px] md:text-[13px] lg:text-sm text-white/78 md:text-white/85 lg:text-white/90 text-center leading-tight max-w-full line-clamp-2">דיוק</span>
                   </div>
                   <div className="flex flex-1 items-center justify-center min-h-0">
-                    <span className="text-base md:text-xl lg:text-2xl font-bold text-blue-300 md:text-blue-300 lg:text-blue-200 tabular-nums leading-tight">{accuracy}%</span>
+                    <span className="text-base md:text-xl lg:text-2xl font-bold text-blue-300 md:text-blue-300 lg:text-blue-200 tabular-nums leading-tight">{middleDashboardAccuracyPct}%</span>
                   </div>
                 </div>
                 <div className="bg-black/25 border border-white/15 rounded-lg md:rounded-xl px-1 py-2 md:px-2 md:py-3 min-h-[4.5rem] md:min-h-[5.25rem] lg:min-h-[5.75rem] flex flex-col items-stretch justify-start gap-1 md:gap-1.5 min-w-0 shadow-sm">
@@ -3467,7 +3477,19 @@ useEffect(() => {
                   <div className="flex flex-1 items-center justify-center min-h-0">
                     <button
                       type="button"
-                      onClick={() => setShowDailyChallenge(true)}
+                      onClick={() => {
+                        void fetchStudentLearningProfile()
+                          .then((p) => {
+                            if (!p?.ok) return;
+                            const { daily, weekly } = pickSubjectChallengeBlobs(p.row.challenges, "hebrew");
+                            if (daily) setDailyChallenge(daily);
+                            if (weekly) setWeeklyChallenge(weekly);
+                            const acc = accountAccuracyDisplayFromDerived(p.derived, "hebrew");
+                            if (acc != null) setServerAccountSubjectAccuracyPct(acc);
+                            logAccountTileSync("hebrew", { tile: "challengesPrefetch" });
+                          })
+                          .finally(() => setShowDailyChallenge(true));
+                      }}
                       className="h-7 md:h-8 w-full max-w-[3.5rem] md:max-w-[4rem] px-1.5 md:px-2 rounded-md bg-blue-500/85 hover:bg-blue-500 text-white text-[11px] md:text-sm lg:text-base font-bold"
                     >
                       פתיחה

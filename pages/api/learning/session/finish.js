@@ -11,12 +11,17 @@ import {
   normalizeOptionalNumber,
   normalizeOptionalString,
   readJsonBody,
+  normalizeLearningGameMode,
 } from "../../../../lib/learning-supabase/learning-activity";
+import {
+  canonicalGradeLevelKeyFromAuth,
+  logLearningPipelineDebug,
+} from "../../../../lib/learning-supabase/canonical-learning-write-meta.server";
 
 async function loadLearningSession(supabase, learningSessionId) {
   const { data, error } = await supabase
     .from("learning_sessions")
-    .select("id,student_id,metadata")
+    .select("id,student_id,subject,metadata")
     .eq("id", learningSessionId)
     .maybeSingle();
   if (error || !data?.id) return null;
@@ -70,12 +75,27 @@ export default async function handler(req, res) {
       score: normalizeOptionalNumber(body.score, 0, 1000000000),
       accuracy: normalizeOptionalNumber(body.accuracy, 0, 100),
       clientMeta: normalizeClientMeta(body.clientMeta),
+      canonicalGradeLevelKey: canonicalGradeLevelKeyFromAuth(auth),
     };
 
-    const metadata = mergeJsonObjects(
-      sessionRow.metadata && typeof sessionRow.metadata === "object" ? sessionRow.metadata : {},
-      { summary }
-    );
+    const finishMode = normalizeLearningGameMode(body.mode);
+    const baseMeta =
+      sessionRow.metadata && typeof sessionRow.metadata === "object" ? sessionRow.metadata : {};
+    const metadataPatch = { summary: mergeJsonObjects(baseMeta.summary && typeof baseMeta.summary === "object" ? baseMeta.summary : {}, summary) };
+    if (finishMode) {
+      metadataPatch.mode = finishMode;
+      metadataPatch.summary = mergeJsonObjects(metadataPatch.summary, { finishMode });
+    }
+    const metadata = mergeJsonObjects(baseMeta, metadataPatch);
+
+    logLearningPipelineDebug("session-finish", {
+      authenticatedStudentId: auth.studentId,
+      canonicalGradeLevelKey: summary.canonicalGradeLevelKey,
+      clientProvidedMode: body.mode ?? null,
+      persistedMode: metadata.mode ?? null,
+      learningSessionId,
+      subject: sessionRow.subject ?? null,
+    });
 
     const patch = {
       ended_at: new Date().toISOString(),

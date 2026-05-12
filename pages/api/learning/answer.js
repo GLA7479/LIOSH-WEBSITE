@@ -10,17 +10,22 @@ import {
   normalizeOptionalString,
   normalizeSubject,
   readJsonBody,
+  normalizeLearningGameMode,
 } from "../../../lib/learning-supabase/learning-activity";
+import {
+  canonicalGradeLevelKeyFromAuth,
+  logLearningPipelineDebug,
+} from "../../../lib/learning-supabase/canonical-learning-write-meta.server";
 
 async function verifyLearningSessionOwnership(supabase, learningSessionId, studentId) {
   const { data, error } = await supabase
     .from("learning_sessions")
-    .select("id,student_id")
+    .select("id,student_id,metadata")
     .eq("id", learningSessionId)
     .maybeSingle();
-  if (error || !data?.id) return { ok: false, reason: "not_found" };
-  if (data.student_id !== studentId) return { ok: false, reason: "forbidden" };
-  return { ok: true };
+  if (error || !data?.id) return { ok: false, reason: "not_found", metadata: null };
+  if (data.student_id !== studentId) return { ok: false, reason: "forbidden", metadata: null };
+  return { ok: true, metadata: data.metadata && typeof data.metadata === "object" ? data.metadata : {} };
 }
 
 async function insertAnswerRow(supabase, row) {
@@ -95,6 +100,11 @@ export default async function handler(req, res) {
       return res.status(404).json({ ok: false, error: "Learning session not found" });
     }
 
+    const sessionMeta = ownership.metadata || {};
+    const sessionMode =
+      normalizeLearningGameMode(sessionMeta.mode) || "learning";
+    const canonicalGradeKey = canonicalGradeLevelKeyFromAuth(auth);
+
     const answerPayload = {
       subject,
       topic: normalizeOptionalString(body.topic, 120),
@@ -105,7 +115,21 @@ export default async function handler(req, res) {
       hintsUsed: normalizeOptionalInteger(body.hintsUsed, 0, 1000) ?? 0,
       timeSpentMs: normalizeOptionalInteger(body.timeSpentMs, 0, 36000000),
       clientMeta: normalizeClientMeta(body.clientMeta),
+      gradeLevel: canonicalGradeKey,
+      gameMode: sessionMode,
     };
+
+    logLearningPipelineDebug("answer-save", {
+      authenticatedStudentId: auth.studentId,
+      authenticatedGradeLevel: auth.student?.grade_level ?? null,
+      canonicalGradeLevelKey: canonicalGradeKey,
+      clientProvidedGradeLevel: normalizeOptionalString(body.gradeLevel, 40),
+      finalPersistedGradeLevelKey: canonicalGradeKey,
+      sessionGameMode: sessionMode,
+      finalPersistedGameMode: sessionMode,
+      learningSessionId,
+      subject,
+    });
 
     const { data, error } = await insertAnswerRow(supabase, {
       student_id: auth.studentId,

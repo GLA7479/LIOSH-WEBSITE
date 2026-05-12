@@ -10,7 +10,12 @@ import {
   normalizeClientMeta,
   isMissingColumnError,
   mergeJsonObjects,
+  normalizeLearningGameMode,
 } from "../../../../lib/learning-supabase/learning-activity";
+import {
+  canonicalGradeLevelKeyFromAuth,
+  logLearningPipelineDebug,
+} from "../../../../lib/learning-supabase/canonical-learning-write-meta.server";
 
 async function insertLearningSession(supabase, row) {
   const fullInsert = await supabase
@@ -56,16 +61,32 @@ export default async function handler(req, res) {
     }
 
     const topic = normalizeOptionalString(body.topic, 120);
-    const mode = normalizeOptionalString(body.mode, 50);
-    const gradeLevel = normalizeOptionalString(body.gradeLevel, 40);
+    const clientMode = normalizeLearningGameMode(body.mode) || "learning";
+    const clientGradeHint = normalizeOptionalString(body.gradeLevel, 40);
     const level = normalizeOptionalString(body.level, 40);
     const clientMeta = normalizeClientMeta(body.clientMeta);
     const startedAt = new Date().toISOString();
 
+    const canonicalGradeKey = canonicalGradeLevelKeyFromAuth(auth);
     const metadata = mergeJsonObjects(clientMeta, {
-      mode,
-      gradeLevel,
+      mode: clientMode,
+      gradeLevel: canonicalGradeKey,
       level,
+      ...(clientGradeHint && canonicalGradeKey && clientGradeHint.toLowerCase() !== canonicalGradeKey
+        ? { clientReportedGradeLevel: clientGradeHint }
+        : {}),
+    });
+
+    logLearningPipelineDebug("session-start", {
+      authenticatedStudentId: auth.studentId,
+      authenticatedGradeLevel: auth.student?.grade_level ?? null,
+      canonicalGradeLevelKey: canonicalGradeKey,
+      clientProvidedGradeLevel: clientGradeHint,
+      clientProvidedMode: body.mode ?? null,
+      persistedMode: clientMode,
+      persistedGradeLevelKey: canonicalGradeKey,
+      subject,
+      topic,
     });
 
     const supabase = getLearningSupabaseServiceRoleClient();
