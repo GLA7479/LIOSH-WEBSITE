@@ -161,7 +161,7 @@ export function practicalMagnitudeTailHe(intentMain, truthPacket) {
 }
 
 /**
- * Deterministic merge-layer: guarantees QA-visible magnitude hints for weekly/today intents without adding blocks (compaction pops trailing blocks).
+ * Deterministic merge-layer: guarantees QA-visible magnitude hints for weekly/today intents without adding blocks (compaction pops trailing blocks). Preserves `contract_slot` sourcing when merging the approved tail.
  * @param {{ answerBlocks?: Array<{ type: string; textHe: string; source?: string }> }} draft
  */
 export function ensureHomePracticePracticalMagnitudeDraft(draft, responseIntent, truthPacket) {
@@ -182,7 +182,9 @@ export function ensureHomePracticePracticalMagnitudeDraft(draft, responseIntent,
   next[lastIdx] = {
     ...last,
     textHe: `${String(last?.textHe || "").trim()}\n\n${tail}`.trim(),
-    source: last?.source === "contract_slot" ? "composed" : last.source,
+    // Magnitude tail is deterministic product copy; keep contract_slot so resolved+fallbackUsed
+    // passes validateParentCopilotResponseV1 (fallback_non_slot_source).
+    source: last?.source === "contract_slot" ? "contract_slot" : last.source,
   };
   return { ...draft, answerBlocks: next };
 }

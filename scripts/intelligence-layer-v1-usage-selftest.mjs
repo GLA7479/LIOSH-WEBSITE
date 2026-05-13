@@ -398,8 +398,12 @@ function rowAugTopicEngine(p) {
   assert.equal("intelligenceV1" in (tp.derivedLimits || {}), false);
   assert.ok(tp.signals && typeof tp.signals.intelligenceV1 === "object");
   assert.equal(tp.signals.intelligenceV1.weaknessLevel, "tentative");
-  assert.ok(tp.debug && typeof tp.debug.intelligenceV1 === "object");
-  assert.equal(tp.debug.intelligenceV1.weaknessLevel, "tentative");
+  assert.equal(tp.signals.intelligenceV1.recurrence, true, "diagnosticEngineV2 unit → signals.intelligenceV1 recurrence");
+  assert.equal(
+    Object.prototype.hasOwnProperty.call(tp, "debug"),
+    false,
+    "Phase 6-B/C: truthPacket from buildTruthPacketV1 must not expose debug (use signals.intelligenceV1)",
+  );
 }
 
 {

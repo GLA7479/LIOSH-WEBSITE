@@ -6,7 +6,8 @@
  * Proof:
  * - DOM: wait for `.parent-report-parent-ai-insight` (deterministic insight paints before async enrich).
  * - Print CSS: `.no-pdf` regions (incl. Parent Copilot) are display:none; insight is not hidden.
- * - Bytes: generated PDF contains Hebrew "תובנה … להורה" via pdf-parse text extraction.
+ * - Bytes: generated PDF contains Parent AI insight fingerprint (see
+ *   `scripts/lib/parent-report-pdf-insight-fingerprint.mjs`) via pdf-parse text extraction.
  *
  * Usage: QA_BASE_URL=http://127.0.0.1:3001 npx tsx scripts/qa-parent-pdf-export.mjs
  */
@@ -15,6 +16,10 @@ import path from "path";
 import assert from "node:assert/strict";
 import { chromium } from "playwright";
 import { PDFParse } from "pdf-parse";
+import {
+  domInsightCardShowsParentAiHeading,
+  pdfTextContainsParentAiInsightFingerprint,
+} from "./lib/parent-report-pdf-insight-fingerprint.mjs";
 
 const base = process.env.QA_BASE_URL || "http://127.0.0.1:3001";
 
@@ -101,8 +106,10 @@ function seedStorageScript() {
  */
 async function assertPdfBufferContainsInsightHeading(buf, label) {
   const raw = await extractPdfText(buf);
-  const t = raw.replace(/\s+/g, " ");
-  assert.match(t, /תובנה\s+להורה/u, `${label}: extracted PDF text must include Parent AI heading`);
+  assert.ok(
+    pdfTextContainsParentAiInsightFingerprint(raw),
+    `${label}: extracted PDF text must include Parent AI insight (heading or structured provenance; see parent-report-pdf-insight-fingerprint.mjs)`,
+  );
 }
 
 /** Copilot panel uses this placeholder; it must not appear in exported PDF text (Phase C.1). */
@@ -122,7 +129,10 @@ async function assertDetailedInsightAndCopilotPrintBehavior(page, label) {
     state: "attached",
   });
   const card = page.locator(".parent-report-parent-ai-insight").first();
-  await assert.match(await card.innerText(), /תובנה/, `${label}: insight card text`);
+  assert.ok(
+    domInsightCardShowsParentAiHeading(await card.innerText()),
+    `${label}: insight card must show heading תובנה להורה or סיכום חכם להורה`,
+  );
 
   await page.emulateMedia({ media: "print" });
   const printStats = await page.evaluate(() => {
@@ -146,7 +156,7 @@ async function assertShortInsightVisible(page, label) {
     state: "attached",
   });
   const txt = await page.locator(".parent-report-parent-ai-insight").first().innerText();
-  assert.match(txt, /תובנה/, `${label}: short report insight`);
+  assert.ok(domInsightCardShowsParentAiHeading(txt), `${label}: short report insight heading`);
 }
 
 async function main() {

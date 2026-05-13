@@ -209,6 +209,31 @@ export function resolveScope(input) {
 
   const aggregateClass = detectAggregateQuestionClass(normalizedUtterance);
   if (aggregateClass !== "none") {
+    /** Next-step questions on a single anchored topic row should bind to that topic's contracts (ineligible hedges live in topic textSlots), not the executive rollup narrative. */
+    if (aggregateClass === "recommendation_action") {
+      const anchors = listCopilotAnchoredTopicRows(payload);
+      if (anchors.length === 1) {
+        const tr = anchors[0].tr;
+        const topicRowKey = String(tr?.topicRowKey || tr?.topicKey || "").trim();
+        const displayName = norm(tr?.displayName) || "נושא";
+        if (topicRowKey) {
+          return {
+            resolutionStatus: "resolved",
+            scope: attachScopeInterpretation(
+              {
+                scopeType: "topic",
+                scopeId: topicRowKey,
+                scopeLabel: displayName,
+              },
+              stageA,
+            ),
+            scopeConfidence: 0.97,
+            scopeReason: "aggregate_class:recommendation_action_single_anchor",
+            stageA,
+          };
+        }
+      }
+    }
     return {
       resolutionStatus: "resolved",
       scope: attachScopeInterpretation(

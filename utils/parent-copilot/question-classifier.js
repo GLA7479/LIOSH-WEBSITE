@@ -31,6 +31,9 @@
  */
 
 import { SUBJECT_ORDER, normalizeSubjectId } from "./contract-reader.js";
+import { detectAggregateQuestionClass } from "./semantic-question-class.js";
+import { foldUtteranceForHeMatch } from "./utterance-normalize-he.js";
+import { looksLikeExternalPastedQuestion, matchLooseTopicFromUtterance } from "../parent-ai-topic-classifier/classifier.js";
 
 /**
  * @typedef {(
@@ -153,10 +156,16 @@ const STRONG_REPORT_INTENTS = [
   /כמה\s+פעמים\s+בשבוע/u,
   /^איך\s+לתרגל/u,
   /איך\s+לעזור\s+בבית/u,
+  /איך\s+להסביר\s+ל(?:ילד|ילדה|הילד|הילדה)/u,
   // Catalog-aligned report questions that must reach Stage A (avoid classifier ambiguous early-exit)
   /תסביר\s+לי\s+כמו\s+להורה/u,
+  /מה\s+לומר.{0,48}דוח/u,
+  /מה\s+לכתוב.{0,40}דוח/u,
+  /ניסוח\s+לשאול.{0,24}מורה/u,
   /האם\s+אפשר\s+להסיק\s+מסקנות/u,
   /תן\s+לי\s+רק\s+3\s+נקודות/u,
+  // Balanced strengths vs gaps (executive) without explicit "דוח" / חזק stems
+  /סיכום\s+מאוזן.{0,48}מה\s+טוב.{0,24}פחות/u,
 ];
 
 /**
@@ -165,10 +174,31 @@ const STRONG_REPORT_INTENTS = [
  * STRONG_REPORT_INTENT_WEIGHT so a lone STRONG token (0.35) still clears 0.5.
  */
 function matchesExplainReportInquiry(t) {
-  if (!/דוח|מהדוח|בדוח/u.test(t)) return false;
-  return /תסביר|הסבר|איך\s+לקרוא|אומר|משמעות|מה\s+אומר|מה\s+הדוח|פירוש|בקצרה|מבט\s+על|תוכן|מה\s+מופיע/u.test(
+  const reportSurface = /דוח|מהדוח|בדוח|מתוך\s+הדוח/u.test(t);
+  const inAppDeictic = /מדובר\s+פה|מה\s+שמופיע\s+למעלה|על\s+המסך\s+הזה/u.test(t);
+  const conclusionReading =
+    /מסקנות/u.test(t) && /להבין|להיתקע|פרטים|בלי\s+להיתקע/u.test(t);
+  if (!reportSurface && !inAppDeictic && !conclusionReading) return false;
+  return /תסביר|הסבר|איך\s+לקרוא|איך\s+להבין|להבין|אומר|משמעות|מה\s+אומר|מה\s+הדוח|פירוש|בקצרה|מבט\s+על|תוכן|מה\s+מופיע|עקרונית|חשוב\s+שאדע|חשוב\s+ל|מה\s+חשוב|כדאי\s+שאזכור|מה\s+לשים\s+לב|סדר\s+במספרים|תמונה\s+כללית|מסקנות|מה\s+הדוח\s+אומר|איך\s+לקרוא\s+את\s+הדוח|תעזר|לעזור\s+לי\s+לעשות\s+סדר|לא\s+הבנתי/u.test(
     t,
   );
+}
+
+/**
+ * At least one topic row has parent-visible narrative observation (Copilot-safe anchor).
+ * Used so recommendation/next-step shorthand can classify as report_related only when a real report is loaded.
+ * @param {unknown} payload
+ */
+function hasAnchoredTopicObservation(payload) {
+  const profiles = Array.isArray(payload?.subjectProfiles) ? payload.subjectProfiles : [];
+  for (const sp of profiles) {
+    const recs = Array.isArray(sp?.topicRecommendations) ? sp.topicRecommendations : [];
+    for (const tr of recs) {
+      const obs = String(tr?.contractsV1?.narrative?.textSlots?.observation || "").trim();
+      if (obs.length >= 8) return true;
+    }
+  }
+  return false;
 }
 
 function hasWeaknessStem(t) {
@@ -541,6 +571,23 @@ export function classifyParentQuestionDeterministic({ utterance, payload }) {
     };
   }
 
+  // 1b. Catalog topic named in the utterance but row not anchored — Phase E / bank path must run before
+  //     off-topic hits on mid-sentence fragments like "מה זה …" (generic_knowledge_qa category).
+  const looseUnanchoredEarly = matchLooseTopicFromUtterance(String(utterance || ""), payload);
+  if (looseUnanchoredEarly && !looseUnanchoredEarly.anchored) {
+    return {
+      bucket: "report_related",
+      confidence: 0.77,
+      source: "deterministic",
+      signals: {
+        ...signals,
+        reportSignal: Math.max(reportRes.score, 0.7),
+        hasStrongReportToken: true,
+        subjectTopicNameMatched: true,
+      },
+    };
+  }
+
   // 2. Subject/status inquiry framed as child + report scope ("מה מצב הילד … בנושא X") —
   // must beat hobbies/off-topic lexicon hits (e.g. שחמט/מוזיקה in OFF_TOPIC_CATEGORIES).
   if (/מה\s*מצב\s*הילד\s*שלי\s*ב/u.test(t) || /^מה\s*מצב.*ב(?:מדעים|עברית|חשבון|אנגלית|גאומטריה|מולדת|שחמט|מוזיקה)/u.test(t)) {
@@ -666,6 +713,165 @@ export function classifyParentQuestionDeterministic({ utterance, payload }) {
       signals: {
         ...signals,
         reportSignal: Math.max(reportRes.score, 0.72),
+        hasStrongReportToken: true,
+      },
+    };
+  }
+
+  // 2h. Next-step / recommendation shorthand with a loaded anchored report — stay on-report (not ambiguous early-exit).
+  if (
+    hasAnchoredTopicObservation(payload) &&
+    detectAggregateQuestionClass(utterance) === "recommendation_action"
+  ) {
+    return {
+      bucket: "report_related",
+      confidence: 0.82,
+      source: "deterministic",
+      signals: {
+        ...signals,
+        reportSignal: Math.max(reportRes.score, 0.75),
+        hasStrongReportToken: true,
+      },
+    };
+  }
+
+  // 2m. Anchored report + explicit subject/topic label + "I want to understand …" — on-report (not ambiguous).
+  if (hasAnchoredTopicObservation(payload) && reportRes.subjectTopicNameMatched && /אני\s+רוצה\s+להבין/u.test(t)) {
+    return {
+      bucket: "report_related",
+      confidence: 0.79,
+      source: "deterministic",
+      signals: {
+        ...signals,
+        reportSignal: Math.max(reportRes.score, 0.73),
+        hasStrongReportToken: true,
+      },
+    };
+  }
+
+  // 2n. "במקצוע …" + clarity/uncertainty on a payload subject label — on-report (not ambiguous).
+  if (
+    hasAnchoredTopicObservation(payload) &&
+    reportRes.subjectTopicNameMatched &&
+    /(^|\s)במקצוע\s+/u.test(t) &&
+    /לא\s+ברור|לא\s+מבין|מבלבל|לא\s+ברורה/u.test(t)
+  ) {
+    return {
+      bucket: "report_related",
+      confidence: 0.78,
+      source: "deterministic",
+      signals: {
+        ...signals,
+        reportSignal: Math.max(reportRes.score, 0.72),
+        hasStrongReportToken: true,
+      },
+    };
+  }
+
+  // 2o. Topic display matched + short status ask ("נושא — מה המצב?") — on-report without "מה קורה" prefix.
+  const looseForStatus = matchLooseTopicFromUtterance(String(utterance || ""), payload);
+  if (
+    looseForStatus &&
+    looseForStatus.anchored &&
+    hasAnchoredTopicObservation(payload) &&
+    /מה\s+המצב|איך\s+המצב/u.test(t)
+  ) {
+    return {
+      bucket: "report_related",
+      confidence: 0.76,
+      source: "deterministic",
+      signals: {
+        ...signals,
+        reportSignal: Math.max(reportRes.score, 0.72),
+        hasStrongReportToken: true,
+        subjectTopicNameMatched: true,
+      },
+    };
+  }
+
+  // 2p. Topic-only shorthand with light punctuation ("שברים???") — anchored display match, very short utterance.
+  const looseBare = matchLooseTopicFromUtterance(String(utterance || ""), payload);
+  if (looseBare && looseBare.anchored && hasAnchoredTopicObservation(payload) && meaningfulTokenCount <= 2) {
+    const uFold = foldUtteranceForHeMatch(String(utterance || ""))
+      .replace(/[?!.,:;״׳]+/g, " ")
+      .replace(/\s+/g, " ")
+      .trim();
+    const dn = foldUtteranceForHeMatch(String(looseBare.displayName || ""))
+      .replace(/\s+/g, " ")
+      .trim();
+    if (dn.length >= 2 && (uFold === dn || uFold === `ה${dn}`)) {
+      return {
+        bucket: "report_related",
+        confidence: 0.74,
+        source: "deterministic",
+        signals: {
+          ...signals,
+          reportSignal: Math.max(reportRes.score, 0.7),
+          hasStrongReportToken: true,
+          subjectTopicNameMatched: true,
+        },
+      };
+    }
+  }
+
+  // 2q. Severity / worry about the report (no explicit "דוח" token) — needs anchored rows so off-topic stays gated.
+  if (
+    hasAnchoredTopicObservation(payload) &&
+    (/לא\s+ברור\s+לי\s+אם\s+זה\s+חמור(?:\s+או\s+לא)?|חמור\s+או\s+לא|יש\s+פה\s+משהו\s+מדאיג|האם\s+צריך\s+לדאוג\s+מהדוח/u.test(t) ||
+      (/מדאיג|לדאוג/u.test(t) && /דוח/u.test(t)))
+  ) {
+    return {
+      bucket: "report_related",
+      confidence: 0.81,
+      source: "deterministic",
+      signals: {
+        ...signals,
+        reportSignal: Math.max(reportRes.score, 0.72),
+        hasStrongReportToken: true,
+      },
+    };
+  }
+
+  // 2r. Anchored report + recommendation rationale / “what to avoid now” — sync path has no LLM classifier upgrade; keep on-report (not ambiguous).
+  if (
+    hasAnchoredTopicObservation(payload) &&
+    (/למה\s+ה?המלצה/u.test(t) || /מה\s+לא\s+כדאי\s+לעשות\s+עכשיו/u.test(t))
+  ) {
+    return {
+      bucket: "report_related",
+      confidence: 0.84,
+      source: "deterministic",
+      signals: {
+        ...signals,
+        reportSignal: Math.max(reportRes.score, 0.76),
+        hasStrongReportToken: true,
+      },
+    };
+  }
+
+  // 2i. Pasted homework / external exercise — Stage A + Phase E shortcut requires report_related before scope + truth packet.
+  if (looksLikeExternalPastedQuestion(String(utterance || ""))) {
+    return {
+      bucket: "report_related",
+      confidence: 0.81,
+      source: "deterministic",
+      signals: {
+        ...signals,
+        reportSignal: Math.max(reportRes.score, 0.72),
+        hasStrongReportToken: true,
+      },
+    };
+  }
+
+  // 2j. Topic-scoped "מה קורה …" when payload vocabulary matches — on-report (not ambiguous).
+  if (hasAnchoredTopicObservation(payload) && /^מה\s+קורה\s+/u.test(t) && reportRes.subjectTopicNameMatched) {
+    return {
+      bucket: "report_related",
+      confidence: 0.8,
+      source: "deterministic",
+      signals: {
+        ...signals,
+        reportSignal: Math.max(reportRes.score, 0.74),
         hasStrongReportToken: true,
       },
     };

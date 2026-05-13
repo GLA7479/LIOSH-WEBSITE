@@ -16,6 +16,10 @@ import fs from "fs";
 import path from "path";
 import { chromium } from "playwright";
 import { PDFParse } from "pdf-parse";
+import {
+  domInsightCardShowsParentAiHeading,
+  pdfTextContainsParentAiInsightFingerprint,
+} from "./lib/parent-report-pdf-insight-fingerprint.mjs";
 
 const ROOT = process.cwd();
 const args = process.argv.slice(2);
@@ -39,7 +43,6 @@ const PROFILE_IDS = [
 
 const EXPECTED_PDF_COUNT = PROFILE_IDS.length * 2;
 const MIN_PDF_BYTES = 2500;
-const REQUIRED_HEBREW_SNIPPET = "תובנה להורה";
 
 /** Cold first-hit on dev can exceed `domcontentloaded`+insight without the print root (Phase C.1 parity). */
 const DETAILED_PRINT_ROOT_MS = 240_000;
@@ -266,8 +269,10 @@ async function waitForDetailedReportReadyForPrint(page, label) {
     state: "attached",
   });
   const t = await page.locator(".parent-report-parent-ai-insight").first().innerText();
-  if (!t.includes("תובנה")) {
-    throw new Error(`[${label}] Parent AI insight card missing heading text (expected תובנה in card)`);
+  if (!domInsightCardShowsParentAiHeading(t)) {
+    throw new Error(
+      `[${label}] Parent AI insight card missing heading (expected "תובנה להורה" or "סיכום חכם להורה" in card)`,
+    );
   }
   logLine(`detailed insight ready label=${label}`);
 }
@@ -283,8 +288,8 @@ async function waitForShortReportInsightForPrint(page, label) {
     state: "attached",
   });
   const t = await page.locator(".parent-report-parent-ai-insight").first().innerText();
-  if (!t.includes("תובנה")) {
-    throw new Error(`[${label}] short report insight missing heading text`);
+  if (!domInsightCardShowsParentAiHeading(t)) {
+    throw new Error(`[${label}] short report insight missing heading ("תובנה להורה" or "סיכום חכם להורה")`);
   }
   logLine(`short insight ready label=${label}`);
 }
@@ -384,10 +389,12 @@ async function main() {
       }
       try {
         const text = await extractPdfText(fs.readFileSync(fp));
-        const snippetOk = text.includes(REQUIRED_HEBREW_SNIPPET);
+        const snippetOk = pdfTextContainsParentAiInsightFingerprint(text);
         if (!snippetOk) {
           summary.ok = false;
-          summary.validationErrors.push(`PDF missing expected Hebrew insight text (${REQUIRED_HEBREW_SNIPPET}): ${path.basename(fp)}`);
+          summary.validationErrors.push(
+            `PDF missing Parent AI insight fingerprint (heading or structured provenance): ${path.basename(fp)}`,
+          );
           logLine(`validation FAIL profile=${p.id} kind=${kind} file=${path.basename(fp)} reason=missing_hebrew_snippet`);
         } else {
           logLine(`validation OK profile=${p.id} kind=${kind} file=${path.basename(fp)} bytes=${st.size} snippetOk=true`);

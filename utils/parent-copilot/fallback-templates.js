@@ -10,9 +10,11 @@ import { narrativeSectionTextHe } from "../contracts/narrative-contract-v1.js";
  */
 export function buildDeterministicFallbackAnswer(truthPacket, _failCodes) {
   const nar = truthPacket.contracts?.narrative;
-  const obs = String(narrativeSectionTextHe("summary", nar) || "").trim();
-  const interp = String(narrativeSectionTextHe("finding", nar) || "").trim();
-  const lim = String(narrativeSectionTextHe("limitations", nar) || "").trim();
+  const slots = nar?.textSlots && typeof nar.textSlots === "object" ? nar.textSlots : {};
+  /** Prefer bound textSlots when present so parent hedges from the contract surface verbatim (section helpers may synthesize thin-report prose without required insufficiency stems). */
+  const obs = String(slots.observation || narrativeSectionTextHe("summary", nar) || "").trim();
+  const interp = String(slots.interpretation || narrativeSectionTextHe("finding", nar) || "").trim();
+  const lim = String(slots.uncertainty || narrativeSectionTextHe("limitations", nar) || "").trim();
 
   /** @type {Array<{ type: string; textHe: string; source: "contract_slot" }>} */
   const answerBlocks = [];

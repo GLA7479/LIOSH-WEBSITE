@@ -14,20 +14,15 @@ const { runParentCopilotTurn } = await import(pathToFileURL(join(ROOT, "utils/pa
 const { getDeterministicDetailedParentAiExplanation } = await import(
   pathToFileURL(join(ROOT, "utils/parent-report-ai/parent-report-ai-adapter.js")).href
 );
-const { assertScenarioOutput } = await import(pathToFileURL(join(ROOT, "scripts/lib/parent-ai-phase-f-assertions.mjs")).href);
+const { assertScenarioOutput, phaseFParentFacingTextFromTurn, phaseFSimulationTurnComplete } = await import(
+  pathToFileURL(join(ROOT, "scripts/lib/parent-ai-phase-f-assertions.mjs")).href
+);
 const { writePhaseFArtifacts } = await import(pathToFileURL(join(ROOT, "scripts/lib/parent-ai-phase-f-report.mjs")).href);
 const {
   buildDetailedPayloadForParentAiInsight,
   payloadTopicEnoughData,
   payloadTopicThinData,
 } = await import(pathToFileURL(join(ROOT, "scripts/lib/parent-ai-phase-f-fixtures.mjs")).href);
-
-function joinedAnswers(res) {
-  return (Array.isArray(res?.answerBlocks) ? res.answerBlocks : [])
-    .map((b) => String(b.textHe || ""))
-    .join("\n")
-    .trim();
-}
 
 /**
  * @returns {{ scenarios: object[]; allPassed: boolean }}
@@ -94,14 +89,15 @@ export function runParentAiAssistantQaSimulator() {
       utterance: row.utterance,
       sessionId: row.sessionId,
     });
-    const text = joinedAnswers(res);
+    const text = phaseFParentFacingTextFromTurn(res);
     const check = assertScenarioOutput(text, { profile: row.profile });
+    const turnOk = phaseFSimulationTurnComplete(res);
     scenarios.push({
       id: row.id,
       utterance: row.utterance,
       resolutionStatus: res.resolutionStatus,
-      pass: check.ok && res.resolutionStatus === "resolved",
-      failures: [...(check.ok ? [] : check.failures), ...(res.resolutionStatus === "resolved" ? [] : ["not_resolved"])],
+      pass: check.ok && turnOk,
+      failures: [...(check.ok ? [] : check.failures), ...(turnOk ? [] : ["not_resolved_or_empty_boundary"])],
       hebrewRatio: check.hebrewRatio,
       answerExcerpt: text.slice(0, 900),
     });

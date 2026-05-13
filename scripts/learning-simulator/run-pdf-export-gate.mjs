@@ -14,6 +14,7 @@
  */
 import { mkdir, readFile, writeFile } from "node:fs/promises";
 import { PDFParse } from "pdf-parse";
+import { pdfTextContainsParentAiInsightFingerprint } from "../lib/parent-report-pdf-insight-fingerprint.mjs";
 
 async function extractPdfText(buf) {
   const parser = new PDFParse({ data: buf });
@@ -455,10 +456,9 @@ async function main() {
         preferCSSPageSize: true,
       });
       const proofTxt = (await extractPdfText(Buffer.from(proofBuf))).replace(/\s+/g, " ");
-      /** Structured insight uses `סיכום חכם להורה`; legacy single-paragraph uses `תובנה להורה` — same slot (.parent-report-parent-ai-insight). */
-      if (!/(תובנה\s+להורה|סיכום\s+חכם\s+להורה)/u.test(proofTxt)) {
+      if (!pdfTextContainsParentAiInsightFingerprint(proofTxt)) {
         failures.push(
-          "Phase C.1: Playwright print PDF missing Parent AI insight heading (תובנה להורה or סיכום חכם להורה).",
+          "Phase C.1: Playwright print PDF missing Parent AI insight fingerprint (heading or structured provenance — see scripts/lib/parent-report-pdf-insight-fingerprint.mjs).",
         );
       }
       if (proofTxt.includes("שאלה על הדוח")) {

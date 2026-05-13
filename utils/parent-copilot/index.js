@@ -84,6 +84,26 @@ function mergeLlmFailureDiagnostics(base, llmResult) {
   return out;
 }
 
+/**
+ * Used before TruthPacket assembly: `unclear` executive intent must not replace insufficiency
+ * micro-plans when no anchored row carries an eligible recommendation contract.
+ * @param {unknown} payload
+ */
+function payloadHasEligibleCopilotRecommendation(payload) {
+  const profiles = Array.isArray(payload?.subjectProfiles) ? payload.subjectProfiles : [];
+  for (const sp of profiles) {
+    const recs = Array.isArray(sp?.topicRecommendations) ? sp.topicRecommendations : [];
+    for (const tr of recs) {
+      const nar = tr?.contractsV1?.narrative;
+      const obsLen = String(nar?.textSlots?.observation || "").trim().length;
+      if (obsLen < 8) continue;
+      const rec = tr?.contractsV1?.recommendation;
+      if (rec?.eligible === true && String(rec?.intensity || "").trim().toUpperCase() !== "RI0") return true;
+    }
+  }
+  return false;
+}
+
 const CLINICAL_GUARDRAIL_FAIL_CODES = new Set([
   "clinical_diagnosis_language",
   "clinical_certainty_language",
@@ -150,6 +170,9 @@ function shouldUseThinDataLead(truthPacket, intent, payload) {
   );
   /** Never prepend global "מעט נתונים" when the report window has substantial answer volume. */
   if (globalQ >= STRONG_GLOBAL_QUESTION_FLOOR) return false;
+  const interp = String(tp.interpretationScope || "").trim();
+  /** Recommendation-framed turns already carry contract scarcity; do not prepend global thin-data boilerplate. */
+  if (interp === "recommendation") return false;
   const intentSet = new Set([
     "explain_report",
     "simple_parent_explanation",
@@ -854,9 +877,17 @@ function runDeterministicCore(input, options) {
     return { response: r, audience, sessionId, conv, truthPacket: null, intent, scopeMeta, utteranceStr };
   }
 
+  /** Executive `what_to_do_*` intent overwrites narrative.action with micro-plans; eligible recommendation questions still need contract action text for semantic aggregate + QA. */
+  const truthPacketBuildIntent =
+    aggregateQuestionClass === "recommendation_action" &&
+    String(scope?.scopeType || "") === "executive" &&
+    payloadHasEligibleCopilotRecommendation(scopedInput.payload)
+      ? "unclear"
+      : intent;
+
   const truthPacket = buildTruthPacketV1(scopedInput.payload, {
     ...scope,
-    canonicalIntent: intent,
+    canonicalIntent: truthPacketBuildIntent,
     parentUtterance: utteranceStr,
   });
   if (!truthPacket) {
@@ -901,12 +932,16 @@ function runDeterministicCore(input, options) {
     (!dlForAgg.recommendationEligible || dlForAgg.recommendationIntensityCap === "RI0");
   /** When aggregate asks for recommendations but contracts forbid them, plan as action intent (truth slots + uncertainty), not unrelated Stage A labels. */
   const plannerIntent =
-    skipSemanticAggregateForIneligibleRec &&
-    /השבוע|בשבוע|שבוע\s*הקרוב|המלצות|להמשך|מה\s*ההמלצות/.test(utteranceStr)
-      ? "what_to_do_this_week"
-      : skipSemanticAggregateForIneligibleRec
-        ? "what_to_do_today"
-        : intent;
+    aggregateQuestionClass === "recommendation_action" && !skipSemanticAggregateForIneligibleRec
+      ? /השבוע|בשבוע|שבוע\s*הקרוב|המלצות|להמשך|מה\s*ההמלצות/.test(utteranceStr)
+        ? "what_to_do_this_week"
+        : "what_to_do_today"
+      : skipSemanticAggregateForIneligibleRec &&
+          /השבוע|בשבוע|שבוע\s*הקרוב|המלצות|להמשך|מה\s*ההמלצות/.test(utteranceStr)
+        ? "what_to_do_this_week"
+        : skipSemanticAggregateForIneligibleRec
+          ? "what_to_do_today"
+          : intent;
   if (
     aggregateQuestionClass !== "none" &&
     aggregateQuestionClass !== "vague_summary_question" &&
@@ -925,24 +960,18 @@ function runDeterministicCore(input, options) {
       truthPacket,
     });
     if (aggDraft) {
-      const vAgg = validateAnswerDraft({ answerBlocks: aggDraft.answerBlocks }, truthPacket, { intent: plannerIntent });
+      const compactedAgg = compactParentAnswerBlocks(aggDraft.answerBlocks, {
+        scopeType: String(truthPacket.scopeType || ""),
+        maxBlocks: 5,
+        maxTotalChars: 2600,
+      });
+      const vAgg = validateAnswerDraft({ answerBlocks: compactedAgg }, truthPacket, { intent: plannerIntent });
       if (vAgg.ok) {
-        draft = { answerBlocks: aggDraft.answerBlocks };
+        draft = { answerBlocks: compactedAgg };
         semanticAggregateSatisfied = true;
         aggregateContinuityHint = aggDraft.aggregateContinuity ?? null;
       }
     }
-  }
-
-  if (semanticAggregateSatisfied && draft) {
-    draft = {
-      ...draft,
-      answerBlocks: compactParentAnswerBlocks(draft.answerBlocks, {
-        scopeType: String(truthPacket.scopeType || ""),
-        maxBlocks: 5,
-        maxTotalChars: 2600,
-      }),
-    };
   }
 
   if (!draft) {
@@ -958,6 +987,14 @@ function runDeterministicCore(input, options) {
       conversationState: conv,
       turnOrdinal: priorIntents.length,
     });
+    draft = {
+      ...draft,
+      answerBlocks: compactParentAnswerBlocks(draft.answerBlocks, {
+        scopeType: String(truthPacket.scopeType || ""),
+        maxBlocks: 5,
+        maxTotalChars: 2600,
+      }),
+    };
   }
 
   draft = { ...draft, answerBlocks: normalizeAnswerBlocksHe(draft.answerBlocks) };

@@ -55,6 +55,7 @@ function scrubCautionaryOverconfidenceFalsePositives(text) {
   return String(text)
     .replace(/לפני\s+לומר\s+משהו\s+חד[\s-]*משמעית?/gu, " ")
     .replace(/לומר\s+משהו\s+חד[\s-]*משמעית?/gu, " ")
+    .replace(/לא\s+לקבוע\s+חד[\s-]*משמעית?/gu, " ")
     .replace(/כדי\s+שיהיה\s+חד[\s-]*משמעית?\s+מה\s+לעשות/gu, " ")
     .replace(/אין\s+כרגע\s+פעולה\s+ביתית\s+חד-משמעית/gu, " ")
     .replace(/פעולה\s+ביתית\s+חד-משמעית/gu, " ");

@@ -16,15 +16,10 @@ const {
   assertScenarioOutput,
   collectGlobalSafetyFailures,
   CLINICAL_DIAGNOSIS_RE,
+  phaseFParentFacingTextFromTurn,
+  phaseFSimulationTurnComplete,
 } = await import(pathToFileURL(join(ROOT, "scripts/lib/parent-ai-phase-f-assertions.mjs")).href);
 const { writePhaseFArtifacts } = await import(pathToFileURL(join(ROOT, "scripts/lib/parent-ai-phase-f-report.mjs")).href);
-
-function joinedAnswers(res) {
-  return (Array.isArray(res?.answerBlocks) ? res.answerBlocks : [])
-    .map((b) => String(b.textHe || ""))
-    .join("\n")
-    .trim();
-}
 
 export function runParentAiBadPromptSimulator() {
   const payload = syntheticPayload({ eligible: true });
@@ -60,7 +55,7 @@ export function runParentAiBadPromptSimulator() {
       utterance: row.utterance,
       sessionId: row.sessionId,
     });
-    const text = joinedAnswers(res);
+    const text = phaseFParentFacingTextFromTurn(res);
     const globalFails = collectGlobalSafetyFailures(text);
     const clinicalLeak = CLINICAL_DIAGNOSIS_RE.test(text);
     const check = assertScenarioOutput(text, { profile: "bad_prompt" });
@@ -69,7 +64,7 @@ export function runParentAiBadPromptSimulator() {
       globalFails.length === 0 &&
       !clinicalLeak &&
       check.ok &&
-      res.resolutionStatus === "resolved";
+      phaseFSimulationTurnComplete(res);
 
     scenarios.push({
       id: row.id,
@@ -80,7 +75,7 @@ export function runParentAiBadPromptSimulator() {
         ...globalFails,
         ...(clinicalLeak ? ["clinical_surface"] : []),
         ...(check.failures || []),
-        ...(res.resolutionStatus === "resolved" ? [] : ["not_resolved"]),
+        ...(phaseFSimulationTurnComplete(res) ? [] : ["not_resolved_or_empty_boundary"]),
       ],
       answerExcerpt: text.slice(0, 900),
     });

@@ -16,6 +16,7 @@
 
 import {
   contractsFromTopicRow,
+  listAllAnchoredTopicRows,
   listCopilotAnchoredTopicRows,
   normalizeSubjectId,
   readContractsSliceForScope,
@@ -1030,8 +1031,10 @@ function buildTruthPacketV1NoAnchoredFallback(scope) {
  * @returns {object|null}
  */
 export function buildTruthPacketV1(payload, scope) {
+  /** Synthetic aggregate rows (see `listCopilotAnchoredTopicRows`) are Copilot UX helpers only — they are not parent-contract anchors. TruthPacketV1 must use `buildTruthPacketV1NoAnchoredFallback` when no real `topicRecommendations` narrative anchors exist so Parent AI consistency can mark secondary-source mode (`__no_anchor__`). */
+  if (!listAllAnchoredTopicRows(payload).length) return buildTruthPacketV1NoAnchoredFallback(scope);
+
   const allAnchored = listCopilotAnchoredTopicRows(payload);
-  if (!allAnchored.length) return buildTruthPacketV1NoAnchoredFallback(scope);
 
   const es = payload?.executiveSummary && typeof payload.executiveSummary === "object" ? payload.executiveSummary : {};
   const trendLines = Array.isArray(es.majorTrendsHe) ? es.majorTrendsHe.map((x) => String(x || "").trim()).filter(Boolean) : [];
@@ -1077,11 +1080,21 @@ export function buildTruthPacketV1(payload, scope) {
       recommendationEligible = !!cs.recommendation?.allowed;
       recommendationIntensityCap = cs.recommendation?.intensityCap || "RI0";
     } else {
-      cannotConcludeYet = true;
-      recommendationEligible = false;
-      recommendationIntensityCap = "RI0";
-      readiness = "insufficient";
-      confidenceBand = "low";
+      const d = contracts?.decision && typeof contracts.decision === "object" ? contracts.decision : null;
+      const rd = contracts?.readiness && typeof contracts.readiness === "object" ? contracts.readiness : null;
+      const cf = contracts?.confidence && typeof contracts.confidence === "object" ? contracts.confidence : null;
+      const rc = contracts?.recommendation && typeof contracts.recommendation === "object" ? contracts.recommendation : null;
+      cannotConcludeYet = !!d?.cannotConcludeYet;
+      readiness = rd?.readiness != null ? String(rd.readiness).trim() : "insufficient";
+      const cfb = cf?.confidenceBand != null ? String(cf.confidenceBand).trim().toLowerCase() : "";
+      confidenceBand =
+        cfb === "high" ? "high" : cfb === "medium" || cfb === "moderate" ? "medium" : "low";
+      const intenseRaw = rc?.intensity != null ? String(rc.intensity).trim().toUpperCase() : "";
+      recommendationIntensityCap = /^RI[0-3]$/.test(intenseRaw) ? intenseRaw : "RI0";
+      recommendationEligible = !!rc?.eligible && !cannotConcludeYet && recommendationIntensityCap !== "RI0";
+      if (!recommendationEligible) {
+        recommendationIntensityCap = "RI0";
+      }
     }
 
     q = Math.max(0, Number(topicRow?.questions ?? topicRow?.q) || 0);

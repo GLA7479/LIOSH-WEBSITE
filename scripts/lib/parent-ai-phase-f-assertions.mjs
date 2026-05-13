@@ -128,3 +128,29 @@ export function assertScenarioOutput(text, opts = {}) {
     hebrewRatio: ratio,
   };
 }
+
+/**
+ * Parent-facing text for Phase F simulators: resolved uses answerBlocks; classifier early exits
+ * (off_topic / diagnostic / ambiguous) use clarificationQuestionHe with empty answerBlocks by design.
+ * @param {{ answerBlocks?: unknown[]; clarificationQuestionHe?: string }} res
+ */
+export function phaseFParentFacingTextFromTurn(res) {
+  const blocks = Array.isArray(res?.answerBlocks) ? res.answerBlocks : [];
+  const joined = blocks
+    .map((b) => String(b?.textHe || ""))
+    .join("\n")
+    .trim();
+  if (joined) return joined;
+  return String(res?.clarificationQuestionHe || "").trim();
+}
+
+/**
+ * @param {{ resolutionStatus?: string; clarificationQuestionHe?: string }} res
+ */
+export function phaseFSimulationTurnComplete(res) {
+  if (String(res?.resolutionStatus || "") === "resolved") return true;
+  if (String(res?.resolutionStatus || "") === "clarification_required") {
+    return String(res?.clarificationQuestionHe || "").trim().length >= 12;
+  }
+  return false;
+}

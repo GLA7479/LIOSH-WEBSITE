@@ -243,6 +243,40 @@ function startDevServer(listenPort) {
   });
 }
 
+/** Same id as `/api/student/me` mock — subject master pages hydrate from `GET /api/student/learning-profile`. */
+const RENDER_GATE_MOCK_STUDENT_ID = "00000000-0000-0000-0000-0000000000e2";
+
+/**
+ * Minimal `GET /api/student/learning-profile` shape (see `pages/api/student/learning-profile.js`).
+ * Without this mock, master routes hit the real API with no session cookie → 401 and the gate
+ * treats `console.error` / failed-network noise as failure. `/learning` and `/learning/curriculum`
+ * do not call this endpoint on load, which is why only math-master / science-master failed.
+ */
+function renderGateMockLearningProfileJson() {
+  const subjects = {
+    math: {},
+    geometry: {},
+    hebrew: {},
+    english: {},
+    science: {},
+    moledet_geography: {},
+  };
+  return JSON.stringify({
+    ok: true,
+    studentId: RENDER_GATE_MOCK_STUDENT_ID,
+    row: {
+      subjects,
+      monthly: {},
+      challenges: {},
+      streaks: {},
+      achievements: {},
+      profile: {},
+      updated_at: new Date().toISOString(),
+    },
+    derived: { bySubject: {} },
+  });
+}
+
 async function mockStudentMe(page) {
   await page.route("**/api/student/me", async (route) => {
     await route.fulfill({
@@ -251,7 +285,7 @@ async function mockStudentMe(page) {
       body: JSON.stringify({
         ok: true,
         student: {
-          id: "00000000-0000-0000-0000-0000000000e2",
+          id: RENDER_GATE_MOCK_STUDENT_ID,
           full_name: "RenderGateQA",
           grade_level: 3,
           is_active: true,
@@ -260,6 +294,28 @@ async function mockStudentMe(page) {
       }),
     });
   });
+}
+
+async function mockStudentLearningProfileApi(page) {
+  const body = renderGateMockLearningProfileJson();
+  await page.route("**/api/student/learning-profile", async (route) => {
+    const m = route.request().method();
+    if (m === "GET" || m === "PATCH" || m === "POST") {
+      await route.fulfill({
+        status: 200,
+        contentType: "application/json",
+        body,
+      });
+      return;
+    }
+    await route.continue();
+  });
+}
+
+/** Session + learning-state APIs used by `StudentAccessGate` and subject master hydration. */
+async function setupStudentRenderGateApiMocks(page) {
+  await mockStudentMe(page);
+  await mockStudentLearningProfileApi(page);
 }
 
 async function applyLocalStorage(page, data, originBase) {
@@ -583,12 +639,12 @@ async function main() {
 
     try {
       if (sc.setup === "student_mock") {
-        await mockStudentMe(page);
+        await setupStudentRenderGateApiMocks(page);
         await page.goto(`${activeBaseUrl}${sc.path}`, { waitUntil: "domcontentloaded", timeout: 90_000 });
         await new Promise((r) => setTimeout(r, 1200));
         opened = true;
       } else if (sc.setup === "simulator_storage") {
-        await mockStudentMe(page);
+        await setupStudentRenderGateApiMocks(page);
         await applyLocalStorage(page, storageSnapshot, activeBaseUrl);
         await page.goto(`${activeBaseUrl}${sc.path}`, { waitUntil: "domcontentloaded", timeout: 180_000 });
         await new Promise((r) => setTimeout(r, 1200));
