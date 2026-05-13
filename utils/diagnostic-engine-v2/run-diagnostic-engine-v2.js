@@ -13,6 +13,7 @@ import { orderWordProblemsTaxonomyCandidates } from "./word-problems-taxonomy-ca
 import { orderGeometryTaxonomyCandidates } from "./geometry-taxonomy-candidate-order.js";
 import { orderEnglishTaxonomyCandidates } from "./english-taxonomy-candidate-order.js";
 import { orderHebrewTaxonomyCandidates } from "./hebrew-taxonomy-candidate-order.js";
+import { orderMoledetTaxonomyCandidates } from "./moledet-taxonomy-candidate-order.js";
 import { passesRecurrenceRules, heavyHintLikelyInvalidatesPattern } from "./recurrence.js";
 import { resolveConfidenceLevel } from "./confidence-policy.js";
 import { resolvePriority, breadthFromWeakRowCount } from "./priority-policy.js";
@@ -123,6 +124,29 @@ export function runDiagnosticEngineV2({ maps, rawMistakesBySubject, startMs, end
           (bk === "writing" && candidateIdsRaw.includes("H-03") && candidateIdsRaw.includes("H-07"))
         ) {
           candidateIds = orderHebrewTaxonomyCandidates(candidateIdsRaw, wrongs, { row, bucketKey });
+        }
+      } else if (subjectId === "moledet-geography") {
+        const bk = String(bucketKey || "").trim().toLowerCase();
+        if (
+          bk === "maps" &&
+          candidateIdsRaw.includes("MG-01") &&
+          candidateIdsRaw.includes("MG-02") &&
+          candidateIdsRaw.includes("MG-08")
+        ) {
+          candidateIds = orderMoledetTaxonomyCandidates(candidateIdsRaw, wrongs, { row, bucketKey: bk });
+        } else if (
+          bk === "geography" &&
+          candidateIdsRaw.includes("MG-01") &&
+          candidateIdsRaw.includes("MG-02") &&
+          candidateIdsRaw.includes("MG-05")
+        ) {
+          candidateIds = orderMoledetTaxonomyCandidates(candidateIdsRaw, wrongs, { row, bucketKey: bk });
+        } else if (
+          bk === "homeland" &&
+          candidateIdsRaw.includes("MG-04") &&
+          candidateIdsRaw.includes("MG-06")
+        ) {
+          candidateIds = orderMoledetTaxonomyCandidates(candidateIdsRaw, wrongs, { row, bucketKey: bk });
         }
       }
       /** @type {string|null} */

@@ -1,7 +1,7 @@
 /**
  * Grade-aware parent recommendation resolver (Phase 1+).
  * Always active in dev and production — no feature flag; returns template Hebrew when taxonomy/band/bucket match.
- * Supports legacy flat templates (M-02, M-09, M-06) and extended entries (defaultBands + bucketOverrides) for math, geometry, Hebrew (H-01/H-02/H-03/H-04/H-06/H-07/H-08), and English (E-01/E-02/E-04/E-05 Phase 4-B4; E-03/E-07 Phase 4-B2; E-06 Phase 4-B6).
+ * Supports legacy flat templates (M-02, M-09, M-06) and extended entries (defaultBands + bucketOverrides) for math, geometry, Hebrew (H-01/H-02/H-03/H-04/H-06/H-07/H-08), English (E-01/E-02/E-04/E-05 Phase 4-B4; E-03/E-07 Phase 4-B2; E-06 Phase 4-B6), Science (S-01 Phase 5-B2; S-02/S-03/S-04/S-07 Phase 5-B1), and moledet-geography (MG-03/MG-07 Phase 5-C1 bucketOverrides only).
  */
 
 import { mathReportBaseOperationKey } from "../math-report-generator.js";
@@ -28,7 +28,14 @@ function normalizedResolverBucketKey(subjectId, bucketKeyRaw) {
   const raw = String(bucketKeyRaw || "").trim();
   if (!raw) return "";
   if (sid === "math") return mathReportBaseOperationKey(raw);
-  if (sid === "geometry" || sid === "hebrew" || sid === "english") return raw.toLowerCase();
+  if (
+    sid === "geometry" ||
+    sid === "hebrew" ||
+    sid === "english" ||
+    sid === "science" ||
+    sid === "moledet-geography"
+  )
+    return raw.toLowerCase();
   return "";
 }
 
@@ -76,7 +83,7 @@ export function resolveGradeAwareParentRecommendationHe(input) {
   const entry = subjectBank[taxonomyId];
   if (!entry || typeof entry !== "object") return null;
 
-  /** Extended shape: math M-01/M-03/…, geometry G-*, Hebrew H-01/H-02/H-03/H-04/H-06/H-07/H-08, English E-01/E-02/E-04/E-05/E-06/E-03/E-07 (defaultBands + optional bucketOverrides). */
+  /** Extended shape: math M-01/M-03/…, geometry G-*, Hebrew H-01/…, English E-01/…, Science S-01/S-02/…, moledet-geography MG-03/MG-07 (defaultBands + optional bucketOverrides). */
   if (entry.defaultBands != null && typeof entry.defaultBands === "object") {
     const bucketNorm = normalizedResolverBucketKey(subjectId, input?.bucketKey);
     const bo = entry.bucketOverrides && typeof entry.bucketOverrides === "object" ? entry.bucketOverrides : null;

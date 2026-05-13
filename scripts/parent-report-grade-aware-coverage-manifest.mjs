@@ -385,6 +385,155 @@ function coverageStatus(subjectId, taxonomyId) {
         missingGradeBands: ["g1_g2"],
       };
     }
+    const SCIENCE_BUCKETS_ALL = ["animals", "plants", "materials", "earth_space", "environment", "experiments", "body", "mixed"];
+    if (subjectId === "science" && taxonomyId === "S-01") {
+      const bo = tpl.bucketOverrides;
+      if (!bo || typeof bo !== "object") return { status: "pending_manual_hebrew" };
+      const required = ["animals", "plants", "earth_space", "mixed"];
+      for (const k of required) {
+        if (!bo[k] || typeof bo[k] !== "object") return { status: "pending_manual_hebrew" };
+      }
+      return {
+        status: "partially_covered_by_template",
+        partialBucketCoverage: [...required],
+        missingBucketCoverage: SCIENCE_BUCKETS_ALL.filter((k) => !required.includes(k)),
+        coveredGradeBands: ["g3_g4", "g5_g6"],
+        missingGradeBands: ["g1_g2"],
+      };
+    }
+    if (subjectId === "science" && taxonomyId === "S-02") {
+      const bo = tpl.bucketOverrides;
+      if (!bo?.experiments || typeof bo.experiments !== "object") return { status: "pending_manual_hebrew" };
+      return {
+        status: "partially_covered_by_template",
+        partialBucketCoverage: ["experiments"],
+        missingBucketCoverage: SCIENCE_BUCKETS_ALL.filter((k) => k !== "experiments"),
+        coveredGradeBands: ["g3_g4", "g5_g6"],
+        missingGradeBands: ["g1_g2"],
+      };
+    }
+    if (subjectId === "science" && taxonomyId === "S-03") {
+      const bo = tpl.bucketOverrides;
+      if (!bo?.body || typeof bo.body !== "object") return { status: "pending_manual_hebrew" };
+      return {
+        status: "partially_covered_by_template",
+        partialBucketCoverage: ["body"],
+        missingBucketCoverage: SCIENCE_BUCKETS_ALL.filter((k) => k !== "body"),
+        coveredGradeBands: ["g3_g4", "g5_g6"],
+        missingGradeBands: ["g1_g2"],
+      };
+    }
+    if (subjectId === "science" && taxonomyId === "S-04") {
+      const bo = tpl.bucketOverrides;
+      if (!bo?.materials || typeof bo.materials !== "object") return { status: "pending_manual_hebrew" };
+      return {
+        status: "partially_covered_by_template",
+        partialBucketCoverage: ["materials"],
+        missingBucketCoverage: SCIENCE_BUCKETS_ALL.filter((k) => k !== "materials"),
+        coveredGradeBands: ["g3_g4", "g5_g6"],
+        missingGradeBands: ["g1_g2"],
+      };
+    }
+    if (subjectId === "science" && taxonomyId === "S-07") {
+      const bo = tpl.bucketOverrides;
+      if (!bo?.environment || typeof bo.environment !== "object") return { status: "pending_manual_hebrew" };
+      return {
+        status: "partially_covered_by_template",
+        partialBucketCoverage: ["environment"],
+        missingBucketCoverage: SCIENCE_BUCKETS_ALL.filter((k) => k !== "environment"),
+        coveredGradeBands: ["g3_g4", "g5_g6"],
+        missingGradeBands: ["g1_g2"],
+      };
+    }
+    const MOLEDET_BUCKETS_ALL = ["maps", "geography", "citizenship", "homeland", "community", "values", "mixed"];
+    if (subjectId === "moledet-geography" && taxonomyId === "MG-03") {
+      const bo = tpl.bucketOverrides;
+      if (!bo?.citizenship || typeof bo.citizenship !== "object") return { status: "pending_manual_hebrew" };
+      return {
+        status: "partially_covered_by_template",
+        partialBucketCoverage: ["citizenship"],
+        missingBucketCoverage: MOLEDET_BUCKETS_ALL.filter((k) => k !== "citizenship"),
+        coveredGradeBands: ["g3_g4", "g5_g6"],
+        missingGradeBands: ["g1_g2"],
+      };
+    }
+    if (subjectId === "moledet-geography" && taxonomyId === "MG-07") {
+      const bo = tpl.bucketOverrides;
+      if (!bo?.community || typeof bo.community !== "object") return { status: "pending_manual_hebrew" };
+      return {
+        status: "partially_covered_by_template",
+        partialBucketCoverage: ["community"],
+        missingBucketCoverage: MOLEDET_BUCKETS_ALL.filter((k) => k !== "community"),
+        coveredGradeBands: ["g3_g4", "g5_g6"],
+        missingGradeBands: ["g1_g2"],
+      };
+    }
+    if (subjectId === "moledet-geography" && taxonomyId === "MG-01") {
+      const bo = tpl.bucketOverrides;
+      if (!bo?.maps || !bo?.geography || !bo?.mixed) return { status: "pending_manual_hebrew" };
+      return {
+        status: "partially_covered_by_template",
+        partialBucketCoverage: ["maps", "geography", "mixed"],
+        missingBucketCoverage: MOLEDET_BUCKETS_ALL.filter((k) => !["maps", "geography", "mixed"].includes(k)),
+        coveredGradeBands: ["g3_g4", "g5_g6"],
+        missingGradeBands: ["g1_g2"],
+      };
+    }
+    if (subjectId === "moledet-geography" && taxonomyId === "MG-02") {
+      const bo = tpl.bucketOverrides;
+      if (!bo?.maps || !bo?.geography) return { status: "pending_manual_hebrew" };
+      return {
+        status: "partially_covered_by_template",
+        partialBucketCoverage: ["maps", "geography"],
+        missingBucketCoverage: MOLEDET_BUCKETS_ALL.filter((k) => !["maps", "geography"].includes(k)),
+        coveredGradeBands: ["g3_g4", "g5_g6"],
+        missingGradeBands: ["g1_g2"],
+      };
+    }
+    if (subjectId === "moledet-geography" && taxonomyId === "MG-04") {
+      const bo = tpl.bucketOverrides;
+      if (!bo?.homeland || typeof bo.homeland !== "object") return { status: "pending_manual_hebrew" };
+      return {
+        status: "partially_covered_by_template",
+        partialBucketCoverage: ["homeland"],
+        missingBucketCoverage: MOLEDET_BUCKETS_ALL.filter((k) => k !== "homeland"),
+        coveredGradeBands: ["g3_g4", "g5_g6"],
+        missingGradeBands: ["g1_g2"],
+      };
+    }
+    if (subjectId === "moledet-geography" && taxonomyId === "MG-05") {
+      const bo = tpl.bucketOverrides;
+      if (!bo?.geography || typeof bo.geography !== "object") return { status: "pending_manual_hebrew" };
+      return {
+        status: "partially_covered_by_template",
+        partialBucketCoverage: ["geography"],
+        missingBucketCoverage: MOLEDET_BUCKETS_ALL.filter((k) => k !== "geography"),
+        coveredGradeBands: ["g3_g4", "g5_g6"],
+        missingGradeBands: ["g1_g2"],
+      };
+    }
+    if (subjectId === "moledet-geography" && taxonomyId === "MG-06") {
+      const bo = tpl.bucketOverrides;
+      if (!bo?.homeland || !bo?.values) return { status: "pending_manual_hebrew" };
+      return {
+        status: "partially_covered_by_template",
+        partialBucketCoverage: ["homeland", "values"],
+        missingBucketCoverage: MOLEDET_BUCKETS_ALL.filter((k) => !["homeland", "values"].includes(k)),
+        coveredGradeBands: ["g3_g4", "g5_g6"],
+        missingGradeBands: ["g1_g2"],
+      };
+    }
+    if (subjectId === "moledet-geography" && taxonomyId === "MG-08") {
+      const bo = tpl.bucketOverrides;
+      if (!bo?.maps || typeof bo.maps !== "object") return { status: "pending_manual_hebrew" };
+      return {
+        status: "partially_covered_by_template",
+        partialBucketCoverage: ["maps"],
+        missingBucketCoverage: MOLEDET_BUCKETS_ALL.filter((k) => k !== "maps"),
+        coveredGradeBands: ["g3_g4", "g5_g6"],
+        missingGradeBands: ["g1_g2"],
+      };
+    }
     return { status: "pending_manual_hebrew" };
   }
 
@@ -462,9 +611,9 @@ const countByStatus = rows.reduce((acc, r) => {
 
 const manifest = {
   generatedAt: new Date().toISOString(),
-  phase: "4-C3",
+  phase: "5-C3",
   note:
-    "covered_by_template = legacy flat entry with all grade bands non-empty actionTextHe and goalTextHe. partially_covered_by_template = null g1_g2 and/or partial bucket/grade coverage (math M-04, M-05; M-03, M-10; M-07 word_problems; M-08 word_problems/sequences/equations/order_of_operations; geometry G-01 shapes_basic+quadrilaterals+parallel_perpendicular+diagonal+tiling, G-02 angles+circles, G-03 quadrilaterals+heights+area, G-04 transformations+rotation, G-05 solids+volume, G-06 perimeter, G-07 symmetry, G-08 area+triangles+pythagoras; Hebrew H-01 vocabulary+mixed g3_g4+g5_g6, H-02 grammar g3_g4+g5_g6, H-03 writing g3_g4+g5_g6, H-04 reading+comprehension g3_g4+g5_g6, H-06 grammar g3_g4+g5_g6, H-07 writing g3_g4+g5_g6, H-08 speaking g5_g6; English E-01 vocabulary g3_g4+g5_g6, E-02 grammar g3_g4+g5_g6, E-03 translation g3_g4+g5_g6, E-04 grammar g3_g4+g5_g6, E-05 vocabulary g3_g4+g5_g6, E-06 sentences+sentence g3_g4+g5_g6, E-07 writing g3_g4+g5_g6). bucketGradeCoverage (when present) lists per-bucket which grade bands have non-null action+goal Hebrew vs null — use when aggregate coveredGradeBands would overstate (e.g. G-05 volume only g5_g6). pending_manual_hebrew otherwise. Math M-01: partial bucketOverrides (compare, number_sense, estimation); missing zero_one_properties, scale, prime_composite until approved.",
+    "covered_by_template = legacy flat entry with all grade bands non-empty actionTextHe and goalTextHe. partially_covered_by_template = null g1_g2 and/or partial bucket/grade coverage (math M-04, M-05; M-03, M-10; M-07 word_problems; M-08 word_problems/sequences/equations/order_of_operations; geometry G-01 shapes_basic+quadrilaterals+parallel_perpendicular+diagonal+tiling, G-02 angles+circles, G-03 quadrilaterals+heights+area, G-04 transformations+rotation, G-05 solids+volume, G-06 perimeter, G-07 symmetry, G-08 area+triangles+pythagoras; Hebrew H-01 vocabulary+mixed g3_g4+g5_g6, H-02 grammar g3_g4+g5_g6, H-03 writing g3_g4+g5_g6, H-04 reading+comprehension g3_g4+g5_g6, H-06 grammar g3_g4+g5_g6, H-07 writing g3_g4+g5_g6, H-08 speaking g5_g6; English E-01 vocabulary g3_g4+g5_g6, E-02 grammar g3_g4+g5_g6, E-03 translation g3_g4+g5_g6, E-04 grammar g3_g4+g5_g6, E-05 vocabulary g3_g4+g5_g6, E-06 sentences+sentence g3_g4+g5_g6, E-07 writing g3_g4+g5_g6; Science S-01 animals+plants+earth_space+mixed g3_g4+g5_g6, S-02 experiments, S-03 body, S-04 materials, S-07 environment g3_g4+g5_g6; moledet-geography MG-01 maps+geography+mixed, MG-02 maps+geography, MG-03 citizenship, MG-04 homeland, MG-05 geography, MG-06 homeland+values, MG-07 community, MG-08 maps g3_g4+g5_g6). bucketGradeCoverage (when present) lists per-bucket which grade bands have non-null action+goal Hebrew vs null — use when aggregate coveredGradeBands would overstate (e.g. G-05 volume only g5_g6). pending_manual_hebrew otherwise. Math M-01: partial bucketOverrides (compare, number_sense, estimation); missing zero_one_properties, scale, prime_composite until approved.",
   summary: {
     totalRows: rows.length,
     countBySubject,

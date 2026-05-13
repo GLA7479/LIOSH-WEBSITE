@@ -1,5 +1,5 @@
 /**
- * Grade-aware parent recommendation templates (Phase 1: math M-02, M-09; Phase 2-A1: M-06; Phase 2-A2–A3: partial M-01 bucketOverrides; Phase 2-B4: math M-04, M-05 fractions — g1_g2 null; Phase 2-C3: math M-03, M-10 bucketOverrides; Phase 2-D3: math M-07, M-08 bucketOverrides only; Phase 3-B1: geometry G-02/G-04/G-05/G-06/G-07 bucketOverrides only; Phase 3-B2: geometry G-01/G-03/G-08 bucketOverrides only; Phase 4-B1: Hebrew H-04/H-08 bucketOverrides only; Phase 4-C3: Hebrew H-01/H-02/H-03/H-06/H-07 bucketOverrides only; Phase 4-B2: English E-03/E-07 bucketOverrides only).
+ * Grade-aware parent recommendation templates (Phase 1–4 math/geometry/Hebrew/English; Phase 5-B1/B2 Science; Phase 5-C1/C3 moledet-geography MG-01–MG-08 bucketOverrides).
  * Slot-specific Hebrew is editorially approved; do not change without sign-off.
  */
 
@@ -1970,6 +1970,787 @@ export const GRADE_AWARE_RECOMMENDATION_TEMPLATES = {
               "בשבוע הקרוב התמקדו בעקביות באיות באנגלית בתוך כתיבה, בזיהוי טעויות שחוזרות ובתיקון מסודר שלהן.",
             intentDescriptionEn:
               "Grade 5–6 spelling consistency in English writing, identifying repeated error patterns and correcting them systematically.",
+          },
+        },
+      },
+    },
+  },
+  science: {
+    "S-01": {
+      defaultBands: {
+        g1_g2: {
+          actionTextHe: null,
+          goalTextHe: null,
+          intentDescriptionEn:
+            "S-01 default: no approved parent copy; use bucketOverrides (animals, plants, earth_space, mixed) or engine fallback.",
+        },
+        g3_g4: {
+          actionTextHe: null,
+          goalTextHe: null,
+          intentDescriptionEn:
+            "S-01 default: no approved parent copy; use bucketOverrides (animals, plants, earth_space, mixed) or engine fallback.",
+        },
+        g5_g6: {
+          actionTextHe: null,
+          goalTextHe: null,
+          intentDescriptionEn:
+            "S-01 default: no approved parent copy; use bucketOverrides (animals, plants, earth_space, mixed) or engine fallback.",
+        },
+      },
+      bucketOverrides: {
+        animals: {
+          g1_g2: {
+            actionTextHe: null,
+            goalTextHe: null,
+            intentDescriptionEn:
+              "Keep animal classification recommendations null for grades 1–2 until concrete early-science copy is approved.",
+          },
+          g3_g4: {
+            actionTextHe:
+              "כדאי לתרגל מיון בעלי חיים לפי סימנים שאפשר לראות או להסביר, כמו מבנה גוף, סביבת חיים, תזונה או דרך תנועה. בקשו מהילד לומר לפי איזה סימן הוא מיין ולא רק לבחור קבוצה לפי זיכרון.",
+            goalTextHe:
+              "בשבוע הקרוב התמקדו במיון בעלי חיים לפי סימנים ברורים ובהסבר הסיבה לשיוך לקבוצה.",
+            intentDescriptionEn:
+              "Grade 3–4 animal classification using observable traits such as body structure, habitat, food, or movement.",
+          },
+          g5_g6: {
+            actionTextHe:
+              "כדאי לתרגל השוואה בין קבוצות של בעלי חיים לפי כמה מאפיינים יחד. בקשו מהילד להבחין בין מאפיין של בעל החיים לבין תהליך שהוא עובר, ולהסביר אילו ראיות תומכות במיון שלו.",
+            goalTextHe:
+              "בשבוע הקרוב התמקדו במיון והשוואה של בעלי חיים לפי כמה מאפיינים, תוך נימוק בעזרת ראיות.",
+            intentDescriptionEn:
+              "Grade 5–6 animal classification across multiple traits, distinguishing traits from processes and justifying with evidence.",
+          },
+        },
+        plants: {
+          g1_g2: {
+            actionTextHe: null,
+            goalTextHe: null,
+            intentDescriptionEn:
+              "Keep plant classification recommendations null for grades 1–2 until concrete early-science copy is approved.",
+          },
+          g3_g4: {
+            actionTextHe:
+              "כדאי לתרגל מיון צמחים לפי חלקי הצמח ותפקידיהם, כמו שורש, גבעול, עלים, פרח או פרי. בקשו מהילד להסביר איזה חלק הוא מזהה ומה התפקיד שלו בצמח.",
+            goalTextHe:
+              "בשבוע הקרוב התמקדו בזיהוי חלקי הצמח, תפקידיהם ומיון צמחים לפי מאפיינים ברורים.",
+            intentDescriptionEn:
+              "Grade 3–4 plant classification using plant parts and their roles.",
+          },
+          g5_g6: {
+            actionTextHe:
+              "כדאי לתרגל השוואה בין צמחים לפי מבנה, תנאי חיים ותהליכים כמו גדילה או רבייה. בקשו מהילד להפריד בין תכונה של הצמח לבין תהליך שמתרחש בו, ולנמק לפי מידע מהמשימה.",
+            goalTextHe:
+              "בשבוע הקרוב התמקדו בהשוואת צמחים לפי מבנה, תנאי חיים ותהליכים, עם נימוק מתוך הנתונים.",
+            intentDescriptionEn:
+              "Grade 5–6 plant comparison by structure, living conditions, and processes, separating traits from processes.",
+          },
+        },
+        earth_space: {
+          g1_g2: {
+            actionTextHe: null,
+            goalTextHe: null,
+            intentDescriptionEn:
+              "Keep earth/space classification recommendations null for grades 1–2 until concrete early-science copy is approved.",
+          },
+          g3_g4: {
+            actionTextHe:
+              "כדאי לתרגל מיון תופעות טבע לפי מה שמתארים: גוף שמימי, מזג אוויר, סלעים, מים או שינוי שמתרחש בסביבה. בקשו מהילד להסביר לפי איזה סימן הוא זיהה את הקבוצה.",
+            goalTextHe:
+              "בשבוע הקרוב התמקדו במיון תופעות טבע לפי סימנים ברורים ובהסבר הבחירה.",
+            intentDescriptionEn:
+              "Grade 3–4 earth/space classification by observable categories such as celestial bodies, weather, rocks, water, or environmental changes.",
+          },
+          g5_g6: {
+            actionTextHe:
+              "כדאי לתרגל הבחנה בין מושגים ותהליכים במדעי כדור הארץ והחלל. בקשו מהילד להסביר אם מדובר בעצם, בתופעה או בתהליך, ולהשתמש בנתונים מהשאלה כדי לנמק.",
+            goalTextHe:
+              "בשבוע הקרוב התמקדו בהבחנה בין עצמים, תופעות ותהליכים במדעי כדור הארץ והחלל, עם נימוק לפי נתונים.",
+            intentDescriptionEn:
+              "Grade 5–6 earth/space reasoning by distinguishing objects, phenomena, and processes using task evidence.",
+          },
+        },
+        mixed: {
+          g1_g2: {
+            actionTextHe: null,
+            goalTextHe: null,
+            intentDescriptionEn:
+              "Keep mixed science classification recommendations null for grades 1–2 until concrete early-science copy is approved.",
+          },
+          g3_g4: {
+            actionTextHe:
+              "כדאי לתרגל מיון מושגים במדעים לפי סימן ברור: מה זה, למה הוא שייך, ומה מאפיין אותו. בקשו מהילד להסביר את המיון במילים שלו ולבדוק אם יש פרט בשאלה שתומך בתשובה.",
+            goalTextHe:
+              "בשבוע הקרוב התמקדו במיון מושגים במדעים לפי מאפיינים ברורים ובהסבר הבחירה.",
+            intentDescriptionEn:
+              "Grade 3–4 mixed science classification by clear traits and explanation using evidence from the question.",
+          },
+          g5_g6: {
+            actionTextHe:
+              "כדאי לתרגל השוואה בין מושגים ותהליכים במדעים מתחומים שונים. בקשו מהילד לזהות מה המאפיין המרכזי של כל מושג, מה התהליך אם יש כזה, ואילו נתונים עוזרים להחליט.",
+            goalTextHe:
+              "בשבוע הקרוב התמקדו בהבחנה בין מושגים, מאפיינים ותהליכים במדעים, תוך שימוש בנתונים מהמשימה.",
+            intentDescriptionEn:
+              "Grade 5–6 mixed science concept classification across domains, distinguishing concepts, traits, and processes using evidence.",
+          },
+        },
+      },
+    },
+    "S-02": {
+      defaultBands: {
+        g1_g2: {
+          actionTextHe: null,
+          goalTextHe: null,
+          intentDescriptionEn:
+            "S-02 default: no approved parent copy; use bucketOverrides (experiments) or engine fallback.",
+        },
+        g3_g4: {
+          actionTextHe: null,
+          goalTextHe: null,
+          intentDescriptionEn:
+            "S-02 default: no approved parent copy; use bucketOverrides (experiments) or engine fallback.",
+        },
+        g5_g6: {
+          actionTextHe: null,
+          goalTextHe: null,
+          intentDescriptionEn:
+            "S-02 default: no approved parent copy; use bucketOverrides (experiments) or engine fallback.",
+        },
+      },
+      bucketOverrides: {
+        experiments: {
+          g1_g2: {
+            actionTextHe: null,
+            goalTextHe: null,
+            intentDescriptionEn:
+              "Keep formal experiment-variable recommendations null for grades 1–2 until concrete early-science copy is approved.",
+          },
+          g3_g4: {
+            actionTextHe:
+              "כדאי לתרגל ניסוי פשוט שבו משנים רק דבר אחד בכל פעם. בקשו מהילד לומר מה משנים, מה משאירים קבוע, ומה בודקים בסוף הניסוי.",
+            goalTextHe:
+              "בשבוע הקרוב התמקדו בהבנת ניסוי הוגן: שינוי גורם אחד, שמירה על שאר התנאים ובדיקת התוצאה.",
+            intentDescriptionEn:
+              "Grade 3–4 fair-test reasoning: change one variable, keep other conditions the same, and observe the result.",
+          },
+          g5_g6: {
+            actionTextHe:
+              "כדאי לתרגל תכנון ניסוי בעזרת טבלה: מה המשתנה שמשנים, מה מודדים, ומה חייב להישאר קבוע כדי שהבדיקה תהיה הוגנת. בקשו מהילד להסביר למה שינוי של כמה דברים יחד מקשה לדעת מה גרם לתוצאה.",
+            goalTextHe:
+              "בשבוע הקרוב התמקדו בתכנון ניסוי הוגן: בידוד משתנה, מדידה מסודרת והסבר הקשר בין השינוי לתוצאה.",
+            intentDescriptionEn:
+              "Grade 5–6 experiment planning with isolated variables, controlled conditions, measurement, and causal explanation.",
+          },
+        },
+      },
+    },
+    "S-03": {
+      defaultBands: {
+        g1_g2: {
+          actionTextHe: null,
+          goalTextHe: null,
+          intentDescriptionEn: "S-03 default: use bucketOverrides (body) or engine fallback.",
+        },
+        g3_g4: {
+          actionTextHe: null,
+          goalTextHe: null,
+          intentDescriptionEn: "S-03 default: use bucketOverrides (body) or engine fallback.",
+        },
+        g5_g6: {
+          actionTextHe: null,
+          goalTextHe: null,
+          intentDescriptionEn: "S-03 default: use bucketOverrides (body) or engine fallback.",
+        },
+      },
+      bucketOverrides: {
+        body: {
+          g1_g2: {
+            actionTextHe: null,
+            goalTextHe: null,
+            intentDescriptionEn:
+              "Keep body-system diagram recommendations null for grades 1–2 unless product evidence explicitly supports it.",
+          },
+          g3_g4: {
+            actionTextHe:
+              "כדאי לתרגל קריאת תרשים פשוט של גוף או מערכת בעזרת סימון חלקים וכיוונים. בקשו מהילד להצביע על כל חלק, לומר מה התפקיד שלו, ולהסביר לאן משהו עובר או זורם בתרשים.",
+            goalTextHe:
+              "בשבוע הקרוב התמקדו בקריאת תרשימי גוף פשוטים: זיהוי חלקים, תפקידים וכיוון מעבר או זרימה.",
+            intentDescriptionEn:
+              "Grade 3–4 reading simple body/system diagrams: identify parts, roles, and direction of flow without medical conclusions.",
+          },
+          g5_g6: {
+            actionTextHe:
+              "כדאי לתרגל תרשימי מערכות בגוף דרך הקשר בין מבנה לתפקיד. בקשו מהילד להסביר מה כל חלק עושה, איך החלקים קשורים זה לזה, ואיך התרשים עוזר להבין את פעולת המערכת.",
+            goalTextHe:
+              "בשבוע הקרוב התמקדו בהבנת מערכות בגוף דרך תרשים: מבנה, תפקיד וקשר בין חלקים.",
+            intentDescriptionEn:
+              "Grade 5–6 body systems: connect structure to function and explain relationships between parts in a diagram.",
+          },
+        },
+      },
+    },
+    "S-04": {
+      defaultBands: {
+        g1_g2: {
+          actionTextHe: null,
+          goalTextHe: null,
+          intentDescriptionEn: "S-04 default: use bucketOverrides (materials) or engine fallback.",
+        },
+        g3_g4: {
+          actionTextHe: null,
+          goalTextHe: null,
+          intentDescriptionEn: "S-04 default: use bucketOverrides (materials) or engine fallback.",
+        },
+        g5_g6: {
+          actionTextHe: null,
+          goalTextHe: null,
+          intentDescriptionEn: "S-04 default: use bucketOverrides (materials) or engine fallback.",
+        },
+      },
+      bucketOverrides: {
+        materials: {
+          g1_g2: {
+            actionTextHe: null,
+            goalTextHe: null,
+            intentDescriptionEn:
+              "Keep formal matter/conservation recommendations null for grades 1–2 unless concrete product evidence supports it.",
+          },
+          g3_g4: {
+            actionTextHe:
+              "כדאי לתרגל מצבי צבירה בעזרת ציור או תרשים שמראה מה משתנה ומה נשאר. בקשו מהילד לתאר את החומר לפני ואחרי השינוי, ולבדוק אם מדובר בשינוי מצב ולא בהיעלמות של החומר.",
+            goalTextHe:
+              "בשבוע הקרוב התמקדו בהבנת מצבי צבירה ובמעקב אחרי החומר לפני ואחרי שינוי.",
+            intentDescriptionEn:
+              "Grade 3–4 states of matter: track what changes and what remains using diagrams and observations.",
+          },
+          g5_g6: {
+            actionTextHe:
+              "כדאי לתרגל שינויי מצב בחומר בעזרת תרשים חלקיקים או טבלת לפני־אחרי. בקשו מהילד להסביר מה השתנה במצב החומר, מה נשמר, ואיך יודעים שהחומר לא נעלם אלא עבר שינוי.",
+            goalTextHe:
+              "בשבוע הקרוב התמקדו בשינויי מצב ובשימור החומר, תוך שימוש בתרשים או טבלת נתונים.",
+            intentDescriptionEn:
+              "Grade 5–6 matter changes and conservation reasoning using particle diagrams or before/after tables.",
+          },
+        },
+      },
+    },
+    "S-07": {
+      defaultBands: {
+        g1_g2: {
+          actionTextHe: null,
+          goalTextHe: null,
+          intentDescriptionEn: "S-07 default: use bucketOverrides (environment) or engine fallback.",
+        },
+        g3_g4: {
+          actionTextHe: null,
+          goalTextHe: null,
+          intentDescriptionEn: "S-07 default: use bucketOverrides (environment) or engine fallback.",
+        },
+        g5_g6: {
+          actionTextHe: null,
+          goalTextHe: null,
+          intentDescriptionEn: "S-07 default: use bucketOverrides (environment) or engine fallback.",
+        },
+      },
+      bucketOverrides: {
+        environment: {
+          g1_g2: {
+            actionTextHe: null,
+            goalTextHe: null,
+            intentDescriptionEn:
+              "Keep ecosystem/food-web recommendations null for grades 1–2 unless product evidence explicitly supports simple food-chain work.",
+          },
+          g3_g4: {
+            actionTextHe:
+              "כדאי לתרגל קשרים בסביבה בעזרת שרשרת מזון פשוטה. בקשו מהילד להסביר מי ניזון ממי, מה מראה כל חץ, ואיך יודעים את התשובה לפי התרשים.",
+            goalTextHe:
+              "בשבוע הקרוב התמקדו בהבנת קשרים בסביבה דרך שרשרת מזון פשוטה ושימוש בראיות מהתרשים.",
+            intentDescriptionEn:
+              "Grade 3–4 simple food-chain reasoning: who eats whom, what arrows show, and using diagram evidence.",
+          },
+          g5_g6: {
+            actionTextHe:
+              "כדאי לתרגל רשת מזון או מערכת אקולוגית בעזרת תרשים. בקשו מהילד לזהות יצרנים, צרכנים וקשרים בין יצורים, ולהסביר איך שינוי באחד החלקים יכול להשפיע על חלקים אחרים במערכת.",
+            goalTextHe:
+              "בשבוע הקרוב התמקדו בהבנת מערכות אקולוגיות: קשרים ברשת מזון, זרימת אנרגיה והשפעה של שינוי במערכת.",
+            intentDescriptionEn:
+              "Grade 5–6 ecosystem reasoning with food webs, producers/consumers, energy flow, and system effects.",
+          },
+        },
+      },
+    },
+  },
+  "moledet-geography": {
+    "MG-01": {
+      defaultBands: {
+        g1_g2: {
+          actionTextHe: null,
+          goalTextHe: null,
+          intentDescriptionEn:
+            "MG-01 default: no approved parent copy; use bucketOverrides (maps, geography, mixed) or engine fallback.",
+        },
+        g3_g4: {
+          actionTextHe: null,
+          goalTextHe: null,
+          intentDescriptionEn:
+            "MG-01 default: no approved parent copy; use bucketOverrides (maps, geography, mixed) or engine fallback.",
+        },
+        g5_g6: {
+          actionTextHe: null,
+          goalTextHe: null,
+          intentDescriptionEn:
+            "MG-01 default: no approved parent copy; use bucketOverrides (maps, geography, mixed) or engine fallback.",
+        },
+      },
+      bucketOverrides: {
+        maps: {
+          g1_g2: {
+            actionTextHe: null,
+            goalTextHe: null,
+            intentDescriptionEn:
+              "Keep map scale recommendations null for grades 1–2 until concrete early-map copy is approved.",
+          },
+          g3_g4: {
+            actionTextHe:
+              "כדאי לתרגל קריאת קנה מידה במפה בעזרת סרגל או קו קנה מידה. בקשו מהילד להסביר מה מייצג המרחק במפה, להשוות בין שני מרחקים, ולבדוק שהתשובה מתאימה ליחידות במפה.",
+            goalTextHe:
+              "בשבוע הקרוב התמקדו בקריאת קנה מידה במפה ובהשוואת מרחקים בעזרת יחידות המפה.",
+            intentDescriptionEn:
+              "Grade 3–4 map scale and distance comparison using scale bars, map units, and simple measurement.",
+          },
+          g5_g6: {
+            actionTextHe:
+              "כדאי לתרגל חישוב והשוואת מרחקים במפות שונות בעזרת קנה מידה. בקשו מהילד לזהות את היחידות, להסביר איך המיר מרחק במפה למרחק במציאות, ולבדוק אם התוצאה סבירה.",
+            goalTextHe:
+              "בשבוע הקרוב התמקדו בשימוש בקנה מידה לחישוב מרחקים ובהסבר הקשר בין המפה למציאות.",
+            intentDescriptionEn:
+              "Grade 5–6 map scale reasoning: convert and compare distances, track units, and check reasonableness.",
+          },
+        },
+        geography: {
+          g1_g2: {
+            actionTextHe: null,
+            goalTextHe: null,
+            intentDescriptionEn: "Keep geography scale/distance recommendations null for grades 1–2.",
+          },
+          g3_g4: {
+            actionTextHe:
+              "כדאי לתרגל השוואת מרחקים בין מקומות במפה, תוך שימוש בקנה מידה או ביחידות שמופיעות במפה. בקשו מהילד להסביר איזה מקום קרוב יותר או רחוק יותר ולפי מה הוא קבע.",
+            goalTextHe:
+              "בשבוע הקרוב התמקדו בהשוואת מרחקים בין מקומות במפה בעזרת סימנים ויחידות מתאימות.",
+            intentDescriptionEn:
+              "Grade 3–4 geography distance comparison between places on a map using scale or map units.",
+          },
+          g5_g6: {
+            actionTextHe:
+              "כדאי לתרגל ניתוח מרחקים ואזורים במפה תוך שילוב קנה מידה, יחידות ונתונים נוספים. בקשו מהילד לנמק את ההשוואה בין מקומות ולהראות באיזה נתון במפה השתמש.",
+            goalTextHe:
+              "בשבוע הקרוב התמקדו בניתוח מרחקים במפה ובהצגת ראיה מתוך המפה שמסבירה את התשובה.",
+            intentDescriptionEn:
+              "Grade 5–6 geography map-distance reasoning using scale, units, and evidence from the map.",
+          },
+        },
+        mixed: {
+          g1_g2: {
+            actionTextHe: null,
+            goalTextHe: null,
+            intentDescriptionEn: "Keep mixed map-scale recommendations null for grades 1–2.",
+          },
+          g3_g4: {
+            actionTextHe:
+              "כדאי לתרגל שאלות מפה מעורבות שבהן צריך לזהות מרחק, יחידה או סימן במפה. בקשו מהילד לעצור לפני החישוב, לומר איזה נתון במפה חשוב, ורק אז לענות.",
+            goalTextHe:
+              "בשבוע הקרוב התמקדו בזיהוי הנתון המתאים במפה לפני פתרון שאלת מרחק או השוואה.",
+            intentDescriptionEn:
+              "Grade 3–4 mixed map questions: identify the relevant map data before solving distance or comparison tasks.",
+          },
+          g5_g6: {
+            actionTextHe:
+              "כדאי לתרגל משימות מפה מעורבות שבהן משלבים קנה מידה, מרחקים ונתונים חזותיים. בקשו מהילד להסביר אילו נתונים בחר ולמה הם מספיקים כדי לענות.",
+            goalTextHe:
+              "בשבוע הקרוב התמקדו בבחירת נתוני מפה מתאימים ובנימוק הדרך לפתרון.",
+            intentDescriptionEn:
+              "Grade 5–6 mixed map reasoning using scale, distances, visual data, and justification.",
+          },
+        },
+      },
+    },
+    "MG-02": {
+      defaultBands: {
+        g1_g2: {
+          actionTextHe: null,
+          goalTextHe: null,
+          intentDescriptionEn:
+            "MG-02 default: no approved parent copy; use bucketOverrides (maps, geography) or engine fallback.",
+        },
+        g3_g4: {
+          actionTextHe: null,
+          goalTextHe: null,
+          intentDescriptionEn:
+            "MG-02 default: no approved parent copy; use bucketOverrides (maps, geography) or engine fallback.",
+        },
+        g5_g6: {
+          actionTextHe: null,
+          goalTextHe: null,
+          intentDescriptionEn:
+            "MG-02 default: no approved parent copy; use bucketOverrides (maps, geography) or engine fallback.",
+        },
+      },
+      bucketOverrides: {
+        maps: {
+          g1_g2: {
+            actionTextHe: null,
+            goalTextHe: null,
+            intentDescriptionEn:
+              "Keep map orientation recommendations null for grades 1–2 until concrete orientation copy is approved.",
+          },
+          g3_g4: {
+            actionTextHe:
+              "כדאי לתרגל כיוונים במפה בעזרת חץ צפון ומפה פשוטה. בקשו מהילד לסמן איפה הצפון, להסביר לאיזה כיוון צריך ללכת, ולבדוק שהמפה לא סובבה את הכיוונים שהוא רגיל אליהם.",
+            goalTextHe:
+              "בשבוע הקרוב התמקדו בשימוש בחץ צפון ובזיהוי כיוונים במפה גם כשהמפה מסובבת.",
+            intentDescriptionEn:
+              "Grade 3–4 map orientation using north arrow, direction choice, and rotated map checks.",
+          },
+          g5_g6: {
+            actionTextHe:
+              "כדאי לתרגל התמצאות במפות שבהן הכיוונים אינם מוצגים בצורה רגילה. בקשו מהילד לזהות את חץ הצפון, להשוות בין כיוון במפה לכיוון במציאות, ולהסביר למה הבחירה שלו נכונה.",
+            goalTextHe:
+              "בשבוע הקרוב התמקדו בהתמצאות במפה לפי צפון, כיוונים וייחוס מרחבי ברור.",
+            intentDescriptionEn:
+              "Grade 5–6 map orientation with north reference, rotated maps, and spatial justification.",
+          },
+        },
+        geography: {
+          g1_g2: {
+            actionTextHe: null,
+            goalTextHe: null,
+            intentDescriptionEn: "Keep geography orientation recommendations null for grades 1–2.",
+          },
+          g3_g4: {
+            actionTextHe:
+              "כדאי לתרגל זיהוי כיוונים בין מקומות במפה בעזרת חץ צפון. בקשו מהילד להסביר אם מקום נמצא צפונה, דרומה, מזרחה או מערבה ביחס למקום אחר.",
+            goalTextHe:
+              "בשבוע הקרוב התמקדו בזיהוי כיוונים בין מקומות במפה בעזרת חץ צפון.",
+            intentDescriptionEn:
+              "Grade 3–4 geography orientation: describe relative directions between places using north reference.",
+          },
+          g5_g6: {
+            actionTextHe:
+              "כדאי לתרגל השוואת מיקום וכיוון בין אזורים במפה. בקשו מהילד להשתמש בצפון כנקודת ייחוס, להסביר את היחס בין המקומות, ולבדוק שלא הסתמך רק על ימין ושמאל בדף.",
+            goalTextHe:
+              "בשבוע הקרוב התמקדו בתיאור כיוונים ומיקומים במפה בעזרת נקודת ייחוס קבועה.",
+            intentDescriptionEn:
+              "Grade 5–6 geographic orientation using north as a stable reference, not page-left/page-right.",
+          },
+        },
+      },
+    },
+    "MG-03": {
+      defaultBands: {
+        g1_g2: {
+          actionTextHe: null,
+          goalTextHe: null,
+          intentDescriptionEn:
+            "MG-03 default: no approved parent copy; use bucketOverrides (citizenship) or engine fallback.",
+        },
+        g3_g4: {
+          actionTextHe: null,
+          goalTextHe: null,
+          intentDescriptionEn:
+            "MG-03 default: no approved parent copy; use bucketOverrides (citizenship) or engine fallback.",
+        },
+        g5_g6: {
+          actionTextHe: null,
+          goalTextHe: null,
+          intentDescriptionEn:
+            "MG-03 default: no approved parent copy; use bucketOverrides (citizenship) or engine fallback.",
+        },
+      },
+      bucketOverrides: {
+        citizenship: {
+          g1_g2: {
+            actionTextHe: null,
+            goalTextHe: null,
+            intentDescriptionEn:
+              "Keep citizenship rights/responsibilities recommendations null for grades 1–2 until concrete early-civics copy is approved.",
+          },
+          g3_g4: {
+            actionTextHe:
+              "כדאי לתרגל מצבים מחיי היום־יום שבהם צריך להבחין בין זכות, חובה או כלל. בקשו מהילד להסביר מה קרה במצב, מי מעורב, ואיזה סימן בטקסט עוזר לו למיין נכון.",
+            goalTextHe:
+              "בשבוע הקרוב התמקדו בהבחנה בין זכויות, חובות וכללים בעזרת דוגמאות קצרות ונימוק מתוך המצב המתואר.",
+            intentDescriptionEn:
+              "Grade 3–4 citizenship reasoning: sort short scenarios into rights, responsibilities, or rules using evidence from the situation.",
+          },
+          g5_g6: {
+            actionTextHe:
+              "כדאי לתרגל מושגים באזרחות דרך תרחישים קצרים והשוואה בין אפשרויות. בקשו מהילד לנמק האם מדובר בזכות, חובה, כלל או אחריות, ולהצביע על פרט מתוך הטקסט שתומך בתשובה.",
+            goalTextHe:
+              "בשבוע הקרוב התמקדו במיון ונימוק של מצבים אזרחיים: זכות, חובה, כלל או אחריות, תוך שימוש בראיות מהטקסט.",
+            intentDescriptionEn:
+              "Grade 5–6 civic concepts through scenario classification, justification, and evidence from text.",
+          },
+        },
+      },
+    },
+    "MG-04": {
+      defaultBands: {
+        g1_g2: {
+          actionTextHe: null,
+          goalTextHe: null,
+          intentDescriptionEn:
+            "MG-04 default: no approved parent copy; use bucketOverrides (homeland) or engine fallback.",
+        },
+        g3_g4: {
+          actionTextHe: null,
+          goalTextHe: null,
+          intentDescriptionEn:
+            "MG-04 default: no approved parent copy; use bucketOverrides (homeland) or engine fallback.",
+        },
+        g5_g6: {
+          actionTextHe: null,
+          goalTextHe: null,
+          intentDescriptionEn:
+            "MG-04 default: no approved parent copy; use bucketOverrides (homeland) or engine fallback.",
+        },
+      },
+      bucketOverrides: {
+        homeland: {
+          g1_g2: {
+            actionTextHe: null,
+            goalTextHe: null,
+            intentDescriptionEn:
+              "Keep timeline/order recommendations null for grades 1–2 until early sequence copy is approved.",
+          },
+          g3_g4: {
+            actionTextHe:
+              "כדאי לתרגל סידור אירועים לפי סדר זמן בעזרת תאריכים, מילים כמו לפני ואחרי, או כרטיסיות אירועים. בקשו מהילד להסביר איזה אירוע קרה קודם ומה הראיה לכך.",
+            goalTextHe:
+              "בשבוע הקרוב התמקדו בסידור אירועים לפי רצף זמן ובהסבר לפי תאריכים או רמזים בטקסט.",
+            intentDescriptionEn:
+              "Grade 3–4 timeline and event order using dates, before/after clues, and evidence.",
+          },
+          g5_g6: {
+            actionTextHe:
+              "כדאי לתרגל בניית ציר זמן של אירועים ולנמק את הסדר שלהם לפי תאריכים, מקורות או רמזים בטקסט. בקשו מהילד לבדוק אם שינוי בסדר משנה את ההבנה של הסיפור או התהליך.",
+            goalTextHe:
+              "בשבוע הקרוב התמקדו בבניית ציר זמן, נימוק סדר האירועים ובדיקת הקשר בין האירועים.",
+            intentDescriptionEn:
+              "Grade 5–6 timeline construction, chronological justification, and understanding event relationships.",
+          },
+        },
+      },
+    },
+    "MG-05": {
+      defaultBands: {
+        g1_g2: {
+          actionTextHe: null,
+          goalTextHe: null,
+          intentDescriptionEn:
+            "MG-05 default: no approved parent copy; use bucketOverrides (geography) or engine fallback.",
+        },
+        g3_g4: {
+          actionTextHe: null,
+          goalTextHe: null,
+          intentDescriptionEn:
+            "MG-05 default: no approved parent copy; use bucketOverrides (geography) or engine fallback.",
+        },
+        g5_g6: {
+          actionTextHe: null,
+          goalTextHe: null,
+          intentDescriptionEn:
+            "MG-05 default: no approved parent copy; use bucketOverrides (geography) or engine fallback.",
+        },
+      },
+      bucketOverrides: {
+        geography: {
+          g1_g2: {
+            actionTextHe: null,
+            goalTextHe: null,
+            intentDescriptionEn: "Keep climate/region map recommendations null for grades 1–2.",
+          },
+          g3_g4: {
+            actionTextHe:
+              "כדאי לתרגל קריאת מפת אקלים או אזורים בעזרת מקרא המפה. בקשו מהילד לזהות צבע או סימן במפה, לבדוק מה הוא אומר במקרא, ולהסביר לפי זה לאיזה אזור המקום שייך.",
+            goalTextHe:
+              "בשבוע הקרוב התמקדו בשימוש במקרא מפה לזיהוי אזורים, צבעים וסימנים גאוגרפיים.",
+            intentDescriptionEn:
+              "Grade 3–4 climate/region map reading using map key colors and symbols.",
+          },
+          g5_g6: {
+            actionTextHe:
+              "כדאי לתרגל השוואה בין אזורים גאוגרפיים בעזרת מפת אקלים, מקרא ונתונים מהטקסט. בקשו מהילד להסביר מה מאפיין כל אזור ולתמוך בתשובה בעזרת סימן או צבע מהמפה.",
+            goalTextHe:
+              "בשבוע הקרוב התמקדו בהשוואת אזורים גאוגרפיים בעזרת מקרא, צבעים, סימנים וראיות מהמפה.",
+            intentDescriptionEn:
+              "Grade 5–6 comparing geographic or climate regions using legend, colors, symbols, and evidence from maps/text.",
+          },
+        },
+      },
+    },
+    "MG-06": {
+      defaultBands: {
+        g1_g2: {
+          actionTextHe: null,
+          goalTextHe: null,
+          intentDescriptionEn:
+            "MG-06 default: no approved parent copy; use bucketOverrides (homeland, values) or engine fallback.",
+        },
+        g3_g4: {
+          actionTextHe: null,
+          goalTextHe: null,
+          intentDescriptionEn:
+            "MG-06 default: no approved parent copy; use bucketOverrides (homeland, values) or engine fallback.",
+        },
+        g5_g6: {
+          actionTextHe: null,
+          goalTextHe: null,
+          intentDescriptionEn:
+            "MG-06 default: no approved parent copy; use bucketOverrides (homeland, values) or engine fallback.",
+        },
+      },
+      bucketOverrides: {
+        homeland: {
+          g1_g2: {
+            actionTextHe: null,
+            goalTextHe: null,
+            intentDescriptionEn: "Keep homeland cause/effect recommendations null for grades 1–2.",
+          },
+          g3_g4: {
+            actionTextHe:
+              "כדאי לתרגל שאלות של סיבה ותוצאה בעזרת שני הסברים אפשריים. בקשו מהילד לומר מה קרה, מה יכול היה לגרום לכך, ואיזה פרט בטקסט או במפה תומך בהסבר שלו.",
+            goalTextHe:
+              "בשבוע הקרוב התמקדו בקישור בין סיבה לתוצאה ובהבאת ראיה מתוך טקסט או מפה.",
+            intentDescriptionEn:
+              "Grade 3–4 homeland cause-effect reasoning using two explanations and evidence from text or map.",
+          },
+          g5_g6: {
+            actionTextHe:
+              "כדאי לתרגל הסבר של תהליכים באוכלוסייה או בהתיישבות בעזרת ראיות. בקשו מהילד להשוות בין שני הסברים, לבחור את ההסבר שמתאים יותר לנתונים, ולנמק בלי להסתמך על דעה כללית.",
+            goalTextHe:
+              "בשבוע הקרוב התמקדו בהסבר סיבה ותוצאה בנושאי אוכלוסייה והתיישבות, תוך שימוש בראיות מהנתונים.",
+            intentDescriptionEn:
+              "Grade 5–6 population/settlement cause-effect reasoning using evidence and avoiding unsupported generalizations.",
+          },
+        },
+        values: {
+          g1_g2: {
+            actionTextHe: null,
+            goalTextHe: null,
+            intentDescriptionEn: "Keep values/social explanation recommendations null for grades 1–2.",
+          },
+          g3_g4: {
+            actionTextHe:
+              "כדאי לתרגל מצבים חברתיים או קהילתיים שבהם צריך להסביר למה משהו קרה. בקשו מהילד להפריד בין עובדה שמופיעה בטקסט לבין דעה, ולמצוא פרט שתומך בהסבר שלו.",
+            goalTextHe:
+              "בשבוע הקרוב התמקדו בהבחנה בין עובדה לדעה ובהסבר מצבים בעזרת ראיות.",
+            intentDescriptionEn:
+              "Grade 3–4 values/community reasoning: distinguish fact from opinion and support explanations with evidence.",
+          },
+          g5_g6: {
+            actionTextHe:
+              "כדאי לתרגל דיון במצבים חברתיים בעזרת ראיות ולא לפי הכללות. בקשו מהילד להסביר מה העובדות הידועות, מה המסקנה שלו, ואיזה פרט תומך בה.",
+            goalTextHe:
+              "בשבוע הקרוב התמקדו בהסקת מסקנות זהירה במצבים חברתיים, תוך שימוש בעובדות וראיות.",
+            intentDescriptionEn:
+              "Grade 5–6 values/social reasoning: use evidence carefully and avoid unsupported generalizations.",
+          },
+        },
+      },
+    },
+    "MG-07": {
+      defaultBands: {
+        g1_g2: {
+          actionTextHe: null,
+          goalTextHe: null,
+          intentDescriptionEn:
+            "MG-07 default: no approved parent copy; use bucketOverrides (community) or engine fallback.",
+        },
+        g3_g4: {
+          actionTextHe: null,
+          goalTextHe: null,
+          intentDescriptionEn:
+            "MG-07 default: no approved parent copy; use bucketOverrides (community) or engine fallback.",
+        },
+        g5_g6: {
+          actionTextHe: null,
+          goalTextHe: null,
+          intentDescriptionEn:
+            "MG-07 default: no approved parent copy; use bucketOverrides (community) or engine fallback.",
+        },
+      },
+      bucketOverrides: {
+        community: {
+          g1_g2: {
+            actionTextHe: null,
+            goalTextHe: null,
+            intentDescriptionEn:
+              "Keep community-institution recommendations null for grades 1–2 until concrete community copy is approved.",
+          },
+          g3_g4: {
+            actionTextHe:
+              "כדאי לתרגל התאמה בין מוסדות בקהילה לבין התפקיד שלהם, כמו בית ספר, מרפאה, עירייה או ספרייה. בקשו מהילד להסביר מי נעזר במוסד, מה השירות שהוא נותן, ולמה זה מתאים לתפקיד שלו.",
+            goalTextHe:
+              "בשבוע הקרוב התמקדו בזיהוי מוסדות בקהילה ובהבנת התפקיד של כל מוסד לפי דוגמאות מוכרות.",
+            intentDescriptionEn:
+              "Grade 3–4 community institutions: match institutions to roles and explain who uses them and what service they provide.",
+          },
+          g5_g6: {
+            actionTextHe:
+              "כדאי לתרגל ניתוח של מוסדות בקהילה לפי תפקיד, אחריות והשפעה על התושבים. בקשו מהילד להסביר איזה צורך המוסד נותן לו מענה, מי אחראי עליו, ואיך הוא קשור לחיי הקהילה.",
+            goalTextHe:
+              "בשבוע הקרוב התמקדו בהבנת תפקידי מוסדות בקהילה, האחריות שלהם וההשפעה שלהם על התושבים.",
+            intentDescriptionEn:
+              "Grade 5–6 community institutions: roles, responsibilities, services, and impact on residents.",
+          },
+        },
+      },
+    },
+    "MG-08": {
+      defaultBands: {
+        g1_g2: {
+          actionTextHe: null,
+          goalTextHe: null,
+          intentDescriptionEn:
+            "MG-08 default: no approved parent copy; use bucketOverrides (maps) or engine fallback.",
+        },
+        g3_g4: {
+          actionTextHe: null,
+          goalTextHe: null,
+          intentDescriptionEn:
+            "MG-08 default: no approved parent copy; use bucketOverrides (maps) or engine fallback.",
+        },
+        g5_g6: {
+          actionTextHe: null,
+          goalTextHe: null,
+          intentDescriptionEn:
+            "MG-08 default: no approved parent copy; use bucketOverrides (maps) or engine fallback.",
+        },
+      },
+      bucketOverrides: {
+        maps: {
+          g1_g2: {
+            actionTextHe: null,
+            goalTextHe: null,
+            intentDescriptionEn:
+              "Keep map-symbol recommendations null for grades 1–2 until concrete legend copy is approved.",
+          },
+          g3_g4: {
+            actionTextHe:
+              "כדאי לתרגל קריאת סימנים במפה בעזרת המקרא. בקשו מהילד לבחור סימן אחד, לבדוק מה הוא מייצג במקרא, ולהסביר איך הסימן עוזר להבין את המפה.",
+            goalTextHe:
+              "בשבוע הקרוב התמקדו בקריאת סימנים ומקרא במפה ובהסבר המשמעות של כל סימן.",
+            intentDescriptionEn:
+              "Grade 3–4 map symbols and legend reading: match symbols to meanings and explain their role.",
+          },
+          g5_g6: {
+            actionTextHe:
+              "כדאי לתרגל שימוש במקרא מפה כדי לפרש נוף, אזורים וסימנים שונים. בקשו מהילד לזהות כמה סימנים, להסביר מה כל אחד מייצג, ולבדוק איך הם יחד עוזרים להבין את המפה.",
+            goalTextHe:
+              "בשבוע הקרוב התמקדו בפירוש סימנים במפה ובהבנת הקשר ביניהם לבין הנוף או האזור.",
+            intentDescriptionEn:
+              "Grade 5–6 map-symbol interpretation using legends, multiple symbols, and landscape/region reasoning.",
           },
         },
       },
