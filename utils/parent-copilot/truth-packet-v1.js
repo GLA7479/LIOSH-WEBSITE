@@ -1021,9 +1021,6 @@ function buildTruthPacketV1NoAnchoredFallback(scope) {
     },
     allowedFollowupFamilies: uniq,
     forbiddenMoves: ["teacher_runtime", "non_contract_metrics", "cross_session_inference", "autonomous_planning"],
-    debug: {
-      intelligenceV1: intelligenceV1Snapshot,
-    },
   };
 }
 
@@ -1410,9 +1407,6 @@ export function buildTruthPacketV1(payload, scope) {
     },
     allowedFollowupFamilies: uniq,
     forbiddenMoves: ["teacher_runtime", "non_contract_metrics", "cross_session_inference", "autonomous_planning"],
-    debug: {
-      intelligenceV1: intelligenceV1Snapshot,
-    },
   };
 }
 

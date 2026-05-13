@@ -37,7 +37,7 @@ todos:
     status: pending
   - id: phase6-copilot
     content: "Phase 6: Copilot final grounding review — truth-packet / narrative slots"
-    status: pending
+    status: completed
   - id: phase7-qa
     content: "Phase 7: Broad rendered / PDF / corpus QA + final Hebrew editorial sign-off"
     status: pending

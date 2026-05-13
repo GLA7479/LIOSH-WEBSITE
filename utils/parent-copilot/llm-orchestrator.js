@@ -94,7 +94,7 @@ function utteranceAsksSubjectLevelStrength(u) {
   return /מקצוע|מקצועות|המקצוע\s+ה(חזק|טוב)|איזה\s+מקצוע|באיזה\s+מקצוע|מה\s+המקצוע/u.test(String(u || "").trim());
 }
 
-function buildGroundedPrompt(utterance, truthPacket, parentIntent = "") {
+export function buildGroundedPrompt(utterance, truthPacket, parentIntent = "") {
   const nar = truthPacket?.contracts?.narrative?.textSlots || {};
   const dl = truthPacket?.derivedLimits || {};
   const globalQ =

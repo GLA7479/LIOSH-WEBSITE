@@ -1960,16 +1960,14 @@ function recommendationFromV2Unit(u, mapRow) {
     gateState: gated ? "gates_not_ready" : "continue_gate_active",
     conclusionStrength,
     suppressAggressiveStep: gated,
-    whyThisRecommendationHe:
-      (String(u?.diagnosis?.lineHe || "")
-        || String(u?.taxonomy?.patternHe || "")
-        || "כדאי להתמקד בזה בעדינות לפי מה שרואים בשורה.")
-      + (thinEvidenceDowngraded
-        ? " עדיין אין מספיק מה שרואים בשורה כדי להמלצה חזקה — נשארים בצעד שמרני עד לצבירת נתון נוסף."
-        : ""),
-    interventionPlanHe: resolveUnitNextGoalHe(u, rowGkForRec) || String(u?.intervention?.shortPracticeHe || ""),
-    doNowHe: resolveUnitParentActionHe(u, rowGkForRec) || String(u?.intervention?.immediateActionHe || ""),
-    avoidNowHe: String(u?.intervention?.avoidHe || ""),
+    whyThisRecommendationHe: null,
+    interventionPlanHe:
+      resolveUnitNextGoalHe(u, rowGkForRec, { omitRawDiagnosticFallback: true })
+      ?? "",
+    doNowHe:
+      resolveUnitParentActionHe(u, rowGkForRec, { omitRawDiagnosticFallback: true })
+      ?? "",
+    avoidNowHe: null,
     cautionLineHe:
       u?.outputGating?.cannotConcludeYet || cautionAdditive
         ? topicRecommendationV2CautionGatedHe()

@@ -34,6 +34,7 @@ import { tryBuildParentShortFollowupDraft } from "./short-followup-composer.js";
 import { tryBuildComparisonPracticalFollowupDraft } from "./comparison-practical-continuity.js";
 import { compactParentAnswerBlocks } from "./answer-compaction.js";
 import { maxGlobalReportQuestionCount, STRONG_GLOBAL_QUESTION_FLOOR } from "./report-volume-context.js";
+import { redactPayloadForCopilotGrounding } from "./redact-payload-for-copilot-grounding.js";
 import { augmentHighVolumeEvidenceAnchorDraft } from "./data-grounded-evidence-augmentation.js";
 import { semanticIntentForMetadata } from "./semantic-intent-labels.js";
 import {
@@ -702,6 +703,9 @@ function runDeterministicCore(input, options) {
     return { response: r, audience, sessionId, conv, truthPacket: null, intent: "uncertainty_boundary", scopeMeta: null, utteranceStr: "" };
   }
 
+  const payloadForCopilot = redactPayloadForCopilotGrounding(input?.payload);
+  const scopedInput = input && typeof input === "object" ? { ...input, payload: payloadForCopilot } : input;
+
   const utteranceStr = normalizeFreeformParentUtteranceHe(String(input?.utterance || ""));
 
   // ── FIRST PRODUCT GATE: classifier-first router before ANY report data access ──
@@ -710,7 +714,7 @@ function runDeterministicCore(input, options) {
   //   - Telemetry stamps classifierBucket/source/confidence so live tests can verify.
   const qaRoute = options?.preRoute
     ? options.preRoute
-    : routeParentQuestion(String(input?.utterance || ""), input?.payload);
+    : routeParentQuestion(String(input?.utterance || ""), scopedInput?.payload);
   if (qaRoute.exitEarly && qaRoute.deterministicResponse) {
     const earlyExit = packageClassifierEarlyExit({
       qaRoute,
@@ -731,7 +735,7 @@ function runDeterministicCore(input, options) {
     classifierConfidence: Number(qaRoute.classifierConfidence || 0),
   };
 
-  const stageA = interpretFreeformStageA(String(input?.utterance || ""), input?.payload);
+  const stageA = interpretFreeformStageA(String(input?.utterance || ""), scopedInput?.payload);
   const aggregateQuestionClass = detectAggregateQuestionClass(utteranceStr);
   let intent = stageA.canonicalIntent;
   if (
@@ -746,10 +750,10 @@ function runDeterministicCore(input, options) {
   const shortFb = tryBuildParentShortFollowupDraft({
     utteranceStr,
     conv,
-    payload: input?.payload,
+    payload: scopedInput?.payload,
   });
   if (shortFb) {
-    return packageParentResolvedEarlyTurn(input, sessionId, priorRepeated, conv, utteranceStr, {
+    return packageParentResolvedEarlyTurn(scopedInput, sessionId, priorRepeated, conv, utteranceStr, {
       truthPacket: shortFb.truthPacket,
       plannerIntent: shortFb.plannerIntent,
       scopeMeta: shortFb.scopeMeta,
@@ -760,11 +764,11 @@ function runDeterministicCore(input, options) {
   const practicalFb = tryBuildComparisonPracticalFollowupDraft({
     utteranceStr,
     conv,
-    payload: input?.payload,
+    payload: scopedInput?.payload,
     stageA,
   });
   if (practicalFb) {
-    return packageParentResolvedEarlyTurn(input, sessionId, priorRepeated, conv, utteranceStr, {
+    return packageParentResolvedEarlyTurn(scopedInput, sessionId, priorRepeated, conv, utteranceStr, {
       truthPacket: practicalFb.truthPacket,
       plannerIntent: practicalFb.plannerIntent,
       scopeMeta: practicalFb.scopeMeta,
@@ -782,9 +786,9 @@ function runDeterministicCore(input, options) {
   };
 
   const scopeRes = resolveScope({
-    payload: input?.payload,
+    payload: scopedInput?.payload,
     utterance: utteranceStr,
-    selectedContextRef: input?.selectedContextRef ?? null,
+    selectedContextRef: scopedInput?.selectedContextRef ?? null,
     stageA,
   });
 
@@ -816,12 +820,12 @@ function runDeterministicCore(input, options) {
     }
     const phaseEBypass = tryBuildPhaseEClarificationBypassDraft({
       utteranceStr,
-      payload: input?.payload,
+      payload: scopedInput?.payload,
       scopeRes,
       stageA,
     });
     if (phaseEBypass) {
-      return packageParentResolvedEarlyTurn(input, sessionId, priorRepeated, conv, utteranceStr, {
+      return packageParentResolvedEarlyTurn(scopedInput, sessionId, priorRepeated, conv, utteranceStr, {
         truthPacket: phaseEBypass.truthPacket,
         plannerIntent: phaseEBypass.plannerIntent,
         scopeMeta: phaseEBypass.scopeMeta,
@@ -850,7 +854,7 @@ function runDeterministicCore(input, options) {
     return { response: r, audience, sessionId, conv, truthPacket: null, intent, scopeMeta, utteranceStr };
   }
 
-  const truthPacket = buildTruthPacketV1(input.payload, {
+  const truthPacket = buildTruthPacketV1(scopedInput.payload, {
     ...scope,
     canonicalIntent: intent,
     parentUtterance: utteranceStr,
@@ -874,7 +878,7 @@ function runDeterministicCore(input, options) {
       stageA,
     });
     if (phaseShortcut) {
-      return packageParentResolvedEarlyTurn(input, sessionId, priorRepeated, conv, utteranceStr, {
+      return packageParentResolvedEarlyTurn(scopedInput, sessionId, priorRepeated, conv, utteranceStr, {
         truthPacket: phaseShortcut.truthPacket,
         plannerIntent: phaseShortcut.plannerIntent,
         scopeMeta: phaseShortcut.scopeMeta,
@@ -917,7 +921,7 @@ function runDeterministicCore(input, options) {
     const aggDraft = buildSemanticAggregateDraft({
       questionClass: aggregateQuestionClass,
       utterance: utteranceStr,
-      payload: input.payload,
+      payload: scopedInput.payload,
       truthPacket,
     });
     if (aggDraft) {
@@ -957,13 +961,13 @@ function runDeterministicCore(input, options) {
   }
 
   draft = { ...draft, answerBlocks: normalizeAnswerBlocksHe(draft.answerBlocks) };
-  draft = augmentHighVolumeEvidenceAnchorDraft(draft, truthPacket, input.payload, { plannerIntent });
+  draft = augmentHighVolumeEvidenceAnchorDraft(draft, truthPacket, scopedInput.payload, { plannerIntent });
   draft = { ...draft, answerBlocks: normalizeAnswerBlocksHe(draft.answerBlocks) };
   // Do NOT augment boundary or off-topic drafts with report data.
   // Do NOT add thin-evidence augmentation when global answer count is already high —
   // adding scarcity framing to a high-volume report is a truth contradiction.
   {
-    const augGlobalQ = maxGlobalReportQuestionCount(input?.payload);
+    const augGlobalQ = maxGlobalReportQuestionCount(scopedInput?.payload);
     const isBoundaryIntent =
       plannerIntent === "off_topic_redirect" ||
       plannerIntent === "parent_policy_refusal" ||
@@ -1037,7 +1041,7 @@ function runDeterministicCore(input, options) {
     }
   }
 
-  draft = enforceThinDataScarcityLead(draft, truthPacket, plannerIntent, input?.payload);
+  draft = enforceThinDataScarcityLead(draft, truthPacket, plannerIntent, scopedInput?.payload);
   const responseIntent = isClinicalBoundaryDraft(draft)
     ? "clinical_boundary"
     : isSensitiveEducationChoiceDraft(draft)
@@ -1058,7 +1062,7 @@ function runDeterministicCore(input, options) {
     scopeLabelHe: truthPacket.scopeLabel || "",
     answerBodyTextHe,
     answerBlockTypes,
-    clickedFollowupFamilyThisTurn: input?.clickedFollowupFamily ? String(input.clickedFollowupFamily).trim() : null,
+    clickedFollowupFamilyThisTurn: scopedInput?.clickedFollowupFamily ? String(scopedInput.clickedFollowupFamily).trim() : null,
     omitFollowUpEntirely:
       (aggregateQuestionClass !== "none" && aggregateQuestionClass !== "vague_summary_question") ||
       (semanticAggregateSatisfied && vDraft.ok),
@@ -1157,8 +1161,8 @@ function runDeterministicCore(input, options) {
   applyConversationStateDelta(sessionId, {
     addedIntent: responseIntent,
     addedFollowUpFamily: suggestedFollowUp?.family,
-    ...(input?.clickedFollowupFamily
-      ? { clickedFollowupFamily: String(input.clickedFollowupFamily).trim() }
+    ...(scopedInput?.clickedFollowupFamily
+      ? { clickedFollowupFamily: String(scopedInput.clickedFollowupFamily).trim() }
       : {}),
     addedScopeKey: `${truthPacket.scopeType}:${truthPacket.scopeId}`,
     answeredConstraintTag: constraintParts.join(","),
@@ -1241,7 +1245,7 @@ export async function runParentCopilotTurnAsync(input) {
   if (detRoute.classifierBucket === "ambiguous_or_unclear" && getLlmGateDecision().enabled) {
     const llmRes = await classifyParentQuestionViaLlm({
       utterance: String(input?.utterance || ""),
-      payload: input?.payload,
+      payload: redactPayloadForCopilotGrounding(input?.payload),
     });
     classifierLlmAttempt = llmRes;
     if (llmRes.ok) {

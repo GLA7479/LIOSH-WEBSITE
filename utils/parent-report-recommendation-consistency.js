@@ -78,8 +78,10 @@ function unitTaxonomyId(unit) {
 /**
  * @param {unknown} unit
  * @param {string|null|undefined} [gradeKey] from topic map row for this unit's topicRowKey
+ * @param {{ omitRawDiagnosticFallback?: boolean }} [opts]
  */
-export function resolveUnitParentActionHe(unit, gradeKey) {
+export function resolveUnitParentActionHe(unit, gradeKey, opts = {}) {
+  const noRaw = !!(opts && typeof opts === "object" && opts.omitRawDiagnosticFallback);
   const cs = canonicalState(unit);
   const name = topicName(unit);
 
@@ -109,6 +111,8 @@ export function resolveUnitParentActionHe(unit, gradeKey) {
   });
   if (gradeAware) return gradeAware;
 
+  if (noRaw) return null;
+
   const fallback = bestEffortText(
     unit?.intervention?.immediateActionHe || unit?.probe?.specificationHe || ""
   );
@@ -118,8 +122,10 @@ export function resolveUnitParentActionHe(unit, gradeKey) {
 /**
  * @param {unknown} unit
  * @param {string|null|undefined} [gradeKey] from topic map row for this unit's topicRowKey
+ * @param {{ omitRawDiagnosticFallback?: boolean }} [opts]
  */
-export function resolveUnitNextGoalHe(unit, gradeKey) {
+export function resolveUnitNextGoalHe(unit, gradeKey, opts = {}) {
+  const noRaw = !!(opts && typeof opts === "object" && opts.omitRawDiagnosticFallback);
   const cs = canonicalState(unit);
   if (isStrengthAction(unit) && cs?.recommendation?.allowed) {
     const name = topicName(unit);
@@ -137,6 +143,8 @@ export function resolveUnitNextGoalHe(unit, gradeKey) {
   });
   if (gradeAware) return gradeAware;
 
+  if (noRaw) return null;
+
   const fallback = bestEffortText(
     unit?.probe?.objectiveHe || unit?.intervention?.shortPracticeHe || ""
   );
@@ -146,8 +154,10 @@ export function resolveUnitNextGoalHe(unit, gradeKey) {
 /**
  * @param {unknown} unit
  * @param {string|null|undefined} [gradeKey] from topic map row or topicRowKey parse
+ * @param {{ omitRawDiagnosticFallback?: boolean }} [opts]
  */
-export function resolveUnitHomeMethodHe(unit, gradeKey) {
+export function resolveUnitHomeMethodHe(unit, gradeKey, opts = {}) {
+  const noRaw = !!(opts && typeof opts === "object" && opts.omitRawDiagnosticFallback);
   const cs = canonicalState(unit);
   if (isStrengthAction(unit) && cs?.recommendation?.allowed) {
     const name = topicName(unit);
@@ -171,6 +181,7 @@ export function resolveUnitHomeMethodHe(unit, gradeKey) {
     slot: "action",
   });
   if (act) return act;
+  if (noRaw) return null;
   const fallback = bestEffortText(unit?.intervention?.shortPracticeHe || "");
   return fallback || null;
 }
