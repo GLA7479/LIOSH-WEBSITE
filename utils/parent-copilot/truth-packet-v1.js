@@ -18,6 +18,7 @@ import {
   contractsFromTopicRow,
   listAllAnchoredTopicRows,
   listCopilotAnchoredTopicRows,
+  hasAggregatePracticeEvidence,
   normalizeSubjectId,
   readContractsSliceForScope,
   subjectLabelHe,
@@ -27,7 +28,7 @@ import {
   hebrewFromEnglishSlug,
   rewriteEngineTaxonomySnippetForParentHe,
 } from "../diagnostic-labels-he.js";
-import { maxGlobalReportQuestionCount } from "./report-volume-context.js";
+import { maxGlobalReportQuestionCount, STRONG_GLOBAL_QUESTION_FLOOR } from "./report-volume-context.js";
 
 /**
  * @param {unknown} payload
@@ -371,6 +372,7 @@ function pickExplainReportMetas(metas, rankedWorstFirst, limit) {
  *   recommendationEligible?: boolean;
  *   recommendationIntensityCap?: string;
  *   overallSnapshotTotalQuestions?: number;
+ *   maxGlobalReportQuestions?: number;
  *   primarySubjectId?: string;
  *   parentUtterance?: string;
  * }} x
@@ -410,8 +412,16 @@ function buildExecutiveIntentNarrativeSlots(x) {
   const sparseExecutive = metas.length <= 1;
   const rollupTq = Math.max(0, Number(x.totalQ) || 0);
   const snapshotTq = Math.max(0, Number(x.overallSnapshotTotalQuestions) || 0);
-  /** When snapshot total is lower than contract rollup (e.g. thin practice seed), prefer snapshot for scarcity wording. */
-  const practiceVolume = snapshotTq > 0 && snapshotTq < rollupTq ? snapshotTq : rollupTq;
+  const maxGlobal = Math.max(0, Number(x.maxGlobalReportQuestions) || 0);
+  /** Volume for scarcity vs richness: never let a low partial rollup hide a high global window. */
+  const globalQ = Math.max(rollupTq, snapshotTq, maxGlobal);
+  /** When global volume is already strong, always treat the window as rich for wording heuristics. */
+  const practiceVolume =
+    globalQ >= STRONG_GLOBAL_QUESTION_FLOOR
+      ? globalQ
+      : snapshotTq > 0 && snapshotTq < rollupTq
+        ? snapshotTq
+        : rollupTq;
 
   const defaultObs =
     metas.length && metas[0].obs
@@ -616,7 +626,7 @@ function buildExecutiveIntentNarrativeSlots(x) {
             : defaultInterpBase;
       interp = appendDistinctSentence(interp, supportingNumericTail(x, intent));
       if (!interp.trim()) interp = defaultInterp;
-      const thinPlan = practiceVolume < 90 || sparseExecutive;
+      const thinPlan = globalQ < 90 || (sparseExecutive && globalQ < STRONG_GLOBAL_QUESTION_FLOOR);
       const allowRec =
         x.recommendationEligible === true && String(x.recommendationIntensityCap || "RI0") !== "RI0";
       /** @type {string|null} */
@@ -735,14 +745,26 @@ function buildExecutiveIntentNarrativeSlots(x) {
     case "ask_subject_specific": {
       let obs;
       const scarcityLead =
-        practiceVolume < 80 || sparseExecutive
+        globalQ < 80 && (sparseExecutive || rollupTq < 80)
           ? "יש כרגע מעט נתוני תרגול, כלומר נפח הנתונים עדיין מצומצם ואין עדיין מספיק מידע למסקנה חזקה."
           : "";
       if (sparseExecutive) {
         const m0 = metas[0];
-        obs = m0
-          ? `${scarcityLead ? `${scarcityLead} ` : ""}כרגע בדוח מופיע מידע מצומצם: ב${labelPair(m0)}. ${m0.obs ? `מה שרואים שם: ${clipHe(m0.obs, 220)}` : "אין עדיין פירוט ארוך שמוצג כאן."} התמונה הכוללת עדיין חלקית — עד שייאספו עוד נקודות תרגול.`
-          : defaultObs;
+        if (globalQ >= 80) {
+          obs = m0
+            ? `לפי מה שמוצג בדוח, יש כרגע דגש מרכזי סביב ${labelPair(m0)}. ${
+                m0.obs
+                  ? `מה שרואים שם: ${clipHe(m0.obs, 220)}`
+                  : "עדיין אין הרחבה ארוכה בכל המקצועות, אבל יש נתוני תרגול מספריים לטווח התקופה."
+              } עדיף לקרוא את זה כתמונה תקופתית, לא כמסקנה סופית.`
+            : defaultObs;
+        } else {
+          obs = m0
+            ? `${scarcityLead ? `${scarcityLead} ` : ""}כרגע בדוח מופיע מידע מצומצם: ב${labelPair(m0)}. ${
+                m0.obs ? `מה שרואים שם: ${clipHe(m0.obs, 220)}` : "אין עדיין פירוט ארוך שמוצג כאן."
+              } התמונה הכוללת עדיין חלקית — עד שייאספו עוד נקודות תרגול.`
+            : defaultObs;
+        }
       } else {
         const explainPick = pickExplainReportMetas(metas, rankedWorstFirst, 4);
         const chunks = explainPick.map((m) => {
@@ -769,7 +791,7 @@ function buildExecutiveIntentNarrativeSlots(x) {
       const best = rankedBestFirst[0];
       const worst = rankedWorstFirst[0];
       let obs;
-      if (sparseExecutive || practiceVolume < 80) {
+      if (globalQ < 80 && (sparseExecutive || rollupTq < 80)) {
         obs =
           "יש כרגע מעט נתוני תרגול בדוח — נפח הנתונים עדיין קטן יחסית, ולכן התמונה כללית עדיין חלקית; כדאי לצבור עוד קצת תרגול לפני מסקנה חדה.";
       } else if (best && worst && (best.sid !== worst.sid || best.dn !== worst.dn)) {
@@ -780,7 +802,7 @@ function buildExecutiveIntentNarrativeSlots(x) {
         obs =
           "בדוח יש נתונים מהתרגול על כמה מקצועות — אפשר להסתכל על זה כמו על תמונה כללית של מה שנעשה בתקופה, לא כמו ציון אחד.";
       }
-      let interp = `במשפטים פשוטים: בסך הכל נספרו בערך ${x.totalQ} שאלות בטווח התקופה, ורמת הדיוק הכללית היא בערך ${x.avgAcc}%.`;
+      let interp = `במשפטים פשוטים: בסך הכל נספרו בערך ${Math.max(rollupTq, globalQ)} שאלות בטווח התקופה, ורמת הדיוק הכללית היא בערך ${x.avgAcc}%.`;
       if (worst && worst.acc < 55) {
         interp += ` המקום שבו זה נראה פחות יציב הוא סביב ${subjectLabelHe(worst.sid)} — שם כדאי לחזק בקצב קצר וקבוע.`;
       } else if (best && best.acc >= 75) {
@@ -1031,8 +1053,10 @@ function buildTruthPacketV1NoAnchoredFallback(scope) {
  * @returns {object|null}
  */
 export function buildTruthPacketV1(payload, scope) {
-  /** Synthetic aggregate rows (see `listCopilotAnchoredTopicRows`) are Copilot UX helpers only — they are not parent-contract anchors. TruthPacketV1 must use `buildTruthPacketV1NoAnchoredFallback` when no real `topicRecommendations` narrative anchors exist so Parent AI consistency can mark secondary-source mode (`__no_anchor__`). */
-  if (!listAllAnchoredTopicRows(payload).length) return buildTruthPacketV1NoAnchoredFallback(scope);
+  /** When narrative observation slots are missing on real topic rows but the report still has enough in-window practice, use subject-level synthetic anchors (see `listCopilotAnchoredTopicRows`) instead of the global no-anchor fallback. */
+  if (!listAllAnchoredTopicRows(payload).length && !hasAggregatePracticeEvidence(payload)) {
+    return buildTruthPacketV1NoAnchoredFallback(scope);
+  }
 
   const allAnchored = listCopilotAnchoredTopicRows(payload);
 
@@ -1236,6 +1260,7 @@ export function buildTruthPacketV1(payload, scope) {
       recommendationEligible,
       recommendationIntensityCap,
       overallSnapshotTotalQuestions: Number(payload?.overallSnapshot?.totalQuestions) || 0,
+      maxGlobalReportQuestions: maxGlobalReportQuestionCount(payload),
       primarySubjectId: String(payload?.parentProductContractV1?.primarySubjectId || "").trim(),
       parentUtterance: String(scope?.parentUtterance || "").trim(),
     });

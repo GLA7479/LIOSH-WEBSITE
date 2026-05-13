@@ -74,12 +74,30 @@ export function simulateQuestionRuns(opts) {
     const rng = createRng((student.metadata?.rngSeedFragment ?? 1) ^ 0xdeadbeef);
     let si = 0;
     const studentQuestionCount = Math.max(1, Number(questionBudgetByStudent.get(student.studentId) || defaultPerStudent));
+    const pt = student.coverageHints?.perfectTopic;
+    const wt = student.coverageHints?.weakTopic;
+    const ptMatch = pt && typeof pt === "object" && pt.subject && pt.topic;
+    const wtMatch = wt && typeof wt === "object" && wt.subject && wt.topic;
+
     for (let i = 0; i < studentQuestionCount; i++) {
-      const subject = pick(rng, student.subjects);
-      const topic = pick(rng, TOPICS_BY_SUBJECT[subject] || ["general"]);
+      let subject = pick(rng, student.subjects);
+      let topic = pick(rng, TOPICS_BY_SUBJECT[subject] || ["general"]);
+      if (ptMatch && rng() < 0.55) {
+        subject = String(pt.subject);
+        topic = String(pt.topic);
+      } else if (wtMatch && rng() < 0.45) {
+        subject = String(wt.subject);
+        topic = String(wt.topic);
+      }
       const difficulty =
         pick(rng, DIFFICULTIES) === "mixed" ? pick(rng, ["easy", "medium", "hard"]) : difficultyForProfile(rng, student.profileType);
-      const isCorrect = answerCorrect(rng, student.profileType, difficulty);
+      let isCorrect = answerCorrect(rng, student.profileType, difficulty);
+      if (ptMatch && subject === String(pt.subject) && topic === String(pt.topic)) {
+        isCorrect = true;
+      }
+      if (wtMatch && subject === String(wt.subject) && topic === String(wt.topic)) {
+        isCorrect = rng() < 0.12;
+      }
       const mistakeType = mistakeTypeForAnswer(rng, student.profileType, isCorrect);
       const sessionId = `sess_${student.studentId}_${si++}`;
       let qid = `q_${student.studentId}_${i}`;
@@ -133,6 +151,61 @@ export function simulateQuestionRuns(opts) {
       }
       student.generatedAnswers.push(row);
     }
+
+    /**
+     * Parent Copilot anchors (`topicRecommendations` + narrative contracts) are emitted only for
+     * diagnose/intervene units. Topic-perfect coverage uses `strong_stable`, which otherwise produces
+     * almost all-correct rows → only "maintain" units → zero anchors → TruthPacket thin fallback.
+     * Add a small deterministic weak satellite bucket on a different topic so harness matches product.
+     */
+    if (ptMatch && student.profileType === "strong_stable") {
+      const ps = String(pt.subject);
+      const ptk = String(pt.topic);
+      /** Fixed satellite: avoid the perfect topic and pick a bucket that is unlikely to collide with the main RNG stream. */
+      let satSubject;
+      let satTopic;
+      if (ps !== "math") {
+        satSubject = "math";
+        satTopic = "subtraction";
+      } else {
+        satSubject = student.subjects.find((s) => String(s) !== "math") || "hebrew";
+        const pool = TOPICS_BY_SUBJECT[satSubject] || ["general"];
+        satTopic = pool.find((t) => String(t) !== ptk) || pool[0];
+      }
+      for (let j = 0; j < 56; j++) {
+        const difficulty =
+          pick(rng, DIFFICULTIES) === "mixed" ? pick(rng, ["easy", "medium", "hard"]) : difficultyForProfile(rng, student.profileType);
+        const isCorrect = j % 14 === 0;
+        const mistakeType = mistakeTypeForAnswer(rng, student.profileType, isCorrect);
+        const sessionId = `sess_${student.studentId}_${si++}`;
+        const qid = `q_${student.studentId}_sat_${j}`;
+        const row = {
+          studentId: student.studentId,
+          grade: student.grade,
+          subject: satSubject,
+          topic: satTopic,
+          difficulty,
+          questionId: qid,
+          generatedQuestionId: qid,
+          questionText: `[סימולציה] עוגן קופיילוט: ${satTopic} ב-${satSubject} (${difficulty})`,
+          correctAnswer: isCorrect ? "בחירה נכונה" : "ערך ייחוס",
+          studentAnswer: isCorrect ? "בחירה נכונה" : "בחירה שגויה",
+          isCorrect,
+          mistakeType,
+          responseTimeMs: randInt(rng, 5000, 40000),
+          sessionId,
+          questionSource: "synthetic",
+          adapterStatus: "none",
+          contributesToParentReportEvidence: true,
+        };
+        rows.push(row);
+        student.generatedAnswers.push(row);
+        if (!isCorrect) {
+          student.mistakes.push({ topic: satTopic, subject: satSubject, mistakeType, questionId: qid });
+        }
+      }
+    }
+
     student.generatedSessions = [{ note: "סימולציה: סשן לכל שאלה", approximateSessions: studentQuestionCount }];
   }
 

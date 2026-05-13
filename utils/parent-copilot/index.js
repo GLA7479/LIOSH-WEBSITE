@@ -170,6 +170,9 @@ function shouldUseThinDataLead(truthPacket, intent, payload) {
   );
   /** Never prepend global "מעט נתונים" when the report window has substantial answer volume. */
   if (globalQ >= STRONG_GLOBAL_QUESTION_FLOOR) return false;
+  /** Topic/subject answers already ground on local TQ; do not prepend global scarcity when this scope has enough attempts. */
+  const scopeType = String(tp.scopeType || "").trim();
+  if ((scopeType === "topic" || scopeType === "subject") && scopedQ >= 10) return false;
   const interp = String(tp.interpretationScope || "").trim();
   /** Recommendation-framed turns already carry contract scarcity; do not prepend global thin-data boilerplate. */
   if (interp === "recommendation") return false;
@@ -221,7 +224,7 @@ function buildNoScopeCategorySpecificClarification(utterance) {
     return "אני לא מתעלם/ת מהדוח ולא חושף/ת הוראות פנימיות. התשובה כאן נשארת מבוססת נתוני למידה, ואפשר להמשיך לשאלה על מצב הלמידה בפועל.";
   }
   if (/תמציא|תסתיר|בלי\s*להתחשב\s*בנתונים|תכתוב\s*שהילד\s*מצוין\s*למרות|תשנה\s*את\s*הדוח/i.test(t)) {
-    return "אני לא יכול/ה להמציא, להסתיר או לשנות נתונים בדוח. אפשר כן לבנות ניסוח ברור להורה לפי מה שיש כרגע בנתוני הלמידה.";
+    return "אי אפשר להמציא, לשנות או לשפר נתונים בדוח. אפשר להסביר רק את הנתונים שמופיעים בו. אפשר גם לבנות ניסוח ברור להורה לפי מה שיש כרגע בנתוני הלמידה.";
   }
   if (/מה\s*מצב.*במוזיקה|במוזיקה|באמנות|בספורט|במחול/i.test(t)) {
     return "כרגע אין בדוח נתוני תרגול למקצוע הזה, ולכן אי אפשר להסיק עליו מצב. אם תרצו, נוכל להתמקד במקצועות שכן מופיעים בדוח.";
@@ -230,7 +233,7 @@ function buildNoScopeCategorySpecificClarification(utterance) {
     return "יכול להיות פער בין הצלחה בבית לבין ביצוע בתרגול באפליקציה. לכן מסתכלים על דפוס חוזר בדוח לאורך זמן, ולא על תשובה בודדת.";
   }
   if (/תסביר\s*לי\s*כמו\s*להורה|בלי\s*מושגים|במשפט\s*אחד|רק\s*3\s*נקודות|בקיצור/i.test(t)) {
-    return "בקצרה: הדוח מראה מה הילד מצליח ומה עוד צריך חיזוק לפי תרגול בפועל. אם הנתונים עדיין מעטים, מתייחסים לזה כסימן ראשוני ולא כמסקנה סופית.";
+    return "בקצרה: הדוח משווה בין נושאים לפי כמות שאלות ודיוק בתרגול. אם הנתונים עדיין מעטים, זה סימן ראשוני ולא מסקנה סופית — כדאי לצבור עוד קצת תרגול קצר לפני שמסיקים.";
   }
   if (/מה\s*לעשות\s*מחר|מה\s*לתרגל\s*השבוע|תוכנית\s*קצרה|איך\s*לעזור\s*בלי\s*לחץ/i.test(t)) {
     return "אפשר להתחיל בתוכנית קצרה: 1) 10 דקות חזרה בנושא אחד, 2) 5-8 שאלות בנושא נוסף, 3) בדיקה חוזרת בעוד יומיים אם אותו דפוס נשמר.";
@@ -768,6 +771,19 @@ function runDeterministicCore(input, options) {
     intent !== "off_topic_redirect"
   ) {
     intent = "explain_report";
+  }
+  /** Fabrication / integrity asks must stay on refusal copy even when Stage A leans explain-like. */
+  const reportDataFabricationProbe =
+    /תמציא\s*נתונים|תסתיר\s*(?:מההורה|את\s*הקושי)|בלי\s*להתחשב\s*בנתונים|תכתוב\s*שהילד\s*מצוין\s*למרות|תשנה\s*את\s*הדוח/i.test(
+      utteranceStr,
+    );
+  if (
+    reportDataFabricationProbe &&
+    intent !== "clinical_boundary" &&
+    intent !== "sensitive_education_choice" &&
+    intent !== "off_topic_redirect"
+  ) {
+    intent = "parent_policy_refusal";
   }
 
   const shortFb = tryBuildParentShortFollowupDraft({

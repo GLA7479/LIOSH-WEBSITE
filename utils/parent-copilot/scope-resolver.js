@@ -364,7 +364,8 @@ export function resolveScope(input) {
   if (!copilotAnchors.length) {
     return {
       resolutionStatus: "clarification_required",
-      clarificationQuestionHe: "אין כרגע מספיק תרגול בנושאים בדוח כדי לענות — כדאי לנסות שוב אחרי שמופיע תרגול בטווח התאריכים.",
+      clarificationQuestionHe:
+        "בדוח אין כרגע מספיק שאלות מעוגנות כדי לענות בצורה מדויקת — הנתונים עדיין מצומצמים ומוקדם למסקנה חזקה. כדאי לצבור עוד קצת תרגול בטווח התאריכים (למשל 5–8 שאלות ממוקדות בשבוע), ואז לנסות שוב.",
       scopeConfidence: 0,
       scopeReason: "no_anchor_available",
       stageA,

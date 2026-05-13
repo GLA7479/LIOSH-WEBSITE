@@ -102,7 +102,8 @@ const PARENT_META_INSTRUCTION_RE =
 const ROBOTIC_SYSTEM_RE = /(\[object\s+Object\]|TODO:|FIXME:|stack\s*trace|error\s*code\s*\d+)/i;
 
 /** Same family as parent-report narrative — emotional "confidence" framing is product-forbidden. */
-const EMOTIONAL_CONFIDENCE_TERMS_RE = /(ביטחו[ןנ]|בטחו[ןנ]|confidence)/iu;
+/** Do not match `ביטחון` inside `בביטחון` / `הביטחון` (contract statistical phrasing). */
+const EMOTIONAL_CONFIDENCE_TERMS_RE = /((?<!ב)(?<!ה)ביטחו[ןנ]|בטחו[ןנ]|confidence)/iu;
 
 /**
  * Global scarcity claims must not appear in composed glue when report volume is high.
@@ -290,7 +291,9 @@ export function validateAnswerDraft(draft, truthPacket, hints = null) {
   if (
     intent !== "off_topic_redirect" &&
     intent !== "clinical_boundary" &&
-    intent !== "sensitive_education_choice"
+    intent !== "sensitive_education_choice" &&
+    intent !== "parent_policy_refusal" &&
+    intent !== "off_report_subject_clarification"
   ) {
     if (EMOTIONAL_CONFIDENCE_TERMS_RE.test(joined)) failCodes.push("emotional_confidence_language");
     if (globalQ >= STRONG_GLOBAL_QUESTION_FLOOR && GLOBAL_SCARCITY_CONTRADICTION_RE.test(composedJoined)) {
@@ -322,7 +325,9 @@ export function validateAnswerDraft(draft, truthPacket, hints = null) {
     intent !== "clinical_boundary" &&
     intent !== "sensitive_education_choice" &&
     intent !== "off_topic_redirect" &&
-    intent !== "simple_parent_explanation"
+    intent !== "simple_parent_explanation" &&
+    intent !== "parent_policy_refusal" &&
+    intent !== "off_report_subject_clarification"
   ) {
     for (const hedge of truthPacket?.allowedClaimEnvelope?.requiredHedges || []) {
       if (hedge && !slotBundle.includes(String(hedge))) failCodes.push("missing_required_hedge");

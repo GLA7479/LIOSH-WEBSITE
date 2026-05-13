@@ -79,7 +79,7 @@ function topicPick(rng, subject) {
  */
 export function buildMassStudentStorageSnapshot(student) {
   const acc = {};
-  applyMassStudentSeed(student, {
+  const adapter = {
     setItem(k, v) {
       acc[k] = typeof v === "string" ? v : JSON.stringify(v);
     },
@@ -87,7 +87,9 @@ export function buildMassStudentStorageSnapshot(student) {
       return null;
     },
     removeItem() {},
-  });
+  };
+  applyMassStudentSeed(student, adapter);
+  applyMassStudentStorageFromQuestionRows(student, student.generatedAnswers || [], adapter);
   return acc;
 }
 
@@ -272,4 +274,196 @@ export function applyMassStudentSeed(student, storage = globalThis.localStorage)
   set(store, "mleo_english_mistakes", []);
   set(store, "mleo_science_mistakes", []);
   set(store, "mleo_hebrew_mistakes", []);
+  set(store, "mleo_moledet_geography_mistakes", []);
+}
+
+/** Max questions bundled into one tracking session (parent-report counts total/correct per session). */
+const ROWS_TO_STORAGE_BATCH = 12;
+
+const SUBJECT_ROW_BRIDGE = [
+  {
+    rowSubject: "math",
+    trackingKey: "mleo_time_tracking",
+    container: "operations",
+    progressKey: "mleo_math_master_progress",
+    mistakesKey: "mleo_mistakes",
+    isMath: true,
+  },
+  {
+    rowSubject: "geometry",
+    trackingKey: "mleo_geometry_time_tracking",
+    container: "topics",
+    progressKey: "mleo_geometry_master_progress",
+    mistakesKey: "mleo_geometry_mistakes",
+    isMath: false,
+  },
+  {
+    rowSubject: "english",
+    trackingKey: "mleo_english_time_tracking",
+    container: "topics",
+    progressKey: "mleo_english_master_progress",
+    mistakesKey: "mleo_english_mistakes",
+    isMath: false,
+  },
+  {
+    rowSubject: "science",
+    trackingKey: "mleo_science_time_tracking",
+    container: "topics",
+    progressKey: "mleo_science_master_progress",
+    mistakesKey: "mleo_science_mistakes",
+    isMath: false,
+  },
+  {
+    rowSubject: "hebrew",
+    trackingKey: "mleo_hebrew_time_tracking",
+    container: "topics",
+    progressKey: "mleo_hebrew_master_progress",
+    mistakesKey: "mleo_hebrew_mistakes",
+    isMath: false,
+  },
+  {
+    rowSubject: "moledet_geography",
+    trackingKey: "mleo_moledet_geography_time_tracking",
+    container: "topics",
+    progressKey: "mleo_moledet_geography_master_progress",
+    mistakesKey: "mleo_moledet_geography_mistakes",
+    isMath: false,
+  },
+];
+
+function orderRowsForArchetype(rows, profileType) {
+  const out = rows.slice();
+  if (profileType === "improving_student") {
+    out.sort((a, b) => Number(!!a.isCorrect) - Number(!!b.isCorrect));
+  } else if (profileType === "declining_student") {
+    out.sort((a, b) => Number(!!b.isCorrect) - Number(!!a.isCorrect));
+  }
+  return out;
+}
+
+function weekEvidenceWindowMs() {
+  const endMs = Date.now() - 90 * 1000;
+  const startMs = endMs - 6 * 24 * 60 * 60 * 1000;
+  return { startMs, endMs };
+}
+
+/**
+ * Overwrites per-subject `mleo_*_time_tracking`, `*_master_progress`, and mistake arrays from
+ * simulated `questionRows` / `generatedAnswers` so reports and Copilot see the same evidence as the mass JSON.
+ *
+ * Subjects with no rows for this student keep whatever `applyMassStudentSeed` wrote.
+ *
+ * @param {import("./student-generator.mjs").Student | any} student
+ * @param {any[]} rows
+ * @param {{ setItem: function }} [storage]
+ */
+export function applyMassStudentStorageFromQuestionRows(student, rows, storage = globalThis.localStorage) {
+  const store = storage;
+  const sid = student.studentId;
+  const mine = (Array.isArray(rows) ? rows : []).filter((r) => r && r.studentId === sid);
+  if (!mine.length) return;
+
+  for (const def of SUBJECT_ROW_BRIDGE) {
+    set(store, def.trackingKey, def.isMath ? { operations: {} } : { topics: {} });
+    set(store, def.progressKey, { stars: 0, xp: 0, playerLevel: 1, badges: [], progress: {} });
+    set(store, def.mistakesKey, []);
+  }
+
+  const grade = student.grade || "g4";
+  const pid = student.profileType || "";
+  const { startMs, endMs } = weekEvidenceWindowMs();
+  const span = Math.max(1, endMs - startMs - 10_000);
+  let slot = 0;
+  let mistakeSeq = 0;
+
+  const bySubject = new Map();
+  for (const r of mine) {
+    const s = String(r.subject || "").trim();
+    if (!bySubject.has(s)) bySubject.set(s, []);
+    bySubject.get(s).push(r);
+  }
+
+  for (const def of SUBJECT_ROW_BRIDGE) {
+    const list = bySubject.get(def.rowSubject);
+    if (!list || !list.length) continue;
+
+    const byTopic = new Map();
+    for (const r of list) {
+      const tk = String(r.topic || "general").trim() || "general";
+      if (!byTopic.has(tk)) byTopic.set(tk, []);
+      byTopic.get(tk).push(r);
+    }
+
+    const tracking = def.isMath ? { operations: {} } : { topics: {} };
+    const progressShell = { stars: 0, xp: 0, playerLevel: 1, badges: [], progress: {} };
+    /** @type {any[]} */
+    const mistakes = [];
+    let subjectTotalQ = 0;
+
+    for (const [topicKey, topicRowsRaw] of byTopic) {
+      const topicRows = orderRowsForArchetype(topicRowsRaw, pid);
+      const bucket = def.isMath ? tracking.operations : tracking.topics;
+      if (!bucket[topicKey]) bucket[topicKey] = { sessions: [] };
+
+      let tQ = 0;
+      let tC = 0;
+      for (let i = 0; i < topicRows.length; i += ROWS_TO_STORAGE_BATCH) {
+        const batch = topicRows.slice(i, i + ROWS_TO_STORAGE_BATCH);
+        if (!batch.length) continue;
+        const total = batch.length;
+        const correct = batch.filter((x) => x.isCorrect).length;
+        tQ += total;
+        tC += correct;
+        subjectTotalQ += total;
+        const frac = ++slot / Math.max(20, Math.ceil(mine.length / ROWS_TO_STORAGE_BATCH) + 5);
+        const timestamp = Math.min(endMs - 1000, Math.floor(startMs + frac * span));
+        const row0 = batch[0];
+        const level = String(row0?.difficulty || "medium").toLowerCase();
+        bucket[topicKey].sessions.push({
+          timestamp,
+          total,
+          correct,
+          mode: "practice",
+          grade,
+          level: level === "easy" || level === "hard" ? level : "medium",
+          duration: Math.max(60, total * 32),
+        });
+        for (let wi = 0; wi < batch.length; wi++) {
+          const r = batch[wi];
+          if (r.isCorrect) continue;
+          mistakeSeq += 1;
+          const mt = Math.min(endMs - 1, timestamp + wi * 3 + (mistakeSeq % 97));
+          mistakes.push({
+            subject: def.rowSubject === "moledet_geography" ? "moledet-geography" : def.rowSubject,
+            topic: topicKey,
+            operation: def.isMath ? topicKey : undefined,
+            timestamp: mt,
+            exerciseText: String(r.questionText || "").slice(0, 200),
+            isCorrect: false,
+            grade,
+            mistakeType: r.mistakeType || "conceptual",
+          });
+        }
+      }
+      progressShell.progress[topicKey] = { total: tQ, correct: tC };
+    }
+
+    progressShell.xp = Math.min(500_000, subjectTotalQ * 18);
+    progressShell.stars = Math.min(120, Math.floor(subjectTotalQ / 35));
+    progressShell.playerLevel = Math.min(24, 2 + Math.floor(subjectTotalQ / 120));
+
+    set(store, def.trackingKey, tracking);
+    set(store, def.progressKey, progressShell);
+    set(store, def.mistakesKey, mistakes);
+  }
+}
+
+/**
+ * Seed profile defaults, then overlay storage from `student.generatedAnswers` when present.
+ * @param {import("./student-generator.mjs").Student | any} student
+ * @param {{ setItem: function }} [storage]
+ */
+export function applyMassStudentSeedAndQuestionRows(student, storage = globalThis.localStorage) {
+  applyMassStudentSeed(student, storage);
+  applyMassStudentStorageFromQuestionRows(student, student.generatedAnswers || [], storage);
 }

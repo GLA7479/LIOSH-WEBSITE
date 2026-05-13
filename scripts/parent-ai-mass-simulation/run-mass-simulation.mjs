@@ -18,12 +18,16 @@
  *   MASS_PDF_STUDENT_TIMEOUT_MS — wall-clock cap per student PDF pack (default 600000)
  *   MASS_PDF_DOM_WAIT_MS — Playwright waitForFunction timeout per short/detailed shell (default 180000)
  *   MASS_RUN_CHECKPOINT_EVERY — write RUN_PROGRESS.json every N students in report/PDF phase (default 5)
+ *   MASS_COVERAGE_MODE=1 — deterministic coverage grid (grades × subjects × archetypes) via coverage-student-generator.mjs
+ *   MASS_OUTPUT_PARENT — output parent dir under repo root (default reports/parent-ai-mass-simulation), e.g. reports/phase8-mass-coverage
+ *   MASS_PHASE8_PACK=1 — after run, write RUN_SUMMARY*, COVERAGE_MATRIX*, per-student folders, by-subject/, leak scan, etc.
  */
 import fs from "node:fs";
 import path from "node:path";
 import { fileURLToPath, pathToFileURL } from "node:url";
 
 import { generateStudents, writeStudentFiles } from "./lib/student-generator.mjs";
+import { generateCoverageStudents } from "./lib/coverage-student-generator.mjs";
 import { simulateQuestionRuns, aggregateQuestionStats } from "./lib/question-simulator.mjs";
 import { allocateFair } from "./lib/allocation.mjs";
 import { PARENT_QUESTION_CATEGORIES } from "./lib/parent-questions-catalog.mjs";
@@ -45,6 +49,7 @@ import {
 } from "./lib/ai-response-quality-audit.mjs";
 import { buildManualReviewPack } from "./lib/manual-review-pack.mjs";
 import { writeEvidenceSourcesReadme, writeQuestionRunsReadme } from "./lib/report-evidence-export.mjs";
+import { writePhase8Pack } from "./lib/phase8-pack-writer.mjs";
 import { GRADE_ORDER, SUBJECT_KEYS } from "./lib/constants.mjs";
 import { assertPdfServerReachable } from "./lib/product-pdf-playwright.mjs";
 
@@ -168,17 +173,20 @@ async function main() {
   const seed = envInt("MASS_SEED", 1337);
   const subjectsEnv = process.env.MASS_SUBJECTS;
   const questionTarget = envInt("MASS_QUESTION_TARGET", 20000);
-  const reportLimit = envInt("MASS_REPORT_LIMIT", 100);
+  let reportLimit = envInt("MASS_REPORT_LIMIT", 100);
   const pdfLimit = envInt("MASS_PDF_LIMIT", 100);
   const parentAiGlobalLimit = envInt("MASS_PARENT_AI_QUESTION_LIMIT", 500);
   const questionSourceMode = envStr("MASS_QUESTION_SOURCE", "hybrid").toLowerCase();
   const categoryBalanced = process.env.MASS_PARENT_AI_CATEGORY_BALANCED !== "0";
   const categoryMin = envInt("MASS_PARENT_AI_CATEGORY_MIN", 1);
+  const coverageMode = process.env.MASS_COVERAGE_MODE === "1";
+  const phase8Pack = process.env.MASS_PHASE8_PACK === "1";
+  const outputParent = envStr("MASS_OUTPUT_PARENT", "reports/parent-ai-mass-simulation").replace(/\\/g, "/");
 
   const baseUrl = envStr("QA_BASE_URL", envStr("MASS_PDF_BASE_URL", "http://localhost:3001"));
 
-  const stamp = new Date().toISOString().replace(/[:.]/g, "-");
-  const outputRoot = path.join(ROOT, "reports", "parent-ai-mass-simulation", stamp);
+  const stamp = new Date().toISOString().replace(/[:.]/g, "-").slice(0, 19);
+  const outputRoot = path.join(ROOT, ...outputParent.split("/").filter(Boolean), stamp);
   fs.mkdirSync(outputRoot, { recursive: true });
 
   const subdirs = [
@@ -197,13 +205,25 @@ async function main() {
   for (const d of subdirs) fs.mkdirSync(path.join(outputRoot, d), { recursive: true });
   writeEvidenceSourcesReadme(outputRoot);
 
-  const { students, subjectsResolved } = generateStudents({
-    studentCount,
-    seed,
-    minGrade,
-    maxGrade,
-    subjectsEnv,
-  });
+  const { students, subjectsResolved } = coverageMode
+    ? generateCoverageStudents({
+        studentCount,
+        seed,
+        minGrade,
+        maxGrade,
+        subjectsEnv,
+      })
+    : generateStudents({
+        studentCount,
+        seed,
+        minGrade,
+        maxGrade,
+        subjectsEnv,
+      });
+
+  if (coverageMode && reportLimit < studentCount) {
+    reportLimit = studentCount;
+  }
 
   if (pdfLimit > 0) {
     await assertPdfServerReachable(baseUrl);
@@ -490,6 +510,9 @@ async function main() {
       MASS_PARENT_AI_CATEGORY_BALANCED: categoryBalanced ? "1" : "0",
       MASS_PARENT_AI_CATEGORY_MIN: categoryMin,
       QA_BASE_URL: baseUrl,
+      MASS_COVERAGE_MODE: coverageMode ? "1" : "0",
+      MASS_PHASE8_PACK: phase8Pack ? "1" : "0",
+      MASS_OUTPUT_PARENT: outputParent,
     },
     subjectsResolved,
     supportedSubjectKeys: SUBJECT_KEYS,
@@ -569,6 +592,20 @@ async function main() {
     }),
     "utf8"
   );
+
+  if (phase8Pack) {
+    await writePhase8Pack({
+      outputRoot,
+      massPayload,
+      students,
+      questionRows,
+      globalInteractions,
+      qualityIssues: quality.issues,
+      qualityWarnings: quality.warnings,
+      pdfIndex,
+      auditResult,
+    });
+  }
 
   console.log("parent-ai-mass-simulation OK", outputRoot);
   console.log(JSON.stringify(massPayload.counts, null, 2));

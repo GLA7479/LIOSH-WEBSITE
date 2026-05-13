@@ -5,6 +5,9 @@
 import fs from "node:fs";
 import path from "node:path";
 import parentFacingNormalize from "../../../utils/parent-report-language/parent-facing-normalize-he.js";
+import questionClassifierConstants from "../../../utils/parent-copilot/question-classifier.js";
+
+const AMBIGUOUS_RESPONSE_HE = String(questionClassifierConstants?.AMBIGUOUS_RESPONSE_HE || "");
 
 async function extractPdfText(filePath) {
   try {
@@ -137,7 +140,7 @@ const GENERIC_ONLY_PRACTICE =
   /צריך\s+עוד\s+תרגול|עוד\s+תרגול\s+בלבד|רק\s+תרגול|בלי\s+מידע\s+משמעותי/u;
 
 const THIN_DATA_LANGUAGE =
-  /מעט\s+נתונים|נתונים\s+דלים|לא\s+מספיק\s+נתונים|מוגבל|מצומצם|דליל|אין\s+מספיק\s+בסיס\s+לתמונה/u;
+  /מעט\s+נתונים|נתונים\s+דלים|לא\s+מספיק\s+נתונים|מוגבל(?!ת|ים|ות)|מצומצם|דליל|אין\s+מספיק\s+בסיס\s+לתמונה/u;
 
 const RAW_TOPIC_KEY_PATTERN =
   /\b(matching|shapes|directions|places|Vocabulary|vocabulary|main_idea|reading_comprehension(?:_error)?|grammar_basics|basic_geography|map_reading|sequence|inference)\b/u;
@@ -316,6 +319,25 @@ function sparseExecutiveFromDetailed(detailed) {
   return active <= 1;
 }
 
+/**
+ * Catalog may label a turn `data_grounded` while the router returns clarification (vague / classifier early exit).
+ * Do not apply resolved-turn evidence rubrics to those rows.
+ * @param {{ resolutionStatus?: string }} row
+ * @param {string} ans
+ */
+function skipDataGroundedEvidenceAuditForClarification(row, ans) {
+  const rs = String(row?.resolutionStatus || "").trim();
+  if (rs === "clarification_required") return true;
+  const a = String(ans || "")
+    .replace(/\s+/g, " ")
+    .trim();
+  const ref = String(AMBIGUOUS_RESPONSE_HE || "")
+    .replace(/\s+/g, " ")
+    .trim();
+  if (ref && a === ref) return true;
+  return /^לא\s+הבנתי\s+בדיוק\s+על\s+מה\s+השאלה/u.test(a);
+}
+
 /** When weak_* profile rubrics should expect explicit weak-subject vocabulary in the answer text. */
 function questionImpliesWeakSubjectFocus(parentQuestionHe) {
   const q = String(parentQuestionHe || "")
@@ -373,7 +395,12 @@ function rubricForAnswer(row, detailed, ctx) {
 
   switch (cat) {
     case "data_grounded": {
-      if (tq >= 40 && subs.length === 0 && !/\d/.test(ans)) {
+      if (
+        !skipDataGroundedEvidenceAuditForClarification(row, ans) &&
+        tq >= 40 &&
+        subs.length === 0 &&
+        !/\d/.test(ans)
+      ) {
         issues.push({
           severity: "fail",
           type: "category_mismatch",
@@ -676,6 +703,7 @@ function rubricForAnswer(row, detailed, ctx) {
   }
 
   if (
+    !skipDataGroundedEvidenceAuditForClarification(row, ans) &&
     GENERIC_ONLY_PRACTICE.test(ans) &&
     subs.length === 0 &&
     !/\d/.test(ans) &&

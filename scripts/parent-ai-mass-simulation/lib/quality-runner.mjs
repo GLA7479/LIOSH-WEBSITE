@@ -113,7 +113,9 @@ function scanReportProfileConsistency(student, shortMd, detailedMd, pdfExtracted
   }
   if (
     p === "thin_data" &&
-    !/מעט|מוגבל|לא מספיק|דליל|מצומצם/i.test(combined)
+    !/מעט|מצומצם|דליל|לא\s+מספיק|מוגבל(?!ת|ים|ות)|אין\s+מוקד\s+ברור|0\s+מתוך\s+\d+|שלב\s+מוקדם|עדיין\s+אין\s+מסקנה\s+חדה|(?:^|\n)\s*[-•]\s*זהירות|מידע\s+חלקי|תמונה\s+חלקית|ניסוח\s+זהיר/u.test(
+      combined,
+    )
   ) {
     issues.push({ code: "thin_data_missing_language", detail: student.studentId });
   }

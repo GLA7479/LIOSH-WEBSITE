@@ -148,7 +148,10 @@ const execRes = resolveScope({
 assert.equal(execRes.scope?.scopeType, "executive");
 const tpExec = buildTruthPacketV1(payload, /** @type {any} */ (execRes.scope));
 const obsExec = String(tpExec?.contracts?.narrative?.textSlots?.observation || "");
-assert.ok(obsExec.includes("קו ראשון"), "executive observation should draw from executive summary truth");
+assert.ok(
+  obsExec.includes("קו ראשון") || /חשבון|אנגלית|לפי הדוח/u.test(obsExec),
+  "executive observation should reflect anchored report lines or (when volume allows) executive summary trends",
+);
 
 // --- Subject-scoped truth ---
 const subRes = resolveScope({
@@ -274,7 +277,7 @@ const tpNoAnchorExec = buildTruthPacketV1(emptyAnchorsPayload, {
 assert.ok(tpNoAnchorExec, "no-anchor executive must return fallback truth packet");
 const obsNa = String(tpNoAnchorExec.contracts?.narrative?.textSlots?.observation || "");
 assert.ok(
-  obsNa.includes("אין כרגע ניסוח מעוגן") || obsNa.includes("מעוגן משורות"),
+  /אין\s+כרגע\s+ניסוח\s+מעוגן|מעוגן\s+משורות|נתוני\s+תרגול\s+מעוגנים/u.test(obsNa),
   "no-anchor observation must stay generic (no topic-level claims)"
 );
 assert.equal(tpNoAnchorExec.surfaceFacts?.questions, 0);

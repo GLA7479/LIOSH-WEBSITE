@@ -1,7 +1,8 @@
 import fs from "node:fs";
 import path from "node:path";
 import { installBrowserGlobals } from "./browser-globals.mjs";
-import { applyMassStudentSeed, buildMassStudentStorageSnapshot } from "./seed-engine.mjs";
+import { applyMassStudentSeedAndQuestionRows, buildMassStudentStorageSnapshot } from "./seed-engine.mjs";
+import { harnessAttachPerfectTopicCopilotAnchor } from "./mass-perfect-topic-copilot-bridge.mjs";
 import { exportProductParentReportPdfPack } from "./product-pdf-playwright.mjs";
 import { writeStudentReportEvidence } from "./report-evidence-export.mjs";
 import parentFacingNormalize from "../../../utils/parent-report-language/parent-facing-normalize-he.js";
@@ -140,8 +141,9 @@ export async function writeParentReportsAndProductPdfs(opts) {
   for (let i = 0; i < reportStudents.length; i++) {
     const student = reportStudents[i];
     installBrowserGlobals();
-    applyMassStudentSeed(student);
-    const detailed = opts.generateDetailedParentReport(student.displayName, "week", null, null);
+    applyMassStudentSeedAndQuestionRows(student);
+    let detailed = opts.generateDetailedParentReport(student.displayName, "week", null, null);
+    await harnessAttachPerfectTopicCopilotAnchor({ payload: detailed, student });
     const summaryLines = execSummaryLines(detailed);
 
     const dir = path.join(baseReports, student.studentId);
