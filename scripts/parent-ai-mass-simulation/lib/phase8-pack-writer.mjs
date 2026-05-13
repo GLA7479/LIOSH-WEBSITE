@@ -110,6 +110,161 @@ function extractRecommendations(detailed) {
   }));
 }
 
+const GRADES_G1_G6 = ["g1", "g2", "g3", "g4", "g5", "g6"];
+
+/**
+ * Owner-facing navigation + summaries (harness output only).
+ * @param {string} outputRoot
+ * @param {object} args
+ */
+function writeFullHumanReviewArtifacts(outputRoot, args) {
+  const {
+    massPayload,
+    students,
+    pdfIndex,
+    auditResult,
+    perfectCases,
+    weakCases,
+    thinCases,
+    globalInteractions,
+  } = args;
+  const subjects = massPayload?.subjectsResolved || massPayload?.supportedSubjectKeys || [];
+  const rel = (p) => p.replace(/\\/g, "/");
+
+  const pick = (pred) => students.find(pred)?.studentId || null;
+  const byArch = (a) => pick((s) => s.metadata?.coverageArchetype === a);
+
+  const richId = pick((s) => s.profileType === "rich_data");
+  const mixedStrongWeakId = byArch("strong_topic_weak_topic");
+  const improveId = byArch("improvement_over_time");
+  const regressId = byArch("regression_over_time");
+
+  /** @type {Array<{grade: string, subject: string, studentId: string}>} */
+  const gradeSubjectSamples = [];
+  for (const g of GRADES_G1_G6) {
+    for (const subj of subjects) {
+      const sid = students.find((s) => s.grade === g && String(s.studentId).endsWith(`_${g}_${subj}`))?.studentId;
+      if (sid) gradeSubjectSamples.push({ grade: g, subject: subj, studentId: sid });
+    }
+  }
+
+  const pdfFolderLines = students.map((s) => `- \`${rel(path.join("students", s.studentId, "pdf"))}\` — short+detailed PDFs`);
+
+  const humanIdx = [
+    "# HUMAN_REVIEW_INDEX",
+    "",
+    "נתיבים יחסיים לשורש הריצה (אותו תיק שבו קובץ זה).",
+    "",
+    "## 1. מקרי נושא 100% (PERFECT_TOPIC_CASES)",
+    "",
+    `- [\`PERFECT_TOPIC_CASES.md\`](PERFECT_TOPIC_CASES.md)`,
+    `- [\`PERFECT_TOPIC_CASES.json\`](PERFECT_TOPIC_CASES.json)`,
+    ...perfectCases.map((c) => `  - **${c.studentId}** — ${c.subject} / ${c.topic} (${c.grade})`),
+    "",
+    "## 2. מקרי נושא חלש (WEAK_TOPIC_CASES)",
+    "",
+    `- [\`WEAK_TOPIC_CASES.md\`](WEAK_TOPIC_CASES.md)`,
+    `- [\`WEAK_TOPIC_CASES.json\`](WEAK_TOPIC_CASES.json)`,
+    ...weakCases.slice(0, 40).map((c) => `  - **${c.studentId}** — ${c.subject} / ${c.topic} (${c.grade})`),
+    "",
+    "## 3. thin_data",
+    "",
+    `- [\`THIN_DATA_CASES.md\`](THIN_DATA_CASES.md)`,
+    `- [\`THIN_DATA_CASES.json\`](THIN_DATA_CASES.json)`,
+    ...thinCases.map((c) => `  - **${c.studentId}** (${c.grade})`),
+    "",
+    "## 4. rich / high_volume",
+    "",
+    richId ? `- דוגמה: **${richId}** — תיקייה \`students/${richId}/\`` : "- לא נמצא rich_data בגריד זה",
+    "",
+    "## 5. mixed strong + weak topic",
+    "",
+    mixedStrongWeakId
+      ? `- דוגמה: **${mixedStrongWeakId}** — \`students/${mixedStrongWeakId}/\``
+      : "- לא נמצא archetype strong_topic_weak_topic",
+    "",
+    "## 6. שיפור / הידרדרות",
+    "",
+    improveId ? `- שיפור לאורך זמן: **${improveId}**` : "- —",
+    regressId ? `- הידרדרות: **${regressId}**` : "- —",
+    "",
+    "## 7. דוגמה אחת לכל ציר כיתה × מקצוע (כיסוי)",
+    "",
+    "| grade | subject | studentId |",
+    "|---|---|---|",
+    ...gradeSubjectSamples.map((r) => `| ${r.grade} | ${r.subject} | \`${r.studentId}\` |`),
+    "",
+    "## 8. תיקיות PDF (לכל תלמיד)",
+    "",
+    ...pdfFolderLines.slice(0, 220),
+    ...(pdfFolderLines.length > 220 ? [`- …ועוד ${pdfFolderLines.length - 220} תיקיות`] : []),
+    "",
+    "## Parent AI / איכות",
+    "",
+    "- [`COPILOT_INTERACTIONS_AUDIT.md`](COPILOT_INTERACTIONS_AUDIT.md)",
+    "- [`AI_RESPONSE_QUALITY_AUDIT.md`](AI_RESPONSE_QUALITY_AUDIT.md)",
+    "- [`QUALITY_FLAGS.md`](QUALITY_FLAGS.md)",
+    "- [`RAW_INTERNAL_LEAK_SCAN.md`](RAW_INTERNAL_LEAK_SCAN.md)",
+    "",
+  ].join("\n");
+
+  fs.writeFileSync(path.join(outputRoot, "HUMAN_REVIEW_INDEX.md"), humanIdx, "utf8");
+
+  const audit = auditResult?.auditPayload?.summary || {};
+  const counts = massPayload?.counts || {};
+  const ownerHe = [
+    "# OWNER_REVIEW_SUMMARY_HE",
+    "",
+    `נוצר: ${massPayload?.generatedAt || ""}`,
+    "",
+    "## מה יש בחבילה",
+    "",
+    `- תלמידים: **${counts.students ?? students.length}**`,
+    `- שאלות סימולציה: **${counts.questions ?? "—"}**`,
+    `- אינטראקציות Copilot (דטרמיניסטי): **${counts.parentAiInteractions ?? globalInteractions?.length ?? "—"}**`,
+    `- דוחות קצר/מפורט לכל תלמיד: תחת \`students/<id>/\` + \`parent-reports/<id>/\``,
+    `- PDF מוצר (Playwright): **${counts.totalPdfCount ?? "—"}** קבצים; קריאים heuristically: **${counts.validReadablePdfCount ?? "—"}**`,
+    "",
+    "## סטטוס ביקורת אוטומטית",
+    "",
+    `- AI_RESPONSE_QUALITY_AUDIT: **${audit.finalStatus || "—"}** (כשלים: ${audit.totalFailures ?? 0})`,
+    `- אזהרות audit: **${audit.totalWarnings ?? 0}**`,
+    "",
+    "## הוראות בעלים",
+    "",
+    "1. פתח `HUMAN_REVIEW_INDEX.md` ובחר תלמידים לפי פרופיל/נושא.",
+    "2. לכל תלמיד: עיין ב-`report-short.md`, `report-detailed.md`, ובשני ה-PDF בתיקיית `pdf/`.",
+    "3. השווה ל-`copilot-turns.json` עבור עקביות מול הדוח.",
+    "",
+  ].join("\n");
+  fs.writeFileSync(path.join(outputRoot, "OWNER_REVIEW_SUMMARY_HE.md"), ownerHe, "utf8");
+
+  const tech = [
+    "# TECHNICAL_SUMMARY",
+    "",
+    "- Engine: `scripts/parent-ai-mass-simulation/run-mass-simulation.mjs` + Phase 8 pack writer.",
+    "- PDFs: Next routes `/learning/parent-report` + `/learning/parent-report-detailed`, Playwright `page.pdf`.",
+    "- Deterministic Copilot: sync `runParentCopilotTurn` (no live LLM).",
+    `- Output root: \`${String(massPayload?.outputDirectory || "").replace(/\\\\/g, "/")}\``,
+    "",
+    "```json",
+    JSON.stringify(massPayload?.environment || {}, null, 2),
+    "```",
+    "",
+  ].join("\n");
+  fs.writeFileSync(path.join(outputRoot, "TECHNICAL_SUMMARY.md"), tech, "utf8");
+
+  const nextSteps = [
+    "# NEXT_STEPS",
+    "",
+    "1. סקירה ידנית של מדגם PDF (עברית, מבנה עמוד).",
+    "2. אם `AI_RESPONSE_QUALITY_AUDIT` במצב NEEDS_REVIEW — החלטה אם ליישר rubric או לקבל כאזהרות ידועות.",
+    "3. אופציונלי: הרצת QA נוספת עם שרת/פורט אחר אם יש חוסר יציבות ברשת מקומית.",
+    "",
+  ].join("\n");
+  fs.writeFileSync(path.join(outputRoot, "NEXT_STEPS.md"), nextSteps, "utf8");
+}
+
 /**
  * @param {object} ctx
  */
@@ -339,6 +494,7 @@ export async function writePhase8Pack(ctx) {
       ["# PDF_SUMMARY", "", "```json", JSON.stringify(pdfIndex, null, 2), "```"].join("\n"),
       "utf8",
     );
+    fs.writeFileSync(path.join(outputRoot, "PDF_SUMMARY.json"), JSON.stringify(pdfIndex, null, 2), "utf8");
   }
 
   fs.writeFileSync(path.join(outputRoot, "RUN_SUMMARY.json"), JSON.stringify(massPayload, null, 2), "utf8");
@@ -388,8 +544,10 @@ export async function writePhase8Pack(ctx) {
       copyIfExists(path.join(pr, "detailed.md"), path.join(destDir, "report-detailed.md"));
       const pdfSub = path.join(destDir, "pdf");
       ensureDir(pdfSub);
-      copyIfExists(path.join(outputRoot, "pdfs", "short", `${id}.pdf`), path.join(pdfSub, "short.pdf"));
-      copyIfExists(path.join(outputRoot, "pdfs", "detailed", `${id}.pdf`), path.join(pdfSub, "detailed.pdf"));
+      const shortSrc = path.join(outputRoot, "pdfs", "short", `${id}.pdf`);
+      const detailedSrc = path.join(outputRoot, "pdfs", "detailed", `${id}.pdf`);
+      copyIfExists(shortSrc, path.join(pdfSub, "report-short.pdf"));
+      copyIfExists(detailedSrc, path.join(pdfSub, "report-detailed.pdf"));
     }
     const bySubj = {};
     for (const q of questionRows.filter((q) => q.studentId === id)) {
@@ -438,6 +596,17 @@ export async function writePhase8Pack(ctx) {
     );
   }
 
+  writeFullHumanReviewArtifacts(outputRoot, {
+    massPayload,
+    students,
+    pdfIndex,
+    auditResult,
+    perfectCases,
+    weakCases,
+    thinCases,
+    globalInteractions,
+  });
+
   fs.writeFileSync(
     path.join(outputRoot, "PHASE8_PACK_INDEX.json"),
     JSON.stringify(
@@ -457,11 +626,19 @@ export async function writePhase8Pack(ctx) {
           "PERFECT_TOPIC_CASES.md",
           "PERFECT_TOPIC_CASES.json",
           "WEAK_TOPIC_CASES.md",
+          "WEAK_TOPIC_CASES.json",
           "THIN_DATA_CASES.md",
+          "THIN_DATA_CASES.json",
           "FALLBACK_CASES.md",
+          "FALLBACK_CASES.json",
           "BLOCKED_IDS_CHECK.md",
           "COPILOT_INTERACTIONS_AUDIT.md",
           "PDF_SUMMARY.md",
+          "PDF_SUMMARY.json",
+          "HUMAN_REVIEW_INDEX.md",
+          "OWNER_REVIEW_SUMMARY_HE.md",
+          "TECHNICAL_SUMMARY.md",
+          "NEXT_STEPS.md",
           "students/*/…",
           "by-subject/…",
         ],
