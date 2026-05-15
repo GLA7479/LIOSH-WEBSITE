@@ -4,19 +4,19 @@ overview: Stop treating landscape games as a PWA-only React problem. Add a Capac
 todos:
   - id: write-report-md
     content: "After approval: create reports/game-page-audit/game-only-app-shell-plan.md from approved plan"
-    status: pending
+    status: cancelled
   - id: scaffold-cap-shell
     content: Add apps/leok-games-shell with Capacitor config, server.url -> LEOK /game, cap add android/ios
-    status: pending
+    status: cancelled
   - id: align-native
     content: Align AndroidManifest + MainActivity + iOS Info.plist with MLEO (rotation + optional immersive)
-    status: pending
+    status: completed
   - id: device-qa
     content: Build/run debug shell; verify rotation + all 7 game routes; confirm learning unchanged in browser
     status: pending
   - id: mleo-catcher-followup
     content: "Optional second PR: simplify mleo-catcher.js for Capacitor vs PWA; keep landscape-only intro intact"
-    status: pending
+    status: cancelled
 isProject: false
 ---
 

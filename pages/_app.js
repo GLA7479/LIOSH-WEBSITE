@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 import OfflineIndicator from "../components/OfflineIndicator";
 import StudentAccessGate from "../components/student/StudentAccessGate";
 import DevServiceWorkerCleanup from "../components/dev/DevServiceWorkerCleanup";
+import CapacitorOrientationBridge from "../components/CapacitorOrientationBridge";
 
 const STUDENT_PROTECTED_ROUTES = new Set([
   "/student/arcade",
@@ -138,6 +139,7 @@ export default function MyApp({ Component, pageProps }) {
         <title>LEO K - Kids Games & Learning</title>
       </Head>
       <OfflineIndicator />
+      <CapacitorOrientationBridge />
       {shouldGate ? (
         <StudentAccessGate>
           <Component {...pageProps} />
