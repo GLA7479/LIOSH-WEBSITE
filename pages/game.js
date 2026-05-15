@@ -1,6 +1,5 @@
 import Layout from "../components/Layout";
 import Link from "next/link";
-import { useIOSViewportFix } from "../hooks/useIOSViewportFix";
 
 const GAMES = [
   {
@@ -48,7 +47,6 @@ const GAMES = [
 ];
 
 export default function Games() {
-  useIOSViewportFix();
   return (
     <Layout>
       <main className="min-h-screen bg-gradient-to-b from-[#0f111a] to-[#1b1f2b] text-white px-4 py-10" dir="rtl">

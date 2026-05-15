@@ -1,5 +1,15 @@
 @import "tailwindcss";
 
+/* Fallback before `useIOSViewportFix` runs; JS overwrites with `innerHeight` px on :root */
+:root {
+  --app-100vh: 100dvh;
+}
+@supports not (height: 100dvh) {
+  :root {
+    --app-100vh: 100vh;
+  }
+}
+
 html, body, #__next {
   height: 100%;
 }
@@ -26,10 +36,10 @@ body {
   overscroll-behavior: none;
 }
 
-/* Standalone game pages (offline, etc.): fill dynamic viewport */
+/* Standalone game pages (offline, etc.): fill dynamic viewport; `--app-100vh` from useIOSViewportFix */
 .game-page-mobile:not(.learning-master-fill) {
-  height: 100vh;
-  height: 100dvh;
+  min-height: var(--app-100vh);
+  height: var(--app-100vh);
 }
 
 /* Learning masters: height comes from parent h-dvh flex column — avoids vh/dvh + min-h-screen fights */

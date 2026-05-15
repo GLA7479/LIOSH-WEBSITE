@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 import OfflineIndicator from "../components/OfflineIndicator";
 import StudentAccessGate from "../components/student/StudentAccessGate";
 import DevServiceWorkerCleanup from "../components/dev/DevServiceWorkerCleanup";
-import CapacitorOrientationBridge from "../components/CapacitorOrientationBridge";
+import { useIOSViewportFix } from "../hooks/useIOSViewportFix";
 
 const STUDENT_PROTECTED_ROUTES = new Set([
   "/student/arcade",
@@ -30,6 +30,7 @@ const STUDENT_PROTECTED_ROUTES = new Set([
 
 export default function MyApp({ Component, pageProps }) {
   const router = useRouter();
+  useIOSViewportFix();
   useEffect(() => {
     if (typeof window === "undefined" || !("serviceWorker" in navigator)) {
       return undefined;
@@ -113,7 +114,10 @@ export default function MyApp({ Component, pageProps }) {
       {process.env.NODE_ENV !== "production" ? <DevServiceWorkerCleanup /> : null}
       <Head>
         <meta charSet="utf-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta
+          name="viewport"
+          content="width=device-width, initial-scale=1, viewport-fit=cover"
+        />
         <meta name="description" content="LEO K - Fun games and learning activities for kids. Play arcade games, solve puzzles, and practice math, geometry and English." />
         <meta name="theme-color" content="#fbbf24" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
@@ -139,7 +143,6 @@ export default function MyApp({ Component, pageProps }) {
         <title>LEO K - Kids Games & Learning</title>
       </Head>
       <OfflineIndicator />
-      <CapacitorOrientationBridge />
       {shouldGate ? (
         <StudentAccessGate>
           <Component {...pageProps} />
