@@ -4,6 +4,8 @@ import Layout from "../components/Layout";
 import Image from "next/image";
 import { useRouter } from "next/router";
 
+const DEFAULT_PLAYER_NAME = "שחקן";
+
 export default function MleoCatcher() {
   const router = useRouter();
 
@@ -90,6 +92,37 @@ export default function MleoCatcher() {
   const [highScore, setHighScore] = useState(0);
   const [playerName, setPlayerName] = useState("");
   const [leaderboard, setLeaderboard] = useState([]);
+
+  /** Trimmed field → localStorage `mleo_player_name` → default `שחקן`. Never blocks starting. */
+  const resolveEffectivePlayerName = () => {
+    const fromField = String(playerName || "").trim();
+    if (fromField) return fromField;
+    if (typeof window !== "undefined") {
+      try {
+        const fromLs = String(localStorage.getItem("mleo_player_name") || "").trim();
+        if (fromLs) return fromLs;
+      } catch {
+        /* noop */
+      }
+    }
+    return DEFAULT_PLAYER_NAME;
+  };
+
+  const beginRun = () => {
+    const resolved = resolveEffectivePlayerName();
+    setPlayerName(resolved);
+    playerNameRef.current = resolved;
+    try {
+      if (typeof window !== "undefined") {
+        localStorage.setItem("mleo_player_name", resolved);
+      }
+    } catch {
+      /* noop */
+    }
+    updateLeaderboard(resolved, 0);
+    setShowIntro(false);
+    setGameRunning(true);
+  };
 
   useEffect(() => {
     playerNameRef.current = playerName;
@@ -419,13 +452,21 @@ export default function MleoCatcher() {
 
             <input
               type="text"
-              placeholder="מה השם שלכם?"
+              placeholder="מה השם שלכם? (אופציונלי)"
               value={playerName}
               onChange={(e) => {
                 const newName = e.target.value;
                 setPlayerName(newName);
                 if (typeof window !== "undefined") {
-                  localStorage.setItem("mleo_player_name", newName);
+                  const t = String(newName || "").trim();
+                  if (t) {
+                    try {
+                      localStorage.setItem("mleo_player_name", t);
+                    } catch {
+                      /* noop */
+                    }
+                  }
+                  /* Empty field: do not clear LS — beginRun still resolves from LS or default. */
                 }
               }}
               className="mb-4 w-64 max-w-[90vw] rounded px-4 py-2 text-center text-black"
@@ -435,18 +476,8 @@ export default function MleoCatcher() {
             <div className="mt-2 flex flex-col gap-3 sm:flex-row">
               <button
                 type="button"
-                onClick={() => {
-                  if (!playerName.trim()) return;
-                  updateLeaderboard(playerName, 0);
-                  setShowIntro(false);
-                  setGameRunning(true);
-                }}
-                disabled={!playerName.trim()}
-                className={`rounded-lg px-8 py-4 text-xl font-bold shadow-lg transition ${
-                  playerName.trim()
-                    ? "animate-pulse bg-yellow-400 text-black hover:scale-105"
-                    : "cursor-not-allowed bg-gray-500 text-gray-300"
-                }`}
+                onClick={beginRun}
+                className="animate-pulse rounded-lg bg-yellow-400 px-8 py-4 text-xl font-bold text-black shadow-lg transition hover:scale-105"
                 style={{ touchAction: "manipulation" }}
               >
                 ▶ התחלה

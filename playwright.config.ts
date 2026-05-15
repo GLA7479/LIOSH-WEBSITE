@@ -19,7 +19,18 @@ export default defineConfig({
     video: "off",
     locale: "he-IL",
   },
-  projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"] } }],
+  projects: [
+    {
+      name: "chromium",
+      use: { ...devices["Desktop Chrome"] },
+      grepInvert: /@webkit-only/,
+    },
+    {
+      name: "webkit",
+      use: { ...devices["iPhone 13"] },
+      grep: /@webkit-only/,
+    },
+  ],
   webServer: {
     command: process.env.PLAYWRIGHT_WEB_SERVER || "npm run dev",
     url: baseURL,
