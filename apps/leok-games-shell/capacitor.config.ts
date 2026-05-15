@@ -1,11 +1,14 @@
 import type { CapacitorConfig } from "@capacitor/cli";
 
 /**
- * Remote LEOK games hub. Set LEOK_GAMES_SHELL_URL to your deployed origin including `/game`, e.g.:
- *   https://your-domain.com/game
- * Default targets Android emulator → host machine (Next dev on port 3001).
+ * Remote LEOK **site root** (same launch experience as the main website: home, learning, `/game` hub, `/mleo-*`, etc.).
+ * Set `LEOK_GAMES_SHELL_URL` to the deployed origin, e.g. `https://your-domain.com` or `https://your-domain.com/`.
+ * Do **not** set this to `/game` only — the app must not open directly on the games hub unless the user navigates there.
+ *
+ * Default: Android emulator → host Next on port **3001** at site root.
  */
-const shellUrl = (process.env.LEOK_GAMES_SHELL_URL || "http://10.0.2.2:3001/game").replace(/\/$/, "");
+const raw = process.env.LEOK_GAMES_SHELL_URL || "http://10.0.2.2:3001/";
+const shellUrl = `${raw.replace(/\/+$/, "")}/`;
 const cleartext = shellUrl.startsWith("http://");
 
 const config: CapacitorConfig = {
