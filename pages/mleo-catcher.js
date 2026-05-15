@@ -6,32 +6,66 @@ import { useRouter } from "next/router";
 
 export default function MleoCatcher() {
   const router = useRouter();
+
+  // Movement intent: updated by keyboard (window) + on-screen pads (pointer). Read every frame in updateGame.
+  const keysRef = useRef({ left: false, right: false });
+  /** When true, keyboard + pads may set keysRef; game loop applies keysRef to Leo. Tied to active run, not React render. */
+  const keyboardGateRef = useRef(false);
+  const playerNameRef = useRef("");
+
   // ─────────────────────────────────────────────────────────────────────────────
-  // מניעת העתקה/תפריט/לחיצה ארוכה
+  // Light wrapper hardening — avoid document-level preventDefault (breaks mobile taps)
   // ─────────────────────────────────────────────────────────────────────────────
   useEffect(() => {
-    const preventMenu = (e) => e.preventDefault();
-    const preventSelection = (e) => e.preventDefault();
+    const wrapper = document.getElementById("game-wrapper");
+    if (!wrapper) return;
 
-    document.addEventListener("contextmenu", preventMenu);
-    document.addEventListener("selectstart", preventSelection);
-    document.addEventListener("copy", preventSelection);
+    const isInteractive = (t) =>
+      t?.closest?.(
+        "button, a, input, textarea, select, label, [role='button'], [role='textbox'], [contenteditable='true']"
+      );
 
-    let touchTimer;
-    const handleTouchStart = (e) => {
-      touchTimer = setTimeout(() => e.preventDefault(), 500);
+    const preventMenu = (e) => {
+      if (!wrapper.contains(e.target)) return;
+      if (isInteractive(e.target)) return;
+      e.preventDefault();
     };
-    const handleTouchEnd = () => clearTimeout(touchTimer);
 
-    document.addEventListener("touchstart", handleTouchStart, { passive: false });
-    document.addEventListener("touchend", handleTouchEnd);
+    wrapper.addEventListener("contextmenu", preventMenu);
 
     return () => {
-      document.removeEventListener("contextmenu", preventMenu);
-      document.removeEventListener("selectstart", preventSelection);
-      document.removeEventListener("copy", preventSelection);
-      document.removeEventListener("touchstart", handleTouchStart);
-      document.removeEventListener("touchend", handleTouchEnd);
+      wrapper.removeEventListener("contextmenu", preventMenu);
+    };
+  }, []);
+
+  // ─────────────────────────────────────────────────────────────────────────────
+  // Keyboard: single mount lifecycle — never tied to gameRunning (avoids attach/detach bugs on replay)
+  // ─────────────────────────────────────────────────────────────────────────────
+  useEffect(() => {
+    const onKeyDown = (e) => {
+      if (!keyboardGateRef.current) return;
+      if (e.repeat) return;
+      const left = e.code === "ArrowLeft" || e.code === "KeyA";
+      const right = e.code === "ArrowRight" || e.code === "KeyD";
+      if (!left && !right) return;
+      e.preventDefault();
+      if (left) keysRef.current.left = true;
+      if (right) keysRef.current.right = true;
+    };
+
+    const onKeyUp = (e) => {
+      const left = e.code === "ArrowLeft" || e.code === "KeyA";
+      const right = e.code === "ArrowRight" || e.code === "KeyD";
+      if (!left && !right) return;
+      if (left) keysRef.current.left = false;
+      if (right) keysRef.current.right = false;
+    };
+
+    window.addEventListener("keydown", onKeyDown, { capture: true });
+    window.addEventListener("keyup", onKeyUp, { capture: true });
+    return () => {
+      window.removeEventListener("keydown", onKeyDown, { capture: true });
+      window.removeEventListener("keyup", onKeyUp, { capture: true });
     };
   }, []);
 
@@ -39,15 +73,15 @@ export default function MleoCatcher() {
   // Refs + State
   // ─────────────────────────────────────────────────────────────────────────────
   const canvasRef = useRef(null);
-  const assetsRef = useRef(null);        // טעינת תמונות פעם אחת
+  const boardRef = useRef(null);
+  const assetsRef = useRef(null);
   const leoRef = useRef(null);
   const itemsRef = useRef([]);
   const currentScoreRef = useRef(0);
   const runningRef = useRef(false);
   const rafRef = useRef(0);
-
-  // ↓ לניהול קושי דינמי
   const diffTimerRef = useRef({ lastSpawn: 0 });
+  const startupRafRef = useRef(0);
 
   const [gameRunning, setGameRunning] = useState(false);
   const [gameOver, setGameOver] = useState(false);
@@ -57,16 +91,16 @@ export default function MleoCatcher() {
   const [playerName, setPlayerName] = useState("");
   const [leaderboard, setLeaderboard] = useState([]);
 
-  // ─────────────────────────────────────────────────────────────────────────────
-  // Persisted data
-  // ─────────────────────────────────────────────────────────────────────────────
+  useEffect(() => {
+    playerNameRef.current = playerName;
+  }, [playerName]);
+
   useEffect(() => {
     if (typeof window === "undefined") return;
     const savedHighScore = Number(localStorage.getItem("mleoCatcherHighScore") || 0);
     setHighScore(savedHighScore);
     const stored = JSON.parse(localStorage.getItem("mleoCatcherLeaderboard") || "[]");
     setLeaderboard(stored);
-    // טעינת שם משתמש שמור
     const savedName = localStorage.getItem("mleo_player_name") || "";
     setPlayerName(savedName);
   }, []);
@@ -90,27 +124,20 @@ export default function MleoCatcher() {
     }
   };
 
-  // ─────────────────────────────────────────────────────────────────────────────
-  // Difficulty helpers
-  // ─────────────────────────────────────────────────────────────────────────────
   function getDifficulty() {
     const s = currentScoreRef.current;
-    const level = Math.floor(s / 10);                 // כל 10 נק' = רמה
-    const spawnInterval = Math.max(1200 - level * 120, 250); // מרווח ספאון (ms)
-    const itemSpeed = Math.min(3 + level * 0.5, 9);           // מהירות נפילה
-    const bombBias = Math.min(0.2 + level * 0.05, 0.6);       // סיכוי לבומבה
+    const level = Math.floor(s / 10);
+    const spawnInterval = Math.max(1200 - level * 120, 250);
+    const itemSpeed = Math.min(3 + level * 0.5, 9);
+    const bombBias = Math.min(0.2 + level * 0.05, 0.6);
     return { spawnInterval, itemSpeed, bombBias, level };
   }
 
   function getPlayerSpeed() {
-    return 5 + Math.min(currentScoreRef.current / 20, 3);     // 5–8
+    return 5 + Math.min(currentScoreRef.current / 20, 3);
   }
 
-  // ─────────────────────────────────────────────────────────────────────────────
-  // Game helpers
-  // ─────────────────────────────────────────────────────────────────────────────
   function preloadAssets() {
-    // טען פעם אחת בלבד
     if (assetsRef.current) return assetsRef.current;
 
     const leoSprite = new window.Image();
@@ -130,6 +157,23 @@ export default function MleoCatcher() {
 
     assetsRef.current = { leoSprite, coinImg, diamondImg, bombImg, bgImg };
     return assetsRef.current;
+  }
+
+  function syncCanvasSize() {
+    const board = boardRef.current;
+    const canvas = canvasRef.current;
+    if (!board || !canvas) return false;
+    const w = Math.max(2, Math.floor(board.clientWidth));
+    const h = Math.max(2, Math.floor(board.clientHeight));
+    if (w < 8 || h < 8) return false;
+    canvas.width = w;
+    canvas.height = h;
+    return true;
+  }
+
+  function resetInputState() {
+    keysRef.current = { left: false, right: false };
+    keyboardGateRef.current = false;
   }
 
   function initGame() {
@@ -154,19 +198,16 @@ export default function MleoCatcher() {
     const canvas = canvasRef.current;
     if (!canvas) return;
 
-    // בחירת סוג לפי משקלים דינמיים
     const r = Math.random();
     let type = "coin";
     if (r < diff.bombBias) type = "bomb";
     else if (r < diff.bombBias + 0.25) type = "diamond";
 
-    // גדלים
     let size = 40;
     if (type === "bomb") size = 70;
     if (type === "coin") size = 50;
     if (type === "diamond") size = 35;
 
-    // מהירות נפילה של האייטם
     const vy = diff.itemSpeed + Math.random() * 0.8;
 
     itemsRef.current.push({
@@ -212,13 +253,17 @@ export default function MleoCatcher() {
 
     const { leoSprite, coinImg, diamondImg, bombImg, bgImg } = assetsRef.current || {};
 
-    // ציור רקע
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     if (bgImg && bgImg.complete) ctx.drawImage(bgImg, 0, 0, canvas.width, canvas.height);
 
-    // תזוזת ליאו
     const leo = leoRef.current;
     if (leo) {
+      const speed = getPlayerSpeed();
+      const k = keysRef.current;
+      if (k.left && !k.right) leo.dx = -speed;
+      else if (k.right && !k.left) leo.dx = speed;
+      else leo.dx = 0;
+
       leo.x += leo.dx;
       if (leo.x < 0) leo.x = 0;
       if (leo.x + leo.width > canvas.width) leo.x = canvas.width - leo.width;
@@ -228,7 +273,6 @@ export default function MleoCatcher() {
       }
     }
 
-    // ציור/עדכון אייטמים — single pass without forEach+splice (avoids skipped indices)
     const items = itemsRef.current;
     const remaining = [];
     for (let i = 0; i < items.length; i++) {
@@ -247,9 +291,10 @@ export default function MleoCatcher() {
         if (item.type === "coin") currentScoreRef.current += 1;
         else if (item.type === "diamond") currentScoreRef.current += 5;
         else if (item.type === "bomb") {
+          resetInputState();
           runningRef.current = false;
           setGameOver(true);
-          updateLeaderboard(playerName, currentScoreRef.current);
+          updateLeaderboard(playerNameRef.current, currentScoreRef.current);
         }
         setScore(currentScoreRef.current);
         continue;
@@ -259,7 +304,6 @@ export default function MleoCatcher() {
     }
     itemsRef.current = remaining;
 
-    // ספאון לפי טיימר דינמי
     const now = performance.now();
     const diff = getDifficulty();
     if (now - diffTimerRef.current.lastSpawn >= diff.spawnInterval) {
@@ -267,7 +311,6 @@ export default function MleoCatcher() {
       diffTimerRef.current.lastSpawn = now;
     }
 
-    // (אופציונלי) תצוגת רמה
     ctx.font = "bold 20px sans-serif";
     ctx.fillStyle = "rgba(255,255,255,0.9)";
     ctx.fillText(`רמה: ${diff.level}`, 16, 28);
@@ -276,74 +319,101 @@ export default function MleoCatcher() {
   }
 
   function startGame() {
-    // מסך מלא במובייל
     const isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
     const wrapper = document.getElementById("game-wrapper");
     if (isMobile && wrapper?.requestFullscreen) wrapper.requestFullscreen().catch(() => {});
     else if (isMobile && wrapper?.webkitRequestFullscreen) wrapper.webkitRequestFullscreen?.();
 
     preloadAssets();
-    initGame();
-    runningRef.current = true;
-    updateGame();
+
+    let attempts = 0;
+    const boot = () => {
+      attempts++;
+      if (!syncCanvasSize()) {
+        if (attempts < 24) {
+          requestAnimationFrame(boot);
+          return;
+        }
+        const c = canvasRef.current;
+        if (c) {
+          const w = Math.min(1180, Math.max(320, Math.floor(window.innerWidth - 48)));
+          const h = Math.max(240, Math.floor(w / 2));
+          c.width = w;
+          c.height = h;
+        }
+      }
+      keysRef.current = { left: false, right: false };
+      initGame();
+      runningRef.current = true;
+      keyboardGateRef.current = true;
+      updateGame();
+    };
+    boot();
   }
 
-  const moveLeft = () => {
-    if (leoRef.current) leoRef.current.dx = -getPlayerSpeed(); // ← דינמי
-  };
-  const moveRight = () => {
-    if (leoRef.current) leoRef.current.dx = getPlayerSpeed();  // ← דינמי
-  };
-  const stopMove = () => {
-    if (leoRef.current) leoRef.current.dx = 0;
-  };
-
   // ─────────────────────────────────────────────────────────────────────────────
-  // Game lifecycle
+  // Game loop lifecycle only (no keyboard attach/detach here)
   // ─────────────────────────────────────────────────────────────────────────────
   useEffect(() => {
     if (!gameRunning) return;
 
-    const handleKey = (e) => {
-      if (!leoRef.current) return;
-      if (e.code === "ArrowLeft") moveLeft();
-      if (e.code === "ArrowRight") moveRight();
+    const kick = () => {
+      cancelAnimationFrame(startupRafRef.current);
+      startupRafRef.current = requestAnimationFrame(() => startGame());
     };
-
-    const handleKeyUp = (e) => {
-      if (!leoRef.current) return;
-      if (e.code === "ArrowLeft" || e.code === "ArrowRight") stopMove();
-    };
-
-    document.addEventListener("keydown", handleKey);
-    document.addEventListener("keyup", handleKeyUp);
-
-    // נתחיל רק בפריים הבא כדי לוודא שהקנבס כבר ב‑DOM
-    requestAnimationFrame(() => startGame());
+    kick();
 
     return () => {
-      document.removeEventListener("keydown", handleKey);
-      document.removeEventListener("keyup", handleKeyUp);
+      cancelAnimationFrame(startupRafRef.current);
       runningRef.current = false;
+      resetInputState();
       cancelAnimationFrame(rafRef.current);
     };
   }, [gameRunning]);
 
-  // ─────────────────────────────────────────────────────────────────────────────
-  // JSX
-  // ─────────────────────────────────────────────────────────────────────────────
+  useEffect(() => {
+    if (!gameRunning || showIntro) return;
+    const board = boardRef.current;
+    if (!board || typeof ResizeObserver === "undefined") return;
+
+    const apply = () => {
+      const canvas = canvasRef.current;
+      if (!canvas) return;
+      syncCanvasSize();
+      const leo = leoRef.current;
+      if (leo && canvas.height > 40) {
+        leo.y = canvas.height - 120;
+        leo.x = Math.max(0, Math.min(leo.x, canvas.width - leo.width));
+      }
+    };
+
+    apply();
+    const ro = new ResizeObserver(() => apply());
+    ro.observe(board);
+    return () => ro.disconnect();
+  }, [gameRunning, showIntro]);
+
+  const setPad = (side, down) => {
+    if (!keyboardGateRef.current) return;
+    if (side === "left") keysRef.current.left = down;
+    if (side === "right") keysRef.current.right = down;
+  };
+
   return (
     <Layout>
       <div
         id="game-wrapper"
-        className="flex flex-col items-center justify-center min-h-screen bg-gray-900 text-white relative select-none"
+        className="relative isolate flex min-h-screen flex-col items-center justify-center bg-gray-900 text-white select-none"
         dir="rtl"
       >
         {showIntro && (
-          <div className="absolute inset-0 flex flex-col items-center justify-center bg-gray-900 z-[999] text-center p-6">
+          <div
+            className="pointer-events-auto absolute inset-0 z-[200000] flex flex-col items-center justify-center bg-gray-900 p-6 text-center"
+            style={{ touchAction: "manipulation" }}
+          >
             <Image src="/images/leo-intro.png" alt="ליאו" width={220} height={220} className="mb-6 animate-bounce" />
-            <h1 className="text-4xl sm:text-5xl font-bold text-yellow-400 mb-2">🎯 תופס עם ליאו</h1>
-            <p className="text-base sm:text-lg text-gray-200 mb-4">
+            <h1 className="mb-2 text-4xl font-bold text-yellow-400 sm:text-5xl">🎯 תופס עם ליאו</h1>
+            <p className="mb-4 text-base text-gray-200 sm:text-lg">
               הזיזו את ליאו, תפסו מטבעות ויהלומים, והתרחקו מפצצות!
             </p>
 
@@ -358,10 +428,11 @@ export default function MleoCatcher() {
                   localStorage.setItem("mleo_player_name", newName);
                 }
               }}
-              className="mb-4 px-4 py-2 rounded text-black w-64 text-center"
+              className="mb-4 w-64 max-w-[90vw] rounded px-4 py-2 text-center text-black"
+              autoComplete="off"
             />
 
-            <div className="flex flex-col sm:flex-row gap-3 mt-2">
+            <div className="mt-2 flex flex-col gap-3 sm:flex-row">
               <button
                 type="button"
                 onClick={() => {
@@ -371,11 +442,12 @@ export default function MleoCatcher() {
                   setGameRunning(true);
                 }}
                 disabled={!playerName.trim()}
-                className={`px-8 py-4 font-bold rounded-lg text-xl shadow-lg transition animate-pulse ${
+                className={`rounded-lg px-8 py-4 text-xl font-bold shadow-lg transition ${
                   playerName.trim()
-                    ? "bg-yellow-400 text-black hover:scale-105"
-                    : "bg-gray-500 text-gray-300 cursor-not-allowed"
+                    ? "animate-pulse bg-yellow-400 text-black hover:scale-105"
+                    : "cursor-not-allowed bg-gray-500 text-gray-300"
                 }`}
+                style={{ touchAction: "manipulation" }}
               >
                 ▶ התחלה
               </button>
@@ -387,7 +459,8 @@ export default function MleoCatcher() {
                   setGameOver(false);
                   router.push("/game");
                 }}
-                className="px-8 py-4 font-bold rounded-lg text-xl shadow-lg bg-gray-700 text-white hover:bg-gray-600 transition"
+                className="rounded-lg bg-gray-700 px-8 py-4 text-xl font-bold text-white shadow-lg transition hover:bg-gray-600"
+                style={{ touchAction: "manipulation" }}
               >
                 ✖ חזרה למשחקים
               </button>
@@ -397,32 +470,39 @@ export default function MleoCatcher() {
 
         {!showIntro && (
           <>
-            <div className="hidden sm:block absolute left-1/2 transform -translate-x-1/2 bg-black/60 px-4 py-2 rounded-lg text-lg font-bold z-[999] top-0.5">
+            <div className="pointer-events-none absolute left-1/2 top-2 z-20 hidden max-w-[95vw] -translate-x-1/2 rounded-lg bg-black/60 px-4 py-2 text-lg font-bold sm:block">
               ניקוד: {score} | שיא: {highScore}
             </div>
-            <div className="sm:hidden absolute left-1/2 transform -translate-x-1/2 bg-black/60 px-3 py-1 rounded-md text-base font-bold z-[999] bottom-36">
+            <div className="pointer-events-none absolute bottom-40 left-1/2 z-20 max-w-[95vw] -translate-x-1/2 rounded-md bg-black/60 px-3 py-1 text-base font-bold sm:hidden">
               ניקוד: {score} | שיא: {highScore}
             </div>
 
-            <div className="relative w-full max-w-[95vw] sm:max-w-[960px]">
+            <div
+              ref={boardRef}
+              className="relative z-0 mx-auto aspect-[2/1] w-[min(100vw-1rem,1180px)] max-h-[min(68vh,calc(100vw*0.5))] overflow-hidden rounded-lg border-4 border-yellow-400 bg-black/30 shadow-lg sm:max-h-[min(78vh,620px)]"
+            >
               <canvas
                 ref={canvasRef}
-                width={960}
-                height={480}
-                className="border-4 border-yellow-400 rounded-lg w-full aspect-[2/1] max-h-[80vh]"
+                className="pointer-events-none absolute inset-0 block h-full w-full touch-none"
+                aria-hidden
               />
 
               {gameOver && (
-                <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/60 z-[999]">
-                  <h2 className="text-4xl sm:text-5xl font-bold text-red-500 mb-4">סיום משחק</h2>
+                <div
+                  className="pointer-events-auto absolute inset-0 z-40 flex flex-col items-center justify-center bg-black/70"
+                  style={{ touchAction: "manipulation" }}
+                >
+                  <h2 className="mb-4 text-4xl font-bold text-red-500 sm:text-5xl">סיום משחק</h2>
                   <button
                     type="button"
-                    className="px-6 py-3 bg-yellow-400 text-black font-bold rounded text-base sm:text-lg"
+                    className="relative z-50 rounded bg-yellow-400 px-6 py-3 text-base font-bold text-black sm:text-lg"
                     onClick={() => {
+                      resetInputState();
                       setGameRunning(false);
                       setGameOver(false);
                       setTimeout(() => setGameRunning(true), 50);
                     }}
+                    style={{ touchAction: "manipulation" }}
                   >
                     שחקו שוב
                   </button>
@@ -435,31 +515,73 @@ export default function MleoCatcher() {
               onClick={() => {
                 if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
                 else if (document.webkitFullscreenElement) document.webkitExitFullscreen?.();
+                resetInputState();
                 setGameRunning(false);
                 setGameOver(false);
                 setShowIntro(true);
                 router.push("/game");
               }}
-              className="fixed top-4 right-4 px-6 py-4 bg-yellow-400 text-black font-bold rounded-lg text-lg sm:text-xl z-[999]"
+              className="fixed right-4 top-4 z-[200010] rounded-lg bg-yellow-400 px-6 py-4 text-lg font-bold text-black sm:text-xl"
+              style={{ touchAction: "manipulation" }}
             >
               יציאה
             </button>
 
-            {gameRunning && (
+            {gameRunning && !gameOver && (
               <>
                 <button
                   type="button"
-                  onTouchStart={moveLeft}
-                  onTouchEnd={stopMove}
-                  className="fixed bottom-8 left-4 px-8 py-4 bg-yellow-400 text-black font-bold rounded-lg text-lg select-none"
+                  className="fixed bottom-8 left-4 z-[200010] select-none rounded-lg bg-yellow-400 px-8 py-4 text-lg font-bold text-black"
+                  style={{ touchAction: "none" }}
+                  onPointerDown={(e) => {
+                    e.preventDefault();
+                    try {
+                      e.currentTarget.setPointerCapture?.(e.pointerId);
+                    } catch {
+                      /* noop */
+                    }
+                    setPad("left", true);
+                  }}
+                  onPointerUp={(e) => {
+                    setPad("left", false);
+                    try {
+                      e.currentTarget.releasePointerCapture?.(e.pointerId);
+                    } catch {
+                      /* noop */
+                    }
+                  }}
+                  onPointerCancel={() => setPad("left", false)}
+                  onPointerLeave={(e) => {
+                    if (e.buttons === 0) setPad("left", false);
+                  }}
                 >
                   ◀ שמאל
                 </button>
                 <button
                   type="button"
-                  onTouchStart={moveRight}
-                  onTouchEnd={stopMove}
-                  className="fixed bottom-8 right-4 px-8 py-4 bg-yellow-400 text-black font-bold rounded-lg text-lg select-none"
+                  className="fixed bottom-8 right-4 z-[200010] select-none rounded-lg bg-yellow-400 px-8 py-4 text-lg font-bold text-black"
+                  style={{ touchAction: "none" }}
+                  onPointerDown={(e) => {
+                    e.preventDefault();
+                    try {
+                      e.currentTarget.setPointerCapture?.(e.pointerId);
+                    } catch {
+                      /* noop */
+                    }
+                    setPad("right", true);
+                  }}
+                  onPointerUp={(e) => {
+                    setPad("right", false);
+                    try {
+                      e.currentTarget.releasePointerCapture?.(e.pointerId);
+                    } catch {
+                      /* noop */
+                    }
+                  }}
+                  onPointerCancel={() => setPad("right", false)}
+                  onPointerLeave={(e) => {
+                    if (e.buttons === 0) setPad("right", false);
+                  }}
                 >
                   ימין ▶
                 </button>
