@@ -525,37 +525,29 @@ export default function MleoCatcher() {
         className="relative isolate flex min-h-screen flex-col items-center justify-center bg-gray-900 text-white select-none"
         dir="rtl"
       >
-        {portraitBlocked && (
+        {showIntro && (
           <div
-            className="fixed inset-0 z-[300000] flex flex-col items-center justify-center gap-4 bg-gray-900 p-6 text-center shadow-[inset_0_0_120px_rgba(0,0,0,0.45)]"
-            data-testid="mleo-catcher-rotate-overlay"
+            className="pointer-events-auto absolute inset-0 z-[200000] flex flex-col items-center justify-center overflow-y-auto bg-gray-900 p-6 text-center"
             style={{ touchAction: "manipulation" }}
           >
-            <div className="text-6xl" aria-hidden>
-              ⟲
-            </div>
-            <h2 className="max-w-md text-2xl font-bold leading-snug text-yellow-400 sm:text-3xl">
-              סובבו את הטלפון לרוחב כדי לשחק
-            </h2>
-            <p className="max-w-md text-base text-gray-200 sm:text-lg">
-              המשחק הזה עובד הכי טוב כשהמסך לרוחב.
-            </p>
-            <button
-              type="button"
-              className="mt-4 rounded-lg bg-gray-700 px-6 py-3 text-lg font-bold text-white shadow-lg transition hover:bg-gray-600"
-              style={{ touchAction: "manipulation" }}
-              onClick={exitToGameHub}
-            >
-              ✖ חזרה למשחקים
-            </button>
-          </div>
-        )}
+            {portraitBlocked && (
+              <div
+                className="mb-6 w-full max-w-md rounded-xl border-2 border-yellow-400/80 bg-yellow-400/10 px-4 py-4 shadow-lg"
+                data-testid="mleo-catcher-rotate-overlay"
+                role="status"
+              >
+                <div className="mb-2 text-4xl" aria-hidden>
+                  ⟲
+                </div>
+                <p className="text-lg font-bold leading-snug text-yellow-400 sm:text-xl">
+                  סובבו את הטלפון לרוחב כדי לשחק
+                </p>
+                <p className="mt-2 text-sm text-gray-200 sm:text-base">
+                  המשחק הזה עובד הכי טוב כשהמסך לרוחב. אפשר ללחוץ על התחלה אחרי הסיבוב.
+                </p>
+              </div>
+            )}
 
-        {!portraitBlocked && showIntro && (
-          <div
-            className="pointer-events-auto absolute inset-0 z-[200000] flex flex-col items-center justify-center bg-gray-900 p-6 text-center"
-            style={{ touchAction: "manipulation" }}
-          >
             <Image src="/images/leo-intro.png" alt="ליאו" width={220} height={220} className="mb-6 animate-bounce" />
             <h1 className="mb-2 text-4xl font-bold text-yellow-400 sm:text-5xl">🎯 תופס עם ליאו</h1>
             <p className="mb-4 text-base text-gray-200 sm:text-lg">

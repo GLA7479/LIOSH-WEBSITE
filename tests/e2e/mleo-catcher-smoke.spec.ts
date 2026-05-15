@@ -64,15 +64,18 @@ test.describe("mleo-catcher smoke (desktop)", () => {
 test.describe("mleo-catcher mobile portrait (rotate gate)", () => {
   test.use(iphonePortrait);
 
-  test("rotate overlay; intro start is not offered", async ({ page }) => {
+  test("portrait: intro + rotate hint; התחלה visible but does not start run", async ({ page }) => {
     await page.goto("/mleo-catcher", { waitUntil: "networkidle" });
     await expect(page.getByTestId("mleo-catcher-rotate-overlay")).toBeVisible();
     await expect(page.getByText("סובבו את הטלפון לרוחב כדי לשחק")).toBeVisible();
-    await expect(page.getByRole("button", { name: /התחלה/ })).toHaveCount(0);
+    await expect(page.getByPlaceholder(/מה השם/)).toBeVisible();
+    const start = page.getByRole("button", { name: /התחלה/ });
+    await expect(start).toBeEnabled();
+    await start.click({ timeout: 15_000 });
     await expect(page.locator("#game-wrapper canvas")).toHaveCount(0);
   });
 
-  test("חזרה למשחקים from rotate overlay navigates to /game", async ({ page }) => {
+  test("חזרה למשחקים from intro navigates to /game", async ({ page }) => {
     await page.goto("/mleo-catcher", { waitUntil: "networkidle" });
     await expect(page.getByTestId("mleo-catcher-rotate-overlay")).toBeVisible();
     await page.getByRole("button", { name: /חזרה למשחקים/ }).click();
