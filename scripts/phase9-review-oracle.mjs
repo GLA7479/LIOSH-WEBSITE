@@ -113,16 +113,20 @@ function scanLeaksOnSurface(text) {
   return hits;
 }
 
-function normReportBody(md) {
-  return String(md || "")
-    .replace(/\s+/g, " ")
-    .trim()
-    .slice(0, 50_000);
-}
-
-function jsonExecutiveBlob(shortJson) {
-  const lines = shortJson?.executiveLines || shortJson?.textSnapshotFromShortHtml || [];
-  return Array.isArray(lines) ? lines.join("\n") : "";
+function shortReportJsonMdConsistency(shortJson, shortMd) {
+  const issues = [];
+  const md = String(shortMd || "");
+  if (md.length < 200) issues.push("short_md_too_short");
+  if (!/#\s*דוח\s+קצר/u.test(md) && !/דוח\s+קצר/u.test(md)) issues.push("short_md_missing_title_signal");
+  const o = shortJson?.overallSnapshot || {};
+  if (o.totalQuestions != null && !md.includes(String(o.totalQuestions))) issues.push("md_missing_totalQuestions");
+  if (o.overallAccuracy != null && !md.includes(String(o.overallAccuracy))) issues.push("md_missing_overallAccuracy");
+  for (const line of shortJson?.executiveLines || []) {
+    const t = String(line || "").trim();
+    if (t.replace(/\s/g, "").length < 30) continue;
+    if (!md.includes(t)) issues.push("md_missing_executive_line");
+  }
+  return { ok: issues.length === 0, issues: [...new Set(issues)] };
 }
 
 function suspicionWeights() {
@@ -258,15 +262,11 @@ async function main() {
       warnings.push({ studentId: sid, code: "profile_type_mismatch", profile: profile.profileType, short: shortJ.profileType });
     }
 
-    const blobJ = normReportBody(jsonExecutiveBlob(shortJ));
-    const blobM = normReportBody(shortMd);
-    if (blobJ.length > 80 && blobM.length > 80) {
-      const ratio = Math.min(blobJ.length, blobM.length) / Math.max(blobJ.length, blobM.length);
-      if (ratio < 0.35) {
-        score += W.report_json_md_divergence;
-        flags.push("short_json_vs_md_low_overlap_heuristic");
-        warnings.push({ studentId: sid, code: "short_json_md_divergence_heuristic", ratio: Math.round(ratio * 1000) / 1000 });
-      }
+    const jsonMdConsistency = shortReportJsonMdConsistency(shortJ, shortMd);
+    if (!jsonMdConsistency.ok) {
+      score += W.report_json_md_divergence;
+      flags.push("short_json_md_consistency_gap");
+      warnings.push({ studentId: sid, code: "short_json_md_consistency_gap", issues: jsonMdConsistency.issues });
     }
 
     let shortPdfText = "";
@@ -308,24 +308,32 @@ async function main() {
 
       const lenS = shortPdfText.length;
       const lenD = detPdfText.length;
-      const richerOk = lenD > lenS * 1.05 || detBytes > shortBytes * 1.02;
-      const exceptionNote =
-        !richerOk && heD >= heS && lenD >= lenS * 0.85
-          ? "detailed_text_similar_length_possible_layout_duplicate_heuristic"
-          : null;
+      const pdfExtractRicher = lenD > lenS * 1.05 || detBytes > shortBytes * 1.02;
+      const mdDetailedRicherThanShort =
+        detailedMd.length >= shortMd.length * 0.995 ||
+        hebrewLetters(detailedMd) >= hebrewLetters(shortMd) * 1.02;
+      const richerOk = pdfExtractRicher || mdDetailedRicherThanShort;
+      let exceptionNote = null;
+      if (richerOk && !pdfExtractRicher && mdDetailedRicherThanShort) {
+        exceptionNote = "md_detailed_longer_than_short_pdf_extract_not_reliable";
+      } else if (!richerOk && heD >= heS && lenD >= lenS * 0.85) {
+        exceptionNote = "detailed_text_similar_length_possible_layout_duplicate_heuristic";
+      }
       pdfRichnessRows.push({
         studentId: sid,
         shortPdfBytes: shortBytes,
         detailedPdfBytes: detBytes,
         shortExtractedChars: lenS,
         detailedExtractedChars: lenD,
+        pdfExtractRicher,
+        mdDetailedRicherThanShort,
         detailedRicherThanShort: richerOk,
         exceptionNote,
       });
       if (!richerOk && !exceptionNote) {
         score += W.pdf_detailed_not_richer;
         flags.push("pdf_detailed_not_richer");
-        warnings.push({ studentId: sid, code: "pdf_detailed_not_richer", lenS, lenD });
+        warnings.push({ studentId: sid, code: "pdf_detailed_not_richer", lenS, lenD, shortMdLen: shortMd.length, detailedMdLen: detailedMd.length });
       } else if (!richerOk && exceptionNote) {
         warnings.push({ studentId: sid, code: "pdf_richness_borderline", lenS, lenD, exceptionNote });
         score += Math.floor(W.pdf_detailed_not_richer / 2);
@@ -671,7 +679,11 @@ async function main() {
       "# PDF_RICHNESS_AUDIT",
       "",
       `- סה״כ שורות: ${pdfRichnessRows.length}`,
-      `- detailedRicherThanShort=false: **${pdfRichnessRows.filter((r) => !r.detailedRicherThanShort).length}**`,
+      `- detailedRicherThanShort (PDF או MD): **${pdfRichnessRows.filter((r) => r.detailedRicherThanShort).length}**`,
+      `- pdfExtractRicher בלבד: **${pdfRichnessRows.filter((r) => r.pdfExtractRicher).length}**`,
+      `- mdDetailedRicherThanShort: **${pdfRichnessRows.filter((r) => r.mdDetailedRicherThanShort).length}**`,
+      `- detailedRicherThanShort=false (גם MD לא ארוך יותר): **${pdfRichnessRows.filter((r) => !r.detailedRicherThanShort).length}**`,
+      `- exceptionNote (מסלולי borderline / MD vs חילוץ): **${pdfRichnessRows.filter((r) => r.exceptionNote).length}**`,
       "",
     ].join("\n"),
     "utf8",

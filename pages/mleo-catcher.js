@@ -228,31 +228,36 @@ export default function MleoCatcher() {
       }
     }
 
-    // ציור/עדכון אייטמים
-    itemsRef.current.forEach((item, i) => {
-      item.y += item.vy; // ← מהירות דינמית
+    // ציור/עדכון אייטמים — single pass without forEach+splice (avoids skipped indices)
+    const items = itemsRef.current;
+    const remaining = [];
+    for (let i = 0; i < items.length; i++) {
+      const item = items[i];
+      item.y += item.vy;
 
-      if (item.type === "coin" && coinImg?.complete)
+      if (item.type === "coin" && coinImg?.complete) {
         ctx.drawImage(coinImg, item.x, item.y, item.size, item.size);
-      if (item.type === "diamond" && diamondImg?.complete)
+      } else if (item.type === "diamond" && diamondImg?.complete) {
         ctx.drawImage(diamondImg, item.x, item.y, item.size, item.size);
-      if (item.type === "bomb" && bombImg?.complete)
+      } else if (item.type === "bomb" && bombImg?.complete) {
         ctx.drawImage(bombImg, item.x, item.y, item.size, item.size);
+      }
 
       if (leo && checkCollision(leo, item)) {
         if (item.type === "coin") currentScoreRef.current += 1;
-        if (item.type === "diamond") currentScoreRef.current += 5;
-        if (item.type === "bomb") {
+        else if (item.type === "diamond") currentScoreRef.current += 5;
+        else if (item.type === "bomb") {
           runningRef.current = false;
           setGameOver(true);
           updateLeaderboard(playerName, currentScoreRef.current);
         }
-        itemsRef.current.splice(i, 1);
         setScore(currentScoreRef.current);
-      } else if (item.y > canvas.height) {
-        itemsRef.current.splice(i, 1);
+        continue;
       }
-    });
+      if (item.y > canvas.height) continue;
+      remaining.push(item);
+    }
+    itemsRef.current = remaining;
 
     // ספאון לפי טיימר דינמי
     const now = performance.now();
@@ -265,7 +270,7 @@ export default function MleoCatcher() {
     // (אופציונלי) תצוגת רמה
     ctx.font = "bold 20px sans-serif";
     ctx.fillStyle = "rgba(255,255,255,0.9)";
-    ctx.fillText(`Level: ${diff.level}`, 16, 28);
+    ctx.fillText(`רמה: ${diff.level}`, 16, 28);
 
     rafRef.current = requestAnimationFrame(updateGame);
   }
@@ -332,16 +337,19 @@ export default function MleoCatcher() {
       <div
         id="game-wrapper"
         className="flex flex-col items-center justify-center min-h-screen bg-gray-900 text-white relative select-none"
+        dir="rtl"
       >
         {showIntro && (
           <div className="absolute inset-0 flex flex-col items-center justify-center bg-gray-900 z-[999] text-center p-6">
-            <Image src="/images/leo-intro.png" alt="Leo" width={220} height={220} className="mb-6 animate-bounce" />
-            <h1 className="text-4xl sm:text-5xl font-bold text-yellow-400 mb-2">🎯 LEO Catcher</h1>
-            <p className="text-base sm:text-lg text-gray-200 mb-4">Move Leo to catch coins and avoid bombs!</p>
+            <Image src="/images/leo-intro.png" alt="ליאו" width={220} height={220} className="mb-6 animate-bounce" />
+            <h1 className="text-4xl sm:text-5xl font-bold text-yellow-400 mb-2">🎯 תופס עם ליאו</h1>
+            <p className="text-base sm:text-lg text-gray-200 mb-4">
+              הזיזו את ליאו, תפסו מטבעות ויהלומים, והתרחקו מפצצות!
+            </p>
 
             <input
               type="text"
-              placeholder="Enter your name"
+              placeholder="מה השם שלכם?"
               value={playerName}
               onChange={(e) => {
                 const newName = e.target.value;
@@ -355,6 +363,7 @@ export default function MleoCatcher() {
 
             <div className="flex flex-col sm:flex-row gap-3 mt-2">
               <button
+                type="button"
                 onClick={() => {
                   if (!playerName.trim()) return;
                   updateLeaderboard(playerName, 0);
@@ -368,9 +377,10 @@ export default function MleoCatcher() {
                     : "bg-gray-500 text-gray-300 cursor-not-allowed"
                 }`}
               >
-                ▶ Start Game
+                ▶ התחלה
               </button>
               <button
+                type="button"
                 onClick={() => {
                   setShowIntro(true);
                   setGameRunning(false);
@@ -379,7 +389,7 @@ export default function MleoCatcher() {
                 }}
                 className="px-8 py-4 font-bold rounded-lg text-xl shadow-lg bg-gray-700 text-white hover:bg-gray-600 transition"
               >
-                ✖ Exit
+                ✖ חזרה למשחקים
               </button>
             </div>
           </div>
@@ -388,10 +398,10 @@ export default function MleoCatcher() {
         {!showIntro && (
           <>
             <div className="hidden sm:block absolute left-1/2 transform -translate-x-1/2 bg-black/60 px-4 py-2 rounded-lg text-lg font-bold z-[999] top-0.5">
-              Score: {score} | High Score: {highScore}
+              ניקוד: {score} | שיא: {highScore}
             </div>
             <div className="sm:hidden absolute left-1/2 transform -translate-x-1/2 bg-black/60 px-3 py-1 rounded-md text-base font-bold z-[999] bottom-36">
-              Score: {score} | High Score: {highScore}
+              ניקוד: {score} | שיא: {highScore}
             </div>
 
             <div className="relative w-full max-w-[95vw] sm:max-w-[960px]">
@@ -404,8 +414,9 @@ export default function MleoCatcher() {
 
               {gameOver && (
                 <div className="absolute inset-0 flex flex-col items-center justify-center bg-black/60 z-[999]">
-                  <h2 className="text-4xl sm:text-5xl font-bold text-red-500 mb-4">GAME OVER</h2>
+                  <h2 className="text-4xl sm:text-5xl font-bold text-red-500 mb-4">סיום משחק</h2>
                   <button
+                    type="button"
                     className="px-6 py-3 bg-yellow-400 text-black font-bold rounded text-base sm:text-lg"
                     onClick={() => {
                       setGameRunning(false);
@@ -413,13 +424,14 @@ export default function MleoCatcher() {
                       setTimeout(() => setGameRunning(true), 50);
                     }}
                   >
-                    Start Again
+                    שחקו שוב
                   </button>
                 </div>
               )}
             </div>
 
             <button
+              type="button"
               onClick={() => {
                 if (document.fullscreenElement) document.exitFullscreen().catch(() => {});
                 else if (document.webkitFullscreenElement) document.webkitExitFullscreen?.();
@@ -430,24 +442,26 @@ export default function MleoCatcher() {
               }}
               className="fixed top-4 right-4 px-6 py-4 bg-yellow-400 text-black font-bold rounded-lg text-lg sm:text-xl z-[999]"
             >
-              Exit
+              יציאה
             </button>
 
             {gameRunning && (
               <>
                 <button
+                  type="button"
                   onTouchStart={moveLeft}
                   onTouchEnd={stopMove}
                   className="fixed bottom-8 left-4 px-8 py-4 bg-yellow-400 text-black font-bold rounded-lg text-lg select-none"
                 >
-                  ◀ Left
+                  ◀ שמאל
                 </button>
                 <button
+                  type="button"
                   onTouchStart={moveRight}
                   onTouchEnd={stopMove}
                   className="fixed bottom-8 right-4 px-8 py-4 bg-yellow-400 text-black font-bold rounded-lg text-lg select-none"
                 >
-                  Right ▶
+                  ימין ▶
                 </button>
               </>
             )}
