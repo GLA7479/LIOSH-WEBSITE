@@ -1,7 +1,7 @@
 // Service Worker for LEO K PWA - Full Offline Support
-const CACHE_NAME = 'leo-k-v4';
-const STATIC_CACHE = 'leo-k-static-v4';
-const DYNAMIC_CACHE = 'leo-k-dynamic-v4';
+const CACHE_NAME = 'leo-k-v5';
+const STATIC_CACHE = 'leo-k-static-v5';
+const DYNAMIC_CACHE = 'leo-k-dynamic-v5';
 
 // רק קבצים סטטיים אמיתיים (לא דפי Next.js שנוצרים דינמית)
 const STATIC_ASSETS = [

@@ -50,6 +50,7 @@
     "verify:learning-rls": "node scripts/verify-learning-rls.mjs",
     "verify:student-account-sync": "node scripts/verify-student-account-sync.mjs",
     "verify:student-dashboard-view": "node scripts/verify-student-dashboard-view.mjs",
+    "verify:pwa-manifest-orientation": "node scripts/verify-pwa-manifest-orientation.mjs",
     "audit:hebrew-subtopics": "tsx scripts/hebrew-subtopic-coverage-audit.mjs",
     "audit:questions": "tsx scripts/generator-deterministic-harness.mjs && tsx scripts/audit-question-banks.mjs",
     "audit:curriculum:inventory": "tsx scripts/curriculum-audit/scan-question-inventory.mjs",
