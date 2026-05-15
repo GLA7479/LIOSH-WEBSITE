@@ -1,5 +1,22 @@
 import { test, expect } from "@playwright/test";
 
+const iphoneLandscape = {
+  viewport: { width: 844, height: 390 },
+  deviceScaleFactor: 3,
+  isMobile: true,
+  hasTouch: true,
+  userAgent:
+    "Mozilla/5.0 (iPhone; CPU iPhone OS 15_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.0 Mobile/15E148 Safari/604.1",
+};
+
+const iphonePortrait = {
+  viewport: { width: 390, height: 844 },
+  deviceScaleFactor: 3,
+  isMobile: true,
+  hasTouch: true,
+  userAgent: iphoneLandscape.userAgent,
+};
+
 test.describe("mleo-catcher smoke (desktop)", () => {
   test("start, desktop keys, canvas size, pointer pads respond", async ({ page }) => {
     const errors = [];
@@ -44,25 +61,39 @@ test.describe("mleo-catcher smoke (desktop)", () => {
   });
 });
 
-test.describe("mleo-catcher mobile viewport (Chromium / iPhone emulation)", () => {
-  /** iPhone-like layout without switching `defaultBrowserType` (avoids worker split vs Chromium project). */
-  test.use({
-    viewport: { width: 390, height: 844 },
-    deviceScaleFactor: 3,
-    isMobile: true,
-    hasTouch: true,
-    userAgent:
-      "Mozilla/5.0 (iPhone; CPU iPhone OS 15_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.0 Mobile/15E148 Safari/604.1",
+test.describe("mleo-catcher mobile portrait (rotate gate)", () => {
+  test.use(iphonePortrait);
+
+  test("rotate overlay; intro start is not offered", async ({ page }) => {
+    await page.goto("/mleo-catcher", { waitUntil: "networkidle" });
+    await expect(page.getByTestId("mleo-catcher-rotate-overlay")).toBeVisible();
+    await expect(page.getByText("סובבו את הטלפון לרוחב כדי לשחק")).toBeVisible();
+    await expect(page.getByRole("button", { name: /התחלה/ })).toHaveCount(0);
+    await expect(page.locator("#game-wrapper canvas")).toHaveCount(0);
   });
 
-  test("התחלה enabled with empty name; tap starts game", async ({ page }) => {
+  test("חזרה למשחקים from rotate overlay navigates to /game", async ({ page }) => {
     await page.goto("/mleo-catcher", { waitUntil: "networkidle" });
-    const input = page.getByPlaceholder(/מה השם/);
-    await expect(input).toHaveValue("");
+    await expect(page.getByTestId("mleo-catcher-rotate-overlay")).toBeVisible();
+    await page.getByRole("button", { name: /חזרה למשחקים/ }).click();
+    await expect(page).toHaveURL(/\/game/);
+  });
+});
+
+test.describe("mleo-catcher mobile landscape (Chromium)", () => {
+  test.use(iphoneLandscape);
+
+  test("no rotate overlay; התחלה enabled with empty name; game starts", async ({ page }) => {
+    await page.goto("/mleo-catcher", { waitUntil: "networkidle" });
+    await expect(page.getByTestId("mleo-catcher-rotate-overlay")).toHaveCount(0);
+    await expect(page.getByPlaceholder(/מה השם/)).toHaveValue("");
     const start = page.getByRole("button", { name: /התחלה/ });
     await expect(start).toBeEnabled();
     await start.click({ timeout: 15_000 });
     await expect(page.locator("#game-wrapper canvas")).toBeVisible({ timeout: 15_000 });
+    const box = await page.locator("#game-wrapper canvas").boundingBox();
+    expect(box?.width ?? 0).toBeGreaterThan(300);
+    expect(box?.height ?? 0).toBeGreaterThan(140);
   });
 
   test("typed name, exit still works", async ({ page }) => {
@@ -76,8 +107,11 @@ test.describe("mleo-catcher mobile viewport (Chromium / iPhone emulation)", () =
 });
 
 test.describe("mleo-catcher WebKit smoke", () => {
-  test("empty name start (WebKit iPhone)", { tag: "@webkit-only" }, async ({ page }) => {
+  test.use(iphoneLandscape);
+
+  test("empty name start (WebKit iPhone landscape)", { tag: "@webkit-only" }, async ({ page }) => {
     await page.goto("/mleo-catcher", { waitUntil: "networkidle" });
+    await expect(page.getByTestId("mleo-catcher-rotate-overlay")).toHaveCount(0);
     await expect(page.getByPlaceholder(/מה השם/)).toHaveValue("");
     const start = page.getByRole("button", { name: /התחלה/ });
     await expect(start).toBeEnabled();
