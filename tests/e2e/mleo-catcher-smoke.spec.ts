@@ -61,23 +61,21 @@ test.describe("mleo-catcher smoke (desktop)", () => {
   });
 });
 
-test.describe("mleo-catcher mobile portrait (rotate gate)", () => {
+test.describe("mleo-catcher mobile portrait", () => {
   test.use(iphonePortrait);
 
-  test("portrait: intro + rotate hint; התחלה visible but does not start run", async ({ page }) => {
+  test("portrait: no rotate overlay; התחלה starts game", async ({ page }) => {
     await page.goto("/mleo-catcher", { waitUntil: "networkidle" });
-    await expect(page.getByTestId("mleo-catcher-rotate-overlay")).toBeVisible();
-    await expect(page.getByText("סובבו את הטלפון לרוחב כדי לשחק")).toBeVisible();
+    await expect(page.getByText("סובבו את הטלפון לרוחב")).toHaveCount(0);
     await expect(page.getByPlaceholder(/מה השם/)).toBeVisible();
     const start = page.getByRole("button", { name: /התחלה/ });
     await expect(start).toBeEnabled();
     await start.click({ timeout: 15_000 });
-    await expect(page.locator("#game-wrapper canvas")).toHaveCount(0);
+    await expect(page.locator("#game-wrapper canvas")).toBeVisible({ timeout: 15_000 });
   });
 
   test("חזרה למשחקים from intro navigates to /game", async ({ page }) => {
     await page.goto("/mleo-catcher", { waitUntil: "networkidle" });
-    await expect(page.getByTestId("mleo-catcher-rotate-overlay")).toBeVisible();
     await page.getByRole("button", { name: /חזרה למשחקים/ }).click();
     await expect(page).toHaveURL(/\/game/);
   });
@@ -88,7 +86,6 @@ test.describe("mleo-catcher mobile landscape (Chromium)", () => {
 
   test("no rotate overlay; התחלה enabled with empty name; game starts", async ({ page }) => {
     await page.goto("/mleo-catcher", { waitUntil: "networkidle" });
-    await expect(page.getByTestId("mleo-catcher-rotate-overlay")).toHaveCount(0);
     await expect(page.getByPlaceholder(/מה השם/)).toHaveValue("");
     const start = page.getByRole("button", { name: /התחלה/ });
     await expect(start).toBeEnabled();
@@ -114,7 +111,6 @@ test.describe("mleo-catcher WebKit smoke", () => {
 
   test("empty name start (WebKit iPhone landscape)", { tag: "@webkit-only" }, async ({ page }) => {
     await page.goto("/mleo-catcher", { waitUntil: "networkidle" });
-    await expect(page.getByTestId("mleo-catcher-rotate-overlay")).toHaveCount(0);
     await expect(page.getByPlaceholder(/מה השם/)).toHaveValue("");
     const start = page.getByRole("button", { name: /התחלה/ });
     await expect(start).toBeEnabled();

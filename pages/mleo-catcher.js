@@ -6,34 +6,6 @@ import { useRouter } from "next/router";
 
 const DEFAULT_PLAYER_NAME = "שחקן";
 
-/** Client-only: phones/tablets in portrait must rotate; mouse-first desktop always playable. */
-function computePortablePortraitBlocked() {
-  if (typeof window === "undefined") return false;
-
-  const w = window.innerWidth;
-  const h = window.innerHeight;
-  const isPortrait =
-    h > w || window.matchMedia("(orientation: portrait)").matches;
-
-  const fineDesktop =
-    window.matchMedia("(pointer: fine)").matches &&
-    window.matchMedia("(hover: hover)").matches &&
-    Math.min(w, h) >= 720 &&
-    Math.max(w, h) >= 1100;
-
-  if (fineDesktop) return false;
-
-  const touchish =
-    window.matchMedia("(pointer: coarse)").matches ||
-    window.matchMedia("(hover: none)").matches ||
-    (typeof navigator !== "undefined" && (navigator.maxTouchPoints || 0) > 0);
-
-  if (!touchish) return false;
-
-  const compactEnough = Math.min(w, h) <= 1024;
-  return isPortrait && compactEnough;
-}
-
 export default function MleoCatcher() {
   const router = useRouter();
 
@@ -120,8 +92,6 @@ export default function MleoCatcher() {
   const [highScore, setHighScore] = useState(0);
   const [playerName, setPlayerName] = useState("");
   const [leaderboard, setLeaderboard] = useState([]);
-  const [portraitBlocked, setPortraitBlocked] = useState(false);
-  const [orientationPaused, setOrientationPaused] = useState(false);
 
   /** Trimmed field → localStorage `mleo_player_name` → default `שחקן`. Never blocks starting. */
   const resolveEffectivePlayerName = () => {
@@ -139,8 +109,6 @@ export default function MleoCatcher() {
   };
 
   const beginRun = () => {
-    if (typeof window !== "undefined" && computePortablePortraitBlocked()) return;
-
     const resolved = resolveEffectivePlayerName();
     setPlayerName(resolved);
     playerNameRef.current = resolved;
@@ -163,30 +131,12 @@ export default function MleoCatcher() {
   useEffect(() => {
     if (typeof window === "undefined") return;
 
-    const syncOrientation = () => {
-      setPortraitBlocked(computePortablePortraitBlocked());
-    };
-    syncOrientation();
-    window.addEventListener("resize", syncOrientation);
-    window.addEventListener("orientationchange", syncOrientation);
-    const mq = window.matchMedia("(orientation: portrait)");
-    const onMq = () => syncOrientation();
-    mq.addEventListener?.("change", onMq);
-    mq.addListener?.(onMq);
-
     const savedHighScore = Number(localStorage.getItem("mleoCatcherHighScore") || 0);
     setHighScore(savedHighScore);
     const stored = JSON.parse(localStorage.getItem("mleoCatcherLeaderboard") || "[]");
     setLeaderboard(stored);
     const savedName = localStorage.getItem("mleo_player_name") || "";
     setPlayerName(savedName);
-
-    return () => {
-      window.removeEventListener("resize", syncOrientation);
-      window.removeEventListener("orientationchange", syncOrientation);
-      mq.removeEventListener?.("change", onMq);
-      mq.removeListener?.(onMq);
-    };
   }, []);
 
   const updateLeaderboard = (name, scoreVal) => {
@@ -405,9 +355,8 @@ export default function MleoCatcher() {
   function startGame() {
     const isMobile = /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
     const wrapper = document.getElementById("game-wrapper");
-    const blockPortraitFs = computePortablePortraitBlocked();
-    if (isMobile && !blockPortraitFs && wrapper?.requestFullscreen) wrapper.requestFullscreen().catch(() => {});
-    else if (isMobile && !blockPortraitFs && wrapper?.webkitRequestFullscreen) wrapper.webkitRequestFullscreen?.();
+    if (isMobile && wrapper?.requestFullscreen) wrapper.requestFullscreen().catch(() => {});
+    else if (isMobile && wrapper?.webkitRequestFullscreen) wrapper.webkitRequestFullscreen?.();
 
     preloadAssets();
 
@@ -482,24 +431,6 @@ export default function MleoCatcher() {
     return () => ro.disconnect();
   }, [gameRunning, showIntro]);
 
-  useEffect(() => {
-    if (!gameRunning || showIntro || gameOver) {
-      if (!portraitBlocked) setOrientationPaused(false);
-      return;
-    }
-    if (portraitBlocked) {
-      runningRef.current = false;
-      resetInputState();
-      cancelAnimationFrame(rafRef.current);
-      setOrientationPaused(true);
-    } else if (orientationPaused) {
-      setOrientationPaused(false);
-      runningRef.current = true;
-      keyboardGateRef.current = true;
-      rafRef.current = requestAnimationFrame(updateGame);
-    }
-  }, [portraitBlocked, gameRunning, showIntro, gameOver, orientationPaused]);
-
   const setPad = (side, down) => {
     if (!keyboardGateRef.current) return;
     if (side === "left") keysRef.current.left = down;
@@ -530,24 +461,6 @@ export default function MleoCatcher() {
             className="pointer-events-auto absolute inset-0 z-[200000] flex flex-col items-center justify-center overflow-y-auto bg-gray-900 p-6 text-center"
             style={{ touchAction: "manipulation" }}
           >
-            {portraitBlocked && (
-              <div
-                className="mb-6 w-full max-w-md rounded-xl border-2 border-yellow-400/80 bg-yellow-400/10 px-4 py-4 shadow-lg"
-                data-testid="mleo-catcher-rotate-overlay"
-                role="status"
-              >
-                <div className="mb-2 text-4xl" aria-hidden>
-                  ⟲
-                </div>
-                <p className="text-lg font-bold leading-snug text-yellow-400 sm:text-xl">
-                  סובבו את הטלפון לרוחב כדי לשחק
-                </p>
-                <p className="mt-2 text-sm text-gray-200 sm:text-base">
-                  המשחק הזה עובד הכי טוב כשהמסך לרוחב. אפשר ללחוץ על התחלה אחרי הסיבוב.
-                </p>
-              </div>
-            )}
-
             <Image src="/images/leo-intro.png" alt="ליאו" width={220} height={220} className="mb-6 animate-bounce" />
             <h1 className="mb-2 text-4xl font-bold text-yellow-400 sm:text-5xl">🎯 תופס עם ליאו</h1>
             <p className="mb-4 text-base text-gray-200 sm:text-lg">
