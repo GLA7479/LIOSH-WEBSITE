@@ -25,6 +25,7 @@ import {
 } from "../../utils/daily-streak";
 import { useSound } from "../../hooks/useSound";
 import { getQuestionFontStyle } from "../../utils/learning-question-font";
+import { sanitizeQuestionForStudentDisplay } from "../../utils/student-question-stem-sanitizer";
 import { compareAnswers } from "../../utils/answer-compare";
 import {
   computeMcqIndicesForQuestion,
@@ -1009,7 +1010,7 @@ function generateQuestion(
     levelKey,
   };
 
-  return {
+  return sanitizeQuestionForStudentDisplay({
     question,
     correctAnswer,
     acceptedAnswers: buildAcceptedAnswers(correctAnswer),
@@ -1017,7 +1018,7 @@ function generateQuestion(
     topic: selectedTopic,
     params: mergedParams,
     qType,
-  };
+  });
 }
 
 // פונקציה ליצירת רמז

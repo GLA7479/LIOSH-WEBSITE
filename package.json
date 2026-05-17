@@ -53,6 +53,7 @@
     "verify:pwa-manifest-orientation": "node scripts/verify-pwa-manifest-orientation.mjs",
     "audit:hebrew-subtopics": "tsx scripts/hebrew-subtopic-coverage-audit.mjs",
     "audit:questions": "tsx scripts/generator-deterministic-harness.mjs && tsx scripts/audit-question-banks.mjs",
+    "qa:student-question-stem-metadata": "tsx scripts/qa-student-question-stem-metadata.mjs",
     "audit:curriculum:inventory": "tsx scripts/curriculum-audit/scan-question-inventory.mjs",
     "audit:curriculum": "tsx scripts/curriculum-audit/run-curriculum-audit.mjs",
     "audit:curriculum:rollup": "tsx scripts/curriculum-audit/build-topic-rollup.mjs",

@@ -1,5 +1,6 @@
 import { itemAllowedForGrade } from "./grade-gating";
 import { mergeDiagnosticContractIntoParams } from "./diagnostic-question-contract.js";
+import { sanitizeQuestionForStudentDisplay } from "./student-question-stem-sanitizer.js";
 
 /**
  * שאלות גיאומטריה קונספטואליות — הסקה, השוואה, סיווג, בלבול שטח/היקף, רב-שלבי מושגי.
@@ -61,20 +62,16 @@ export function renderGeometryConceptualRowToQuestion(row, ctx) {
       : lv === "medium"
         ? "מושגים (בינוני)"
         : "מושגים (אתגר)";
-  const gNum = parseInt(String(gradeKey || "").replace(/\D/g, ""), 10) || 0;
-  const hebG = ["", "א׳", "ב׳", "ג׳", "ד׳", "ה׳", "ו׳"];
-  const gCue =
-    gNum >= 1 && gNum <= 6 ? `(כיתה ${hebG[gNum]}) ` : "";
-  const qText = `${gCue}${levelFr}: ${row.question}`;
+  const qText = String(row.question || "").trim();
 
-  return {
+  return sanitizeQuestionForStudentDisplay({
     question: qText,
     correctAnswer: correct,
     answers,
     topic,
     shape: null,
     params: { ...params, conceptualLevelFraming: levelFr },
-  };
+  });
 }
 
 /**

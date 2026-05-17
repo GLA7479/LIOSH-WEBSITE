@@ -47,6 +47,7 @@ import {
   learningExplainOpenBtn,
 } from "../../utils/learning-ui-classes";
 import { getQuestionFontStyle } from "../../utils/learning-question-font";
+import { sanitizeQuestionForStudentDisplay } from "../../utils/student-question-stem-sanitizer";
 import { warnDuplicateMcqOptionsDevOnly } from "../../utils/answer-compare";
 import {
   distractorFamilyFromOptionCell,
@@ -1945,7 +1946,7 @@ function saveScienceAnswerInParallel({
     if (probeAttachOpts && !usedRetryDequeue) {
       nextQuestionPayload = attachProbeMetaToQuestion(nextQuestionPayload, probeAttachOpts);
     }
-    setCurrentQuestion(nextQuestionPayload);
+    setCurrentQuestion(sanitizeQuestionForStudentDisplay(nextQuestionPayload));
     if (currentQuestion) {
       setPreviousExplanationQuestion(currentQuestion);
     }

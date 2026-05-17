@@ -537,7 +537,7 @@ function scienceProductionBatch1Augment() {
             markLetters[(seq * 17 + k * 3) % markLetters.length] +
             markLetters[(seq + t.length + k) % markLetters.length];
           const slotLetter = ["א", "ב", "ג", "ד", "ה", "ו", "ז", "ח", "ט"][k];
-          const stem = `סימון ייחודי ${mk}${slotLetter} · (${gradeLabel[g]} · נושא ${t} · רמת ${b.lv}) במסגרת חקר בית־ספרי: מה התנהגות מתאימה יותר כשמתמקדים ב־${aspects[(seq + k) % aspects.length]}?`;
+          const stem = `מה התנהגות מתאימה יותר כשמתמקדים ב־${aspects[(seq + k) % aspects.length]}?`;
           out.push(
             mcq(
               `sci_pb1_auto_${seq}`,

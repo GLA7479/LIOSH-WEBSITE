@@ -2,6 +2,7 @@ import { GRADES, BLANK } from './math-constants';
 import { mergeDiagnosticContractIntoParams } from './diagnostic-question-contract.js';
 import { probeMatchesSession } from './active-diagnostic-runtime/session-match.js';
 import { attachProfessionalMathMetadata } from './math-question-metadata.js';
+import { sanitizeQuestionForStudentDisplay } from './student-question-stem-sanitizer.js';
 
 function mathLevelKeyFromConfig(levelConfig) {
   const n = String(levelConfig?.name || "").trim();
@@ -24,8 +25,7 @@ function applyMathLevelPresentation(question, ctx) {
     gNum >= 1 && gNum <= 6
       ? ["א׳", "ב׳", "ג׳", "ד׳", "ה׳", "ו׳"][gNum - 1]
       : "";
-  const gradeBandSuffix =
-    gradeHeb && !/כיתה [אבגדהו]׳/.test(q0) ? ` · כיתה ${gradeHeb}` : "";
+  const gradeBandSuffix = "";
   if (kind.startsWith("wp_") || selectedOp === "word_problems") return q0;
 
   if (kind === "ns_complement100") {
@@ -386,23 +386,17 @@ function applyMathLevelPresentation(question, ctx) {
       params?.exerciseText != null && String(params.exerciseText).trim()
         ? String(params.exerciseText).trim()
         : q0.trim();
-    const gSuf = gradeBandSuffix;
-    const levelCue =
-      mathLevelKey === "easy"
-        ? "רמה קלה —"
-        : mathLevelKey === "medium"
-          ? "רמה בינונית —"
-          : "רמה מאתגרת —";
     const openers = {
-      g1: `${levelCue} חידת משוואה קצרה:`,
-      g2: `${levelCue} השלימו את החסר במשוואה:`,
-      g3: `${levelCue} משוואה, מצאו את הנעלם:`,
-      g4: `${levelCue} משוואה עם נעלם אחד:`,
-      g5: `${levelCue} אלגברה בסיסית, ערך הנעלם:`,
-      g6: `${levelCue} משוואה לינארית, מצאו x:`,
+      g1: "חידת משוואה קצרה:",
+      g2: "השלימו את החסר במשוואה:",
+      g3: "מצאו את הנעלם:",
+      g4: "מצאו את הנעלם:",
+      g5: "מצאו את הנעלם:",
+      g6: "מצאו x:",
     };
-    const opener = openers[gradeKey] || `${levelCue} השלימו את המשוואה:`;
-    return `${opener} ${raw}${gSuf}`;
+    const opener = openers[gradeKey] || "השלימו את המשוואה:";
+    if (/^מצאו|^השלימו|^חידת/.test(raw.trim())) return raw;
+    return `${opener} ${raw}`;
   }
 
   const looksNumericExercise =
@@ -410,58 +404,7 @@ function applyMathLevelPresentation(question, ctx) {
     (/^\d/.test(q0.trim()) && /[+\-×÷]/.test(q0));
 
   if (looksNumericExercise && gNum >= 1) {
-    const pv = Math.abs(Number(params?.presentationVariant) || 0) % 4;
-    const mathGradeTag =
-      gNum >= 1 && gNum <= 6
-        ? `(כיתה ${["א׳", "ב׳", "ג׳", "ד׳", "ה׳", "ו׳"][gNum - 1]}) `
-        : "";
-    const tagNumeric = (s) =>
-      mathGradeTag && !/\(כיתה [אבגדהו]׳\)/.test(s)
-        ? `${mathGradeTag}${s}`
-        : s;
-    if (gNum <= 2) {
-      const easyP = ["חישוב קל:", "מה התוצאה:", "פתרו:", "חיבור/חיסור קצר:"];
-      const medP = ["נסו לבד:", "חשבו לבד:", "מה יוצא:", "תרגיל:"];
-      const hardP = ["משחקון חשבון:", "אתגר קטן:", "בדקו:", "חידה חשבונית:"];
-      if (mathLevelKey === "easy" && !/^(חישוב קל|נסו|משחקון)/.test(q0)) {
-        return tagNumeric(`${easyP[pv]} ${q0}`);
-      }
-      if (mathLevelKey === "medium" && !/^(חישוב קל|נסו|משחקון)/.test(q0)) {
-        return tagNumeric(`${medP[pv]} ${q0}`);
-      }
-      if (mathLevelKey === "hard" && !/^(חישוב קל|נסו|משחקון)/.test(q0)) {
-        return tagNumeric(`${hardP[pv]} ${q0}`);
-      }
-      if (mathGradeTag && !/\(כיתה [אבגדהו]׳\)/.test(q0)) {
-        return tagNumeric(q0);
-      }
-    } else {
-      const easyP = ["חשבו:", "סכום:", "מה התוצאה:", "פתרו:"];
-      const medP = [
-        "מצאו את הערך:",
-        "השלימו את המשוואה:",
-        "כמה יוצא בסוף:",
-        "חישוב:",
-      ];
-      const hardP = [
-        "אתגר — הערכו ואמתו:",
-        "בדקו פעמיים לפני בחירה:",
-        "שאלת אתגר:",
-        "גרסה מאתגרת —",
-      ];
-      if (mathLevelKey === "easy" && !/^(חשבו|מצאו|אתגר)/.test(q0)) {
-        return tagNumeric(`${easyP[pv]} ${q0}`);
-      }
-      if (mathLevelKey === "medium" && !/^(חשבו|מצאו|אתגר)/.test(q0)) {
-        return tagNumeric(`${medP[pv]} ${q0}`);
-      }
-      if (mathLevelKey === "hard" && !/^(חשבו|מצאו|אתגר)/.test(q0)) {
-        return tagNumeric(`${hardP[pv]} ${q0}`);
-      }
-      if (mathGradeTag && !/\(כיתה [אבגדהו]׳\)/.test(q0)) {
-        return tagNumeric(q0);
-      }
-    }
+    return q0;
   }
 
   if (selectedOp === "ratio" && gNum >= 4) {
@@ -1072,7 +1015,13 @@ export function generateQuestion(levelConfig, operation, gradeKey, mixedOps = nu
       : "";
 
   const finalizeMathQuestionOutput = (out) =>
-    attachProfessionalMathMetadata(out, { selectedOp, gradeKey, mathLevelKey });
+    sanitizeQuestionForStudentDisplay(
+      attachProfessionalMathMetadata(out, {
+        selectedOp,
+        gradeKey,
+        mathLevelKey,
+      })
+    );
 
   const densSmallProbe = [2, 4, 5, 10];
   const densBigProbe = [2, 3, 4, 5, 6, 8, 10, 12];

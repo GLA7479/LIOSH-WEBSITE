@@ -6,6 +6,7 @@ import {
   geometryConceptualProbability,
 } from "./geometry-conceptual-bank";
 import { gradeBandForKey } from "./grade-gating";
+import { sanitizeQuestionForStudentDisplay } from "./student-question-stem-sanitizer.js";
 
 function shuffleMcqList(answers) {
   const arr = [...answers];
@@ -1671,13 +1672,13 @@ export function generateQuestion(level, topic, gradeKey, mixedOps = null) {
     shape,
   });
 
-  return {
+  return sanitizeQuestionForStudentDisplay({
     question,
     correctAnswer,
     answers: shuffledAnswers,
     topic: selectedTopic,
     shape,
     params,
-  };
+  });
 }
 

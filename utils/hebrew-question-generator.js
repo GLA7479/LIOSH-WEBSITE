@@ -5,6 +5,7 @@ import {
   scopeHebrewStemForGrade,
   stripHebrewQuestionPedagogicalLeadIn,
 } from './hebrew-legacy-metadata';
+import { sanitizeQuestionForStudentDisplay } from './student-question-stem-sanitizer.js';
 import {
   withG1SubtopicPreference,
   attachG1SubtopicParams,
@@ -4615,7 +4616,7 @@ export function finalizeHebrewMcq(raw, selectedTopic, levelKey, gradeKey) {
     inferredDifficultyBand: inferred.difficultyBand,
   };
   scrubHebrewMcqAnswers(q);
-  return q;
+  return sanitizeQuestionForStudentDisplay(q);
 }
 
 function isShallowLegacyQuestion(raw, levelKey, gradeKey) {

@@ -1,4 +1,5 @@
 import { GRADES, TOPICS } from './moledet-geography-constants';
+import { sanitizeQuestionForStudentDisplay } from './student-question-stem-sanitizer.js';
 import {
   G1_EASY_QUESTIONS,
   G1_MEDIUM_QUESTIONS,
@@ -67,9 +68,9 @@ function shuffleAnswersAndBuild(randomQ, selectedTopic, gradeKey, levelKey, uiLe
   const correctAnswer = randomQ.answers[randomQ.correct];
   const newCorrectIndex = shuffledAnswers.findIndex((ans) => ans === correctAnswer);
   const contentPoolLevel = levelKey;
-  return {
+  return sanitizeQuestionForStudentDisplay({
     question: randomQ.question,
-    questionLabel: `שאלה בנושא: ${TOPICS[selectedTopic]?.name || selectedTopic}`,
+    questionLabel: "",
     exerciseText: randomQ.question,
     answers: shuffledAnswers,
     correctAnswer,
@@ -89,7 +90,7 @@ function shuffleAnswersAndBuild(randomQ, selectedTopic, gradeKey, levelKey, uiLe
       contentPoolLevel,
       poolFallbackCode,
     },
-  };
+  });
 }
 
 /**
@@ -189,5 +190,14 @@ export function generateQuestion(levelConfig, topic, gradeKey, mixedTopics = nul
   }
 
   const randomQ = topicQuestions[Math.floor(Math.random() * topicQuestions.length)];
-  return shuffleAnswersAndBuild(randomQ, resolvedTopic, gradeKey, levelKey, uiLevel, poolFallbackCode);
+  return sanitizeQuestionForStudentDisplay(
+    shuffleAnswersAndBuild(
+      randomQ,
+      resolvedTopic,
+      gradeKey,
+      levelKey,
+      uiLevel,
+      poolFallbackCode
+    )
+  );
 }
